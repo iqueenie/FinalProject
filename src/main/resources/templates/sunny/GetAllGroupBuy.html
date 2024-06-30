@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td>團購ID
+                    <!-- <td>商品名稱
+                <td>取貨店鋪 -->
+                <td>價格
+                <td>目標數量
+                <td>目前數量
+                <td>下訂日期
+                <td>到達日期
+                <td>結束日期
+                <td>狀態
+                <td>刪除
+                <td>更新
+                <td>查看訂購者
+            </tr>
+        </thead>
+        <th:block th:each="gb : ${gbs}">
+            <tr class="data">
+                <td>[[${gb.groupBuyId}]]
+                    <!-- <td>[[${gb.productName}]]
+                <td>[[${gb.storeName}]] -->
+                <td>[[${gb.price}]]
+                <td>[[${gb.targetQuantity}]]
+                <td>[[${gb.nowQuantity}]]
+                <td>[[${gb.orderDate}]]
+                <td>[[${gb.arrivalDate}]]
+                <td>[[${gb.endDate}]]
+                <td>[[${gb.groupBuyStatus}]]
+                    <!-- <td><a href="#" onclick="confirmDelete(${gb.groupBuyId})" class="delete">刪除</a>
+                <td><a href="./UpdateGroupBuyForm?id=${gb.groupBuyId}" class="update">更新</a>
+                <td><a href="./GetGroupMemberByGroupBuy?gbId=${gb.groupBuyId}" class="more">查看訂購者</a> -->
+            </tr>
+        </th:block>
+    </table>
+</body>
+
+</html>
