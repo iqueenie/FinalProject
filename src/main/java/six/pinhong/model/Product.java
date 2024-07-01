@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +25,8 @@ public class Product implements Serializable {
 	private Integer productCost; // 成本
 	private Integer productPrice; // 售價
 	private Integer productExpirydate; // 效期
+	
+	@Column(length = 300) //改這裡
 	private String productDescription; // 描述, 詳細資訊
 	private Integer productPublished; // 0 表示未上架，1 表示已上架
 
