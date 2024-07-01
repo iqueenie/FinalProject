@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
@@ -20,6 +21,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 
 
@@ -32,7 +35,8 @@ public class BuyBean implements java.io.Serializable {
 	private int purchaseId;
 	
 
-
+	@DateTimeFormat(pattern = "yyyy/MM/dd") //若要在thymeleaf強制使用本格式，需雙層大括號
+	@Temporal(TemporalType.DATE)
 	private LocalDate arrivedDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

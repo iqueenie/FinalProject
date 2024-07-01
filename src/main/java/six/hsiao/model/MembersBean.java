@@ -4,9 +4,10 @@ import java.time.LocalDate;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class MembersBean {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int memberId;
 	
+	@Column(nullable = true)//這裡有改
 	private String memberPhoto;
 	
 	private String memberName;
@@ -38,9 +40,10 @@ public class MembersBean {
 	
 	private String memberEmail;
 	
+	@Column(nullable = true) //這裡有改
 	private int points;
 	
-	private String lockStatus;
+	private String lockStatus="正常"; //這裡有改
 	
 	
 	
