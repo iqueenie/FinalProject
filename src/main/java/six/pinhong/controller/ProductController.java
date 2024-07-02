@@ -103,24 +103,25 @@ public class ProductController {
 		return "back/pinhong/FindProduct";
 	}
 
-	// 更新 (MVcS使用@ModelAttribute自動映射)
+	// 更新 (MVC使用@ModelAttribute自動映射)
 	@PutMapping("/Productupdate2")
 	public String productFindById(@ModelAttribute("product") Product product,
 			@RequestParam MultipartFile imageFile) throws IOException {
 
-		
 			ProductImage productImage = new ProductImage();					
-				if (imageFile != null && !imageFile.isEmpty()) {
-					productImage.setProductId(product.getProductId());
-					productImage.setImageUrl(imageFile.getBytes());
-					productService.updateProduct(product, product.getProductId());
-					productImage.setProduct(product);
-					product.setProductImage(productImage);
-					productService.updateProduct(product);
-					productService.updateProductImage(productImage);
-				}else {
-					productService.updateProduct(product);
-				}
+
+			if (imageFile != null && !imageFile.isEmpty()) {
+				productImage.setProductId(product.getProductId());
+				productImage.setImageUrl(imageFile.getBytes());
+					
+				productImage.setProduct(product);
+				product.setProductImage(productImage); // 將圖片關聯到產品
+					
+				productService.updateProduct(product);
+				productService.updateProductImage(productImage);
+			}else {
+				productService.updateProduct(product); // 如果沒有上傳新的圖片文件，僅更新產品信息
+			}
 				
 		return "redirect:/GetAllProudcts";
 	}
