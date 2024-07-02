@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -23,7 +24,9 @@ public class ProductImage implements Serializable{
 	@GenericGenerator(name="generator", strategy = "foreign", parameters = @Parameter(name="property", value = "product"))
 	@Id @GeneratedValue(generator = "generator")
 	private Integer productId; // 商品編號
-    private String imageUrl; // 圖片 URL
+	
+	@Lob
+    private byte[] imageUrl; // 圖片 URL
     
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
@@ -35,10 +38,10 @@ public class ProductImage implements Serializable{
 	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
-	public String getImageUrl() {
+	public byte[] getImageUrl() {
 		return imageUrl;
 	}
-	public void setImageUrl(String imageUrl) {
+	public void setImageUrl(byte[] imageUrl) {
 		this.imageUrl = imageUrl;
 	}
 	public Product getProduct() {
@@ -50,11 +53,11 @@ public class ProductImage implements Serializable{
 	public ProductImage() {
 
 	}
-	public ProductImage(String imageUrl) {
+	public ProductImage(byte[] imageUrl) {
 		super();
 		this.imageUrl = imageUrl;
 	}
-	public ProductImage(Integer productId, String imageUrl) {
+	public ProductImage(Integer productId, byte[] imageUrl) {
 		super();
 		this.productId = productId;
 		this.imageUrl = imageUrl;
