@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import six.pinhong.model.Product;
-import six.sunny.model.GroupBuyBean;
+import six.pinhong.model.ProductRepository;
+import six.pinhong.service.ProductService;
+import six.sunny.model.GroupBuy;
+import six.sunny.model.StoreNameRepository;
 import six.sunny.service.GroupBuyService;
 import six.yiting.model.StoresBean;
 
@@ -23,6 +26,14 @@ public class GroupBuyController {
 	@Autowired
 	private GroupBuyService groupBuyService;
 	
+//	TODO
+	@Autowired
+	private ProductRepository productService;
+	
+//	TODO
+	@Autowired
+	private StoreNameRepository storeService;
+	
 	@RequestMapping(path = "/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST})
 	public String getAllGroupBuy(@RequestParam(value = "storeGetId", defaultValue = "") String storeId, 
 								@RequestParam(value = "productGetId", defaultValue = "") String productId,
@@ -31,7 +42,7 @@ public class GroupBuyController {
 //		List<GroupBuyBean> gbs = null;
 //
 //		if(storeId.isEmpty() && productId.isEmpty()) {
-		List<GroupBuyBean> gbs = groupBuyService.findAll();	
+		List<GroupBuy> gbs = groupBuyService.findAll();	
 //		}else if(!storeId.isEmpty() && !productId.isEmpty()) {
 //			gbs = groupBuyService.getByProductStoreId(Integer.parseInt(productId), Integer.parseInt(storeId));
 //		}else if (!storeId.isEmpty()) {
@@ -50,32 +61,25 @@ public class GroupBuyController {
 		
 		return "back/sunny/GetAllGroupBuy";
 	}
-//	
-//	@GetMapping("/InsertGroupBuyForm")
-//	public String insertGroupBuyForm(Model m) {
-////		取得表單填寫所需的List
-//		List<Product> pdns = productService.findAll();
-//		List<StoresBean> stns = storeService.findAll();
-//		
-//		m.addAttribute("pdns", pdns);
-//		m.addAttribute("stns", stns);
-//		m.addAttribute("GroupBuyBean", new GroupBuyBean());
-//		
-//		return "sunny/InsertGroupBuy";
-//	}
-//	
-//	@PostMapping("/InsertGroupBuy")
-//	public String insertGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuyBean groupBuyBean) {
-//		
-//		Product product = productService.findProductById(groupBuyBean.getProductId());
-//		StoresBean store = storeService.findById(groupBuyBean.getStoreId());
-//		
-//		groupBuyBean.setProduct(product);
-//		groupBuyBean.setStore(store);
-//		
-//		groupBuyService.insert(groupBuyBean);
-//		return "forward:/GetAllGroupBuy";
-//	}
+	
+	@GetMapping("/InsertGroupBuyForm")
+	public String insertGroupBuyForm(Model m) {
+//		取得表單填寫所需的List
+		List<Product> pdns = productService.findAll();
+		List<StoresBean> stns = storeService.findAll();
+		
+		m.addAttribute("pdns", pdns);
+		m.addAttribute("stns", stns);
+		m.addAttribute("groupBuy", new GroupBuy());
+		
+		return "back/sunny/InsertGroupBuy";
+	}
+	
+	@PostMapping("/InsertGroupBuy")
+	public String insertGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuy) {
+		groupBuyService.insert(groupBuy);
+		return "forward:/GetAllGroupBuy";
+	}
 //	
 //	@GetMapping("/DeleteGroupBuy")
 //	public String deleteGroupBuy(@RequestParam("id") Integer id, Model m) {

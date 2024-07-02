@@ -15,7 +15,7 @@ import six.hsiao.model.MembersBean;
 
 @Entity @Table(name = "groupmember")
 @Component
-public class GroupMemberBean {
+public class GroupMember {
 	
 @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Integer groupMemberId;
@@ -25,7 +25,7 @@ private Integer groupBuyId;
 
 @ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "groupBuyId")
-private GroupBuyBean groupBuy;
+private GroupBuy groupBuy;
 
 @Column(name = "memberId", insertable = false, updatable = false)
 private Integer memberId;
@@ -61,10 +61,10 @@ public String getPickupStatus() {
 public void setPickupStatus(String pickupStatus) {
 	this.pickupStatus = pickupStatus;
 }
-public GroupBuyBean getGroupBuy() {
+public GroupBuy getGroupBuy() {
 	return groupBuy;
 }
-public void setGroupBuy(GroupBuyBean groupBuy) {
+public void setGroupBuy(GroupBuy groupBuy) {
 	this.groupBuy = groupBuy;
 }
 public MembersBean getMember() {
