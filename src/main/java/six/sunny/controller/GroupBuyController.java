@@ -48,7 +48,7 @@ public class GroupBuyController {
 //		m.addAttribute("stns", stns);
 //		m.addAttribute("pdns", pdns);
 		
-		return "end/sunny/GetAllGroupBuy";
+		return "back/sunny/GetAllGroupBuy";
 	}
 //	
 //	@GetMapping("/InsertGroupBuyForm")
