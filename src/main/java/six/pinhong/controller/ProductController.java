@@ -108,19 +108,21 @@ public class ProductController {
 	public String productFindById(@ModelAttribute("product") Product product,
 			@RequestParam MultipartFile imageFile) throws IOException {
 
-			ProductImage productImage = new ProductImage();					
+								
 
 			if (imageFile != null && !imageFile.isEmpty()) {
+				ProductImage productImage = new ProductImage();
 				productImage.setProductId(product.getProductId());
 				productImage.setImageUrl(imageFile.getBytes());
-					
+				// 有更新圖片時new一個productImage把ID、圖片set進去
+				
 				productImage.setProduct(product);
-				product.setProductImage(productImage); // 將圖片關聯到產品
+				product.setProductImage(productImage); 
+				// 將圖片關聯到產品
 					
-				productService.updateProduct(product);
-				productService.updateProductImage(productImage);
+				productService.insertProduct(product);
 			}else {
-				productService.updateProduct(product); // 如果沒有上傳新的圖片文件，僅更新產品信息
+				productService.insertProduct(product); 
 			}
 				
 		return "redirect:/GetAllProudcts";
