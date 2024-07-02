@@ -23,6 +23,6 @@ public class ProductController {
 
 		m.addAttribute("products", products);
 	
-	return "end/pinhong/GetAllProduct";
+	return "back/pinhong/GetAllProduct";
 }
 }
