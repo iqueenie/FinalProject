@@ -21,7 +21,7 @@ public class MembersBean {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int memberId;
+	private Integer memberId;
 	
 	@Column(nullable = true)//這裡有改
 	private String memberPhoto;
@@ -41,7 +41,7 @@ public class MembersBean {
 	private String memberEmail;
 	
 	@Column(nullable = true) //這裡有改
-	private int points;
+	private Integer points;
 	
 	private String lockStatus="正常"; //這裡有改
 	
@@ -52,7 +52,7 @@ public class MembersBean {
 	    }
 	    
 	    public MembersBean(String memberPhoto, String memberName, String memberPassword, LocalDate memberBirthDate,
-	            String memberAccount, String memberAddress, String memberEmail, int points, String lockStatus) {
+	            String memberAccount, String memberAddress, String memberEmail, Integer points, String lockStatus) {
 	        this.memberPhoto = memberPhoto;
 	        this.memberName = memberName;
 	        this.memberPassword = memberPassword;
@@ -65,11 +65,11 @@ public class MembersBean {
 	    }
 	    
 	    // Getters and Setters
-	    public int getMemberId() {
+	    public Integer getMemberId() {
 	        return memberId;
 	    }
 
-	    public void setMemberId(int memberId) {
+	    public void setMemberId(Integer memberId) {
 	        this.memberId = memberId;
 	    }
 
@@ -129,11 +129,11 @@ public class MembersBean {
 	        this.memberEmail = memberEmail;
 	    }
 
-	    public int getPoints() {
+	    public Integer getPoints() {
 	        return points;
 	    }
 
-	    public void setPoints(int points) {
+	    public void setPoints(Integer points) {
 	        this.points = points;
 	    }
 
@@ -145,8 +145,8 @@ public class MembersBean {
 	        this.lockStatus = lockStatus;
 	    }
 
-		public MembersBean(int memberId, String memberPhoto, String memberName, String memberPassword,
-				LocalDate memberBirthDate, String memberAccount, String memberAddress, String memberEmail, int points,
+		public MembersBean(Integer memberId, String memberPhoto, String memberName, String memberPassword,
+				LocalDate memberBirthDate, String memberAccount, String memberAddress, String memberEmail, Integer points,
 				String lockStatus) {
 			
 			this.memberId = memberId;

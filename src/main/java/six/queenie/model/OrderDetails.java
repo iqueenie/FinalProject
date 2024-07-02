@@ -15,10 +15,10 @@ import six.pinhong.model.Product;
 public class OrderDetails {
 	  @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private int orderDetailId;
+	    private Integer orderDetailId;
 	    
 	    @Column(name = "ORDERID", insertable = false, updatable = false)
-	    private int orderId;
+	    private Integer orderId;
 	    
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "ORDERID")
@@ -27,8 +27,8 @@ public class OrderDetails {
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "PRODUCTID") 
 	    private Product product;
-	    private int quantity;
-	    private int subTotal;
+	    private Integer quantity;
+	    private Integer subTotal;
 	
 	    
 	    
