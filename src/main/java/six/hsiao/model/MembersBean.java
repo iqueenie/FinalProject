@@ -1,11 +1,11 @@
 package six.hsiao.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +16,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="members")
-@Component
-public class MembersBean {
+
+public class MembersBean implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

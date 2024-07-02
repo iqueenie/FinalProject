@@ -24,5 +24,5 @@ public class ProductController {
 		m.addAttribute("products", products);
 	
 	return "back/pinhong/GetAllProduct";
-}
+	}
 }

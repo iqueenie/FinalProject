@@ -1,6 +1,8 @@
 package six.hsiao.model;
 
 
+import java.io.Serializable;
+
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Entity;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "management")
 @Component
-public class BackEndLoginBean {
+public class BackEndLoginBean implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)//這裡有改
