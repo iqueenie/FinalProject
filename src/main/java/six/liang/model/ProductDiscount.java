@@ -18,7 +18,7 @@ public class ProductDiscount {
 	 private Integer discountId; 
 	 private String discountName;
 	 private Integer productId;
-	 private int discountPercentage;
+	 private Integer discountPercentage;
 	 private Date startDate;
 	 private Date endDate;
 	 private Integer isActive;
@@ -40,10 +40,10 @@ public class ProductDiscount {
 	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
-	public int getDiscountPercentage() {
+	public Integer getDiscountPercentage() {
 		return discountPercentage;
 	}
-	public void setDiscountPercentage(int discountPercentage) {
+	public void setDiscountPercentage(Integer discountPercentage) {
 		this.discountPercentage = discountPercentage;
 	}
 	public Date getStartDate() {
