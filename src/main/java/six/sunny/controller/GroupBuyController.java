@@ -3,14 +3,17 @@ package six.sunny.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
@@ -80,13 +83,18 @@ public class GroupBuyController {
 		groupBuyService.insert(groupBuy);
 		return "forward:/GetAllGroupBuy";
 	}
-//	
-//	@GetMapping("/DeleteGroupBuy")
-//	public String deleteGroupBuy(@RequestParam("id") Integer id, Model m) {
-//		groupBuyService.deleteById(id);
-//		return "forward:/GetAllGroupBuy";
-//	}
-//	
+	
+	@ResponseBody
+	@DeleteMapping("/DeleteGroupBuy")
+	public ResponseEntity<Void> deleteGroupBuy(@RequestParam("id") Integer id, Model m) {
+		boolean isDeleted = groupBuyService.deleteById(id);
+	    if (isDeleted) {
+	        return ResponseEntity.noContent().build();
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+	
 //	@GetMapping("/UpdateGroupBuyForm")
 //	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m) {		
 ////		取得下拉式選單會用到的資料

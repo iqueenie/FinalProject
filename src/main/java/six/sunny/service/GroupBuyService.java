@@ -18,7 +18,6 @@ import six.sunny.model.StoreNameRepository;
 import six.yiting.model.StoresBean;
 
 @Service
-@Transactional
 public class GroupBuyService{
 	
 	@Autowired
@@ -52,11 +51,15 @@ public class GroupBuyService{
 		return groupBuyRepo.save(groupBuy);
 	}
 
-//	@Override
-//	public boolean deleteById(Integer id) {
-//		return groupBuyDao.deleteById(id);
-//	}
-//	
+	public boolean deleteById(Integer id) {
+        if (groupBuyRepo.existsById(id)) {
+    		groupBuyRepo.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+	}
+	
 //	@Override
 //	public GroupBuyBean updateNowQuantityById(Integer id) {
 //		
