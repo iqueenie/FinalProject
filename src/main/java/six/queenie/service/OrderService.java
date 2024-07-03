@@ -20,6 +20,7 @@ import six.queenie.model.AmountRepository;
 import six.queenie.model.MembersRepository;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
+import six.queenie.service.StoresService;
 import six.queenie.model.OrdersRepository;
 import six.queenie.model.ProductDiscountRepository;
 import six.yiting.model.StoresBean;
@@ -44,13 +45,13 @@ public class OrderService {
 	@Autowired
 	private MembersRepository mRepository;
 	@Autowired
-	private StoreService stService;
+	private StoresService stService;
 	
 	public List<Orders> findAll() {
 		return ordersRepository.findAll();
 		
 	}
-	
+
 	 public Orders getOrderById(Integer orderId) {
 	       
          return ordersRepository.findByOrderId(orderId);

@@ -2,10 +2,12 @@ package six.queenie.service;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import six.yiting.model.StoresBean;
 import six.yiting.model.StoresRepository;
-
-public class StoreService {
+@Service
+public class StoresService {
 	
 	private StoresRepository sRepo;
 	
