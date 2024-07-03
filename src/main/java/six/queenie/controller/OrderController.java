@@ -13,15 +13,14 @@ import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
 import six.queenie.service.OrderDetailService;
 import six.queenie.service.OrderService;
-import six.queenie.service.StoresService;
 import six.yiting.model.StoresBean;
+import six.yiting.service.StoreService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -34,7 +33,7 @@ public class OrderController {
 	@Autowired
 	private ProductService pService;
 	@Autowired
-	private StoresService stService;
+	private StoreService stService;
 	
 	@Autowired
 	private OrderDetailService odService;
@@ -60,7 +59,7 @@ public class OrderController {
     }
 	@GetMapping("/getStoreProduct")
     public String showInsertOrder(Model model){
-        List<StoresBean> storeList = stService.findAll();
+        List<StoresBean> storeList = stService.findAllStores();
         List<Product> productList = pService.findAll();
         model.addAttribute("storeList", storeList);
         model.addAttribute("productList", productList);
@@ -79,7 +78,7 @@ public class OrderController {
     	
     	Orders order = orderService.getOrderById(orderId);
     	List<OrderDetails> orderDetailsList = odService.getOrderDetailsByOrderId(orderId);
-    	 List<StoresBean> storeList = stService.findAll();
+    	 List<StoresBean> storeList = stService.findAllStores();
          List<Product> productList = pService.findAll();
         model.addAttribute("storeList", storeList);
         model.addAttribute("productList", productList);

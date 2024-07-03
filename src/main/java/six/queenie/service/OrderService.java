@@ -15,7 +15,6 @@ import six.hsiao.model.MembersBean;
 import six.liang.model.AmountDiscount;
 import six.liang.model.ProductDiscount;
 import six.pinhong.model.Product;
-import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
 import six.queenie.model.AmountRepository;
 import six.queenie.model.MembersRepository;
@@ -23,8 +22,8 @@ import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
 import six.queenie.model.OrdersRepository;
 import six.queenie.model.ProductDiscountRepository;
-import six.queenie.model.StoresRepository;
 import six.yiting.model.StoresBean;
+
 
 @Service
 @Transactional
@@ -45,7 +44,7 @@ public class OrderService {
 	@Autowired
 	private MembersRepository mRepository;
 	@Autowired
-	private StoresRepository sRepository;
+	private StoreService stService;
 	
 	public List<Orders> findAll() {
 		return ordersRepository.findAll();
@@ -119,7 +118,7 @@ public class OrderService {
 	        String status = request.getParameter("status");
 
 	        MembersBean member = mRepository.findByMemberId(memberId);
-	        StoresBean store = sRepository.findByStoreId(storeId);
+	        StoresBean store = stService.findByStoreId(storeId);
 	        List<OrderDetails> orderDetailsList = new LinkedList<>();
 	        Integer total = 0;
 	        Integer sumTotal = 0;
