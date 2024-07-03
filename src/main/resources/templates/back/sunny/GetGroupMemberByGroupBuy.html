@@ -14,8 +14,9 @@
 
     <div class="container mt-3">
         <div class="d-flex justify-content-center align-items-center">
-            <a th:href="@{/InsertGroupMemberForm}" class="btn btn-outline-success">新增</a>
+            <a th:href="@{/InsertGroupMemberForm(id=${gbId})}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">團購會員</h1>
+            <a th:href="@{/GetAllGroupBuy}" class="btn btn-outline-secondary">返回</a>
         </div>
         <table id="myTable" class="w-100 display">
             <thead>
@@ -39,8 +40,8 @@
                         <td>[[${gm.quantity}]]</td>
                         <td>[[${gm.total}]]</td>
                         <td>[[${gm.pickupStatus}]]</td>
-                        <td><a class="btn btn-outline-warning btn-sm" href="./UpdateGroupMemberForm?gbId=${gm.groupBuyId}&gmId=${gm.groupMemberId}">更新</a></td>
-                        <td><a class="btn btn-outline-danger btn-sm delete" href="#">刪除</a></td>
+                        <td><a class="btn btn-outline-warning btn-sm" th:href="@{/UpdateGroupMemberForm(gmId=${gm.groupMemberId})}">更新</a></td>
+                        <td><a class="btn btn-outline-danger btn-sm delete" th:id="${gm.groupMemberId}" href="#">刪除</a></td>
                     </tr>
                 </th:block>
             </tbody>
@@ -61,7 +62,7 @@
 
         const deleteGroupBuy = async (id) => {
             try {
-                const response = await axios.delete("http://localhost:8080/FinalProject/DeleteGroupBuy", {
+                const response = await axios.delete("http://localhost:8080/FinalProject/DeleteGroupMember", {
                     params: {
                         id: id
                     }

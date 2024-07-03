@@ -79,7 +79,7 @@ public class GroupBuyController {
 	}
 	
 	@PostMapping("/InsertGroupBuy")
-	public String insertGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuy) {
+	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
 		groupBuyService.insert(groupBuy);
 		return "forward:/GetAllGroupBuy";
 	}

@@ -3,6 +3,7 @@ package six.sunny.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -60,23 +61,22 @@ public class GroupBuyService{
         }
 	}
 	
-//	@Override
-//	public GroupBuyBean updateNowQuantityById(Integer id) {
-//		
-////		取得所有訂購的會員
-//		GroupBuyBean gb = groupBuyDao.findById(id);
-//		List<GroupMemberBean> gms = gb.getGroupMember();
-//		
-////		計算訂購總數並更新
-//		int newquantity = 0;
-//		for(GroupMemberBean gm:gms) {
-//			newquantity += gm.getQuantity();
-//		}
-//		gb.setNowQuantity(newquantity);
-//		GroupBuyBean update = groupBuyDao.update(gb);
-//		return update;
-//	}
-//
+	public GroupBuy updateNowQuantityById(Integer id) {
+		
+//		取得所有訂購的會員
+		GroupBuy gb = groupBuyRepo.findById(id).get();
+		List<GroupMember> gms = gb.getGroupMember();
+		
+//		計算訂購總數並更新
+		int newquantity = 0;
+		for(GroupMember gm:gms) {
+			newquantity += gm.getQuantity();
+		}
+		gb.setNowQuantity(newquantity);
+		GroupBuy update = groupBuyRepo.save(gb);
+		return update;
+	}
+
 //	@Override
 //	public GroupBuyBean update(GroupBuyBean groupBuyBean) {
 //		
@@ -132,11 +132,15 @@ public class GroupBuyService{
 		}
 		return price;
 	}
-//
-//	@Override
-//	public GroupBuyBean findById(Integer id) {
-//		return groupBuyDao.findById(id);
-//	}
+
+	public GroupBuy findById(Integer id) {
+		Optional<GroupBuy> optional = groupBuyRepo.findById(id);
+		if (optional.isPresent()) {
+			return optional.get();
+		}else {
+			return null;
+		}
+	}
 
 
 }
