@@ -38,6 +38,8 @@ public class OrderController {
 	@Autowired
 	private OrderDetailService odService;
 	
+
+	
 	@GetMapping("/GetAllOrders")
 	public String getAllOrders(Model model) {
 		
@@ -49,12 +51,8 @@ public class OrderController {
 	
 	@PostMapping("/deleteOrder")
     public String deleteOrder(@RequestParam("orderId") Integer orderId, Model model) {
-        boolean updated = orderService.updateOrderStatus(orderId, "Canceled");
-        if (updated) {
-            model.addAttribute("message", "訂單刪除成功！");
-        } else {
-            model.addAttribute("message", "未找到訂單或訂單刪除失敗。");
-        }
+        orderService.updateOrderStatusAndPoints(orderId, "Canceled");
+        model.addAttribute("orders", orderService.findAll());  // 更新模型以包含所有订单
         return "back/queenie/GetAllOrders";
     }
 	@GetMapping("/getStoreProduct")
@@ -104,7 +102,7 @@ public class OrderController {
 		updateBean.setOrderDate(orderDate);
 		updateBean.setStatus(status);
 
-		orderService.updateOrder(updateBean);
+		orderService.updateOrder(orderId, orderDate);
 		return "redirect:/GetAllOrders";
 	}
 
