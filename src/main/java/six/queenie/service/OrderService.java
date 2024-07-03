@@ -20,7 +20,6 @@ import six.queenie.model.AmountRepository;
 import six.queenie.model.MembersRepository;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
-import six.queenie.service.StoresService;
 import six.queenie.model.OrdersRepository;
 import six.queenie.model.ProductDiscountRepository;
 import six.yiting.model.StoresBean;
@@ -57,17 +56,25 @@ public class OrderService {
          return ordersRepository.findByOrderId(orderId);
      }
 	 
-	 public boolean updateOrderStatus(Integer orderId, String newStatus) {
-     Orders order = ordersRepository.findByOrderId(orderId);
-     if (order != null) {
-         order.setStatus(newStatus);
-         ordersRepository.save(order);
-         return true;
-     }
-     return false;
- }
+	 public void updateOrderStatusAndPoints(Integer orderId, String newStatus) {
+	        Orders order = ordersRepository.findByOrderId(orderId);
+	        if (order != null) {
+	            order.setStatus(newStatus);
+	            MembersBean member = order.getMembers();
+	            if (member != null) {
+	                member.setPoints(member.getPoints() - order.getPointGet());
+	                
+	                mRepository.save(member);
+	            }
+	            ordersRepository.save(order);
+	        }
+	    }
+	 
+	 
 	 public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
-		    
+		 if (amountDiscountId == null) {
+		        return total; 
+		    }
 	        Integer discountPercentage=0;
 	          
 	        Optional<AmountDiscount> mdOptional= atRepository.findById(amountDiscountId);
@@ -77,7 +84,6 @@ public class OrderService {
 	        	discountPercentage = md.getDiscountPercentage();
 	        	
 	        } if (discountPercentage!= 0 ) {
-	        	 System.out.println("total1: "+ total);
 	            total=total- ((int)Math.floor(total * discountPercentage / 100.0));           
 	        }else {
 	        	return total;
@@ -86,6 +92,9 @@ public class OrderService {
 	    }
 	    
 	    public Integer getProductDiscount(Integer  productDiscountId) {
+	    	if (productDiscountId == null) {
+	            return 0; 
+	        }
 	        Integer discountPercentage=0;
 	          
 	        Optional<ProductDiscount> pdOptional = pdRepository.findById(productDiscountId);
@@ -200,11 +209,77 @@ public class OrderService {
 
 	        return insertedOrder;
 	    }
-
-	    public Orders updateOrder(Orders order) {
-
-	        return ordersRepository.save(order);
+	    
+	    public Orders updateOrder(Integer orderId, Date newOrderDate) {
+	        Orders order = ordersRepository.findByOrderId(orderId);
+	            order.setOrderDate(newOrderDate);
+	            List<OrderDetails> orderDetailsList = odservice.getOrderDetailsByOrderId(orderId);
+	            UpdateOrderAmounts(order, orderDetailsList, newOrderDate);
+	            return ordersRepository.save(order);
+	    
 	    }
+
+	    public void UpdateOrderAmounts(Orders order, List<OrderDetails> orderDetailsList, Date orderDate) {
+	       
+	        Integer sumTotal = 0;
+	        Integer total = 0;
+
+	        for (OrderDetails orderDetails : orderDetailsList) {
+	            Product product = orderDetails.getProduct();
+	            Integer productId = product.getProductId();
+	            Integer productPrice = product.getProductPrice();
+	            Integer quantity = orderDetails.getQuantity();
+
+	            // 獲取產品折扣
+	            Integer productDiscountId = pdRepository.findProductDiscountId(productId, orderDate);
+	            Integer productDiscount = getProductDiscount(productDiscountId);
+
+	            // 計算小計
+	            Integer subTotal;
+	            if (productDiscount != null && productDiscount > 0) {
+	                double discountedAmount = productPrice * (100 - productDiscount) / 100.0;
+	                subTotal = (int) Math.round(discountedAmount * quantity);
+	            } else {
+	                subTotal = productPrice * quantity;
+	            }
+
+	            // 更新訂單明細的小計
+	            orderDetails.setSubTotal(subTotal);
+
+	            // 累計訂單總金額
+	            total += subTotal;
+	            sumTotal += productPrice * quantity;
+	        }
+	        
+	        // 獲取訂單折扣
+	        Integer amountDiscountId = atRepository.findAmountDiscountId(total, orderDate);
+	        Integer amountDiscount = getAmountDiscount(total, amountDiscountId);
+
+	        // 更新會員積分
+	        Integer memberId = order.getMembers().getMemberId();
+	        Integer points = getMemberPoints(memberId);
+	        Integer usePoints = order.getPointUse();
+	        Integer finalAmount;
+
+	        if (usePoints == 1 && points != null && points <= amountDiscount) {
+	            Integer pointUse = points;
+	            finalAmount = amountDiscount - pointUse;
+	            order.getMembers().setPoints(points - pointUse + (int) (finalAmount * 0.10));
+	        } else {
+	            order.getMembers().setPoints((int) (amountDiscount * 0.10));
+	            finalAmount = amountDiscount;
+	        }
+	        Integer pointGet = (int) (finalAmount * 0.10);
+	        Integer discountMoney = sumTotal - amountDiscount;
+
+	        // 更新訂單的總金額及折扣資訊
+	        order.setTotal(sumTotal);
+	        order.setDiscountMoney(discountMoney);
+	        order.setFinalAmount(finalAmount);
+	        order.setPointGet(pointGet);
+	    }
+
+
 	}
 
 
