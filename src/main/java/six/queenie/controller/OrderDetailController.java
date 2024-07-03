@@ -22,6 +22,6 @@ public class OrderDetailController {
         List<OrderDetails> orderDetailsList = oddService.getOrderDetailsByOrderId(orderId);
         model.addAttribute("orderDetailsList", orderDetailsList);
 
-        return "end/queenie/ShowDetail";
+        return "back/queenie/ShowDetail";
     }
 }
