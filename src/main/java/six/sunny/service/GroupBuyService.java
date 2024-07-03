@@ -9,39 +9,57 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import six.sunny.model.GroupBuyBean;
+import six.pinhong.model.Product;
+import six.pinhong.model.ProductRepository;
+import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupBuyRepository;
-import six.sunny.model.GroupMemberBean;
+import six.sunny.model.GroupMember;
+import six.sunny.model.StoreNameRepository;
+import six.yiting.model.StoresBean;
 
 @Service
-@Transactional
 public class GroupBuyService{
 	
 	@Autowired
 	private GroupBuyRepository groupBuyRepo;
 	
+	@Autowired
+	private ProductRepository productRepo;
+	
+	@Autowired
+	private StoreNameRepository storeRepo;
+	
 
-	public List<GroupBuyBean> findAll() {
+	public List<GroupBuy> findAll() {
 		return groupBuyRepo.findAll();
 	}
 	
-//	@Override
-//	public GroupBuyBean insert(GroupBuyBean groupBuyBean) {
-//
-////		設定折扣後GroupBuy價格
-//		int targetQuantity = groupBuyBean.getTargetQuantity();
-//		int price = groupBuyBean.getProduct().getProductPrice();
-//		groupBuyBean.setPrice(adjustPrice(price, targetQuantity));
-//
-////		插入GroupBuy
-//		return groupBuyDao.insert(groupBuyBean);
-//	}
-//
-//	@Override
-//	public boolean deleteById(Integer id) {
-//		return groupBuyDao.deleteById(id);
-//	}
-//	
+	public GroupBuy insert(GroupBuy groupBuy) {
+		
+		Product product = productRepo.findById(groupBuy.getProductId()).get();
+		StoresBean store = storeRepo.findById(groupBuy.getStoreId()).get();
+		
+		groupBuy.setProduct(product);
+		groupBuy.setStore(store);
+
+//		設定折扣後GroupBuy價格
+		int targetQuantity = groupBuy.getTargetQuantity();
+		int price = groupBuy.getProduct().getProductPrice();
+		groupBuy.setPrice(adjustPrice(price, targetQuantity));
+
+//		插入GroupBuy
+		return groupBuyRepo.save(groupBuy);
+	}
+
+	public boolean deleteById(Integer id) {
+        if (groupBuyRepo.existsById(id)) {
+    		groupBuyRepo.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+	}
+	
 //	@Override
 //	public GroupBuyBean updateNowQuantityById(Integer id) {
 //		
@@ -103,17 +121,17 @@ public class GroupBuyService{
 //		return groupBuyDao.getByProductStoreId(productId, storeId);
 //	}
 //
-////	調整優惠價格
-//	private int adjustPrice(int price, int targetQuantity) {
-//		if (targetQuantity >= 30) {
-//			price = (int) Math.ceil(price * 0.7);
-//		} else if (targetQuantity >= 20) {
-//			price = (int) Math.ceil(price * 0.8);
-//		} else if (targetQuantity >= 10) {
-//			price = (int) Math.ceil(price * 0.9);
-//		}
-//		return price;
-//	}
+//	調整優惠價格
+	private int adjustPrice(int price, int targetQuantity) {
+		if (targetQuantity >= 30) {
+			price = (int) Math.ceil(price * 0.7);
+		} else if (targetQuantity >= 20) {
+			price = (int) Math.ceil(price * 0.8);
+		} else if (targetQuantity >= 10) {
+			price = (int) Math.ceil(price * 0.9);
+		}
+		return price;
+	}
 //
 //	@Override
 //	public GroupBuyBean findById(Integer id) {

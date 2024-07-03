@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface GroupBuyRepository extends JpaRepository<GroupBuyBean, Integer> {
+public interface GroupBuyRepository extends JpaRepository<GroupBuy, Integer> {
 
 //	List<GroupBuyBean> getByStoreId(int id);
 //

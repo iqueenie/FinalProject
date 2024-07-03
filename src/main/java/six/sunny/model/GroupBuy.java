@@ -22,7 +22,7 @@ import six.yiting.model.StoresBean;
 @Entity
 @Table(name = "groupbuy")
 @Component
-public class GroupBuyBean {
+public class GroupBuy {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class GroupBuyBean {
 	private String groupBuyStatus = "未開團";
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "groupBuy", cascade = CascadeType.ALL)
-	private List<GroupMemberBean> groupMember;
+	private List<GroupMember> groupMember;
 
 	public Integer getGroupBuyId() {
 		return groupBuyId;
@@ -132,11 +132,11 @@ public class GroupBuyBean {
 		this.store = store;
 	}
 
-	public List<GroupMemberBean> getGroupMember() {
+	public List<GroupMember> getGroupMember() {
 		return groupMember;
 	}
 
-	public void setGroupMember(List<GroupMemberBean> groupMember) {
+	public void setGroupMember(List<GroupMember> groupMember) {
 		this.groupMember = groupMember;
 	}
 
