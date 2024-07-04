@@ -23,6 +23,11 @@ public class StoreService {
 		return storesRepo.save(store);
 	}
 	
+	public void deleteStore(Integer id) {
+		storesRepo.deleteById(id);
+	}
+	
+	
 
 }
 
