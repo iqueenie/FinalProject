@@ -55,10 +55,13 @@ public class OrderController {
         model.addAttribute("orders", orderService.findAll()); 
         return "back/queenie/GetAllOrders";
     }
+	
+	
 	@GetMapping("/getStoreProduct")
     public String showInsertOrder(Model model){
         List<StoresBean> storeList = stService.findAllStores();
         List<Product> productList = pService.findAll();
+        
         model.addAttribute("storeList", storeList);
         model.addAttribute("productList", productList);
         
