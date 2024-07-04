@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,17 +80,16 @@
                         <label for="status">狀態</label>
                     </div>
                 </div>
-           <div id="productDetails" class="col-12">
-                    <div class="productEntry mb-3">
-                        <label for="productId">產品編號</label>
-                        <select name="productId[]" class="form-select" required>
-                            <option th:each="product : ${productList}" th:value="${product.productId}" th:text="${product.productName}"></option>
-                        </select>
-                        <label for="quantity">產品數量</label>
-                        <input type="number" class="quantity form-control" min="1" max="999" name="quantity[]" required />
-                        <button type="button" class="btn btn-danger removeProduct">刪除產品</button>
-                    </div>
-                </div>
+	           <div class="productEntry mb-3">
+				    <label for="productId">產品編號</label>
+				    <select name="productId[]" class="form-select product-select" required>
+				        <option th:each="product : ${productList}" th:value="${product.productId}" th:text="${product.productName}"></option>
+				    </select>
+				    <label for="quantity">產品數量</label>
+				    <input type="number" class="quantity form-control" min="1" max="999" name="quantity[]" required />
+				    <button type="button" class="btn btn-danger removeProduct">刪除產品</button>
+				</div>
+
                 <button type="button" id="addProduct" class="btn btn-primary">新增產品</button>
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
                     <button class="btn btn-secondary me-2" type="button" onclick="window.location.href='/FinalProject/GetAllOrders'">返回</button>
@@ -105,75 +104,48 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
    <script th:if="${productList}" th:inline="javascript">
-        var productList = /*[[${productList}]]*/ [];
-        $(document).ready(function () {
-            function updateProductOptions() {
-                const selectedProducts = $('select[name="productId[]"]').map(function() {
-                    return $(this).val();
-                }).get();
-
-                $('select[name="productId[]"]').each(function() {
-                    const currentSelect = $(this);
-                    const currentValue = currentSelect.val();
-                    currentSelect.find('option').each(function() {
-                        if (selectedProducts.includes($(this).val()) && $(this).val() !== currentValue) {
-                            $(this).attr('disabled', true);
-                        } else {
-                            $(this).attr('disabled', false);
-                        }
-                    });
-                });
-            }
-
-            $('#addProduct').click(function () {
-                var productOptions = '';
-                productList.forEach(function(product) {
-                    productOptions += `<option value="${product.productId}">${product.productName}</option>`;
-                });
-
-                var productEntry = `
-                    <div class="productEntry mb-3">
-                        <label for="productId">產品編號:</label>
-                        <select name="productId[]" class="form-select" required>
-                            ${productOptions}
-                        </select>
-                        <label for="quantity">產品數量:</label>
-                        <input type="text" class="quantity form-control" name="quantity[]" required />
-                        <button type="button" class="btn btn-danger removeProduct">刪除產品</button>
-                    </div>`;
-                $('#productDetails').append(productEntry);
-                updateProductOptions();
-            });
-
-            $('#productDetails').on('change', 'select[name="productId[]"]', function () {
-                updateProductOptions();
-            });
-
-            $('#productDetails').on('click', '.removeProduct', function () {
-                $(this).closest('.productEntry').remove();
-                updateProductOptions();
-            });
-
-            $('form').submit(function (event) {
-                event.preventDefault();
-                Swal.fire({
-                    title: "確定要新增嗎？",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonColor: "green",
-                    cancelButtonColor: "gray",
-                    confirmButtonText: "新增",
-                    cancelButtonText: "取消",
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.submit();
-                    }
-                });
-            });
-
-            updateProductOptions();
+    
+   $(document).ready(function() {
+        // 新增產品按鈕功能
+        $('#addProduct').click(function() {
+            var productEntry = $('.productEntry:first').clone();
+            productEntry.find('.product-select').val('');
+            productEntry.find('.quantity').val('');
+            productEntry.appendTo('#productDetails');
         });
+
+        // 刪除產品按鈕功能（使用事件委派）
+        $('#productDetails').on('click', '.removeProduct', function() {
+            $(this).closest('.productEntry').remove();
+        });
+
+        // 產品選擇下拉清單功能
+        $(document).on('change', '.product-select', function() {
+            var selectedProductId = $(this).val();
+            $('.product-select').not(this).find('option').removeAttr('disabled');
+            $('.product-select').not(this).find('option[value="' + selectedProductId + '"]').attr('disabled', 'disabled');
+        });
+
+        // 表單提交確認視窗
+        $('form').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "確定要新增嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                cancelButtonColor: "gray",
+                confirmButtonText: "新增",
+                cancelButtonText: "取消",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+    });
+       
     </script>
 </body>
 </html>

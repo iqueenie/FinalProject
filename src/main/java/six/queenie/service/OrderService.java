@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import six.hsiao.model.MembersBean;
+import six.hsiao.model.MembersRepository;
 import six.liang.model.AmountDiscount;
+import six.liang.model.AmountDiscountRepository;
 import six.liang.model.ProductDiscount;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
-import six.queenie.model.AmountRepository;
-import six.queenie.model.MembersRepository;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
 import six.queenie.model.OrdersRepository;
@@ -32,7 +32,7 @@ public class OrderService {
 	@Autowired
 	private OrdersRepository ordersRepository;
 	@Autowired
-	private AmountRepository atRepository;
+	private AmountDiscountRepository atRepository;
 	@Autowired
 	private ProductDiscountRepository pdRepository;
 	@Autowired
@@ -45,6 +45,7 @@ public class OrderService {
 	private MembersRepository mRepository;
 	@Autowired
 	private StoresService stService;
+	
 	
 	public List<Orders> findAll() {
 		return ordersRepository.findAll();
