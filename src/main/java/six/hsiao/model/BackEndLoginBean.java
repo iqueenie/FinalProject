@@ -1,7 +1,7 @@
 package six.hsiao.model;
 
 
-import org.springframework.stereotype.Component;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "management")
-@Component
+
 public class BackEndLoginBean {
 	
 	@Id
