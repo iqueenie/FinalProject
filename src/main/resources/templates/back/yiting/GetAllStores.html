@@ -62,19 +62,11 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         $('#myTable').DataTable({});
-        var currentLength = $('#myTable').DataTable().page.len();
-        console.log("目前每頁顯示數量: ", currentLength);
-        $('#myTable').on('length.dt', function (e, settings, len) {
-            // len 就是目前選擇的每頁顯示數量
-            console.log("監聽: ", len);
-        });
-        var tableData = $('#myTable').DataTable().data();
-        var totalRecords = tableData.length;
-        console.log("分頁: ", totalRecords);
 
 
 
         function confirmDelete(id) {
+            console.log("id: " + id);
             Swal.fire({
                 title: "確定要刪除嗎？",
                 icon: "warning",
@@ -86,28 +78,45 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios({
-                        method: 'get',
-                        url: `http://localhost:8080/FinalProject/store/delete?id=${id}`
-                    })
+                    axios.delete(`http://localhost:8080/FinalProject/store/delete?id= ${id}`)
                         .then(res => {
-                            console.log(res);
-                            Swal.fire({
-                                title: "刪除成功！",
-                                icon: "success"
-                            }).then(() => {
+                            console.log(res)
+                            if (res.data === "success") {
 
-                                var table = $('#myTable').DataTable();
-                                table.row(`#storeRow_${id}`).remove();
-                                table.ajax.reload(null, true);
+                                axios.get("http://localhost:8080/FinalProject/stores/findAllAjax")
+                                    .then(response => {
+                                        console.log(response.data);
+                                        let data = response.data;
+                                        $("#myTable").DataTable().clear().draw();
+                                        data.forEach(store => {
+                                            $("#myTable").DataTable().row.add([
+                                                store.storeId,
+                                                store.storeName,
+                                                store.cityNum,
+                                                store.city,
+                                                store.area,
+                                                store.street,
+                                                store.tel,
+                                                `<button href="#" class="btn btn-outline-warning btn-sm">更新</button>`,
+                                                `<button onclick="confirmDelete(${store.storeId})" class="btn btn-outline-danger btn-sm">刪除</button>`
+                                            ]).draw();
+                                        });
+                                        Swal.fire({
+                                            title: "刪除成功！",
+                                            icon: "success"
+                                        })
 
-                            });
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                    })
+                            }
                         })
                         .catch(err => {
                             console.error(err);
-                        });
+                        })
                 }
-            });
+            })
         }
 
     </script>

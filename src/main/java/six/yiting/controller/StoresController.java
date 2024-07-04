@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
@@ -20,6 +22,7 @@ public class StoresController {
 	@Autowired
 	private StoreService storeService;
 	
+	
 	@GetMapping("/stores/findAll")
 	public String findAllStores(Model model) {
 		
@@ -29,6 +32,14 @@ public class StoresController {
 		
 		
 		return "back/yiting/GetAllStores";
+	}
+	
+	@GetMapping("/stores/findAllAjax")
+	 @ResponseBody
+	public List<StoresBean> findAllStoresAjax() {
+		
+		return storeService.findAllStores();
+		
 	}
 	
 	@GetMapping("/store/addStorePage")
@@ -47,10 +58,11 @@ public class StoresController {
 	}
 	
 	
-	@GetMapping("/store/delete")
+	@DeleteMapping("/store/delete")
+	@ResponseBody
 	public String deleteStore(@RequestParam Integer id) {
 	    storeService.deleteStore(id);
-	    return "redirect:/stores/findAll";
+	    return "success"; 
 	}
 
 }
