@@ -21,7 +21,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
 
     <div class="container d-flex justify-content-center">
-        <form th:action="@{/InsertGroupBuy}" th:method="post" th:object="${groupBuy}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <form th:action="@{/back/InsertGroupBuy}" th:method="post" th:object="${groupBuy}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
             <div class="row g-2 m-2">
                 <h2 class="col-12 text-center">新增團購</h2>
 
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
-                    <a th:href="@{/GetAllGroupBuy}" class="btn btn-secondary me-2">返回</a>
+                    <a th:href="@{/back/GetAllGroupBuy}" class="btn btn-secondary me-2">返回</a>
                     <button type="submit" class="btn btn-success">新增</button>
                 </div>
             </div>

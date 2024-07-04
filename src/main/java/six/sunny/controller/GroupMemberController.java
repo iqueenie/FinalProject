@@ -34,19 +34,24 @@ public class GroupMemberController {
 	@Autowired
 	private MemberNameRepository membersService;
 	
-	@RequestMapping(path = "/GetGroupMemberByGroupBuy", method = {RequestMethod.GET,RequestMethod.POST, RequestMethod.PUT})
-	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, Model m) {
+	@GetMapping("back/GetGroupMemberByGroupBuy")
+	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, @RequestParam(value = "pus", defaultValue = "null") String pus, Model m) {
 		
 //		透過GroupBuy取得GroupMember
 		List<GroupMember> gms = groupMemberService.findByGroupBuyId(gbId);
 		
+		if (!pus.equals("null")) {
+			int pus2 = Integer.parseInt(pus);
+			String status = groupMemberService.findById(pus2).getPickupStatus();
+			m.addAttribute("pus", status);
+		}
 		m.addAttribute("gbId", gbId);
 		m.addAttribute("gms", gms);
 
 		return "back/sunny/GetGroupMemberByGroupBuy";
 	}
 	
-	@GetMapping("InsertGroupMemberForm")
+	@GetMapping("back/InsertGroupMemberForm")
 	public String insertGroupMemberForm(@RequestParam("id") Integer id, Model m) {
 		
 //		取得下拉式選單所需的列表
@@ -60,16 +65,16 @@ public class GroupMemberController {
 		return "back/sunny/InsertGroupMember";
 	}
 	
-	@PostMapping("InsertGroupMember")
+	@PostMapping("back/InsertGroupMember")
 	public String insertGroupMember(@ModelAttribute GroupMember gm) {
 		
 //		新增
 		groupMemberService.insert(gm);
 
-		return "forward:/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
+		return "redirect:/back/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
 	}
 	
-	@DeleteMapping("DeleteGroupMember")
+	@DeleteMapping("back/DeleteGroupMember")
 	@ResponseBody
 	public ResponseEntity<Void> deleteGroupMember(@RequestParam("id") Integer groupMemberId) {
 		
@@ -83,7 +88,7 @@ public class GroupMemberController {
 	    }
 	}
 	
-	@GetMapping("UpdateGroupMemberForm")
+	@GetMapping("back/UpdateGroupMemberForm")
 	public String updateGroupMemberForm(@RequestParam("gmId") Integer groupMemberId, Model m) {
 
 //		取得表單使用內容
@@ -96,8 +101,8 @@ public class GroupMemberController {
 
 	}
 	
-	@PutMapping("UpdateGroupMember")
-	public String updateGroupMember(@ModelAttribute GroupMember gm,Model m) {
+	@PutMapping("back/UpdateGroupMember")
+	public String updateGroupMember(@ModelAttribute GroupMember gm) {
 		
 		
 		String pickupStatus = gm.getPickupStatus();
@@ -105,10 +110,11 @@ public class GroupMemberController {
 		GroupMember newGroupMember = groupMemberService.update(gm);
 		
 //		如果狀態調整後有不同則設一個變數
+		Integer pus = null;
 		if(!pickupStatus.equals(newGroupMember.getPickupStatus())) {
-			m.addAttribute("pus", newGroupMember.getPickupStatus());
+			pus = newGroupMember.getGroupMemberId();
 		}
 
-		return "forward:/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
+		return "redirect:/back/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId()+"&pus="+pus;
 	}
 }

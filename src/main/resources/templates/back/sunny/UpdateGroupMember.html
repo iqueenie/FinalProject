@@ -21,7 +21,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
 
     <div class="container d-flex justify-content-center">
-        <form th:action="@{/UpdateGroupMember}" th:method="PUT" th:object="${groupMember}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <form th:action="@{/back/UpdateGroupMember}" th:method="PUT" th:object="${groupMember}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
             <div class="row g-2 m-2">
                 <h2 class="col-12 text-center">更新團購會員</h2>
 
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
-                    <a th:href="@{/GetGroupMemberByGroupBuy(gbId=${groupMember.groupBuyId})}" class="btn btn-secondary me-2">返回</a>
+                    <a th:href="@{/back/GetGroupMemberByGroupBuy(gbId=${groupMember.groupBuyId})}" class="btn btn-secondary me-2">返回</a>
                     <button type="submit" class="btn btn-success">更新</button>
                 </div>
             </div>
@@ -88,8 +88,21 @@
             });
         });
 
-        let today = new Date().toISOString().split('T')[0];
-        $('#orderDate').attr('min', today);
+		function updateQuantity() {
+			if ($('#pickupStatus').val() === '已刪除') {
+				$('#quantity').val(0).attr('min', 0).prop('readonly', true);
+			} else {
+				$('#quantity').prop('readonly', false);
+				if ($('#quantity').val() == 0) {
+					$('#quantity').val([[${groupMember.quantity}]]);
+				}
+				$('#quantity').attr('min', 1);
+			}
+		}
+
+		$('#pickupStatus').change(updateQuantity);
+
+		updateQuantity();
     </script>
 </body>
 
