@@ -31,9 +31,10 @@
                             <div class="col-md-3">
                                 <!-- 左侧的 twzipcode_ADV -->
                                 <div id="twzipcode_ADV" class="twzipcode">
-                                
-                                 	
+
+
                                 </div>
+                                <div id="cityEmpty" style="color:red"></div>
                             </div>
                             <div class="col-md-9">
                                 <!-- 右侧的 form-floating -->
@@ -51,10 +52,11 @@
                 <div class="col-12">
                     <div class="form-floating">
                         <textarea class="form-control" th:field="*{tel}" id="tel" placeholder="tel" required></textarea>
-                        <label for="tel">電話</label>
+                        <label for="tel">電話(02-1234567/0912345678)</label>
+
                     </div>
                 </div>
-
+                <div id="telEmpty" style="color:red"></div>
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
                     <button class="btn btn-secondary me-2">返回</button>
                     <button type="submit" class="btn btn-success">新增</button>
@@ -70,23 +72,31 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
-    $('form').submit(function (event) {
-        event.preventDefault();
-         var form = event.currentTarget;
+        $('form').submit(function (event) {
+            event.preventDefault();
+            var form = event.currentTarget;
 
-       // 获取用户选择的县市、鄉鎮和邮政编码
-        $("#twzipcode_ADV").twzipcode("get", function (county, district, zipcode) {
-            // 检查县市是否为空
-            if (!county) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '請選擇縣市!',
-                    confirmButtonColor: "green",
-                    cancelButtonColor: "gray",
-                    confirmButtonText: "確認"
-                });
+            var tel = $("#tel").val().trim();
+
+            // 检查电话号码长度是否为10位
+            if (tel.length !== 10) {
+                const telIsEmpty = document.getElementById('telEmpty')
+                telIsEmpty.innerHTML = "電話格式錯誤!!";;
                 return; // 停止表单提交
             }
+            const telIsEmpty = document.getElementById('telEmpty');
+            telIsEmpty.innerHTML = '';
+
+
+            // 获取用户选择的县市、鄉鎮和邮政编码
+            var selectedCounty = $("#twzipcode_ADV .city").val().trim(); // 或者根据实际情况调整选择器
+            if (!selectedCounty) {
+                // 如果未選擇縣市，顯示提示信息
+                const cityIsEmpty = document.getElementById('cityEmpty')
+                cityIsEmpty.innerHTML = "請選擇縣市!!";
+                return; // 停止表單提交
+            }
+
 
             // 如果县市不为空，继续执行提交逻辑
             Swal.fire({
@@ -104,18 +114,19 @@
                 }
             });
         });
-    });
+        const cityIsEmpty = document.getElementById('cityEmpty');
+        cityIsEmpty.innerHTML = '';
 
-    $(document).ready(function () {
-        $("#twzipcode_ADV").twzipcode({
-            zipcodeIntoDistrict: true,
-            css: ["city form-control", "town form-control"],
-            countyName: "city", // 对应到 JavaBean 的 city
-            districtName: "area", // 对应到 JavaBean 的 area
-            zipcodeName: "cityNum", // 对应到 JavaBean 的 areaNum
+        $(document).ready(function () {
+            $("#twzipcode_ADV").twzipcode({
+                zipcodeIntoDistrict: true,
+                css: ["city form-control", "town form-control"],
+                countyName: "city", // 对应到 JavaBean 的 city
+                districtName: "area", // 对应到 JavaBean 的 area
+                zipcodeName: "cityNum", // 对应到 JavaBean 的 areaNum
+            });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>

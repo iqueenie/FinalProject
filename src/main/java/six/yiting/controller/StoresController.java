@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
@@ -43,6 +44,13 @@ public class StoresController {
 		model.addAttribute("store",store);
 		return "redirect:/stores/findAll";
 		
+	}
+	
+	
+	@GetMapping("/store/delete")
+	public String deleteStore(@RequestParam Integer id) {
+	    storeService.deleteStore(id);
+	    return "redirect:/stores/findAll";
 	}
 
 }
