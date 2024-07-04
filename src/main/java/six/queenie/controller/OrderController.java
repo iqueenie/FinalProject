@@ -52,7 +52,7 @@ public class OrderController {
 	@PostMapping("/deleteOrder")
     public String deleteOrder(@RequestParam("orderId") Integer orderId, Model model) {
         orderService.updateOrderStatusAndPoints(orderId, "Canceled");
-        model.addAttribute("orders", orderService.findAll());  // 更新模型以包含所有订单
+        model.addAttribute("orders", orderService.findAll()); 
         return "back/queenie/GetAllOrders";
     }
 	@GetMapping("/getStoreProduct")
