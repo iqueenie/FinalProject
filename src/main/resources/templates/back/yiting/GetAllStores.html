@@ -129,14 +129,17 @@
 
 
 
-                    // 檢查是否需要跳轉頁面
-                    if (data.length % pageLength === 0 && currentPage > 0) {
-                        table.page(currentPage - 1).draw(false); // 跳轉到前一頁
-                    }
-                    else {
-                        table.draw(false); // 重新繪製表格，保持在當前頁面和分頁長度
-                    }
+                    table.draw(false); // 重新繪製表格
 
+                    // 檢查是否需要恢復到之前的頁碼
+                    if (currentPage > 0 && data.length % pageLength === 0 && (data.length / pageLength) - 1 !== currentPage) {
+                        setTimeout(function () {
+                            table.page(currentPage - 1).draw(false); // 顯示上一頁
+                        }, 500);
+                    } else {
+                        // 當前頁碼沒有改變
+                        table.page(currentPage).draw(false);
+                    }
                 })
                 .catch(err => {
                     console.error(err);
