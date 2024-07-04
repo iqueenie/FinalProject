@@ -1,29 +1,24 @@
 package six.hsiao.model;
 
 
-import java.io.Serializable;
-
-import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "management")
-@Component
-public class BackEndLoginBean implements Serializable{
+
+public class BackEndLoginBean {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)//這裡有改
 	private int managementId;
-	
-
+	 
 	private String managementAccount;
-	
-	private String managementPassword;
+	 
+		private String managementPassword;
 	
 	
 	public int getManagementId() {

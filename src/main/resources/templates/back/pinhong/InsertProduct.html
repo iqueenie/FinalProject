@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>圖片上傳</title>
+</head>
+<body>
+
+<div>
+<h1>新增商品</h1>
+
+<form th:action="@{/ProductInsert}" method="post" enctype="multipart/form-data">
+
+				<label for="productName"> 商品名稱 :</label> 
+				<input type="text" id="productName" name="productName" required>
+				<br>
+				<label for="productType">商品類型 :</label> 
+				<select id="productType" name="productType">
+				<option value="飲品" selected>飲品</option>
+				<option value="零食">零食</option>
+				<option value="泡麵">泡麵</option>
+				<option value="熟食">熟食</option>
+				<option value="生活用品">生活用品</option>
+				<option value="菸酒">菸酒</option>
+				<option value="護理用品">護理用品</option>
+				</select>
+				<br>
+				<label for="productCost">成本 :</label> 
+				<input type="text"id="productCost" name="productCost" required>
+				<br> 
+				<label for="productPrice">售價 :</label> 
+				<input type="text" id="productPrice" name="productPrice" required>
+				<br> 
+				<label for="productExpirydate">效期 :</label> 
+				<input type="text" id="productExpirydate" name="productExpirydate" required>
+				<br>
+				<label for="productDescription">商品敘述 :</label> 
+				<input type="text" id="productDescription" name="productDescription" required>
+				<br>
+				<label for="productPublished">是否上架：</label> <select id="productPublished" name="productPublished">
+				<option value="1">是</option>
+				<option value="0">否</option>
+				</select>
+				<br>
+				<label for="imageFile">上傳圖片：</label> 
+				<input type="file" name="imageFile" onchange="previewImage(event)" required><br>
+            	<img id="preview" src="#" alt="Preview" style="display: none;"><br>
+            	<button type="submit" value="確定">submit</button>	
+		</form>
+		
+</div>
+</body>
+</html>

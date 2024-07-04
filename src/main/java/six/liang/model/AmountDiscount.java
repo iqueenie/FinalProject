@@ -15,18 +15,17 @@ import jakarta.persistence.Table;
 public class AmountDiscount {
 
 @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private int discountId; 
+	 private Integer discountId; 
 	 private String discountName;
-	 private int minPurchaseAmount;
-	 private int discountPercentage;
+	 private Integer minPurchaseAmount;
+	 private Integer discountPercentage;
 	 private Date startDate;
 	 private Date endDate;
-	 private int isActive;
-	 
-	public int getDiscountId() {
+	 private Integer isActive;
+	public Integer getDiscountId() {
 		return discountId;
 	}
-	public void setDiscountId(int discountId) {
+	public void setDiscountId(Integer discountId) {
 		this.discountId = discountId;
 	}
 	public String getDiscountName() {
@@ -35,16 +34,16 @@ public class AmountDiscount {
 	public void setDiscountName(String discountName) {
 		this.discountName = discountName;
 	}
-	public int getMinPurchaseAmount() {
+	public Integer getMinPurchaseAmount() {
 		return minPurchaseAmount;
 	}
-	public void setMinPurchaseAmount(int minPurchaseAmount) {
+	public void setMinPurchaseAmount(Integer minPurchaseAmount) {
 		this.minPurchaseAmount = minPurchaseAmount;
 	}
-	public int getDiscountPercentage() {
+	public Integer getDiscountPercentage() {
 		return discountPercentage;
 	}
-	public void setDiscountPercentage(int discountPercentage) {
+	public void setDiscountPercentage(Integer discountPercentage) {
 		this.discountPercentage = discountPercentage;
 	}
 	public Date getStartDate() {
@@ -59,13 +58,12 @@ public class AmountDiscount {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-	public int getIsActive() {
+	public Integer getIsActive() {
 		return isActive;
 	}
-	public void setIsActive(int isActive) {
+	public void setIsActive(Integer isActive) {
 		this.isActive = isActive;
 	}
-	
-	
-	
+	 
+	 
 }

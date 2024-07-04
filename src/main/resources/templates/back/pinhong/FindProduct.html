@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>編輯頁面</title>
+</head>
+<body>
+    <h1>編輯頁面</h1>
+    
+    <form th:action="@{/Productupdate2}" method="post" th:object="${product}" enctype="multipart/form-data">		     
+        <input th:field="*{productId}" type="hidden" />
+        <input name="_method" value="PUT" type="hidden" />
+        <table>
+            <tr>
+                <td>商品名稱</td>
+                <td><input th:field="*{productName}" /></td>
+            </tr>
+            <tr>
+                <td>商品類型</td>
+                <td>
+                    <select th:field="*{productType}">
+                        <option value="飲品" th:selected="${product.productType == '飲品'}">飲品</option>
+                        <option value="零食" th:selected="${product.productType == '零食'}">零食</option>
+                        <option value="泡麵" th:selected="${product.productType == '泡麵'}">泡麵</option>
+                        <option value="熟食" th:selected="${product.productType == '熟食'}">熟食</option>
+                        <option value="生活用品" th:selected="${product.productType == '生活用品'}">生活用品</option>
+                        <option value="菸酒" th:selected="${product.productType == '菸酒'}">菸酒</option>
+                        <option value="護理用品" th:selected="${product.productType == '護理用品'}">護理用品</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>成本</td>
+                <td><input th:field="*{productCost}" /></td>
+            </tr>
+            <tr>
+                <td>售價</td>
+                <td><input th:field="*{productPrice}" /></td>
+            </tr>
+            <tr>
+                <td>效期</td>
+                <td><input th:field="*{productExpirydate}" /></td>
+            </tr>
+            <tr>
+                <td>描述</td>
+                <td><input th:field="*{productDescription}" /></td>
+            </tr>
+            <tr>
+                <td>上架</td>
+                <td>
+                    <select th:field="*{productPublished}">
+                        <option value="1" th:selected="${product.productPublished == '1'}">是</option>
+                        <option value="0" th:selected="${product.productPublished == '0'}">否</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="imageInput">選擇圖片:</label></td>
+                <td>
+                    <input type="file" id="imageInput" name="imageFile" accept="image/*" style="display: none;" onchange="previewImage(event)" />
+                    <img id="preview" th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Image" style="width: 300px; height: auto; cursor: pointer;" onclick="document.getElementById('imageInput').click()" />
+                </td>
+            </tr>
+        </table>		     
+        <input type="submit" class="btn btn-outline-primary" value="送出" />
+    </form>
+
+    <!-- JavaScript for image selection -->
+    <script>
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById('preview');
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        document.getElementById("myform").onsubmit = function(event) {
+            // 阻止默认的提交行为
+            event.preventDefault();
+
+            // 延迟3秒后执行
+            setTimeout(function() {
+                alert("上傳成功！");
+                // 提交表单
+                document.getElementById("myform").submit();
+            }, 500);
+        };
+    </script>
+</body>
+</html>
