@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
@@ -21,14 +19,18 @@ import six.yiting.model.StoresBean;
 @Service
 public class GroupBuyService{
 	
+//	TODO
 	@Autowired
 	private GroupBuyRepository groupBuyRepo;
 	
 	@Autowired
-	private ProductRepository productRepo;
+	private ProductRepository productService;
 	
 	@Autowired
-	private StoreNameRepository storeRepo;
+	private StoreNameRepository storeService;
+	
+	@Autowired
+	private GroupMemberService groupMemberService;
 	
 
 	public List<GroupBuy> findAll() {
@@ -37,8 +39,8 @@ public class GroupBuyService{
 	
 	public GroupBuy insert(GroupBuy groupBuy) {
 		
-		Product product = productRepo.findById(groupBuy.getProductId()).get();
-		StoresBean store = storeRepo.findById(groupBuy.getStoreId()).get();
+		Product product = productService.findById(groupBuy.getProductId()).get();
+		StoresBean store = storeService.findById(groupBuy.getStoreId()).get();
 		
 		groupBuy.setProduct(product);
 		groupBuy.setStore(store);
@@ -77,50 +79,53 @@ public class GroupBuyService{
 		return update;
 	}
 
-//	@Override
-//	public GroupBuyBean update(GroupBuyBean groupBuyBean) {
-//		
-////		設定GroupBuy到達時間
-//		Date arrivalDate = groupBuyBean.getArrivalDate();
-//		if (arrivalDate != null) {
-//			LocalDate localDate = arrivalDate.toLocalDate().plusDays(3);
-//			groupBuyBean.setEndDate(Date.valueOf(localDate));
-//		}
-//		
-////		設定GroupBuy價格
-//		int targetQuantity = groupBuyBean.getTargetQuantity();
-//		int price = groupBuyBean.getProduct().getProductPrice();
-//		groupBuyBean.setPrice(adjustPrice(price, targetQuantity));
-//		
-////		更新GroupBuy
-//		groupBuyBean = groupBuyDao.update(groupBuyBean);
-//		
-////		更新GroupMember
-//		List<GroupMemberBean> gms = groupMemberService.findGroupMemberByGroupBuyId(groupBuyBean.getGroupBuyId());
-//		for (GroupMemberBean gm : gms) {
-//			groupMemberService.update(gm);
-//		}
-//
-//		return groupBuyBean;
-//	}
-//
-//
-//
-//	@Override
-//	public List<GroupBuyBean> getByStoreId(int id) {
-//		return groupBuyDao.getByStoreId(id);
-//	}
-//
-//	@Override
-//	public List<GroupBuyBean> getByProductId(int id) {
-//		return groupBuyDao.getByProductId(id);
-//	}
-//
-//	@Override
-//	public List<GroupBuyBean> getByProductStoreId(int productId, int storeId) {
-//		return groupBuyDao.getByProductStoreId(productId, storeId);
-//	}
-//
+	public GroupBuy update(GroupBuy groupBuy) {
+		
+		GroupBuy groupBuy2 = groupBuyRepo.findById(groupBuy.getGroupBuyId()).get();
+		
+		groupBuy2.setProduct(productService.findById(groupBuy.getProductId()).get());
+		groupBuy2.setStore(storeService.findById(groupBuy.getStoreId()).get());
+		groupBuy2.setOrderDate(groupBuy.getOrderDate());
+		groupBuy2.setArrivalDate(groupBuy.getArrivalDate());
+		groupBuy2.setTargetQuantity(groupBuy.getTargetQuantity());
+		groupBuy2.setGroupBuyStatus(groupBuy.getGroupBuyStatus());
+		
+//		設定GroupBuy到達時間
+		Date arrivalDate = groupBuy.getArrivalDate();
+		if (arrivalDate != null) {
+			LocalDate localDate = arrivalDate.toLocalDate().plusDays(3);
+			groupBuy2.setEndDate(Date.valueOf(localDate));
+		}
+		
+//		設定GroupBuy價格
+		int targetQuantity = groupBuy.getTargetQuantity();
+		int price = groupBuy2.getProduct().getProductPrice();
+		groupBuy2.setPrice(adjustPrice(price, targetQuantity));
+		
+//		更新GroupBuy
+		GroupBuy update = groupBuyRepo.save(groupBuy2);
+		
+//		更新GroupMember
+		List<GroupMember> gms = groupMemberService.findByGroupBuyId(groupBuy.getGroupBuyId());
+		for (GroupMember gm : gms) {
+			groupMemberService.update(gm);
+		}
+
+		return update;
+	}
+
+	public List<GroupBuy> findByStoreId(int id) {
+		return groupBuyRepo.findByStoreId(id);
+	}
+
+	public List<GroupBuy> findByProductId(int id) {
+		return groupBuyRepo.findByProductId(id);
+	}
+
+	public List<GroupBuy> findByProductIdAndStoreId(int productId, int storeId) {
+		return groupBuyRepo.findByProductIdAndStoreId(productId, storeId);
+	}
+
 //	調整優惠價格
 	private int adjustPrice(int price, int targetQuantity) {
 		if (targetQuantity >= 30) {

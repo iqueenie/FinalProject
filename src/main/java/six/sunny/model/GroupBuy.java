@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +51,7 @@ public class GroupBuy {
 	private Date endDate = null;
 	private String groupBuyStatus = "未開團";
 
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "groupBuy", cascade = CascadeType.ALL)
 	private List<GroupMember> groupMember;
 

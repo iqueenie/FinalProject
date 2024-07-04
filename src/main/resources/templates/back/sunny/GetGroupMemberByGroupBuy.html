@@ -105,8 +105,15 @@
                 console.error('Error deleting group buy:', error);
             }
         };
-
     </script>
+    <script th:if="${pus!=null}">
+        Swal.fire({
+            title: "狀態更新輸入邏輯錯誤，已自動更新為[[${ pus }]]",
+            icon: "error"
+        });
+    </script>
+
+</html>
 </body>
 
 </html>

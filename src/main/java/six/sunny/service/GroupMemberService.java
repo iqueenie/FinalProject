@@ -8,9 +8,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
 import six.sunny.model.GroupMemberRepository;
+import six.sunny.model.MemberNameRepository;
 
 @Service
 public class GroupMemberService{
@@ -21,26 +23,33 @@ public class GroupMemberService{
 	@Autowired
 	@Lazy
 	private GroupBuyService groupBuyService;
+	
+	@Autowired
+	private MemberNameRepository membersService;
 
 	
 	public List<GroupMember> findAll() {
 		return groupMemberRepo.findAll();
 	}
 
-	public GroupMember save(GroupMember groupMemberBean) {
+	public GroupMember insert(GroupMember groupMember) {
+		
+		groupMember.setMember(membersService.findById(groupMember.getMemberId()).get());
+		groupMember.setGroupBuy(groupBuyService.findById(groupMember.getGroupBuyId()));
+		groupMember.setPickupStatus("已訂購");
 		
 //		更新GroupMember Total
-		GroupBuy groupBuyBean = groupBuyService.findById(groupMemberBean.getGroupBuyId());	
-		groupMemberBean.setTotal(groupBuyBean.getPrice() * groupMemberBean.getQuantity());
+		GroupBuy groupBuyBean = groupBuyService.findById(groupMember.getGroupBuyId());	
+		groupMember.setTotal(groupBuyBean.getPrice() * groupMember.getQuantity());
 
 //		調整GroupMember Status
-		String pickupStatus = groupMemberBean.getPickupStatus();
-		int quantity = groupMemberBean.getQuantity();
+		String pickupStatus = groupMember.getPickupStatus();
+		int quantity = groupMember.getQuantity();
 		String groupBuyStatus = groupBuyBean.getGroupBuyStatus();
-		groupMemberBean.setPickupStatus(adjustByGb(groupBuyStatus, pickupStatus, quantity));
+		groupMember.setPickupStatus(adjustByGb(groupBuyStatus, pickupStatus, quantity));
 		
 //		更新
-		GroupMember insert = groupMemberRepo.save(groupMemberBean);
+		GroupMember insert = groupMemberRepo.save(groupMember);
 		
 //		調整GroupBuy數量
 		groupBuyService.updateNowQuantityById(insert.getGroupBuyId());
@@ -74,6 +83,33 @@ public class GroupMemberService{
 
 	public List<GroupMember> findByGroupBuyId(Integer id) {
 		return groupMemberRepo.findByGroupBuyId(id);
+	}
+	
+	public GroupMember update(GroupMember groupMember) {
+		
+		GroupMember groupMember2 = groupMemberRepo.findById(groupMember.getGroupMemberId()).get();
+		
+		groupMember2.setMember(membersService.findById(groupMember.getMemberId()).get());
+		groupMember2.setGroupBuy(groupBuyService.findById(groupMember.getGroupBuyId()));
+		groupMember2.setQuantity(groupMember.getQuantity());
+		
+//		更新GroupMember Total
+		GroupBuy groupBuyBean = groupBuyService.findById(groupMember.getGroupBuyId());	
+		groupMember2.setTotal(groupBuyBean.getPrice() * groupMember.getQuantity());
+
+//		調整GroupMember Status
+		String pickupStatus = groupMember.getPickupStatus();
+		int quantity = groupMember.getQuantity();
+		String groupBuyStatus = groupBuyBean.getGroupBuyStatus();
+		groupMember2.setPickupStatus(adjustByGb(groupBuyStatus, pickupStatus, quantity));
+		
+//		更新
+		GroupMember update = groupMemberRepo.save(groupMember2);
+		
+//		調整GroupBuy數量
+		groupBuyService.updateNowQuantityById(update.getGroupBuyId());
+		
+		return update;
 	}
 	
 //	處理GroupBuy與GroupMember間的商業邏輯

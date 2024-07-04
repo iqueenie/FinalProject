@@ -63,13 +63,8 @@ public class GroupMemberController {
 	@PostMapping("InsertGroupMember")
 	public String insertGroupMember(@ModelAttribute GroupMember gm) {
 		
-		
-		gm.setGroupBuy(groupBuyService.findById(gm.getGroupBuyId()));
-		gm.setMember(membersService.findById(gm.getMemberId()).get());
-		gm.setPickupStatus("已訂購");
-		
 //		新增
-		groupMemberService.save(gm);
+		groupMemberService.insert(gm);
 
 		return "forward:/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
 	}
@@ -106,10 +101,8 @@ public class GroupMemberController {
 		
 		
 		String pickupStatus = gm.getPickupStatus();
-		gm.setMember(membersService.findById(gm.getMemberId()).get());
-		gm.setGroupBuy(groupBuyService.findById(gm.getGroupBuyId()));
 		
-		GroupMember newGroupMember = groupMemberService.save(gm);
+		GroupMember newGroupMember = groupMemberService.update(gm);
 		
 //		如果狀態調整後有不同則設一個變數
 		if(!pickupStatus.equals(newGroupMember.getPickupStatus())) {
