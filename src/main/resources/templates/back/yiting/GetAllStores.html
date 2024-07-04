@@ -41,7 +41,8 @@
                         <td th:text="${store.area}"></td>
                         <td th:text="${store.street}"></td>
                         <td th:text="${store.tel}"></td>
-                        <td><button href="#" class="btn btn-outline-warning btn-sm">更新</button></td>
+
+                        <td><a class="btn btn-outline-warning btn-sm" href="#">編輯</a></td>
                         <td>
                             <button id="myBtn" th:onclick="'confirmDelete(\'' + ${store.storeId} + '\')'"
                                 class="btn btn-outline-danger btn-sm">刪除</button>
@@ -66,7 +67,6 @@
 
 
         function confirmDelete(id) {
-            console.log("id: " + id);
             Swal.fire({
                 title: "確定要刪除嗎？",
                 icon: "warning",
@@ -78,46 +78,71 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`http://localhost:8080/FinalProject/store/delete?id= ${id}`)
-                        .then(res => {
-                            console.log(res)
-                            if (res.data === "success") {
-
-                                axios.get("http://localhost:8080/FinalProject/stores/findAllAjax")
-                                    .then(response => {
-                                        console.log(response.data);
-                                        let data = response.data;
-                                        $("#myTable").DataTable().clear().draw();
-                                        data.forEach(store => {
-                                            $("#myTable").DataTable().row.add([
-                                                store.storeId,
-                                                store.storeName,
-                                                store.cityNum,
-                                                store.city,
-                                                store.area,
-                                                store.street,
-                                                store.tel,
-                                                `<button href="#" class="btn btn-outline-warning btn-sm">更新</button>`,
-                                                `<button onclick="confirmDelete(${store.storeId})" class="btn btn-outline-danger btn-sm">刪除</button>`
-                                            ]).draw();
-                                        });
-                                        Swal.fire({
-                                            title: "刪除成功！",
-                                            icon: "success"
-                                        })
-
-                                    })
-                                    .catch(err => {
-                                        console.error(err);
-                                    })
-                            }
-                        })
-                        .catch(err => {
-                            console.error(err);
-                        })
+                    deleteStore(id);
                 }
-            })
+            });
         }
+
+        // 刪除店鋪
+        function deleteStore(id) {
+            axios.delete(`http://localhost:8080/FinalProject/store/delete?id=${id}`)
+                .then(res => {
+                    console.log(res);
+                    if (res.data === "success") {
+                        // 刪除成功後重新加載數據
+                        reloadTableData();
+                        Swal.fire({
+                            title: "刪除成功！",
+                            icon: "success"
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+
+        // 重新加載表格數據
+        function reloadTableData() {
+            var table = $('#myTable').DataTable();
+            var currentPage = table.page(); // 當前頁碼
+            var pageLength = table.page.len(); // 每頁顯示的筆數
+
+            axios.get("http://localhost:8080/FinalProject/stores/findAllAjax")
+                .then(response => {
+                    console.log(response.data);
+                    var data = response.data;
+                    table.clear(); // 清空表格
+                    data.forEach(store => {
+                        table.row.add([
+                            store.storeId,
+                            store.storeName,
+                            store.cityNum,
+                            store.city,
+                            store.area,
+                            store.street,
+                            store.tel,
+                            `<a href="#" class="btn btn-outline-warning btn-sm">更新</a>`,
+                            `<button onclick="confirmDelete(${store.storeId})" class="btn btn-outline-danger btn-sm">刪除</button>`
+                        ]);
+                    });
+
+
+
+                    // 檢查是否需要跳轉頁面
+                    if (data.length % pageLength === 0 && currentPage > 0) {
+                        table.page(currentPage - 1).draw(false); // 跳轉到前一頁
+                    }
+                    else {
+                        table.draw(false); // 重新繪製表格，保持在當前頁面和分頁長度
+                    }
+
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+
 
     </script>
 </body>
