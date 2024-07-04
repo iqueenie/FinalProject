@@ -37,18 +37,18 @@ public class ProductController {
 
 		return "back/pinhong/GetAllProduct";
 	}
-
-		// 新增進點 @GetMaping("/Productinsertmain")
-
-	p		m.add
-
+	
+	// 新增進入點
+	@GetMapping("/Productinsertmain")
+	public String productInsertMain(Model m) {
+		m.addAttribute("product", new Product());
 		return "back/pinhong/InsertProduct";
 	}
 	
 	// 新增 (傳統方法)
 	@PostMapping("/ProductInsert")
-	p
-
+	public String productInsert(
+			@RequestParam String productName,
 			@RequestParam String productType,
 			@RequestParam Integer productCost,
 			@RequestParam Integer productPrice,
@@ -60,41 +60,43 @@ public class ProductController {
 			) throws IOException{
 		
 		Product product = new Product(productName,productType,productCost,productPrice,productExpirydate,productDescription,productPublished);
-		ProductI 
-
-		productImage.setProduct(product);    
-				 
+		ProductImage productImage = new ProductImage(imageFile.getBytes());
 		
-
+		product.setProductImage(productImage);
+		productImage.setProduct(product);
 		
-		return "redirect:/GetAllProudcts"
+		productService.insertProduct(product);
 
-		
+		return "redirect:/GetAllProudcts";
+	}
 	
 	
-	/
-
+	
+	// 刪除
+	@GetMapping("/Productdelete")
+	public String productDelete(@RequestParam("productId") Integer productId) {
+		productService.deleteById(productId);
 		return "redirect:/GetAllProudcts";
 	}
 	
 	//顯示圖片
 	@GetMapping("/ProductPhoto")
-	p
-
-		P roductImage productImage = productService.findImageById(productId);
+	public ResponseEntity<byte[]> downloadPhotos(@RequestParam Integer productId) {
+		
+		ProductImage productImage = productService.findImageById(productId);
 		
 		byte[] imageUrl = productImage.getImageUrl();
-
+		HttpHeaders headers = new HttpHeaders();
 		
-
+		headers.setContentType(MediaType.IMAGE_JPEG);
 		
-		return new ResponseEntity<byte[]>(imageU
-
-		
-
-		GetMapping("/ProductUpdate")
-	p
-
+		return new ResponseEntity<byte[]>(imageUrl, headers, HttpStatus.OK);	
+	}
+	
+	// 查詢
+	@GetMapping("/ProductUpdate")
+	public String productUpdateMain(@RequestParam("productId") Integer productId, Model m) {
+		Product product = productService.findProductById(productId);
 		ProductImage productImage = productService.findImageById(productId);
 		m.addAttribute("product", product);
 		m.addAttribute("productImage", productImage);
@@ -127,6 +129,5 @@ public class ProductController {
 	}
 
 }
-
 
 	

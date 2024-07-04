@@ -17,7 +17,7 @@ import six.liang.model.ProductDiscount;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.queenie.model.AmountRepository;
-import six.queenie.model.MembersRepository;
+
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
 import six.queenie.model.OrdersRepository;
@@ -42,7 +42,7 @@ public class OrderService {
 	private OrderDetailService odservice;
 	
 	@Autowired
-	private MembersRepository mRepository;
+	private six.hsiao.model.MembersRepository mRepository;
 	@Autowired
 	private StoresService stService;
 	

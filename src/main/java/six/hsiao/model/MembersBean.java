@@ -1,7 +1,8 @@
 package six.hsiao.model;
 
-import java.io.Serializable;
+
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,17 +11,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "members")
-public lass MembersBean {
+public class MembersBean {
 	
 	@Id 
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer memberId;
 	
+	@Lob
 	@Column(nullable = true)//這裡有改
 	private byte[] memberPhoto;
 	
@@ -54,15 +57,45 @@ public lass MembersBean {
 
 
 
+
+
+
+
+	
+
+
+
+
+
 	public Integer getMemberId() {
 		return memberId;
 	}
 
 
 
+
+
+
+
+
+
+
+
+
+
 	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
 	}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -185,7 +218,7 @@ public lass MembersBean {
 
 	@PrePersist
 	public void prePersist() {
-	      this.registrationDate = LocalDate.now(); // 在持久化之前自动设置当前日期
+	      this.registrationDate = LocalDate.now(); 
 	 }
 
 	 

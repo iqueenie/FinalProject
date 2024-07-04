@@ -61,7 +61,7 @@
             font-size: 14px;
         }
         
-        .login-container .message {
+        .login-container .BackLogin {
             color: #ff0000;
             margin-top: 10px;
         }
@@ -72,19 +72,19 @@
         <h2>後臺登入</h2>
         
       
-        <c:if test="${not empty message}">
-            <div class="message">
-                ${message}
+        <c:if test="${not empty BackLogin}">
+            <div class="BackLogin">
+                ${BackLogin}
             </div>
         </c:if>
         
      
-        <form action="${pageContext.request.contextPath}/BackEndLogin.controller" method="post">
+        <form action="${pageContext.request.contextPath}/BackLoginMain" method="post">
             <label for="account">帳號：</label>
-            <input type="text" id="account" name="account" required><br><br>
+            <input type="text" id="managementAccount" name="managementAccount" required><br><br>
             
             <label for="password">密碼：</label>
-            <input type="password" id="password" name="password" required><br><br>
+            <input type="password" id="managementPassword" name="managementPassword" required><br><br>
             
             <input type="submit" value="登入">
         </form>

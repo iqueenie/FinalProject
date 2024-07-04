@@ -2,6 +2,7 @@ package six.hsiao.model;
 
 
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;import jakarta.persistence.Id;
@@ -13,20 +14,26 @@ import jakarta.persistence.Table;
 public class BackEndLoginBean {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)//這裡有改
-	private int managementId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer managementId;
 	 
 	private String managementAccount;
 	 
-		private String managementPassword;
+	private String managementPassword;
 	
 	
-	public int getManagementId() {
+	
+
+
+		
+
+
+	public Integer getManagementId() {
 		return managementId;
 	}
 
 
-	public void setManagementId(int managementId) {
+	public void setManagementId(Integer managementId) {
 		this.managementId = managementId;
 	}
 
@@ -51,15 +58,19 @@ public class BackEndLoginBean {
 	}
 
 
-	public BackEndLoginBean(String managementAccount, String managementPassword) {
-		
-		this.managementAccount = managementAccount;
-		this.managementPassword = managementPassword;
-	}
-
+	
 
 	public BackEndLoginBean() {
 		
 	}
 
+
+	public BackEndLoginBean(Integer managementId, String managementAccount, String managementPassword) {
+		
+		this.managementId = managementId;
+		this.managementAccount = managementAccount;
+		this.managementPassword = managementPassword;
+	}
+	
+	 
 }
