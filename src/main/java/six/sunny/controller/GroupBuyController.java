@@ -38,7 +38,7 @@ public class GroupBuyController {
 	@Autowired
 	private StoreNameRepository storeService;
 	
-	@RequestMapping(path = "/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+	@RequestMapping(path = "back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m) {
 
 //		List<GroupBuyBean> gbs = null;
@@ -61,11 +61,11 @@ public class GroupBuyController {
 		m.addAttribute("stns", stns);
 		m.addAttribute("pdns", pdns);
 		
-		return "back/sunny/GetAllGroupBuy";
+		return "/back/sunny/GetAllGroupBuy";
 	}
 	
 	@ResponseBody
-	@GetMapping("/FindByProductIdAndStoreId")
+	@GetMapping("back/FindByProductIdAndStoreId")
 	public List<GroupBuy> findByProductIdAndStoreId(
 			@RequestParam(value = "storeId", defaultValue = "") String storeId, 
 			@RequestParam(value = "productId", defaultValue = "") String productId) {
@@ -86,7 +86,7 @@ public class GroupBuyController {
 		
 	}
 	
-	@GetMapping("/InsertGroupBuyForm")
+	@GetMapping("back/InsertGroupBuyForm")
 	public String insertGroupBuyForm(Model m) {
 //		取得表單填寫所需的List
 		List<Product> pdns = productService.findAll();
@@ -99,14 +99,14 @@ public class GroupBuyController {
 		return "back/sunny/InsertGroupBuy";
 	}
 	
-	@PostMapping("/InsertGroupBuy")
+	@PostMapping("back/InsertGroupBuy")
 	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
 		groupBuyService.insert(groupBuy);
-		return "forward:/GetAllGroupBuy";
+		return "redirect:/back/GetAllGroupBuy";
 	}
 	
 	@ResponseBody
-	@DeleteMapping("/DeleteGroupBuy")
+	@DeleteMapping("back/DeleteGroupBuy")
 	public ResponseEntity<Void> deleteGroupBuy(@RequestParam("id") Integer id, Model m) {
 		boolean isDeleted = groupBuyService.deleteById(id);
 	    if (isDeleted) {
@@ -116,7 +116,7 @@ public class GroupBuyController {
 	    }
 	}
 	
-	@GetMapping("/UpdateGroupBuyForm")
+	@GetMapping("back/UpdateGroupBuyForm")
 	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m) {		
 //		取得下拉式選單會用到的資料
 		List<Product> pdns = productService.findAll();
@@ -131,7 +131,7 @@ public class GroupBuyController {
 		return "back/sunny/UpdateGroupBuy";
 	}
 	
-	@PutMapping("/UpdateGroupBuy")
+	@PutMapping("back/UpdateGroupBuy")
 	public String updateGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuyBean) {
 
 
@@ -139,6 +139,6 @@ public class GroupBuyController {
 //		更新
 		groupBuyService.update(groupBuyBean);
 
-		return "forward:/GetAllGroupBuy";
+		return "redirect:/back/GetAllGroupBuy";
 	}
 }

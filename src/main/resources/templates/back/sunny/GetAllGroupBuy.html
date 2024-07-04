@@ -14,7 +14,7 @@
 
     <div class="container mt-3">
         <div class="d-flex justify-content-center align-items-center">
-            <a th:href="@{/InsertGroupBuyForm}" class="btn btn-outline-success">新增</a>
+            <a th:href="@{/back/InsertGroupBuyForm}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">團購列表</h1>
             <div>
                 <form action="">
@@ -63,9 +63,9 @@
                         <td>[[${gb.arrivalDate}]]</td>
                         <td>[[${gb.endDate}]]</td>
                         <td>[[${gb.groupBuyStatus}]]</td>
-                        <td><a th:href="@{/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a></td>
+                        <td><a th:href="@{/back/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a></td>
                         <td><a href="#" th:id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a></td>
-                        <td><a th:href="@{/GetGroupMemberByGroupBuy(gbId=${gb.groupBuyId})}" class="btn btn-outline-primary btn-sm">查看訂購者</a></td>
+                        <td><a th:href="@{/back/GetGroupMemberByGroupBuy(gbId=${gb.groupBuyId})}" class="btn btn-outline-primary btn-sm">查看訂購者</a></td>
                     </tr>
                 </th:block>
             </tbody>
@@ -86,7 +86,7 @@
 
         const deleteGroupBuy = async (id) => {
             try {
-                const response = await axios.delete("http://localhost:8080/FinalProject/DeleteGroupBuy", {
+                const response = await axios.delete("http://localhost:8080/FinalProject/back/DeleteGroupBuy", {
                     params: {
                         id: id
                     }
@@ -135,7 +135,7 @@
                 event.preventDefault();
                 var productId = $("#productId").val();
                 var storeId = $("#storeId").val();
-                var url = "http://localhost:8080/FinalProject/FindByProductIdAndStoreId";
+                var url = "http://localhost:8080/FinalProject/back/FindByProductIdAndStoreId";
                 axios.get(url, {
                     params: {
                         productId: productId,
@@ -158,9 +158,9 @@
                                 gb.arrivalDate,
                                 gb.endDate,
                                 gb.groupBuyStatus,
-                                `<a href="/FinalProject/UpdateGroupBuyForm?id=${gb.groupBuyId}" class="btn btn-outline-warning btn-sm">更新</a>`,
+                                `<a href="/FinalProject/back/UpdateGroupBuyForm?id=${gb.groupBuyId}" class="btn btn-outline-warning btn-sm">更新</a>`,
                                 `<a href="#" id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a>`,
-                                `<a href="/FinalProject/GetGroupMemberByGroupBuy?gbId=${gb.groupBuyId}" class="btn btn-outline-primary btn-sm">查看訂購者</a>`
+                                `<a href="/FinalProject/back/GetGroupMemberByGroupBuy?gbId=${gb.groupBuyId}" class="btn btn-outline-primary btn-sm">查看訂購者</a>`
                             ]).draw();
                         });
                     })
