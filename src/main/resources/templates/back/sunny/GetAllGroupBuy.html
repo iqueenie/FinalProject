@@ -16,7 +16,21 @@
         <div class="d-flex justify-content-center align-items-center">
             <a th:href="@{/InsertGroupBuyForm}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">團購列表</h1>
-            <button class="btn btn-outline-info">查詢</button>
+            <div>
+                <form action="">
+                    <label for="productId">商品：</label>
+                    <select id="productId">
+                        <option value=""></option>
+                        <option th:each="pdn : ${pdns}" th:value="${pdn.productId}" th:text="${pdn.productName}">
+                    </select>
+                    <label for="storeId">店鋪：</label>
+                    <select id="storeId">
+                        <option value=""></option>
+                        <option th:each="stn : ${stns}" th:value="${stn.storeId}" th:text="${stn.storeName}">
+                    </select>
+                    <button class="btn btn-outline-info">查詢</button>
+                </form>
+            </div>
         </div>
         <table id="myTable" class="w-100 display">
             <thead>
@@ -49,7 +63,7 @@
                         <td>[[${gb.arrivalDate}]]</td>
                         <td>[[${gb.endDate}]]</td>
                         <td>[[${gb.groupBuyStatus}]]</td>
-                        <td><a href="#" class="btn btn-outline-warning btn-sm">更新</a></td>
+                        <td><a th:href="@{/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a></td>
                         <td><a href="#" th:id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a></td>
                         <td><a th:href="@{/GetGroupMemberByGroupBuy(gbId=${gb.groupBuyId})}" class="btn btn-outline-primary btn-sm">查看訂購者</a></td>
                     </tr>
@@ -108,13 +122,50 @@
                 const result = await showConfirmationDialog();
                 if (result.isConfirmed) {
                     await deleteGroupBuy(id);
-                    table.row(row).remove().draw();
+                    table.row(row).remove().draw(false);
                     await showSuccessMessage();
                 }
             } catch (error) {
                 console.error('Error deleting group buy:', error);
             }
         };
+
+        $("form").submit(
+            function (event) {
+                event.preventDefault();
+                var productId = $("#productId").val();
+                var storeId = $("#storeId").val();
+                var url = "http://localhost:8080/FinalProject/FindByProductIdAndStoreId";
+                axios.get(url, {
+                    params: {
+                        productId: productId,
+                        storeId: storeId
+                    }
+                })
+                    .then(res => {
+                        console.log(res);
+                        let data = res.data;
+                        $("#myTable").DataTable().clear().draw();
+                        data.forEach(gb => {
+                            table.row.add([
+                                gb.groupBuyId,
+                                gb.productName,
+                                gb.storeName,
+                                gb.price,
+                                gb.targetQuantity,
+                                gb.nowQuantity,
+                                gb.orderDate,
+                                gb.arrivalDate,
+                                gb.endDate,
+                                gb.groupBuyStatus,
+                                `<a href="/FinalProject/UpdateGroupBuyForm?id=${gb.groupBuyId}" class="btn btn-outline-warning btn-sm">更新</a>`,
+                                `<a href="#" id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a>`,
+                                `<a href="/FinalProject/GetGroupMemberByGroupBuy?gbId=${gb.groupBuyId}" class="btn btn-outline-primary btn-sm">查看訂購者</a>`
+                            ]).draw();
+                        });
+                    })
+            }
+        )
 
     </script>
 </body>

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,7 @@ public class Product implements Serializable {
 	private String productDescription; // 描述, 詳細資訊
 	private Integer productPublished; // 0 表示未上架，1 表示已上架
 
+	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
 	private ProductImage productImage;
 

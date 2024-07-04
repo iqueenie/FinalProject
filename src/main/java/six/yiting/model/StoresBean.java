@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,12 +31,15 @@ public class StoresBean{
 	private String street;
 	private String tel;
 	
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "store", cascade = CascadeType.ALL)
 	private Set<BuyBean> storeBuys = new LinkedHashSet<BuyBean>();
 	
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "store", cascade = CascadeType.ALL)
 	private Set<InventoryBean> storeInvs = new LinkedHashSet<InventoryBean>();
 	
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "store", cascade = CascadeType.ALL)
 	private Set<StoreLikeBean> storeLikes = new LinkedHashSet<StoreLikeBean>();
 	
