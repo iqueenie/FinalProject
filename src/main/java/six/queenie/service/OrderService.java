@@ -42,7 +42,7 @@ public class OrderService {
 	private OrderDetailService odservice;
 	
 	@Autowired
-	private MembersRepository mRepository;
+	private six.hsiao.model.MembersRepository mRepository;
 	@Autowired
 	private StoresService stService;
 	
@@ -282,5 +282,6 @@ public class OrderService {
 
 
 	}
+
 
 
