@@ -19,8 +19,7 @@ import six.yiting.service.StoreService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -60,8 +59,7 @@ public class OrderController {
 	@GetMapping("/getStoreProduct")
     public String showInsertOrder(Model model){
         List<StoresBean> storeList = stService.findAllStores();
-        List<Product> productList = pService.findAll();
-        
+        List<Product> productList = pService.findAll();      
         model.addAttribute("storeList", storeList);
         model.addAttribute("productList", productList);
         
