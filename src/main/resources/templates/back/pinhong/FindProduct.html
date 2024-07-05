@@ -3,22 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>編輯頁面</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<style>
+    .mw576px {
+        max-width: 576px;
+    }
+    .pt2rem {
+        padding-top: 2.1rem !important;
+    }
+</style>  
 </head>
 <body>
-    <h1>編輯頁面</h1>
-    
-    <form th:action="@{/Productupdate2}" method="post" th:object="${product}" enctype="multipart/form-data">		     
+<div th:replace="~{back/layout/navbar}"></div>
+<div class="container d-flex justify-content-center">
+    <form th:action="@{/Productupdate2}" method="post" th:object="${product}" enctype="multipart/form-data" class="mt-5 bg-secondary-subtle mw576px rounded-4">
         <input th:field="*{productId}" type="hidden" />
         <input name="_method" value="PUT" type="hidden" />
-        <table>
-            <tr>
-                <td>商品名稱</td>
-                <td><input th:field="*{productName}" /></td>
-            </tr>
-            <tr>
-                <td>商品類型</td>
-                <td>
-                    <select th:field="*{productType}">
+        <div class="row g-2 m-2">
+            <h2 class="col-12 text-center">編輯商品</h2>
+            <div class="col-12">
+                <div class="form-floating">
+                    <input type="text" th:field="*{productName}" class="form-control" placeholder="商品名稱" required>
+                    <label for="productName">商品名稱:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <select th:field="*{productType}" class="form-select" required>
                         <option value="飲品" th:selected="${product.productType == '飲品'}">飲品</option>
                         <option value="零食" th:selected="${product.productType == '零食'}">零食</option>
                         <option value="泡麵" th:selected="${product.productType == '泡麵'}">泡麵</option>
@@ -27,75 +38,116 @@
                         <option value="菸酒" th:selected="${product.productType == '菸酒'}">菸酒</option>
                         <option value="護理用品" th:selected="${product.productType == '護理用品'}">護理用品</option>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <td>成本</td>
-                <td><input th:field="*{productCost}" /></td>
-            </tr>
-            <tr>
-                <td>售價</td>
-                <td><input th:field="*{productPrice}" /></td>
-            </tr>
-            <tr>
-                <td>效期</td>
-                <td><input th:field="*{productExpirydate}" /></td>
-            </tr>
-            <tr>
-                <td>描述</td>
-                <td><input th:field="*{productDescription}" /></td>
-            </tr>
-            <tr>
-                <td>上架</td>
-                <td>
-                    <select th:field="*{productPublished}">
+                    <label for="productType">商品類型:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <input type="text" th:field="*{productCost}" class="form-control" placeholder="成本" required>
+                    <label for="productCost">成本:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <input type="text" th:field="*{productPrice}" class="form-control" placeholder="售價" required>
+                    <label for="productPrice">售價:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <input type="text" th:field="*{productExpirydate}" class="form-control" placeholder="效期" required>
+                    <label for="productExpirydate">效期:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <input type="text" th:field="*{productDescription}" class="form-control" placeholder="商品敘述" required>
+                    <label for="productDescription">商品敘述:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <select th:field="*{productPublished}" class="form-select" required>
                         <option value="1" th:selected="${product.productPublished == '1'}">是</option>
                         <option value="0" th:selected="${product.productPublished == '0'}">否</option>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="imageInput">選擇圖片:</label></td>
-                <td>
+                    <label for="productPublished">是否上架:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
                     <input type="file" id="imageInput" name="imageFile" accept="image/*" style="display: none;" onchange="previewImage(event)" />
-                    <img id="preview" th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Image" style="width: 300px; height: auto; cursor: pointer;" onclick="document.getElementById('imageInput').click()" />
-                </td>
-            </tr>
-        </table>		     
-        <input type="submit" class="btn btn-outline-primary" value="送出" />
+                    <img id="preview" th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Image" style="width: 550px; height: 550px; cursor: pointer;" onclick="document.getElementById('imageInput').click()" />
+                    <label for="imageInput">選擇圖片:</label>
+                </div>
+            </div>
+            <div class="mt-3 col-12 d-flex justify-content-center mb-3">
+                <button type="submit" class="btn btn-success me-2">保存</button>
+                <button class="btn btn-secondary me-2" type="button" onclick="window.location.href='/FinalProject/GetAllProudcts'">返回</button>
+            	<button class="btn btn-info" type="button" onclick="writeProductDetails()">範例1</button>
+            </div>
+        </div>
     </form>
+</div>
 
-    <!-- JavaScript for image selection -->
-    <script>
-        function previewImage(event) {
-            var input = event.target;
-            var preview = document.getElementById('preview');
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(input.files[0]);
+<script>
+	$('form').submit(function (event) {
+	    event.preventDefault();
+	    var form = event.currentTarget;
+	    Swal.fire({
+	        title: "確定要保存嗎？",
+	        icon: "question",
+	        showCancelButton: true,
+	        confirmButtonText: "保存",
+	        cancelButtonText: "取消",
+	        confirmButtonColor: "green",
+	        cancelButtonColor: "gray",
+	        buttonsStyling: false, // 禁用默认样式
+	        customClass: {
+	            confirmButton: 'btn btn-outline-success btn-sm me-2', 
+	            cancelButton: 'btn btn-outline-secondary btn-sm'
+	        },
+	        buttonsOrder: ['confirmButton', 'cancelButton'] 
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            form.submit();
+	        }
+	    });
+	});
+    function previewImage(event) {
+        var input = event.target;
+        var preview = document.getElementById('preview');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
             }
+            reader.readAsDataURL(input.files[0]);
         }
+    }
+        function writeProductDetails() {
+        var productNameInput = document.getElementById('productName');
+        var productTypeInput = document.getElementById('productType');
+        var productCostInput = document.getElementById('productCost');
+        var productPriceInput = document.getElementById('productPrice');
+        var productExpirydateInput = document.getElementById('productExpirydate');
+        var productDescriptionInput = document.getElementById('productDescription');
+        var productPublishedInput = document.getElementById('productPublished');
+        productNameInput.value = "統一蔥燒牛肉麵";
+        productTypeInput.value = "泡麵";
+        productCostInput.value = "15"
+        productPriceInput.value = "30"
+        productExpirydateInput.value = "180"
+        productDescriptionInput.value = "牛肉麵好好吃"
+        productPublishedInput.value = "1"
+    }
+</script>
 
-        function goBack() {
-            window.history.back();
-        }
-
-        document.getElementById("myform").onsubmit = function(event) {
-            // 阻止默认的提交行为
-            event.preventDefault();
-
-            // 延迟3秒后执行
-            setTimeout(function() {
-                alert("上傳成功！");
-                // 提交表单
-                document.getElementById("myform").submit();
-            }, 500);
-        };
-    </script>
 </body>
 </html>
