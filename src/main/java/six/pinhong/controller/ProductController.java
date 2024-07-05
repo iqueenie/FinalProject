@@ -26,7 +26,7 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
+	
 	// 查全部
 	@GetMapping("/GetAllProudcts")
 	public String getAllProudcts(Model m) {
@@ -127,7 +127,31 @@ public class ProductController {
 				
 		return "redirect:/GetAllProudcts";
 	}
-
+	
+	// 查全部，前台商品頁
+	@GetMapping("/ShowAllProducts")
+	public String ShowAllProudcts(Model m) {
+		
+		List<Product> products = productService.findAll();
+		
+		m.addAttribute("products", products);
+		
+		return "front/pinhong/AllProductPage";
+	}
+	
+	// 模糊查詢商品
+    @GetMapping("/search")
+    public String search(@RequestParam(name = "term", required = false) String searchTerm, Model model) {
+        List<Product> searchResults;
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            searchResults = productService.searchProducts(searchTerm);
+        } else {
+            searchResults = productService.findAll();
+        }
+        model.addAttribute("products", searchResults);
+        return "front/pinhong/AllProductPage"; // 返回到原始的產品列表頁面
+    }
 }
+
 
 	

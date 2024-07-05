@@ -60,6 +60,13 @@ public class ProductService {
 	public Product insertProduct(Product product) {
 		return productRepo.save(product);
 	}
+
+    public List<Product> searchProducts(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return productRepo.findAll(); // 如果搜索詞為空，返回所有產品
+        }
+        return productRepo.searchProducts(searchTerm.trim());
+    }
 	
 //	下面用不到，但刪除我會心疼
 	
