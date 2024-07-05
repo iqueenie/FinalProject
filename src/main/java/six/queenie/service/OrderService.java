@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.HttpServletRequest;
 import six.hsiao.model.MembersBean;
 import six.hsiao.model.MembersRepository;
+import six.hsiao.service.MembersService;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
 import six.liang.model.ProductDiscount;
@@ -42,7 +43,9 @@ public class OrderService {
 	private OrderDetailService odservice;
 	
 	@Autowired
-	private six.hsiao.model.MembersRepository mRepository;
+	private MembersRepository mRepository;
+	@Autowired
+	private MembersService mService;
 	@Autowired
 	private StoresService stService;
 	
@@ -58,18 +61,35 @@ public class OrderService {
      }
 	 
 	 public void updateOrderStatusAndPoints(Integer orderId, String newStatus) {
-	        Orders order = ordersRepository.findByOrderId(orderId);
-	        if (order != null) {
-	            order.setStatus(newStatus);
-	            MembersBean member = order.getMembers();
-	            if (member != null) {
-	                member.setPoints(member.getPoints() - order.getPointGet());
-	                
-	                mRepository.save(member);
-	            }
-	            ordersRepository.save(order);
-	        }
-	    }
+		    Orders order = ordersRepository.findByOrderId(orderId);
+		    if (order != null) {
+		        order.setStatus(newStatus);
+		        MembersBean member = order.getMembers();
+		        
+		        if (member != null) {
+		            Integer memberPoints = member.getPoints();
+		            Integer orderPoints = order.getPointGet();
+
+		            if (memberPoints == null) {
+		                memberPoints = 0;
+		            }
+		            if (orderPoints == null) {
+		                orderPoints = 0;
+		            }
+
+		            int newMemberPoints = memberPoints - orderPoints;
+		            if (newMemberPoints < 0) {
+		                newMemberPoints = 0;
+		            }
+		            
+		            member.setPoints(newMemberPoints);
+		            mRepository.save(member);
+		        }
+		        
+		        ordersRepository.save(order);
+		    }
+		}
+
 	 
 	 
 	 public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
@@ -109,8 +129,7 @@ public class OrderService {
 	    
 	    public  Integer getMemberPoints(Integer memberId) {
 	    		  
-	 	    Optional<MembersBean> mdOptional =mRepository.findById(memberId);
-	 	    MembersBean md = mdOptional.get();
+	 	   MembersBean md =mService.findByMemberId(memberId);	 	  
 	 	   Integer mPoints = md.getPoints();
 	 	    return mPoints;
 	}
@@ -128,7 +147,7 @@ public class OrderService {
 	        Integer unpaidCount = Integer.parseInt(request.getParameter("unpaidCount"));
 	        String status = request.getParameter("status");
 
-	        MembersBean member = mRepository.findByMemberId(memberId);
+	        MembersBean member = mService.findByMemberId(memberId);
 	        StoresBean store = stService.findByStoreId(storeId);
 	        List<OrderDetails> orderDetailsList = new LinkedList<>();
 	        Integer total = 0;

@@ -29,7 +29,7 @@ public class MembersService {
 	}
 	
 	//查單筆
-	public MembersBean findProductById(Integer id) {
+	public MembersBean findByMemberId(Integer id) {
 		Optional<MembersBean> optional = membersRepo.findById(id);
 		
 		if (optional.isPresent()) {
