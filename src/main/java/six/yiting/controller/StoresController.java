@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -35,7 +36,7 @@ public class StoresController {
 	}
 	
 	@GetMapping("/stores/findAllAjax")
-	 @ResponseBody
+	@ResponseBody
 	public List<StoresBean> findAllStoresAjax() {
 		
 		return storeService.findAllStores();
@@ -63,6 +64,22 @@ public class StoresController {
 	public String deleteStore(@RequestParam Integer id) {
 	    storeService.deleteStore(id);
 	    return "success"; 
+	}
+	
+	@GetMapping("/store/edit")
+	public String editStore(@RequestParam Integer id, Model model) {
+		StoresBean store = storeService.findStoreById(id);
+		
+		model.addAttribute("store", store);
+		
+		return "back/yiting/editStore";
+	}
+	
+	@PutMapping("/store/editPost")
+	public String editPost(@ModelAttribute StoresBean store) {
+		storeService.saveStore(store);
+		
+		return "redirect:/stores/findAll";
 	}
 
 }

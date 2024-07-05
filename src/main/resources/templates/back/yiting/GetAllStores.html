@@ -42,7 +42,7 @@
                         <td th:text="${store.street}"></td>
                         <td th:text="${store.tel}"></td>
 
-                        <td><a class="btn btn-outline-warning btn-sm" href="#">編輯</a></td>
+                        <td><a class="btn btn-outline-warning btn-sm" th:href="@{/store/edit(id=${store.storeId})}">更新</a></td>
                         <td>
                             <button id="myBtn" th:onclick="'confirmDelete(\'' + ${store.storeId} + '\')'"
                                 class="btn btn-outline-danger btn-sm">刪除</button>
@@ -122,7 +122,7 @@
                             store.area,
                             store.street,
                             store.tel,
-                            `<a href="#" class="btn btn-outline-warning btn-sm">更新</a>`,
+                            `<a class="btn btn-outline-warning btn-sm" href="/FinalProject/store/edit?id=${store.storeId}">更新</a>`,
                             `<button onclick="confirmDelete(${store.storeId})" class="btn btn-outline-danger btn-sm">刪除</button>`
                         ]);
                     });
@@ -133,9 +133,7 @@
 
                     // 檢查是否需要恢復到之前的頁碼
                     if (currentPage > 0 && data.length % pageLength === 0 && (data.length / pageLength) - 1 !== currentPage) {
-                        setTimeout(function () {
                             table.page(currentPage - 1).draw(false); // 顯示上一頁
-                        }, 500);
                     } else {
                         // 當前頁碼沒有改變
                         table.page(currentPage).draw(false);
