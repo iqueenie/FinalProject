@@ -54,8 +54,8 @@
                     <td th:text="${order.status}"></td>
                     <td>
                         <a th:href="@{'ShowDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
-                        <a th:href="@{'showOrder?orderId=' + ${order.orderId}}" class="btn btn-outline-warning btn-sm">修改訂單</a>
-                        <button class="btn btn-outline-danger btn-sm" th:onclick="'deleteOrder(' + ${order.orderId} + ', this)'">刪除</button>
+                        <a th:href="@{'showOrder?orderId=' + ${order.orderId}}" class="btn btn-outline-warning btn-sm update-btn">修改訂單</a>
+                        <button class="btn btn-outline-danger btn-sm delete-btn" th:onclick="'deleteOrder(' + ${order.orderId} + ', this)'">刪除</button>
                     </td>
                 </tr>
             </tbody>
@@ -67,50 +67,69 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
-    <script>
-    $(document).ready(function() {
-        $('#myTable').DataTable({
-            responsive: true,
-        });
-    });
+   <script>
+        $(document).ready(function() {
+            var table = $('#myTable').DataTable({
+                responsive: true,
+            });
 
-    function deleteOrder(orderId, button) {
-        Swal.fire({
-            title: "確定要刪除嗎？",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "red",
-            cancelButtonColor: "gray",
-            confirmButtonText: "刪除",
-            cancelButtonText: "取消",
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/FinalProject/deleteOrder',
-                    data: { orderId: orderId },
-                    success: function(response) {
-                        var table = $('#myTable').DataTable();
-                        var row = $(button).closest('tr');
-                        table.row(row).remove().draw(false);
-                        Swal.fire({
-                            title: "刪除成功！",
-                            icon: "success"
+            checkOrderStatus();
+
+            table.on('draw', function () {
+                checkOrderStatus();
+            });
+
+            function checkOrderStatus() {
+                $('#myTable tbody tr').each(function() {
+                    var status = $(this).find('td:eq(12)').text().trim();
+
+                    if (status === 'Canceled') {
+                        $(this).find('.delete-btn').prop('disabled', true);
+                        $(this).find('.update-btn').addClass('disabled');
+                    } else {
+                        $(this).find('.delete-btn').prop('disabled', false);
+                        $(this).find('.update-btn').removeClass('disabled');
+                    }
+                });
+            }
+
+            function deleteOrder(orderId, button) {
+                Swal.fire({
+                    title: "確定要刪除嗎？",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "red",
+                    cancelButtonColor: "gray",
+                    confirmButtonText: "刪除",
+                    cancelButtonText: "取消",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/FinalProject/deleteOrder', 
+                            data: { orderId: orderId },
+                            success: function(response) {
+                                var row = $(button).closest('tr');
+                                table.row(row).remove().draw(false);
+
+                                Swal.fire({
+                                    title: "刪除成功！",
+                                    icon: "success"
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire({
+                                    title: "刪除失敗！",
+                                    text: "請稍後再試",
+                                    icon: "error"
+                                });
+                            }
                         });
-                    },
-          
+                    }
                 });
             }
         });
-    }
-
-   
-
-    function refreshTable(data) {
-        var table = $('#myTable').DataTable();
-        table.clear().rows.add(data).draw(); 
-    }
     </script>
 
 </body>
