@@ -28,7 +28,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	// 查全部
-	@GetMapping("/GetAllProudcts")
+	@GetMapping("/GetAllProducts")
 	public String getAllProudcts(Model m) {
 
 		List<Product> products = productService.findAll();
@@ -67,7 +67,7 @@ public class ProductController {
 		
 		productService.insertProduct(product);
 
-		return "redirect:/GetAllProudcts";
+		return "redirect:/GetAllProducts";
 	}
 	
 	
@@ -76,7 +76,7 @@ public class ProductController {
 	@GetMapping("/Productdelete")
 	public String productDelete(@RequestParam("productId") Integer productId) {
 		productService.deleteById(productId);
-		return "redirect:/GetAllProudcts";
+		return "redirect:/GetAllProducts";
 	}
 	
 	//顯示圖片
@@ -125,7 +125,7 @@ public class ProductController {
 				productService.insertProduct(product); 
 			}
 				
-		return "redirect:/GetAllProudcts";
+		return "redirect:/GetAllProducts";
 	}
 	
 	// 查全部，前台商品頁
