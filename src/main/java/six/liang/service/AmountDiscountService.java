@@ -23,11 +23,21 @@ public class AmountDiscountService {
 	
 
     public void insert(AmountDiscount discount) {
-        amountDiscountRepo.save(discount);
+    	amountDiscountRepo.save(discount);
     }
     
     public void deleteById(Integer id) {
 		amountDiscountRepo.deleteById(id);
 	}
+    
+    public void update(AmountDiscount discount) {
+        amountDiscountRepo.save(discount);
+    }
+
+    public AmountDiscount findById(Integer id) {
+        return amountDiscountRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("折扣信息不存在")); 
+    }
+    
     
 }
