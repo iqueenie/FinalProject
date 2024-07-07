@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,48 +65,23 @@ public class ProductService {
 		return productRepo.save(product);
 	}
 
-    public List<Product> searchProducts(String searchTerm) {
+	// 商品頁模糊查詢
+	public Page<Product> searchProducts(String searchTerm, Integer pageNum, String sortField, String sortDir) {
+        
+		Pageable pageable = PageRequest.of(pageNum - 1, 6, Sort.Direction.fromString(sortDir), sortField);
+
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return productRepo.findAll(); // 如果搜索詞為空，返回所有產品
+            return productRepo.findAll(pageable); // 如果搜索詞為空，返回所有產品
         }
-        return productRepo.searchProducts(searchTerm.trim());
+
+        return productRepo.searchProducts(searchTerm.trim(), pageable);
     }
+    
+    // 商品頁碼
 	
-//	下面用不到，但刪除我會心疼
-	
-//	// 商品更新
-//	public Product updateProduct(Product updateBean, Integer id) {
-//		Optional<Product> optional = productRepo.findById(id);
-//		
-//		if (optional.isPresent()) {
-//			Product product = optional.get();
-//			
-//			product.setProductName(updateBean.getProductName());
-//			product.setProductType(updateBean.getProductType());
-//			product.setProductCost(updateBean.getProductCost());
-//			product.setProductPrice(updateBean.getProductPrice());
-//			product.setProductExpirydate(updateBean.getProductExpirydate());
-//			product.setProductDescription(updateBean.getProductDescription());
-//			product.setProductPublished(updateBean.getProductPublished());
-//
-//			return product;
-//		}
-//			return null;
-//	}
-//	
-//	
-//	// 商品圖片更新
-//	public ProductImage updateProductImage(ProductImage updateBean, Integer id) {
-//		Optional<ProductImage> optional = productImageRepo.findById(id);
-//		
-//		if (optional.isPresent()) {
-//			ProductImage productImage = optional.get();
-//			
-//			productImage.setImageUrl(updateBean.getImageUrl());
-//
-//			return productImage;
-//		}
-//		return null;
-//	}
-	
+	public Page<Product> findByPage(Integer pageNumber){
+		Pageable pgb = PageRequest.of(pageNumber-1, 6, Sort.Direction.ASC, "productId");
+		Page<Product> page = productRepo.findAll(pgb);
+		return page;
+	}
 }

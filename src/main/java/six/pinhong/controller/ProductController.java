@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -128,29 +132,46 @@ public class ProductController {
 		return "redirect:/GetAllProducts";
 	}
 	
-	// 查全部，前台商品頁
-	@GetMapping("/ShowAllProducts")
-	public String ShowAllProudcts(Model m) {
-		
-		List<Product> products = productService.findAll();
-		
-		m.addAttribute("products", products);
-		
-		return "front/pinhong/AllProductPage";
-	}
+//	// 查全部，前台商品頁
+//	@GetMapping("/ShowAllProducts")
+//	public String ShowAllProudcts(Model m) {
+//		
+//		List<Product> products = productService.findAll();
+//		
+//		m.addAttribute("products", products);
+//		
+//		return "front/pinhong/AllProductPage";
+//	}
 	
 	// 模糊查詢商品
-    @GetMapping("/search")
-    public String search(@RequestParam(name = "term", required = false) String searchTerm, Model model) {
-        List<Product> searchResults;
-        if (searchTerm != null && !searchTerm.isEmpty()) {
-            searchResults = productService.searchProducts(searchTerm);
-        } else {
-            searchResults = productService.findAll();
-        }
-        model.addAttribute("products", searchResults);
-        return "front/pinhong/AllProductPage"; // 返回到原始的產品列表頁面
-    }
+	@GetMapping("/search")
+	public String search(@RequestParam(name = "term", required = false) String searchTerm,
+	                     @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+	                     @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+	                     @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+	                     Model model) {
+
+	    Page<Product> searchResults = productService.searchProducts(searchTerm, pageNum, sortField, sortDir);
+
+	    model.addAttribute("page", searchResults);
+	    model.addAttribute("searchTerm", searchTerm);
+	    model.addAttribute("sortField", sortField); // 哪個欄位排序
+	    model.addAttribute("sortDir", sortDir); // ASC或DESC
+
+	    return "front/pinhong/AllProductPage";
+	}
+
+	@GetMapping("/ShowAllProducts")
+	public String findByPage(@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+
+	                         Model model) {
+
+	    Page<Product> page = productService.findByPage(pageNum);
+
+	    model.addAttribute("page", page);
+
+	    return "front/pinhong/AllProductPage";
+	}
 }
 
 
