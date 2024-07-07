@@ -24,12 +24,13 @@ public class MembersController {
 	private MembersService membersService;
 	
 	//查詢整張表
-	@GetMapping("/GetAllMembers")
+	@GetMapping("/private/GetAllMembers")
 	public String getAllProudcts(Model model) {
 		List<MembersBean> members = membersService.findAll();
 		model.addAttribute("members", members);
 		return "back/hsiao/GetAllMembers";
 	}
+	
 	
 	
 	 //新增進入點 (表單)

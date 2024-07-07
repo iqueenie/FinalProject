@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
-	@GetMapping("/back")
+	@GetMapping("/private/back")
 	public String backIndex() {
 		return "/back/Index";
 	}

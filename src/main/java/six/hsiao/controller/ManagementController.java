@@ -21,13 +21,13 @@ public class ManagementController {
 	 @Autowired
 	 private ManagementService managementService;
 	
-	@GetMapping("/BackLoginMain")
+	@GetMapping("/public/BackLoginMain")
 	public String BackLoginMain() {
 		return "back/hsiao/BackLoginAction";
 	}
 	 
 	
-	 @PostMapping("/login")
+	 @PostMapping("/public/login")
 	    public String loginManagement(@RequestParam("managementAccount") String managementAccount,
 	                                  @RequestParam("managementPassword") String managementPassword,
 	                                  HttpSession session) {
@@ -37,14 +37,28 @@ public class ManagementController {
 	        if (managementDTO != null) {
 	            // 登入成功，將管理員和角色信息存入 session 中
 	            session.setAttribute("logInManagement", managementDTO);
-	            return "back/hsiao/BackLogin"; 
+	            return "redirect:/private/back"; 
 	        } else {
-	            return "redirect:/BackLoginMain";
+	            return "redirect://BackLoginMain";
 	        }
 	    }
 	 
 	 
+	 
+	 @GetMapping("/public/logout")
+	 public String logout(HttpSession session) {
+	     // 只刪除 session 中的管理員信息,但會保留登入信息
+	     session.removeAttribute("logInManagement");
+	     
+	     // 下面的方法 可以讓當前使用者的session失效,完全清除session中的所有數據
+	     // session.invalidate();
+	     
+	     
+	     return "redirect:/public/BackLoginMain";
+	 }
 		
+	 
+	 
 	
 	@GetMapping("/addManagementMain")
 	public String addManagementMain() {
