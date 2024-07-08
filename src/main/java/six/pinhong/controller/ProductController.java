@@ -5,20 +5,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import six.pinhong.model.Product;
@@ -32,7 +31,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	// 查全部
-	@GetMapping("/GetAllProducts")
+	@GetMapping("/Product/GetAll")
 	public String getAllProudcts(Model m) {
 
 		List<Product> products = productService.findAll();
@@ -42,15 +41,24 @@ public class ProductController {
 		return "back/pinhong/GetAllProduct";
 	}
 	
+	// 查全部，Ajax
+	@GetMapping("/Product/findAllAjax")
+	@ResponseBody
+	public List<Product> findAllStoresAjax() {
+		
+		return productService.findAll();
+		
+	}
+	
 	// 新增進入點
-	@GetMapping("/Productinsertmain")
+	@GetMapping("/Product/AddProductPage")
 	public String productInsertMain(Model m) {
 		m.addAttribute("product", new Product());
 		return "back/pinhong/InsertProduct";
 	}
 	
 	// 新增 (傳統方法)
-	@PostMapping("/ProductInsert")
+	@PostMapping("/Product/InsertProduct")
 	public String productInsert(
 			@RequestParam String productName,
 			@RequestParam String productType,
@@ -71,16 +79,17 @@ public class ProductController {
 		
 		productService.insertProduct(product);
 
-		return "redirect:/GetAllProducts";
+		return "redirect:/Product/GetAll";
 	}
 	
 	
 	
-	// 刪除
-	@GetMapping("/Productdelete")
+	// 刪除，Ajax
+	@DeleteMapping("/Product/delete")
+	@ResponseBody
 	public String productDelete(@RequestParam("productId") Integer productId) {
 		productService.deleteById(productId);
-		return "redirect:/GetAllProducts";
+		return "success";
 	}
 	
 	//顯示圖片
@@ -98,7 +107,7 @@ public class ProductController {
 	}
 	
 	// 查詢
-	@GetMapping("/ProductUpdate")
+	@GetMapping("/Product/UpdatePage")
 	public String productUpdateMain(@RequestParam("productId") Integer productId, Model m) {
 		Product product = productService.findProductById(productId);
 		ProductImage productImage = productService.findImageById(productId);
@@ -108,7 +117,7 @@ public class ProductController {
 	}
 
 	// 更新 (MVC使用@ModelAttribute自動映射)
-	@PutMapping("/Productupdate2")
+	@PutMapping("/Product/Update")
 	public String productFindById(@ModelAttribute("product") Product product,
 			@RequestParam MultipartFile imageFile) throws IOException {
 
@@ -129,7 +138,7 @@ public class ProductController {
 				productService.insertProduct(product); 
 			}
 				
-		return "redirect:/GetAllProducts";
+		return "redirect:/Product/GetAll";
 	}
 	
 //	// 查全部，前台商品頁
