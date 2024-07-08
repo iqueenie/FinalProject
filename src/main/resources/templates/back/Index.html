@@ -14,13 +14,233 @@
 
     <div class="container mt-3">
         <h1 class="mx-auto">後臺首頁</h1>
+        <div style="width: 75%; margin: 0 auto;">
+            <canvas id="registrationChart"></canvas>
+        </div>
+        <div style="width: 75%; margin: 0 auto;">
+            <canvas id="monthlySalesChart"></canvas>
+        </div>
+        <div style="width: 75%; margin: 0 auto;">
+            <canvas id="salesPieChart"></canvas>
+        </div>
+        <div style="width: 75%; margin: 0 auto;" class="mt-5">
+            <h2>Top 5 Best Selling Products</h2>
+            <ul id="bestSellingProductsList" class="list-group"></ul>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        async function getMonthlyRegistrations() {
+            try {
+                const res = await axios.get("http://localhost:8080/FinalProject/GetMonthlyRegistrations")
+                return res.data;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        function getLastSixMonths() {
+            const now = new Date();
+            const months = [];
+            for (let i = 0; i < 6; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const year = date.getFullYear();
+                const month = ('0' + (date.getMonth() + 1)).slice(-2); // 格式化為兩位數
+                months.unshift(`${year}-${month}`);
+            }
+            return months;
+        }
+
+        function processRegistrationData(data) {
+            const labels = getLastSixMonths();
+            const counts = Array(labels.length).fill(0);
+
+            data.forEach(record => {
+                const label = `${record.year}-${('0' + record.month).slice(-2)}`;
+                const index = labels.indexOf(label);
+                if (index !== -1) {
+                    counts[index] = record.count;
+                }
+            });
+
+            return { labels, counts };
+        }
+
+        async function renderRegistrationChart() {
+            const data = await getMonthlyRegistrations();
+            const { labels, counts } = processRegistrationData(data);
+
+            const ctx = document.getElementById('registrationChart');
+            const registrationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Monthly Registrations',
+                        data: counts,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function getMonthlySalesByProductType() {
+            try {
+                const response = await axios.get("http://localhost:8080/FinalProject/GetMonthlySalesByProductType");
+                console.log(response.data);
+                return response.data;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        function processMonthlySalesData(data) {
+            const labels = getLastSixMonths();
+            const productTypes = [...new Set(data.map(record => record[2]))];
+            const datasets = productTypes.map(type => ({
+                label: type,
+                data: Array(labels.length).fill(0),
+                borderColor: getRandomColor(),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                borderWidth: 1
+            }));
+
+            data.forEach(record => {
+                const label = `${record[0]}-${('0' + record[1]).slice(-2)}`;
+                const index = labels.indexOf(label);
+                const type = record[2];
+                const dataset = datasets.find(dataset => dataset.label === type);
+                if (index !== -1 && dataset) {
+                    dataset.data[index] = record[3];
+                }
+            });
+
+            return { labels, datasets };
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        async function renderMonthlySalesChart() {
+            const data = await getMonthlySalesByProductType();
+            const { labels, datasets } = processMonthlySalesData(data);
+
+            const ctx = document.querySelector("#monthlySalesChart")
+            const salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function getTotalSalesByProductType() {
+            try {
+                const response = await axios.get("http://localhost:8080/FinalProject/GetTotalSalesByProductType");
+                return response.data;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        function processPieChartData(data) {
+            const labels = [];
+            const totals = [];
+            const colors = [];
+
+            data.forEach(record => {
+                labels.push(record[0]);
+                totals.push(record[1]);
+                colors.push(getRandomColor());
+            });
+
+            return { labels, totals, colors };
+        }
+
+        async function renderPieChart() {
+            const data = await getTotalSalesByProductType();
+            const { labels, totals, colors } = processPieChartData(data);
+
+            const ctx = document.getElementById('salesPieChart').getContext('2d');
+            const pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: totals,
+                        backgroundColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        async function getTop5BestSellingProducts() {
+            try {
+                const response = await axios.get("http://localhost:8080/FinalProject/GetTop5BestSellingProducts");
+                return response.data;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        async function renderTop5BestSellingProducts() {
+            const data = await getTop5BestSellingProducts();
+            const container = document.getElementById('bestSellingProductsList');
+
+            data.forEach(record => {
+                const productName = record[0];
+                const totalSales = record[1];
+
+                const listItem = document.createElement('li');
+                listItem.textContent = `${productName}: $${totalSales}`;
+                container.appendChild(listItem);
+            });
+        }
+
+        renderTop5BestSellingProducts();
+
+        renderPieChart();
+
+        renderRegistrationChart();
+
+        renderMonthlySalesChart();
 
     </script>
 </body>

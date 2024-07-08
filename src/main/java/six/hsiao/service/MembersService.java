@@ -50,5 +50,7 @@ public class MembersService {
 		membersRepo.deleteById(id);
 	}
 	
-	
+	public List<Object[]> countRegistrationsPerMonth() {
+		return membersRepo.countRegistrationsPerMonth();
+	}
 }
