@@ -36,7 +36,7 @@
             <button class="navbar-toggler focus-ring" style="--bs-focus-ring-color: rgba(0, 64, 128, .25)" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
             </button>
-            <a class="navbar-brand m-auto d-flex align-items-center" th:href="@{/back}">
+            <a class="navbar-brand m-auto d-flex align-items-center" th:href="@{/private/back}">
                 <img th:src=@{/img/all/logo.png} alt="Logo" height="50" class="d-inline-block align-text-top">
                 <span class="fw-bold text-light ms-2 fs-2">EZBUY後臺網站</span>
                 <a href="/FinalProject/public/logout" class="btn btn-danger">登出</a>
@@ -87,7 +87,7 @@
                             <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/GetAllAmountDiscount}">節日優惠</a>
                             <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/GetAllProductDiscount}">特定商品優惠</a>
                         </div>
-                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/back/GetAllGroupBuy}">
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/GetAllGroupBuy}">
                             <i class="fa-solid fa-people-carry-box col-1" style="color: #ffffff;"></i>
                             <span class="col">團購</span>
                         </a>

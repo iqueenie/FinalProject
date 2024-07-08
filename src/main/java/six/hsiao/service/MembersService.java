@@ -1,5 +1,6 @@
 package six.hsiao.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,8 @@ public class MembersService {
 	}
 	
 	public List<Object[]> countRegistrationsPerMonth() {
-		return membersRepo.countRegistrationsPerMonth();
+		LocalDate startDate = LocalDate.now().minusMonths(12).withDayOfMonth(1);
+		return membersRepo.countRegistrationsPerMonth(startDate);
 	}
 		// 找圖片 BY ID
 		public MembersBean findImageById(Integer id) {
