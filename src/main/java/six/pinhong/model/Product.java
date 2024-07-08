@@ -13,7 +13,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -21,6 +20,7 @@ import jakarta.persistence.Table;
 @Table(name = "product")
 @Component
 public class Product implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer productId; // 商品編號
@@ -33,13 +33,14 @@ public class Product implements Serializable {
 	@Column(length = 300) // 改這裡
 	private String productDescription; // 描述, 詳細資訊
 	private Integer productPublished; // 0 表示未上架，1 表示已上架
+	private Integer productQuantity; // 商品數量
 
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
 	private ProductImage productImage;
 
 	public Product(String productName, String productType, Integer productCost, Integer productPrice,
-			Integer productExpirydate, String productDescription, Integer productPublished) {
+			Integer productExpirydate, String productDescription, Integer productPublished, Integer productQuantity) {
 		super();
 		this.productName = productName;
 		this.productType = productType;
@@ -48,19 +49,8 @@ public class Product implements Serializable {
 		this.productExpirydate = productExpirydate;
 		this.productDescription = productDescription;
 		this.productPublished = productPublished;
-	}
-
-	public Product(Integer productId, String productName, String productType, Integer productCost, Integer productPrice,
-			Integer productExpirydate, String productDescription, Integer productPublished) {
-		super();
-		this.productId = productId;
-		this.productName = productName;
-		this.productType = productType;
-		this.productCost = productCost;
-		this.productPrice = productPrice;
-		this.productExpirydate = productExpirydate;
-		this.productDescription = productDescription;
-		this.productPublished = productPublished;
+		this.productQuantity = productQuantity;
+		
 	}
 
 	public Product() {
@@ -139,4 +129,13 @@ public class Product implements Serializable {
 		this.productImage = productImage;
 	}
 
+	public Integer getProductQuantity() {
+		return productQuantity;
+	}
+
+	public void setProductQuantity(Integer productQuantity) {
+		this.productQuantity = productQuantity;
+	}
+
+	
 }

@@ -67,6 +67,12 @@
             </div>
             <div class="col-12">
                 <div class="form-floating">
+                    <input type="text" th:field="*{productQuantity}" class="form-control" placeholder="商品敘述" required>
+                    <label for="productQuantity">數量:</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating">
                     <select th:field="*{productPublished}" class="form-select" required>
                         <option value="1" th:selected="${product.productPublished == '1'}">是</option>
                         <option value="0" th:selected="${product.productPublished == '0'}">否</option>
@@ -138,13 +144,15 @@
         var productPriceInput = document.getElementById('productPrice');
         var productExpirydateInput = document.getElementById('productExpirydate');
         var productDescriptionInput = document.getElementById('productDescription');
+        var productQuantityInput = document.getElementById('productQuantity');
         var productPublishedInput = document.getElementById('productPublished');
         productNameInput.value = "統一蔥燒牛肉麵";
         productTypeInput.value = "泡麵";
         productCostInput.value = "15"
-        productPriceInput.value = "30"
-        productExpirydateInput.value = "180"
+        productPriceInput.value = "25"
+        productExpirydateInput.value = "360"
         productDescriptionInput.value = "牛肉麵好好吃"
+        productQuantityInput.value= "1500"
         productPublishedInput.value = "1"
     }
 </script>
