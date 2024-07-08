@@ -174,16 +174,17 @@
                     var data = response.data;
                     table.clear(); // 清空表格
                     data.forEach(buy => {
-                        // 将日期字符串转换为日期对象
+                        // 将日期字符串转换为日期对象，并忽略时分秒
                         let arrivedDate = new Date(buy.arrivedDate);
+                        arrivedDate.setHours(0, 0, 0, 0); // 将时分秒部分设置为0
+
+                        let currentDate = new Date();
+                        currentDate.setHours(0, 0, 0, 0); // 将时分秒部分设置为0
+
                         let disabledAttr = buy.checkToInv ? 'disabled' : '';
 
-                        // 调试日期比较逻辑
-                        console.log('arrivedDate:', arrivedDate);
-                        console.log('Current Date:', new Date());
-
-                        // 比较日期对象
-                        let disabledDateAttr = arrivedDate > new Date() ? 'disabled' : '';
+                        // 比较日期对象的年月日部分，忽略时分秒
+                        let disabledDateAttr = arrivedDate > currentDate ? 'disabled' : '';
 
                         let html = `
                 <tr>
@@ -215,7 +216,8 @@
                             ${buy.checkToInv ?
                                 `<a href="/FinalProject/inventory/findAll" class="btn btn-outline-info btn-sm">
                                     查看存貨
-                                </a>`: `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
+                                </a>` :
+                                `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
                                     到貨確認
                                 </button>` }
                         </form>
