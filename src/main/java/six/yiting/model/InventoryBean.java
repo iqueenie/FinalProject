@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import six.pinhong.model.Product;
 
 @Entity @Table(name="inventory")
 public class InventoryBean implements java.io.Serializable {
@@ -23,7 +24,8 @@ public class InventoryBean implements java.io.Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int inventoryId;
 	private String buyCode;
-
+	
+	@Column(name="PRODUCTID",insertable=false,updatable=false)
 	private int productId;
 	private int invNum;
 	private LocalDate deliveryDate;
@@ -33,7 +35,9 @@ public class InventoryBean implements java.io.Serializable {
 	@JoinColumn(name="STOREID")
 	private StoresBean store;
 	
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PRODUCTID")
+	private Product product;
 	
 	public int getInventoryId() {
 		return inventoryId;
@@ -79,7 +83,13 @@ public class InventoryBean implements java.io.Serializable {
 		this.store = store;
 	}
 	
-	
+
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
 	
 }
