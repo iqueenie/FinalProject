@@ -23,7 +23,7 @@ public class IndexController {
 	private OrderDetailService orderDetailService;
 
 	@ResponseBody
-	@GetMapping("/GetMonthlyRegistrations")
+	@GetMapping("/private/GetMonthlyRegistrations")
 	public List<Map<String, Object>> getMonthlyRegistrations() {
 		
 		List<Object[]> list = membersService.countRegistrationsPerMonth();
@@ -42,19 +42,19 @@ public class IndexController {
 	}
 	
 	@ResponseBody
-    @GetMapping("/GetMonthlySalesByProductType")
+    @GetMapping("/private/GetMonthlySalesByProductType")
     public List<Object[]> getMonthlySalesByProductType() {
         return orderDetailService.getMonthlySalesByProductType();
     }
     
     @ResponseBody
-    @GetMapping("/GetTotalSalesByProductType")
+    @GetMapping("/private/GetTotalSalesByProductType")
     public List<Object[]> getTotalSalesByProductType() {
         return orderDetailService.getTotalSalesByProductType();
     }
     
     @ResponseBody
-    @GetMapping("/GetTop5BestSellingProducts")
+    @GetMapping("/private/GetTop5BestSellingProducts")
     public List<Object[]> getTop5BestSellingProducts() {
         return orderDetailService.getTop5BestSellingProducts();
     }

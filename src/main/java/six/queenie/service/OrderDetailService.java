@@ -33,7 +33,7 @@ public class OrderDetailService {
     }
     
     public List<Object[]> getTotalSalesByProductType() {
-        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate startDate = LocalDate.now().minusMonths(12).withDayOfMonth(1);
         return oDRepository.findTotalSalesByProductType(startDate);
     }
 
