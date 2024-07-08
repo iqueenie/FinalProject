@@ -1,5 +1,6 @@
 package six.queenie.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,18 @@ public class OrderDetailService {
         
         oDRepository.saveOrderDetails(orderDetailsList, order); 
     }
+    
+    public List<Object[]> getMonthlySalesByProductType() {
+        LocalDate startDate = LocalDate.now().minusMonths(12).withDayOfMonth(1);
+        return oDRepository.findMonthlySalesByProductType(startDate);
+    }
+    
+    public List<Object[]> getTotalSalesByProductType() {
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        return oDRepository.findTotalSalesByProductType(startDate);
+    }
 
+    public List<Object[]> getTop5BestSellingProducts() {
+        return oDRepository.findTop5BestSellingProducts();
+    }
 }
