@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
+import six.pinhong.service.ProductService;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupBuyRepository;
 import six.sunny.model.GroupMember;
-import six.sunny.model.StoreNameRepository;
 import six.yiting.model.StoresBean;
+import six.yiting.service.StoreService;
 
 @Service
 public class GroupBuyService{
@@ -24,10 +25,10 @@ public class GroupBuyService{
 	private GroupBuyRepository groupBuyRepo;
 	
 	@Autowired
-	private ProductRepository productService;
+	private ProductService productService;
 	
 	@Autowired
-	private StoreNameRepository storeService;
+	private StoreService storeService;
 	
 	@Autowired
 	private GroupMemberService groupMemberService;
@@ -39,8 +40,8 @@ public class GroupBuyService{
 	
 	public GroupBuy insert(GroupBuy groupBuy) {
 		
-		Product product = productService.findById(groupBuy.getProductId()).get();
-		StoresBean store = storeService.findById(groupBuy.getStoreId()).get();
+		Product product = productService.findProductById(groupBuy.getProductId());
+		StoresBean store = storeService.findStoreById(groupBuy.getStoreId());
 		
 		groupBuy.setProduct(product);
 		groupBuy.setStore(store);
@@ -83,8 +84,8 @@ public class GroupBuyService{
 		
 		GroupBuy groupBuy2 = groupBuyRepo.findById(groupBuy.getGroupBuyId()).get();
 		
-		groupBuy2.setProduct(productService.findById(groupBuy.getProductId()).get());
-		groupBuy2.setStore(storeService.findById(groupBuy.getStoreId()).get());
+		groupBuy2.setProduct(productService.findProductById(groupBuy.getProductId()));
+		groupBuy2.setStore(storeService.findStoreById(groupBuy.getStoreId()));
 		groupBuy2.setOrderDate(groupBuy.getOrderDate());
 		groupBuy2.setArrivalDate(groupBuy.getArrivalDate());
 		groupBuy2.setTargetQuantity(groupBuy.getTargetQuantity());

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import six.hsiao.model.MembersBean;
+import six.hsiao.service.MembersService;
 import six.sunny.model.GroupMember;
-import six.sunny.model.MemberNameRepository;
 import six.sunny.service.GroupBuyService;
 import six.sunny.service.GroupMemberService;
 
@@ -29,10 +29,7 @@ public class GroupMemberController {
 	private GroupMemberService groupMemberService;
 	
 	@Autowired
-	private GroupBuyService groupBuyService;
-	
-	@Autowired
-	private MemberNameRepository membersService;
+	private MembersService membersService;
 	
 	@GetMapping("private/GetGroupMemberByGroupBuy")
 	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, @RequestParam(value = "pus", defaultValue = "null") String pus, Model m) {

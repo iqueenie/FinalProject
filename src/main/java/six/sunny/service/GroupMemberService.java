@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
+import six.hsiao.service.MembersService;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
 import six.sunny.model.GroupMemberRepository;
-import six.sunny.model.MemberNameRepository;
 
 @Service
 public class GroupMemberService{
@@ -25,7 +25,7 @@ public class GroupMemberService{
 	private GroupBuyService groupBuyService;
 	
 	@Autowired
-	private MemberNameRepository membersService;
+	private MembersService membersService;
 
 	
 	public List<GroupMember> findAll() {
@@ -34,7 +34,7 @@ public class GroupMemberService{
 
 	public GroupMember insert(GroupMember groupMember) {
 		
-		groupMember.setMember(membersService.findById(groupMember.getMemberId()).get());
+		groupMember.setMember(membersService.findByMemberId(groupMember.getMemberId()));
 		groupMember.setGroupBuy(groupBuyService.findById(groupMember.getGroupBuyId()));
 		groupMember.setPickupStatus("已訂購");
 		
@@ -89,7 +89,7 @@ public class GroupMemberService{
 		
 		GroupMember groupMember2 = groupMemberRepo.findById(groupMember.getGroupMemberId()).get();
 		
-		groupMember2.setMember(membersService.findById(groupMember.getMemberId()).get());
+		groupMember2.setMember(membersService.findByMemberId(groupMember.getMemberId()));
 		groupMember2.setGroupBuy(groupBuyService.findById(groupMember.getGroupBuyId()));
 		groupMember2.setQuantity(groupMember.getQuantity());
 		

@@ -20,9 +20,9 @@ import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
 import six.sunny.model.GroupBuy;
-import six.sunny.model.StoreNameRepository;
 import six.sunny.service.GroupBuyService;
 import six.yiting.model.StoresBean;
+import six.yiting.service.StoreService;
 
 @Controller
 public class GroupBuyController {
@@ -36,7 +36,7 @@ public class GroupBuyController {
 	
 //	TODO
 	@Autowired
-	private StoreNameRepository storeService;
+	private StoreService storeService;
 	
 	@RequestMapping(path = "private/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m) {
@@ -54,7 +54,7 @@ public class GroupBuyController {
 //		}
 
 //		右上角查詢下拉式選單用的store和product清單
-		List<StoresBean> stns = storeService.findAll();
+		List<StoresBean> stns = storeService.findAllStores();
 		List<Product> pdns = productService.findAll();
 		
 		m.addAttribute("gbs", gbs);
@@ -90,7 +90,7 @@ public class GroupBuyController {
 	public String insertGroupBuyForm(Model m) {
 //		取得表單填寫所需的List
 		List<Product> pdns = productService.findAll();
-		List<StoresBean> stns = storeService.findAll();
+		List<StoresBean> stns = storeService.findAllStores();
 		
 		m.addAttribute("pdns", pdns);
 		m.addAttribute("stns", stns);
@@ -120,7 +120,7 @@ public class GroupBuyController {
 	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m) {		
 //		取得下拉式選單會用到的資料
 		List<Product> pdns = productService.findAll();
-		List<StoresBean> stns = storeService.findAll();
+		List<StoresBean> stns = storeService.findAllStores();
 		
 		GroupBuy nowGb = groupBuyService.findById(groupBuyId);
 		
