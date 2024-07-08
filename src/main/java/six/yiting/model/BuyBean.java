@@ -10,6 +10,8 @@ import java.util.Set;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,10 +25,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.UniqueConstraint;
 
 
 
-@Entity @Table(name="storeBuy")
+@Entity 
+@Table(name = "storeBuy")
 public class BuyBean implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -39,9 +43,11 @@ public class BuyBean implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	private LocalDate arrivedDate;
 	
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="STOREID")
 	private StoresBean store;
+	
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "buy", cascade = CascadeType.ALL)
 	private Set<DetailBean> details = new LinkedHashSet<DetailBean>();
