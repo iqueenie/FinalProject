@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import six.hsiao.model.MembersBean;
 import six.hsiao.model.MembersRepository;
+import six.pinhong.model.ProductImage;
 
 
 @Service
@@ -40,15 +41,33 @@ public class MembersService {
 		return null;
 	}
 	
-	//新增,更新
+	//新增
 	public MembersBean insertMembers(MembersBean members) {
 		return membersRepo.save(members);
 	}
+	
+	  public MembersBean updateMembers(MembersBean updatedMember) {
+	        
+	        return membersRepo.save(updatedMember);
+	    }
+	
 	
 	//刪除
 	public void deleteMembersById(Integer id) {
 		membersRepo.deleteById(id);
 	}
+	
+		// 找圖片 BY ID
+		public MembersBean findImageById(Integer id) {
+			Optional<MembersBean> optional = membersRepo.findById(id);
+			
+			if (optional.isPresent()) {
+				MembersBean MembersBeanImage = optional.get();
+				return MembersBeanImage;
+			}
+			
+			return null;
+		}
 	
 	
 }

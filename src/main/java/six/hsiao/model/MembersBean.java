@@ -3,7 +3,7 @@ package six.hsiao.model;
 
 import java.time.LocalDate;
 
-
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
@@ -45,7 +45,7 @@ public class MembersBean {
 	
 	private String lockStatus="正常"; //這裡有改
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate registrationDate;
 	
@@ -58,15 +58,6 @@ public class MembersBean {
 
 
 
-
-
-
-	
-
-
-
-
-
 	public Integer getMemberId() {
 		return memberId;
 	}
@@ -74,28 +65,9 @@ public class MembersBean {
 
 
 
-
-
-
-
-
-
-
-
-
 	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
 	}
-
-
-
-
-
-
-
-
-
-
 
 
 
