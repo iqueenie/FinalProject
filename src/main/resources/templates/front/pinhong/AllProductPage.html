@@ -20,6 +20,11 @@
         .product-item:hover .product-image img {
             transform: scale(1.05);
         }
+        .fixed-pagination {
+		    position: fixed;
+		    bottom: -15px;
+		    width: 100%;
+		}
     </style>
     <title>12欄</title>
 </head>
@@ -82,7 +87,7 @@
          	<div class="pt-2"> 總共有 <span th:text="${page.totalElements}" class="text-danger fw-bold fs-5"></span> 筆商品</div>
             
             
-        <ul class="pagination pt-2" th:if="${ page.totalPages != 0 }">
+        <ul class="pagination pt-2 fixed-pagination" th:if="${ page.totalPages != 0 }">
 
         <!-- 第一頁 -->
         <th:block th:switch="${page.number != 0}">

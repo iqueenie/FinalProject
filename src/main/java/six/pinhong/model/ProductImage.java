@@ -3,7 +3,6 @@ package six.pinhong.model;
 import java.io.Serializable;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.GenericGenerators;
 import org.hibernate.annotations.Parameter;
 import org.springframework.stereotype.Component;
 

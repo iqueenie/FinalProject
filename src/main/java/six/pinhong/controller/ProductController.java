@@ -52,8 +52,8 @@ public class ProductController {
 	
 	// 新增進入點
 	@GetMapping("/Product/AddProductPage")
-	public String productInsertMain(Model m) {
-		m.addAttribute("product", new Product());
+	public String productInsertMain() {
+
 		return "back/pinhong/InsertProduct";
 	}
 	
@@ -67,11 +67,12 @@ public class ProductController {
 			@RequestParam Integer productExpirydate,
 			@RequestParam String productDescription,
 			@RequestParam Integer productPublished,
+			@RequestParam Integer productQuantity,
 			@RequestParam MultipartFile imageFile,
 			Model m
 			) throws IOException{
 		
-		Product product = new Product(productName,productType,productCost,productPrice,productExpirydate,productDescription,productPublished);
+		Product product = new Product(productName,productType,productCost,productPrice,productExpirydate,productDescription,productPublished,productQuantity);
 		ProductImage productImage = new ProductImage(imageFile.getBytes());
 		
 		product.setProductImage(productImage);
