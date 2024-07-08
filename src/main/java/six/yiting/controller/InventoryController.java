@@ -203,7 +203,7 @@ public class InventoryController {
 	}
 	
 	@GetMapping("/inventory/edit")
-	public String editStore(@RequestParam Integer id, Model model) {
+	public String editInv(@RequestParam Integer id, Model model) {
 		InventoryBean inv = invService.findInvById(id);
 		
 		model.addAttribute("inv", inv);

@@ -52,15 +52,17 @@
                         <td><a th:href="@{/detail/getDetail(purchaseId=${buy.purchaseId})}"
                                 class="btn btn-outline-primary btn-sm">查看明細</a></td>
                         <td>
-                            <form th:action="@{/buy/check}" method="get">
+                            <form th:action="@{/buy/check}" method="get" class="myform">
                                 <input type="hidden" th:name="id" th:value="${buy.purchaseId}">
                                 <th:block th:if="${buy.checkToInv}">
-                                    <a th:href="@{/inventory/findAll}" class="btn btn-outline-info btn-sm check"
+                                    <a th:href="@{/inventory/findAll}" class="btn btn-outline-info btn-sm"
                                         th:text="查看存貨">
                                     </a>
                                 </th:block>
                                 <th:block th:unless="${buy.checkToInv}">
-                                    <button type="submit" class="btn btn-outline-info btn-sm check" th:text="到貨確認">
+                                    <button type="submit" class="btn btn-outline-info btn-sm check" th:text="到貨確認"
+                                        th:disabled="${#dates.create(buy.arrivedDate.year, buy.arrivedDate.monthValue, buy.arrivedDate.dayOfMonth)
+                        			> #dates.createNow()}">
                                     </button>
                                 </th:block>
                             </form>
@@ -126,10 +128,6 @@
         $('#myTable').DataTable({});
 
 
-
-
-
-
         function confirmDelete(id) {
             Swal.fire({
                 title: "確定要刪除嗎？",
@@ -150,7 +148,6 @@
         function deleteBuy(id) {
             axios.delete(`http://localhost:8080/FinalProject/buy/delete?id=${id}`)
                 .then(res => {
-                    console.log(res);
                     if (res.data === "success") {
                         // 刪除成功後重新加載數據
                         reloadTableData();
@@ -177,25 +174,69 @@
                     var data = response.data;
                     table.clear(); // 清空表格
                     data.forEach(buy => {
-                        table.row.add([
-                            buy.purchaseId,
-                            buy.store.storeId,
-                            buy.store.storeName,
-                            buy.arrivedDate,
-                            `<button onclick="confirmDelete(${buy.purchaseId})" class="btn btn-outline-danger btn-sm">刪除</button>`,
-                            `<a class="btn btn-outline-primary btn-sm" href="/FinalProject/detail/getDetail?purchaseId=${buy.purchaseId}">查看明細</a>`
-                        ]);
+                        // 将日期字符串转换为日期对象
+                        let arrivedDate = new Date(buy.arrivedDate);
+                        let disabledAttr = buy.checkToInv ? 'disabled' : '';
+
+                        // 调试日期比较逻辑
+                        console.log('arrivedDate:', arrivedDate);
+                        console.log('Current Date:', new Date());
+
+                        // 比较日期对象
+                        let disabledDateAttr = arrivedDate > new Date() ? 'disabled' : '';
+
+                        let html = `
+                <tr>
+                    <td>${buy.purchaseId}</td>
+                    <td>${buy.store.storeId}</td>
+                    <td>${buy.store.storeName}</td>
+                    <td>${buy.arrivedDate}</td>
+                    <td>
+                        <form action="/FinalProject/detail/editPage" method="get">
+                            <input type="hidden" name="purchaseId" value="${buy.purchaseId}">
+                            <button type="submit" class="btn btn-outline-warning btn-sm update" ${disabledAttr}>
+                                更新
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <button onclick="confirmDelete(${buy.purchaseId})" class="btn btn-outline-danger btn-sm delete" ${disabledAttr}>
+                            刪除
+                        </button>
+                    </td>
+                    <td>
+                        <a href="/FinalProject/detail/getDetail?purchaseId=${buy.purchaseId}" class="btn btn-outline-primary btn-sm">
+                            查看明細
+                        </a>
+                    </td>
+                    <td>
+                        <form action="/FinalProject/buy/check" method="get" class="myform">
+                            <input type="hidden" name="id" value="${buy.purchaseId}">
+                            ${buy.checkToInv ?
+                                `<a href="/FinalProject/inventory/findAll" class="btn btn-outline-info btn-sm">
+                                    查看存貨
+                                </a>`: `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
+                                    到貨確認
+                                </button>` }
+                        </form>
+                    </td>
+                </tr>`;
+
+                        let rowNode = table.row.add($(html)[0]).node();
+
+                        // 恢复禁用状态
+                        $(rowNode).find('.btn').prop('disabled', function () {
+                            return $(this).attr('disabled') === 'disabled';
+                        });
                     });
 
+                    table.draw(false); // 重新绘制表格
 
-
-                    table.draw(false); // 重新繪製表格
-
-                    // 檢查是否需要恢復到之前的頁碼
+                    // 检查是否需要恢复到之前的页码
                     if (currentPage > 0 && data.length % pageLength === 0 && (data.length / pageLength) - 1 !== currentPage) {
-                        table.page(currentPage - 1).draw(false); // 顯示上一頁
+                        table.page(currentPage - 1).draw(false); // 显示上一页
                     } else {
-                        // 當前頁碼沒有改變
+                        // 当前页码没有改变
                         table.page(currentPage).draw(false);
                     }
                 })
@@ -203,6 +244,25 @@
                     console.error(err);
                 });
         }
+
+        $('.myform').submit(function (event) {
+            event.preventDefault();
+            var form = event.currentTarget;
+            Swal.fire({
+                title: "確認到貨嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                cancelButtonColor: "gray",
+                confirmButtonText: "確認",
+                cancelButtonText: "取消",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // 提交表单
+                }
+            });
+        });
 
 
     </script>

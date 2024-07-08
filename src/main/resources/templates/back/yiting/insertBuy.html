@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control" name="arrivedDate" placeholder="arrivedDate" required>
+                        <input type="date" class="form-control arrivedDate" name="arrivedDate" placeholder="arrivedDate" required>
                         <label for="arrivedDate">到貨日</label>
                     </div>
                 </div>
@@ -83,6 +83,16 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
         $(function () {
+        
+        	
+        	// 设置最小可选日期为今天的两天后
+            var today = new Date();
+            var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() +3);
+            var formattedMinDate = minDate.toISOString().split('T')[0];
+            $('.arrivedDate').attr('min', formattedMinDate);
+        	
+        
+        
             var initialProductOptions = []; // 初始化空数组来存储所有的产品选项值
 
             // 页面加载完成后获取所有产品选项的值

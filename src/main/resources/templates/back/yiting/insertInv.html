@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control" name="deliveryDate" placeholder="deliveryDate" required>
+                        <input type="date" class="form-control deliveryDate" name="deliveryDate" placeholder="deliveryDate" required>
                         <label for="deliveryDate">送貨日</label>
                     </div>
                 </div>
@@ -82,6 +82,11 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
         $(function () {
+        var today = new Date();
+		var formattedToday = today.toISOString().split('T')[0];
+		$('.deliveryDate').attr('max', formattedToday);
+
+
             var initialProductOptions = []; // 初始化空数组来存储所有的产品选项值
 
             // 页面加载完成后获取所有产品选项的值

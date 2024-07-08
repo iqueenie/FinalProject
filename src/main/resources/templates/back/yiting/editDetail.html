@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control" name="arrivedDate" placeholder="arrivedDate"
+                        <input type="date" class="form-control arrivedDate" name="arrivedDate" placeholder="arrivedDate"
                             th:value="${buy.arrivedDate}">
                         <label for="arrivedDate">到貨日</label>
                     </div>
@@ -121,8 +121,15 @@
             $('.productName option').each(function () {
                 initialProductOptions.push($(this).val());
             });
-
+            
             console.log(initialProductOptions);
+            
+            // 设置最小可选日期为今天的两天后
+            var today = new Date();
+            var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() +3);
+            var formattedMinDate = minDate.toISOString().split('T')[0];
+            $('.arrivedDate').attr('min', formattedMinDate);
+            
             $(document).on('click', '.productName', function () {
                 var selectedProductIds = []; // 存储已选择的产品ID
 
