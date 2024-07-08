@@ -22,9 +22,11 @@ import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.yiting.model.BuyBean;
 import six.yiting.model.DetailBean;
+import six.yiting.model.InventoryBean;
 import six.yiting.model.StoresBean;
 import six.yiting.service.BuyService;
 import six.yiting.service.DetailService;
+import six.yiting.service.InventoryService;
 import six.yiting.service.StoreService;
 
 @Controller
@@ -42,6 +44,9 @@ public class BuyController {
 	@Autowired
 	private DetailService detailService;
 	
+	@Autowired
+	private InventoryService invService;
+	
 	
 	@GetMapping("/buy/findAll")
 	public String findAllBuys(Model model) {
@@ -49,7 +54,6 @@ public class BuyController {
 		List<BuyBean> listBuys = buyService.findAllBuys();
 		
 		model.addAttribute("listBuys",listBuys);
-		
 		
 		return "back/yiting/GetAllBuys";
 	}
@@ -96,6 +100,7 @@ public class BuyController {
 			BuyBean buybean= new BuyBean();
 			buybean.setArrivedDate(arrivedDate);
 			buybean.setStore(storeService.findStoreById(storeId));
+			
 			BuyBean buy=buyService.saveBuy(buybean); // 假设这里是调用业务逻辑来保存数据的方法
 			
 			System.out.println("ProductIdLength: "+productId.length);
@@ -115,26 +120,77 @@ public class BuyController {
 	
 	@DeleteMapping("/buy/delete")
 	@ResponseBody
-	public String deleteStore(@RequestParam("id") Integer id) {
+	public String deleteBuy(@RequestParam("id") Integer id) {
 	    buyService.deleteBuy(id);
 	    detailService.deleteDetailByPurchaseId(id);
 	    return "success"; 
 	}
 	
-	@GetMapping("/buy/edit")
-	public String editStore(@RequestParam Integer id, Model model) {
-		StoresBean store = storeService.findStoreById(id);
-		
-		model.addAttribute("store", store);
-		
-		return "back/yiting/editStore";
-	}
 	
-	@PutMapping("/buy/editPost")
-	public String editPost(@ModelAttribute StoresBean store) {
-		storeService.saveStore(store);
+	
+	@GetMapping("/buy/check")
+    public String buyCheck(@RequestParam("id") Integer id,Model m) {
 		
-		return "redirect:/stores/findAll";
+		BuyBean buy = buyService.findBuyById(id);
+		
+		
+		
+		List<DetailBean> details = detailService.findByPurchaseId(id);
+		
+		
+		String productSelect="";
+		boolean finalResult=false;
+		for(DetailBean detail:details) {
+			boolean result = invService.checkInvExist(detail.getBuy().getArrivedDate(),detail.getProduct().getProductId(),detail.getBuy().getStore());
+			if(result) {
+				finalResult=true;
+				productSelect=productSelect+"、"+detail.getProduct().getProductName();
+				
+				
+			}
+		}
+		
+		if(finalResult) {
+			m.addAttribute("hasError", true);
+			m.addAttribute("errorBuy","商品: "+productSelect+"，已存在存貨中，將覆蓋原有存貨紀錄");
+			List<BuyBean> listBuys = buyService.findAllBuys();
+			m.addAttribute("listBuys",listBuys);
+			m.addAttribute("id",id);
+			
+			
+			return "back/yiting/GetAllBuys";
+		}else {
+		
+		for(DetailBean detail:details) {
+			
+			InventoryBean invbean= new InventoryBean();
+			LocalDate deliveryDate = detail.getBuy().getArrivedDate();
+			invbean.setDeliveryDate(deliveryDate);
+			int storeId = detail.getBuy().getStore().getStoreId();
+			invbean.setStore(storeService.findStoreById(storeId));
+			invbean.setProductId(detail.getProduct().getProductId());
+			invbean.setProduct(detail.getProduct());
+			invbean.setInvNum(detail.getPurchaseNum());
+			
+ 			
+ 			int days =detail.getProduct().getProductExpirydate();
+ 			LocalDate expDate = deliveryDate.plusDays(days);
+ 			invbean.setExpDate(expDate);
+ 			String buycode = Integer.toString(detail.getProduct().getProductId()) + expDate.toString();
+			buycode = buycode.replace("-", "");
+			if (buycode.length() < 12) {
+				buycode = String.format("%1$" + 12 + "s", buycode).replace(' ', '0');
+			}
+			invbean.setBuyCode(buycode);
+			buy.setCheckToInv(true);
+			buyService.saveBuy(buy);
+ 			
+ 			invService.saveInventory(invbean);
+		}
+		
+		
+		return "redirect:/buy/findAll";
+		}
 	}
 
 }

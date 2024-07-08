@@ -53,6 +53,18 @@ public class InventoryService {
 		
 	}
 	
+	public InventoryBean findInvCondition(LocalDate deliveryDate,Integer productId,StoresBean store) {
+		
+		InventoryBean inv = invRepo.findByProductIdAndDeliveryDateAndStore(productId, deliveryDate, store);
+		
+		if(inv == null) {
+			return null;
+		}
+		
+		return inv;
+	} 
+	
+	
 	
 
 }

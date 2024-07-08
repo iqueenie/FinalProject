@@ -14,10 +14,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container mt-3">
         <div class="d-flex justify-content-center align-items-center">
-            <form method="get" th:action="@{/detail/editPage}" th:object="${buyBean}">
-                <input type="hidden" th:field="*{purchaseId}"  />
-                <button class="btn btn-outline-warning" type="submit">更新</button>
-            </form>
+            
             <h1 class="m-auto">採購明細</h1>
            
         </div>

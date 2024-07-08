@@ -21,6 +21,8 @@ import six.yiting.model.BuyBean;
 import six.yiting.model.DetailBean;
 import six.yiting.model.InventoryBean;
 import six.yiting.model.StoresBean;
+import six.yiting.service.BuyService;
+import six.yiting.service.DetailService;
 import six.yiting.service.InventoryService;
 import six.yiting.service.StoreService;
 
@@ -33,6 +35,10 @@ public class InventoryController {
 	private StoreService storeService;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private BuyService buyService;
+	@Autowired
+	private DetailService detailService;
 	
 	
 	@GetMapping("/inventory/findAll")
@@ -119,6 +125,74 @@ public class InventoryController {
 				return "redirect:/inventory/findAll";
 		}
 	}
+	
+	
+	@GetMapping("/inventory/addByBuy")
+	@ResponseBody
+    public String invBuyCheck(@RequestParam("id") Integer id,Model m) {
+		
+		BuyBean buy = buyService.findBuyById(id);
+		
+		
+		
+		List<DetailBean> details = detailService.findByPurchaseId(id);
+		
+		
+		for(DetailBean detail:details) {
+			boolean result = invService.checkInvExist(detail.getBuy().getArrivedDate(),detail.getProduct().getProductId(),detail.getBuy().getStore());
+			if(result) {
+				LocalDate deliveryDate = detail.getBuy().getArrivedDate();
+				InventoryBean invbean = invService.findInvCondition(deliveryDate,detail.getProduct().getProductId(), detail.getBuy().getStore());
+				invbean.setDeliveryDate(deliveryDate);
+				int storeId = detail.getBuy().getStore().getStoreId();
+				invbean.setStore(storeService.findStoreById(storeId));
+				invbean.setProductId(detail.getProduct().getProductId());
+				invbean.setProduct(detail.getProduct());
+				invbean.setInvNum(detail.getPurchaseNum());
+				
+	 			
+	 			int days =detail.getProduct().getProductExpirydate();
+	 			LocalDate expDate = deliveryDate.plusDays(days);
+	 			invbean.setExpDate(expDate);
+	 			String buycode = Integer.toString(detail.getProduct().getProductId()) + expDate.toString();
+				buycode = buycode.replace("-", "");
+				if (buycode.length() < 12) {
+					buycode = String.format("%1$" + 12 + "s", buycode).replace(' ', '0');
+				}
+				invbean.setBuyCode(buycode);
+				buy.setCheckToInv(true);
+				buyService.saveBuy(buy);
+				
+				invService.saveInventory(invbean);
+			}else {
+				InventoryBean invbean= new InventoryBean();
+				LocalDate deliveryDate = detail.getBuy().getArrivedDate();
+				invbean.setDeliveryDate(deliveryDate);
+				int storeId = detail.getBuy().getStore().getStoreId();
+				invbean.setStore(storeService.findStoreById(storeId));
+				invbean.setProductId(detail.getProduct().getProductId());
+				invbean.setProduct(detail.getProduct());
+				invbean.setInvNum(detail.getPurchaseNum());
+				
+	 			
+	 			int days =detail.getProduct().getProductExpirydate();
+	 			LocalDate expDate = deliveryDate.plusDays(days);
+	 			invbean.setExpDate(expDate);
+	 			String buycode = Integer.toString(detail.getProduct().getProductId()) + expDate.toString();
+				buycode = buycode.replace("-", "");
+				if (buycode.length() < 12) {
+					buycode = String.format("%1$" + 12 + "s", buycode).replace(' ', '0');
+				}
+				invbean.setBuyCode(buycode);
+				buy.setCheckToInv(true);
+				buyService.saveBuy(buy);
+	 			
+	 			invService.saveInventory(invbean);
+			}
+		}
+		return "Success";
+	}
+	
 	
 	
 	@DeleteMapping("/inventory/delete")

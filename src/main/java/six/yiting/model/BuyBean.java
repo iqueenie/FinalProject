@@ -38,6 +38,8 @@ public class BuyBean implements java.io.Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int purchaseId;
 	
+	
+	private boolean checkToInv;
 
 	@DateTimeFormat(pattern = "yyyy/MM/dd") //若要在thymeleaf強制使用本格式，需雙層大括號
 	@Temporal(TemporalType.DATE)
@@ -74,6 +76,12 @@ public class BuyBean implements java.io.Serializable {
 	}
 	public void setStore(StoresBean store) {
 		this.store = store;
+	}
+	public boolean isCheckToInv() {
+		return checkToInv;
+	}
+	public void setCheckToInv(boolean checkToInv) {
+		this.checkToInv = checkToInv;
 	}
 	
 	
