@@ -72,7 +72,7 @@ public class StoreLikeController {
 			@RequestParam("memberId") Integer memberId,Model m) {
 		
 		StoresBean store = storeService.findStoreById(storeId);
-		MembersBean member = membersService.findProductById(memberId);
+		MembersBean member = membersService.findByMemberId(memberId);
 		
 		boolean result = likeService.checkLikeExist(store, member);
 		
@@ -120,7 +120,7 @@ public class StoreLikeController {
 	public String editPost(@RequestParam("storeId") Integer storeId,
 			@RequestParam("memberId") Integer memberId,@RequestParam("likeId") Integer likeId,Model m) {
 		StoresBean store = storeService.findStoreById(storeId);
-		MembersBean member = membersService.findProductById(memberId);
+		MembersBean member = membersService.findByMemberId(memberId);
 		
 		boolean result = likeService.checkLikeExist(store, member);
 		
