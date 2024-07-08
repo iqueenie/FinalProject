@@ -35,12 +35,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetails, Integ
 	List<Object[]> findTotalSalesByProductType(@Param("startDate") LocalDate startDate);
 	
 
-    @Query("SELECT p.productName, SUM(od.subTotal) as totalSales " +
-           "FROM OrderDetails od " +
-           "JOIN od.product p " +
-           "GROUP BY p.productName " +
-           "ORDER BY totalSales DESC " +
-           "LIMIT 5")
+	@Query("SELECT p.productName, SUM(od.quantity) as totalQuantity " +
+		       "FROM OrderDetails od " +
+		       "JOIN od.product p " +
+		       "GROUP BY p.productName " +
+		       "ORDER BY totalQuantity DESC " +
+		       "LIMIT 5")
     List<Object[]> findTop5BestSellingProducts();
 
 }
