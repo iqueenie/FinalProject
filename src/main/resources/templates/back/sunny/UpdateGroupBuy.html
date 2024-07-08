@@ -21,7 +21,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
 
     <div class="container d-flex justify-content-center">
-        <form th:action="@{/back/UpdateGroupBuy}" th:method="PUT" th:object="${groupBuy}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <form th:action="@{/private/UpdateGroupBuy}" th:method="PUT" th:object="${groupBuy}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
             <div class="row g-2 m-2">
                 <h2 class="col-12 text-center">更新團購</h2>
 
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
-                    <a th:href="@{/back/GetAllGroupBuy}" class="btn btn-secondary me-2">返回</a>
+                    <a th:href="@{/private/GetAllGroupBuy}" class="btn btn-secondary me-2">返回</a>
                     <button type="submit" class="btn btn-success">更新</button>
                 </div>
             </div>

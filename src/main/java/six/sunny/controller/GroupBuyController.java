@@ -38,7 +38,7 @@ public class GroupBuyController {
 	@Autowired
 	private StoreNameRepository storeService;
 	
-	@RequestMapping(path = "back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+	@RequestMapping(path = "private/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m) {
 
 //		List<GroupBuyBean> gbs = null;
@@ -65,7 +65,7 @@ public class GroupBuyController {
 	}
 	
 	@ResponseBody
-	@GetMapping("back/FindByProductIdAndStoreId")
+	@GetMapping("private/FindByProductIdAndStoreId")
 	public List<GroupBuy> findByProductIdAndStoreId(
 			@RequestParam(value = "storeId", defaultValue = "") String storeId, 
 			@RequestParam(value = "productId", defaultValue = "") String productId) {
@@ -86,7 +86,7 @@ public class GroupBuyController {
 		
 	}
 	
-	@GetMapping("back/InsertGroupBuyForm")
+	@GetMapping("private/InsertGroupBuyForm")
 	public String insertGroupBuyForm(Model m) {
 //		取得表單填寫所需的List
 		List<Product> pdns = productService.findAll();
@@ -99,14 +99,14 @@ public class GroupBuyController {
 		return "back/sunny/InsertGroupBuy";
 	}
 	
-	@PostMapping("back/InsertGroupBuy")
+	@PostMapping("private/InsertGroupBuy")
 	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
 		groupBuyService.insert(groupBuy);
-		return "redirect:/back/GetAllGroupBuy";
+		return "redirect:/private/GetAllGroupBuy";
 	}
 	
 	@ResponseBody
-	@DeleteMapping("back/DeleteGroupBuy")
+	@DeleteMapping("private/DeleteGroupBuy")
 	public ResponseEntity<Void> deleteGroupBuy(@RequestParam("id") Integer id, Model m) {
 		boolean isDeleted = groupBuyService.deleteById(id);
 	    if (isDeleted) {
@@ -116,7 +116,7 @@ public class GroupBuyController {
 	    }
 	}
 	
-	@GetMapping("back/UpdateGroupBuyForm")
+	@GetMapping("private/UpdateGroupBuyForm")
 	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m) {		
 //		取得下拉式選單會用到的資料
 		List<Product> pdns = productService.findAll();
@@ -131,7 +131,7 @@ public class GroupBuyController {
 		return "back/sunny/UpdateGroupBuy";
 	}
 	
-	@PutMapping("back/UpdateGroupBuy")
+	@PutMapping("private/UpdateGroupBuy")
 	public String updateGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuyBean) {
 
 
@@ -139,6 +139,6 @@ public class GroupBuyController {
 //		更新
 		groupBuyService.update(groupBuyBean);
 
-		return "redirect:/back/GetAllGroupBuy";
+		return "redirect:/private/GetAllGroupBuy";
 	}
 }
