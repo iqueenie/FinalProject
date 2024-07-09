@@ -39,7 +39,7 @@ public class OrderController {
 	
 
 	
-	@GetMapping("/GetAllOrders")
+	@GetMapping("/private/GetAllOrders")
 	public String getAllOrders(Model model) {
 		
 		List<Orders> orders = orderService.findAll();
@@ -56,7 +56,7 @@ public class OrderController {
     }
 	
 	
-	@GetMapping("/getStoreProduct")
+	@GetMapping("/private/getStoreProduct")
     public String showInsertOrder(Model model){
         List<StoresBean> storeList = stService.findAllStores();
         List<Product> productList = pService.findAll();      
@@ -66,13 +66,13 @@ public class OrderController {
         return "back/queenie/InsertOrder"; 
     }
 
-    @PostMapping("/insertOrder")
+    @PostMapping("/private/insertOrder")
     public String insertOrder(Model model, HttpServletRequest request) {
         Orders order = orderService.insertOrder(request);
         model.addAttribute("order", order);
-        return "redirect:/GetAllOrders"; 
+        return "redirect:/private/GetAllOrders"; 
     }
-    @GetMapping("/showOrder")
+    @GetMapping("/private/showOrder")
     public String showUpdate(@RequestParam("orderId") Integer orderId,Model model) {
     	
     	Orders order = orderService.getOrderById(orderId);
@@ -88,7 +88,7 @@ public class OrderController {
     }
    
 	
-	@PostMapping("/updateOrder")
+	@PostMapping("/private/updateOrder")
 	public String updateOrder(@RequestParam("orderId") Integer orderId,
 							  @RequestParam("storeId") Integer storeId,
 							  @RequestParam("paymentMethod") String paymentMethod,
@@ -104,7 +104,7 @@ public class OrderController {
 		updateBean.setStatus(status);
 
 		orderService.updateOrder(orderId, orderDate);
-		return "redirect:/GetAllOrders";
+		return "redirect:/private/GetAllOrders";
 	}
 
 

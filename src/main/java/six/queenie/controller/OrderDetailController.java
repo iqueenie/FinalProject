@@ -16,7 +16,7 @@ public class OrderDetailController {
     @Autowired
     OrderDetailService oddService;
 
-    @GetMapping("/ShowDetail")
+    @GetMapping("private/ShowDetail")
     public String getDetailsById(@RequestParam("orderId") int orderId, Model model) {
 
         List<OrderDetails> orderDetailsList = oddService.getOrderDetailsByOrderId(orderId);
