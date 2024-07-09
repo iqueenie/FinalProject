@@ -24,7 +24,7 @@ public class StoresController {
 	private StoreService storeService;
 	
 	
-	@GetMapping("/stores/findAll")
+	@GetMapping("/private/stores/findAll")
 	public String findAllStores(Model model) {
 		
 		List<StoresBean> listStores = storeService.findAllStores();
@@ -54,7 +54,7 @@ public class StoresController {
     public String storeInsert(@ModelAttribute("store")StoresBean store,Model model) {
 		storeService.saveStore(store);
 		model.addAttribute("store",store);
-		return "redirect:/stores/findAll";
+		return "redirect:/private/stores/findAll";
 		
 	}
 	
@@ -79,7 +79,7 @@ public class StoresController {
 	public String editPost(@ModelAttribute StoresBean store) {
 		storeService.saveStore(store);
 		
-		return "redirect:/stores/findAll";
+		return "redirect:/private/stores/findAll";
 	}
 
 }

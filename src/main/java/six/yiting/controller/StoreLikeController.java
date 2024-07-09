@@ -37,7 +37,7 @@ public class StoreLikeController {
 	private MembersService membersService;
 	
 	
-	@GetMapping("/like/findAll")
+	@GetMapping("/private/like/findAll")
 	public String findAllLikes(Model model) {
 		
 		List<StoreLikeBean> listLikes = likeService.findAllLikes();
@@ -72,7 +72,7 @@ public class StoreLikeController {
 			@RequestParam("memberId") Integer memberId,Model m) {
 		
 		StoresBean store = storeService.findStoreById(storeId);
-		MembersBean member = membersService.findProductById(memberId);
+		MembersBean member = membersService.findByMemberId(memberId);
 		
 		boolean result = likeService.checkLikeExist(store, member);
 		
@@ -90,7 +90,7 @@ public class StoreLikeController {
 			like.setStore(store);
 			likeService.saveLike(like);
 			
-			return "redirect:/like/findAll";
+			return "redirect:/private/like/findAll";
 		}
 		
 	}
@@ -120,7 +120,7 @@ public class StoreLikeController {
 	public String editPost(@RequestParam("storeId") Integer storeId,
 			@RequestParam("memberId") Integer memberId,@RequestParam("likeId") Integer likeId,Model m) {
 		StoresBean store = storeService.findStoreById(storeId);
-		MembersBean member = membersService.findProductById(memberId);
+		MembersBean member = membersService.findByMemberId(memberId);
 		
 		boolean result = likeService.checkLikeExist(store, member);
 		
@@ -139,7 +139,7 @@ public class StoreLikeController {
 			like.setStore(store);
 			likeService.saveLike(like);
 			
-			return "redirect:/like/findAll";
+			return "redirect:/private/like/findAll";
 		}
 	}
 	
