@@ -39,7 +39,7 @@ public class ManagementController {
 	            session.setAttribute("logInManagement", managementDTO);
 	            return "redirect:/private/back"; 
 	        } else {
-	            return "redirect://BackLoginMain";
+	            return "redirect:/public/BackLoginMain";
 	        }
 	    }
 	 
