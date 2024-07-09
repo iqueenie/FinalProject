@@ -68,68 +68,75 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
    <script>
-        $(document).ready(function() {
-            var table = $('#myTable').DataTable({
-                responsive: true,
-            });
+			  var table;
+			
+			$(document).ready(function() {
+			    table = $('#myTable').DataTable({
+			        responsive: true,
+			    });
+			
+			    checkOrderStatus();
+			
+			    table.on('draw', function () {
+			        checkOrderStatus();
+			    });
+			
+			    function checkOrderStatus() {
+			        $('#myTable tbody tr').each(function() {
+			            var status = $(this).find('td:eq(12)').text().trim();
+			
+			            if (status === 'Canceled') {
+			                $(this).find('.delete-btn').prop('disabled', true);
+			                $(this).find('.update-btn').addClass('disabled');
+			            } else {
+			                $(this).find('.delete-btn').prop('disabled', false);
+			                $(this).find('.update-btn').removeClass('disabled');
+			            }
+			        });
+			    }
+			});
+			
+			function deleteOrder(orderId, button) {
+			    Swal.fire({
+			        title: "確定要刪除嗎？",
+			        icon: "warning",
+			        showCancelButton: true,
+			        confirmButtonColor: "red",
+			        cancelButtonColor: "gray",
+			        confirmButtonText: "刪除",
+			        cancelButtonText: "取消",
+			        reverseButtons: true
+			    }).then((result) => {
+			        if (result.isConfirmed) {
+			            $.ajax({
+			                type: 'POST',
+			                url: '/FinalProject/deleteOrder',
+			                data: { orderId: orderId },
+			                success: function(response) {
+			                    var row = $(button).closest('tr');
+			                    row.find('td:eq(12)').text('Canceled');
+			                    row.find('.delete-btn').prop('disabled', true);
+			                    row.find('.update-btn').addClass('disabled');
+			
+			                    Swal.fire({
+			                        title: "刪除成功！",
+			                        icon: "success"
+			                    });
+			                },
+			                error: function(xhr, status, error) {
+			                    Swal.fire({
+			                        title: "刪除失敗！",
+			                        text: "請稍後再試",
+			                        icon: "error"
+			                    });
+			                }
+			            });
+			        }
+			    });
+			}
 
-            checkOrderStatus();
 
-            table.on('draw', function () {
-                checkOrderStatus();
-            });
 
-            function checkOrderStatus() {
-                $('#myTable tbody tr').each(function() {
-                    var status = $(this).find('td:eq(12)').text().trim();
-
-                    if (status === 'Canceled') {
-                        $(this).find('.delete-btn').prop('disabled', true);
-                        $(this).find('.update-btn').addClass('disabled');
-                    } else {
-                        $(this).find('.delete-btn').prop('disabled', false);
-                        $(this).find('.update-btn').removeClass('disabled');
-                    }
-                });
-            }
-
-            function deleteOrder(orderId, button) {
-                Swal.fire({
-                    title: "確定要刪除嗎？",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "red",
-                    cancelButtonColor: "gray",
-                    confirmButtonText: "刪除",
-                    cancelButtonText: "取消",
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: 'POST',
-                            url: '/FinalProject/deleteOrder', 
-                            data: { orderId: orderId },
-                            success: function(response) {
-                                var row = $(button).closest('tr');
-                                table.row(row).remove().draw(false);
-
-                                Swal.fire({
-                                    title: "刪除成功！",
-                                    icon: "success"
-                                });
-                            },
-                            error: function(xhr, status, error) {
-                                Swal.fire({
-                                    title: "刪除失敗！",
-                                    text: "請稍後再試",
-                                    icon: "error"
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
     </script>
 
 </body>

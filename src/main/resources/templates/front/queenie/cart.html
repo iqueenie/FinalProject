@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,445 +84,169 @@
     <div class="preloader">
     </div>
   </div>
-
-  <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
-    <div class="offcanvas-header justify-content-center">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div class="order-md-last">
+  
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
+  <div class="offcanvas-header justify-content-center">
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">您的購物車</span>
-          <span class="badge bg-primary rounded-pill">3</span>
+            <span class="text-primary">您的購物車</span>
+            <span class="badge bg-primary rounded-pill" th:text="${#lists.size(cartItems)}"></span>
         </h4>
-        <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Growers cider</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$12</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Fresh grapes</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$8</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Heinz tomato ketchup</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <span>Total (USD)</span>
-            <strong>$20</strong>
-          </li>
+        <ul class="list-group mb-3" th:if="${not #lists.isEmpty(cartItems)}">
+            <th:block th:each="product : ${cartItems}">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0" th:text="${product.productName}"></h6>
+                        <small class="text-body-secondary" th:text="${product.productDescription}"></small>
+                    </div>
+                    <span class="text-body-secondary" th:text="${product.productPrice}"></span>
+                </li>
+            </th:block>
+            <li class="list-group-item d-flex justify-content-between">
+                <strong>總金額</strong>
+                <span th:text="${total}"></span>
+            </li>
         </ul>
-
-        <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
-      </div>
+        <div th:if="${#lists.isEmpty(cartItems)}">
+            <p>請添加商品</p>
+        </div>
     </div>
+    <button class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
   </div>
-  
-  <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasSearch">
-    <div class="offcanvas-header justify-content-center">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div class="order-md-last">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Search</span>
-        </h4>
-        <form role="search" action="index.html" method="get" class="d-flex mt-3 gap-0">
-          <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="What are you looking for?" aria-label="What are you looking for?">
-          <button class="btn btn-dark rounded-end rounded-0" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-  </div>
+</div>
 
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
-
-    <div class="offcanvas-header justify-content-between">
-      <h4 class="fw-normal text-uppercase fs-6">Menu</h4>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-  
-      <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-        <li class="nav-item border-dashed active">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#fruits"></use></svg>
-            <span>Fruits and vegetables</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#dairy"></use></svg>
-            <span>Dairy and Eggs</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#meat"></use></svg>
-            <span>Meat and Poultry</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#seafood"></use></svg>
-            <span>Seafood</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#bakery"></use></svg>
-            <span>Bakery and Bread</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#canned"></use></svg>
-            <span>Canned Goods</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#frozen"></use></svg>
-            <span>Frozen Foods</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pasta"></use></svg>
-            <span>Pasta and Rice</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#breakfast"></use></svg>
-            <span>Breakfast Foods</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#snacks"></use></svg>
-            <span>Snacks and Chips</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <button class="btn btn-toggle dropdown-toggle w-100 d-flex justify-content-between align-items-center text-dark p-2" data-bs-toggle="collapse" data-bs-target="#beverages-collapse" aria-expanded="false">
-            <div class="d-flex gap-3">
-              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#beverages"></use></svg>
-              <span>Beverages</span>
+<section class="py-5">
+  <div class="container-lg">
+    <div class="row g-5">
+      <div class="col-md-8">
+       <div class="table-responsive cart">
+  <form th:action="@{/updateCartQuantities}" method="post">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" class="card-title text-uppercase text-muted">商品</th>
+          <th scope="col" class="card-title text-uppercase text-muted">單價</th>
+          <th scope="col" class="card-title text-uppercase text-muted">數量</th>
+          <th scope="col" class="card-title text-uppercase text-muted">小計</th>
+          <th scope="col" class="card-title text-uppercase text-muted"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${cartItems}"  data-productId="${product.productId}">
+          <td scope="row" class="py-4">
+            <div class="cart-info d-flex flex-wrap align-items-center mb-4">
+              <div class="col-lg-3">
+                <div class="card-image">
+                  <img th:src="@{/ProductPhoto(productId=${product.productId})}" th:alt="${product.productName}" class="img-fluid">
+                </div>
+              </div>
+              <div class="col-lg-9">
+                <div class="card-detail ps-3">
+                  <h5 class="card-title">
+                    <a th:href="@{/product/{productId}(productId=${product.productId})}" class="text-decoration-none" th:text="${product.productName}"></a>
+                  </h5>
+                </div>
+              </div>
             </div>
-          </button>
-          <div class="collapse" id="beverages-collapse">
-            <ul class="btn-toggle-nav list-unstyled fw-normal ps-5 pb-1">
-              <li class="border-bottom py-2"><a href="shop.html" class="dropdown-item">Water</a></li>
-              <li class="border-bottom py-2"><a href="shop.html" class="dropdown-item">Juice</a></li>
-              <li class="border-bottom py-2"><a href="shop.html" class="dropdown-item">Soda</a></li>
-              <li class="border-bottom py-2"><a href="shop.html" class="dropdown-item">Tea</a></li>
-            </ul>
-          </div>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spices"></use></svg>
-            <span>Spices and Seasonings</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#baby"></use></svg>
-            <span>Baby Food and Formula</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#health"></use></svg>
-            <span>Health and Wellness</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#household"></use></svg>
-            <span>Household Supplies</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#personal"></use></svg>
-            <span>Personal Care</span>
-          </a>
-        </li>
-        <li class="nav-item border-dashed">
-          <a href="shop.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pet"></use></svg>
-            <span>Pet Food and Supplies</span>
-          </a>
-        </li>
-      </ul>
-    
-    </div>
-
-  </div>
-
-  <header>
-    <div class="container-fluid">
-      <div class="row py-3 border-bottom">
-        
-        <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3">
-          <div class="d-flex align-items-center">
-            <a href="index.html">
-              <img src="images/logo.svg" alt="logo" class="img-fluid">
-            </a>
-          </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-            aria-controls="offcanvasNavbar">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
-          </button>
-        </div>
-        
-        <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-4 d-none d-lg-block">
-          <div class="search-bar row bg-light p-2 rounded-4">
-            <div class="col-md-4 d-none d-md-block">
-              <select class="form-select border-0 bg-transparent">
-                <option>All Categories</option>
-                <option>Groceries</option>
-                <option>Drinks</option>
-                <option>Chocolates</option>
-              </select>
+          </td>
+          <td class="py-4">
+            <span th:text="'TWD ' + ${product.productPrice}"></span>
+          </td>
+          <td class="py-4">
+            <div class="input-number product-qty w-50">
+              <span class="input-group-btn">
+                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus">
+                  <svg width="16" height="16">
+                    <use xlink:href="#minus"></use>
+                  </svg>
+                </button>
+              </span>
+              <input type="number" th:name="'quantities[' + ${product.getProductId()} + ']'" th:value="${productQuantities[product.getProductId()]}" class="form-control input-number text-center" value="1">
+              <span class="input-group-btn">
+                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus">
+                  <svg width="16" height="16">
+                    <use xlink:href="#plus"></use>
+                  </svg>
+                </button>
+              </span>
             </div>
-            <div class="col-11 col-md-7">
-              <form id="search-form" class="text-center" action="index.html" method="post">
-                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products">
-              </form>
+          </td>
+          <td class="py-4">
+            <div class="total-price">
+            <span class="money text-dark subtotal">TWD</span>
+            <span class="subtotal"></span>
             </div>
-            <div class="col-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
-            <li class="nav-item active">
-              <a href="index.html" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle pe-3" role="button" id="pages" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
-              <ul class="dropdown-menu border-0 p-3 rounded-0 shadow" aria-labelledby="pages">
-                <li><a href="about.html" class="dropdown-item">About Us</a></li>
-                <li><a href="shop.html" class="dropdown-item">Shop</a></li>
-                <li><a href="single-product.html" class="dropdown-item">Single Product</a></li>
-                <li><a href="cart.html" class="dropdown-item">Cart</a></li>
-                <li><a href="checkout.html" class="dropdown-item">Checkout</a></li>
-                <li><a href="blog.html" class="dropdown-item">Blog</a></li>
-                <li><a href="single-post.html" class="dropdown-item">Single Post</a></li>
-                <li><a href="styles.html" class="dropdown-item">Styles</a></li>
-                <li><a href="contact.html" class="dropdown-item">Contact</a></li>
-                <li><a href="thank-you.html" class="dropdown-item">Thank You</a></li>
-                <li><a href="account.html" class="dropdown-item">My Account</a></li>
-                <li><a href="404.html" class="dropdown-item">404 Error</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" target="_blank" class="nav-link text-primary">Button</a>
-            </li>
-          </ul>
-        </div>
-        
-        <div class="col-sm-8 col-lg-2 d-flex justify-content-end gap-5 align-items-center mt-4 mt-sm-0 justify-content-center justify-content-sm-end">
-          <ul class="d-flex justify-content-end list-unstyled m-0">
-            <li>
-              <a href="#" class="p-2 mx-1">
-                <svg width="24" height="24"><use xlink:href="#user"></use></svg>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="p-2 mx-1">
-                <svg width="24" height="24"><use xlink:href="#wishlist"></use></svg>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                <svg width="24" height="24"><use xlink:href="#shopping-bag"></use></svg>
-              </a>
-            </li>
-            <li class="d-lg-none">
-              <a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" aria-controls="offcanvasSearch">
-                <svg width="24" height="24"><use xlink:href="#search"></use></svg>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <section class="jarallax py-5">
-    <img src="images/banner-1.jpg" class="jarallax-img">
-    <div class="hero-content py-0 py-md-5">
-        <div class="container-lg d-flex flex-column d-md-block align-items-center">
-        <nav class="breadcrumb">
-          <a class="breadcrumb-item nav-link" href="#">Home</a>
-          <a class="breadcrumb-item nav-link" href="#">Pages</a>
-          <span class="breadcrumb-item active" aria-current="page">Cart</span>
-        </nav>
-        <h1>Cart</h1>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-5">
-    <div class="container-lg">
-      <div class="row g-5">
-        <div class="col-md-8">
-
-          <div class="table-responsive cart">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col" class="card-title text-uppercase text-muted">商品</th>
-                  <th scope="col" class="card-title text-uppercase text-muted">數量</th>
-                  <th scope="col" class="card-title text-uppercase text-muted">單價</th>
-                  <th scope="col" class="card-title text-uppercase text-muted"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td scope="row" class="py-4">
-                    <div class="cart-info d-flex flex-wrap align-items-center mb-4">
-                      <div class="col-lg-3">
-                        <div class="card-image">
-                          <img src="images/product-thumb-11.png" alt="product name" class="img-fluid">
-                        </div>
-                      </div>
-                      <div class="col-lg-9">
-                        <div class="card-detail ps-3">
-                          <h5 class="card-title">
-                          <a th:href="@{/cart/add(productId=${product.id})}" class="text-decoration-none" th:text="${product.name}">${product.name}</a>
-
-                          </h5>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="py-4">
-                    <div class="input-group product-qty w-50">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center"
-                        value="1">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus"
-                          data-field="">
-                          <svg width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                    </div>
-                  </td>
-                <td class="py-4">
-                  <div class="total-price">
-                    <span id="subtotal" class="money text-dark">$0.00</span>
+          </td>
+          <td class="py-4">
+            <div class="cart-remove">
+              <a href="#" th:onclick="'deleteProduct(\'' + ${product.productId} + '\')'">
+                <svg width="24" height="24">
+                  <use xlink:href="#trash"></use>
+                </svg>
+                    </a>
                   </div>
                 </td>
-                  <td class="py-4">
-                    <div class="cart-remove">
-                      <a href="#">
-                        <svg width="24" height="24">
-                          <use xlink:href="#trash"></use>
-                        </svg>
-                      </a>
-                    </div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="total bg-grey py-5">
+          <h4 class="text-dark pb-4">結帳金額</h4>
+          <div class="total-price pb-5">
+            <table cellspacing="0" class="table text-uppercase">
+              <tbody>
+                <tr class="total pt-2 pb-2 border-bottom" data-productId="${product.productId}">
+                  <th>總金額</th>
+                  <td data-title="Total">
+                    <span class="price-amount amount text-dark ps-5" >
+                      <bdi>
+                        <span class="price-currency-symbol">TWD</span><span id="totalAmount" th:text="${total}"></span>
+                      </bdi>
+                    </span>
+                  </td>
+                </tr>
+                <tr class="pt-2 pb-2 border-top border-bottom"  data-productId="${product.productId}">
+                  <th>折扣金額</th>
+                  <td data-title="discount">
+                    <span class="price-amount amount text-dark ps-5">
+                      <bdi>
+                        <span class="price-currency-symbol">TWD</span><span id="discountAmount" th:text="${totalDiscount}"></span>
+
+                      </bdi>
+                    </span>
+                  </td>
+                </tr>
+                <tr class="finalAmount pt-2 pb-2 border-bottom"  data-productId="${product.productId}">
+                  <th>最終付款金額</th>
+                  <td data-title="Final" >
+                    <span class="price-amount amount text-dark ps-5">
+                      <bdi>
+                         <span class="price-currency-symbol">TWD</span><span id="final" th:text="${finalAmount}"></span>
+                      </bdi>
+                    </span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          
-        </div>
-        <div class="col-md-4">
-          <div class="cart-totals bg-grey py-5">
-            <h4 class="text-dark pb-4">Cart Total</h4>
-            <div class="total-price pb-5">
-              <table cellspacing="0" class="table text-uppercase">
-                <tbody>
-                  <tr class="subtotal pt-2 pb-2 border-top border-bottom">
-                    <th>Subtotal</th>
-                    <td data-title="Subtotal">
-                      <span class="price-amount amount text-dark ps-5">
-                        <bdi>
-                          <span class="price-currency-symbol">$</span>370.00
-                        </bdi>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr class="order-total pt-2 pb-2 border-bottom">
-                    <th>Total</th>
-                    <td data-title="Total">
-                      <span class="price-amount amount text-dark ps-5">
-                        <bdi>
-                          <span class="price-currency-symbol">$</span>370.00</bdi>
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="button-wrap row g-2">
-              <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">Update
-                  Cart</button></div>
-              <div class="col-md-6"><button
-                  class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">Continue Shopping</button></div>
-              <div class="col-md-12"><button
-                  class="btn btn-primary py-3 px-4 text-uppercase btn-rounded-none w-100">Proceed to checkout</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="pb-4 my-4">
-    <div class="container-lg">
-
-      <div class="bg-warning pt-5 rounded-5">
-        <div class="container">
-          <div class="row justify-content-center align-items-center">
-            <div class="col-md-4">
-              <h2 class="mt-5">Download Organic App</h2>
-              <p>Online Orders made easy, fast and reliable</p>
-              <div class="d-flex gap-2 flex-wrap mb-5">
-                <a href="#" title="App store"><img src="images/img-app-store.png" alt="app-store"></a>
-                <a href="#" title="Google Play"><img src="images/img-google-play.png" alt="google-play"></a>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <img src="images/banner-onlineapp.png" alt="phone" class="img-fluid">
-            </div>
+          <div class="button-wrap row g-2">
+            <div class="col-md-6" ><button type="submit" class="btn-update-cart btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">更新購物車</button></div>
+            <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">繼續購物</button></div>
+            <div class="col-md-12"><button class="btn btn-primary py-3 px-4 text-uppercase btn-rounded-none w-100">結帳</button></div>
           </div>
         </div>
       </div>
-      
     </div>
-  </section>
+  </div>
+</section>
+
+
 
   <section class="py-4">
     <div class="container-lg">
@@ -746,7 +469,7 @@
           <p>© 2024 Organic. All rights reserved.</p>
         </div>
         <div class="col-md-6 credit-link text-start text-md-end">
-          <p><a target="_blank" href="http://www.mobanwang.com/" title="网页模板">网页模板</a></p>
+         
         </div>
       </div>
     </div>
@@ -757,27 +480,89 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
 
-   script th:inline="javascript">
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quantityInputs = document.querySelectorAll('.input-number input[type="number"]');
+        const totalAmountElement = document.getElementById('totalAmount');
+        const discountAmountElement = document.getElementById('discountAmount');
+        const finalAmountElement = document.getElementById('final');
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', updateCart);
+        });
+
+        function updateCart() {
+            let totalAmount = 0;
+            let discountAmount = parseFloat(discountAmountElement.innerText.trim());
+            let final = 0;
+            let cartItems = [];
+
+            quantityInputs.forEach(input => {
+                const productRow = input.closest('tr');
+                const productId = productRow.getAttribute('data-productId'); 
+                const productPrice = parseInt(productRow.querySelector('td:nth-child(2) span').innerText.replace('TWD', '').trim(), 10);
+                const quantity = parseInt(input.value, 10);
+                const subtotalElement = productRow.querySelector('.subtotal');
+                const subtotal = productPrice * quantity;
+                subtotalElement.innerText = subtotal;
+
+                totalAmount += subtotal;
+
+                cartItems.push({
+                    productId: parseInt(productId, 10), 
+                    quantity: quantity,
+                    price: productPrice
+                });
+            });
+
+            final = totalAmount - discountAmount;
+            totalAmountElement.innerText = totalAmount;
+            finalAmountElement.innerText = final;
+
+            
+            fetch('/FinalProject/update-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cartItems: cartItems, totalAmount: totalAmount })
+            })
+            .then(response => response.json())
+            .then(data => {
+              
+                discountAmountElement.innerText = data.discountAmount;
+                finalAmountElement.innerText = data.finalAmount;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.querySelector('.btn-update-cart').addEventListener('click', function (event) {
+            event.preventDefault();
+            updateCart();
+        });
+
+        document.querySelectorAll('.quantity-left-minus').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.closest('.input-number').querySelector('input[type="number"]');
+                if (input.value > 1) {
+                    input.value = parseInt(input.value, 10) - 1;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        document.querySelectorAll('.quantity-right-plus').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.closest('.input-number').querySelector('input[type="number"]');
+                input.value = parseInt(input.value, 10) + 1;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
+
    
-    var unitPrice = ;
-
-    var quantityInput = document.getElementById('quantity');
-    var totalPriceElement = document.getElementById('totalPrice');
-
-    var addButton = document.querySelector('.quantity-right-plus');
-    addButton.addEventListener('click', function () {
-
-    var quantity = parseInt(quantityInput.value);
-
-      quantity++;
-
-      quantityInput.value = quantity;
-
-      var totalPrice = unitPrice * quantity;
-
-      totalPriceElement.textContent = '$' + totalPrice.toFixed(0);
+        updateCart();
     });
-  </script>
+</script>
 
 </body>
 </html>

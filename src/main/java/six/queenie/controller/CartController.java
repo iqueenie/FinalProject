@@ -1,66 +1,172 @@
 package six.queenie.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
-import six.queenie.model.Orders;
 import six.queenie.service.CartService;
-import six.queenie.service.OrderService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CartController {
-	@Autowired
-	private OrderService oService;
-	@Autowired
-	private CartService cService;
-	
-	@Autowired
-	private ProductService pService;
-	
-	@GetMapping("/GetAllCart")
-	public String ShowCart(Model model, HttpSession session) {
-		
-		Orders order = (Orders) session.getAttribute("order");
-		if (order == null) {
-	        order = new Orders(); 
-	        session.setAttribute("order", order); 
-	    }
-		 model.addAttribute("order", order);
-		
-		return "front/queenie/cart";
-		
-	}
-	
-	@GetMapping("/product/{productId}")
-    public String getProductPage(@PathVariable("productId") Integer productId, Model model) {
-        
-        Product product = pService.findProductById(productId);
-        model.addAttribute("product", product);
-        return "front/pingshop"; 
+
+    private static final String SESSION_CART = "sessionCart";
+    
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private ProductService productService;
+
+
+    @GetMapping("/GetAllCart")
+    public String showCart(Model model, HttpSession session) {
+        List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();
+            session.setAttribute(SESSION_CART, cartItems);
+        }
+
+        cartService.calculateCartDiscounts(cartItems, new ArrayList<>(), session, model);
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("total", session.getAttribute("total"));
+        model.addAttribute("totalDiscount", session.getAttribute("totalDiscount"));
+        model.addAttribute("productDiscountMap", session.getAttribute("productDiscountMap"));
+        model.addAttribute("finalAmount", session.getAttribute("finalAmount"));
+
+        Map<Integer, Integer> productQuantities = new HashMap<>();
+        for (Product product : cartItems) {
+            productQuantities.put(product.getProductId(), 1); 
+        }
+        model.addAttribute("productQuantities", productQuantities);
+
+        return "front/queenie/cart";
     }
 
-    @PostMapping("/cart/add")
-    @ResponseBody
-    public String addToCart(@RequestParam("productId") Integer productId) {
-        
-    	cService.addToCart(productId);
-        return "商品添加成功";
+    @PostMapping("/update-cart")
+    public ResponseEntity<Map<String, Object>> updateCart(@RequestBody Map<String, Object> payload, HttpSession session) {
+        List<Map<String, Object>> cartItemsData = (List<Map<String, Object>>) payload.get("cartItems");
+        Integer totalAmount = 0;
+        Object totalAmountObj = payload.get("totalAmount");
+        if (totalAmountObj != null) {
+            totalAmount = Integer.valueOf(totalAmountObj.toString());
+        }
+
+        List<Product> updatedCartItems = new ArrayList<>();
+        for (Map<String, Object> itemData : cartItemsData) {
+           
+            if (itemData.get("productId") == null || itemData.get("quantity") == null) {
+                continue; 
+            }
+
+            Integer productId = Integer.valueOf(itemData.get("productId").toString());
+            Integer quantity = Integer.valueOf(itemData.get("quantity").toString());
+            
+            Product product = productService.findProductById(productId);
+            if (product != null) {
+                for (int i = 0; i < quantity; i++) {
+                    updatedCartItems.add(product);
+                }
+            }
+        }
+        session.setAttribute(SESSION_CART, updatedCartItems);
+
+
+        cartService.calculateCartDiscounts(updatedCartItems, new ArrayList<>(), session, null);
+        Integer discountAmount = (Integer) session.getAttribute("totalDiscount");
+        Integer finalAmount = totalAmount - discountAmount;
+
+     
+        Map<String, Object> response = new HashMap<>();
+        response.put("discountAmount", discountAmount);
+        response.put("finalAmount", finalAmount);
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/updateCartQuantities")
+    public String updateCartQuantities(@RequestParam Map<String, String> quantities, HttpSession session, RedirectAttributes redirectAttributes) {
+        List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();
+            session.setAttribute(SESSION_CART, cartItems);
+        }
+
+        List<Integer> updatedQuantities = new ArrayList<>();
+        for (Product product : cartItems) {
+            String quantityStr = quantities.get("quantities[" + product.getProductId() + "]");
+            if (quantityStr != null) {
+                Integer quantity = Integer.parseInt(quantityStr);
+                updatedQuantities.add(quantity);
+            }
+        }
+
+        cartService.calculateCartDiscounts(cartItems, updatedQuantities, session, null);
+
+        redirectAttributes.addFlashAttribute("message", "購物車更新成功");
+        return "redirect:/GetAllCart/";
+    }
+
+    @GetMapping("/product/{productId}")
+    public String getProductPage(@PathVariable("productId") Integer productId, Model model) {
+        Product product = productService.findProductById(productId);
+        model.addAttribute("product", product);
+        return "/front/pinghong/AllProductPage";
+    }
+
+    @PostMapping("/addToCart")
+    public String addToCart(@RequestParam("productId") Integer productId, HttpSession session, RedirectAttributes redirectAttributes) {
+        List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();
+            session.setAttribute(SESSION_CART, cartItems);
+        }
+
+        Product product = productService.findProductById(productId);
+        if (product != null) {
+            cartItems.add(product);
+        }
+
+        cartService.calculateCartDiscounts(cartItems, new ArrayList<>(), session, null); 
+
+        redirectAttributes.addFlashAttribute("message", "商品添加成功");
+        return "redirect:/product/" + productId;
     }
     
     @PostMapping("/deleteProduct")
-    public String deleteOrder(@RequestParam("productId") Integer orderId, Model model) {
-       
-        return "front/queenie/GetAllCart";
+    public String deleteProduct(@RequestParam("productId") Integer productId, HttpSession session, RedirectAttributes redirectAttributes) {
+        List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
+        if (cartItems != null) {
+            Product productToDelete = cartItems.stream()
+                    .filter(p -> p.getProductId().equals(productId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (productToDelete != null) {
+                cartItems.remove(productToDelete);
+                session.setAttribute(SESSION_CART, cartItems);
+
+                cartService.calculateCartDiscounts(cartItems, new ArrayList<>(), session, null);
+
+                redirectAttributes.addFlashAttribute("message", "商品删除成功");
+            } else {
+                redirectAttributes.addFlashAttribute("message", "找不到要删除的商品");
+            }
+        }
+
+        return "redirect:/GetAllCart";
     }
+
 }
-
-

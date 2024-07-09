@@ -291,12 +291,22 @@ public class OrderService {
 	        }
 	        Integer pointGet = (int) (finalAmount * 0.10);
 	        Integer discountMoney = sumTotal - amountDiscount;
+	       
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(orderDate);
+	        calendar.add(Calendar.DAY_OF_MONTH, 7);
+	        Date orderSuccessDate = new Date(calendar.getTimeInMillis());
+	        calendar.setTime(orderDate);
+	        calendar.add(Calendar.DAY_OF_MONTH, 5);
+	        Date pickupDate = new Date(calendar.getTimeInMillis());
 
 	        // 更新訂單的總金額及折扣資訊
 	        order.setTotal(sumTotal);
 	        order.setDiscountMoney(discountMoney);
 	        order.setFinalAmount(finalAmount);
 	        order.setPointGet(pointGet);
+	        order.setOrderSuccessDate(orderSuccessDate);
+	        order.setPickupDate(pickupDate);
 	    }
 
 

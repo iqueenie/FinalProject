@@ -72,7 +72,7 @@
                         <div class="product-info">
                             <div class="product-name mt-1" th:text="${product.productName}">商品名稱</div>
                             <div class="product-price" th:text="${product.productPrice}">價格</div>
-							<button class="btn btn-primary" th:attr="data-product-name=${product.productName}" onclick="addToCart(this)">加入購物車</button>
+							 <button class="btn btn-primary addToCartBtn" th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">加入購物車</button>
                         </div>
                     </div>
                 </div>
@@ -83,27 +83,50 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-			function addToCart(button) {
-			    var productName = button.getAttribute('data-product-name');
-			    Swal.fire({
-			        title: '確定加入購物車?',
-			        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-			        icon: 'warning',
-			        showCancelButton: true,
-			        confirmButtonText: '是的',
-			        cancelButtonText: '取消'
-			    }).then((result) => {
-			        if (result.isConfirmed) {
-			            Swal.fire({
-			                title: '已加入!',
-			                html: `<span class="text-light bg-success">${productName}</span> 已成功加入購物車。`,
-			                icon: 'success'
-			            });
-			        }
-			    });
-			}
-    </script>
+
+   
+     
+       <script th:inline="javascript">
+    function addToCart(button) {
+        var productId = button.getAttribute('data-productId');
+        var productName = button.getAttribute('data-productName');
+
+        Swal.fire({
+            title: '確定加入購物車?',
+            html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '是的',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var formData = {
+                    productId: productId
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/FinalProject/addToCart',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire({
+                            title: '成功加入購物車',
+                            icon: 'success'
+                        });
+                    },
+                    error: function(err) {
+                        Swal.fire({
+                            title: '加入購物車失敗',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+
 </body>
 
 </html>
