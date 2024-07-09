@@ -48,7 +48,7 @@ public class BuyController {
 	private InventoryService invService;
 	
 	
-	@GetMapping("/buy/findAll")
+	@GetMapping("/private/buy/findAll")
 	public String findAllBuys(Model model) {
 		
 		List<BuyBean> listBuys = buyService.findAllBuys();
@@ -113,7 +113,7 @@ public class BuyController {
 	 			detailService.saveDetail(detail);
 			}
 		
-			return "redirect:/buy/findAll";
+			return "redirect:/private/buy/findAll";
 		}
 	}
 	
@@ -189,7 +189,7 @@ public class BuyController {
 		}
 		
 		
-		return "redirect:/buy/findAll";
+		return "redirect:/private/buy/findAll";
 		}
 	}
 

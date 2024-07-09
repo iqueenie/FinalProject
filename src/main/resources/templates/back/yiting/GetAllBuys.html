@@ -55,7 +55,7 @@
                             <form th:action="@{/buy/check}" method="get" class="myform">
                                 <input type="hidden" th:name="id" th:value="${buy.purchaseId}">
                                 <th:block th:if="${buy.checkToInv}">
-                                    <a th:href="@{/inventory/findAll}" class="btn btn-outline-info btn-sm"
+                                    <a th:href="@{/private/inventory/findAll}" class="btn btn-outline-info btn-sm"
                                         th:text="查看存貨">
                                     </a>
                                 </th:block>
@@ -106,7 +106,7 @@
                 if (result.isConfirmed) {
                     reloadInv(id);
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "http://localhost:8080/FinalProject/buy/findAll";
+                    window.location.href = "http://localhost:8080/FinalProject/private/buy/findAll";
                 }
             });
         }
@@ -115,7 +115,7 @@
             axios.get(`http://localhost:8080/FinalProject/inventory/addByBuy?id=${id}`)
                 .then(function (response) {
                     // 请求成功后，执行页面重定向到採購列表页面
-                    window.location.href = "http://localhost:8080/FinalProject/buy/findAll";
+                    window.location.href = "http://localhost:8080/FinalProject/private/buy/findAll";
                 })
                 .catch(function (err) {
                     console.error(err);
@@ -214,7 +214,7 @@
                         <form action="/FinalProject/buy/check" method="get" class="myform">
                             <input type="hidden" name="id" value="${buy.purchaseId}">
                             ${buy.checkToInv ?
-                                `<a href="/FinalProject/inventory/findAll" class="btn btn-outline-info btn-sm">
+                                `<a href="/FinalProject/private/inventory/findAll" class="btn btn-outline-info btn-sm">
                                     查看存貨
                                 </a>` :
                                 `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>

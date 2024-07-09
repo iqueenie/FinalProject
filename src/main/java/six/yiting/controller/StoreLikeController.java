@@ -37,7 +37,7 @@ public class StoreLikeController {
 	private MembersService membersService;
 	
 	
-	@GetMapping("/like/findAll")
+	@GetMapping("/private/like/findAll")
 	public String findAllLikes(Model model) {
 		
 		List<StoreLikeBean> listLikes = likeService.findAllLikes();
@@ -90,7 +90,7 @@ public class StoreLikeController {
 			like.setStore(store);
 			likeService.saveLike(like);
 			
-			return "redirect:/like/findAll";
+			return "redirect:/private/like/findAll";
 		}
 		
 	}
@@ -139,7 +139,7 @@ public class StoreLikeController {
 			like.setStore(store);
 			likeService.saveLike(like);
 			
-			return "redirect:/like/findAll";
+			return "redirect:/private/like/findAll";
 		}
 	}
 	

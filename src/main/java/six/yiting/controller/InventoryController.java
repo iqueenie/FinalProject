@@ -41,7 +41,7 @@ public class InventoryController {
 	private DetailService detailService;
 	
 	
-	@GetMapping("/inventory/findAll")
+	@GetMapping("/private/inventory/findAll")
 	public String findAllInventory(Model model) {
 		
 		List<InventoryBean> listInvs = invService.findAllInventory();
@@ -122,7 +122,7 @@ public class InventoryController {
 	 			
 	 			invService.saveInventory(invbean);
 			}
-				return "redirect:/inventory/findAll";
+				return "redirect:/private/inventory/findAll";
 		}
 	}
 	
@@ -252,7 +252,7 @@ public class InventoryController {
 			
 			invService.saveInventory(invbean);
 			
-			return "redirect:/inventory/findAll";
+			return "redirect:/private/inventory/findAll";
 		}
 	}
 
