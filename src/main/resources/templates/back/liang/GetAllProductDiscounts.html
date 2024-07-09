@@ -25,7 +25,7 @@
                     <th>折扣ID</th>
                     <th>折扣名稱</th>
                     <th>折扣百分比</th>
-                    <th>商品編號</th> <!-- 添加商品ID列 -->
+                    <th>商品名稱</th>
                     <th>開始日期</th>
                     <th>結束日期</th>
                     <th>狀態</th>
@@ -39,7 +39,7 @@
                         <td th:text="${discount.discountId}"></td>
                         <td th:text="${discount.discountName}"></td>
                         <td th:text="${discount.discountPercentage} + '%'"></td>
-                        <td th:text="${discount.product.productId}"></td> <!-- 显示商品ID -->
+                        <td th:text="${discount.product.productName}"></td>
                         <td th:text="${discount.startDate}"></td>
                         <td th:text="${discount.endDate}"></td>
                         <td th:text="${discount.isActive == 1 ? '上架' : '下架'}"></td>

@@ -11,6 +11,7 @@
     </style>
 </head>
 <body>
+<div th:replace="~{back/layout/navbar}"></div>
 <div class="container d-flex justify-content-center">
     <form action="#" th:action="@{/ProductDiscountInsert}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4">
         <div class="row g-2 m-2">
@@ -33,8 +34,10 @@
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="number" class="form-control" id="productId" name="productId" placeholder="商品ID" required>
-                    <label for="productId">商品ID</label>
+                    <select class="form-control" id="productId" name="productId" required>
+                        <option th:each="product : ${products}" th:value="${product.productId}" th:text="${product.productName}"></option>
+                    </select>
+                    <label for="productId">商品名稱</label>
                 </div>
             </div>
             <div class="col-12">

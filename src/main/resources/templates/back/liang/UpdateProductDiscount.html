@@ -11,12 +11,17 @@
     </style>
 </head>
 <body>
+<div th:replace="~{back/layout/navbar}"></div>
 <div class="container d-flex justify-content-center">
     <form th:action="@{/ProductDiscountUpdate}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4">
         <input type="hidden" id="discountId" name="discountId" th:value="${productDiscount.discountId}">
 
         <div class="row g-2 m-2">
             <h2 class="col-12 text-center">更新折扣</h2>
+            <!-- 错误信息提示 -->
+            <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                <span th:text="${error}"></span>
+            </div>
             <div class="col-12">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="discountName" name="discountName" th:value="${productDiscount.discountName}" placeholder="折扣名稱" required>
@@ -29,10 +34,12 @@
                     <label for="discountPercentage">折扣百分比</label>
                 </div>
             </div>
-      	    <div class="col-12">
+            <div class="col-12">
                 <div class="form-floating">
-                    <input type="number" class="form-control" id="productId" name="productId" th:value="${productDiscount.product.productId}" placeholder="商品ID" required>
-                    <label for="productId">商品ID</label>
+                    <select class="form-control" id="productId" name="productId" required>
+                        <option th:each="product : ${products}" th:value="${product.productId}" th:text="${product.productName}" th:selected="${product.productId} == ${productDiscount.product.productId}"></option>
+                    </select>
+                    <label for="productId">商品名稱</label>
                 </div>
             </div>
             <div class="col-12">
@@ -63,6 +70,7 @@
         </div>
     </form>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -107,7 +115,7 @@
             });
         });
     });
-
 </script>
+
 </body>
 </html>

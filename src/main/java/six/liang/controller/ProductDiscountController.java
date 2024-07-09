@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import six.liang.model.ProductDiscount;
 import six.liang.service.ProductDiscountService;
 import six.pinhong.model.Product;
+import six.pinhong.service.ProductService;
 
 @Controller
 public class ProductDiscountController {
@@ -24,6 +25,9 @@ public class ProductDiscountController {
     @Autowired
     private ProductDiscountService productDiscountService;
 
+    @Autowired
+    private ProductService productService;
+    
     // 查全部
     @GetMapping("/GetAllProductDiscount")
     public String getAllProductDiscount(Model model) {
@@ -32,13 +36,15 @@ public class ProductDiscountController {
         return "back/liang/GetAllProductDiscounts";
     }
 
-    // 新增
+    // 新增表单
     @GetMapping("/ProductDiscountInserts")
-    public String showProductInsertForm() {
+    public String showProductInsertForm(Model model) {
+        List<Product> products = productService.findAll();
+        model.addAttribute("products", products);
         return "back/liang/InsertProductDiscount";
     }
 
- 
+    // 新增
     @PostMapping("/ProductDiscountInsert")
     public String productInsert(@RequestParam("discountName") String discountName,
                                 @RequestParam("discountPercentage") Integer discountPercentage,
@@ -48,12 +54,6 @@ public class ProductDiscountController {
                                 @RequestParam("productId") Integer productId,
                                 RedirectAttributes redirectAttributes) {
 
-        // 檢查 productId 是否已經存在
-        if (productDiscountService.existsByProductId(productId)) {
-            redirectAttributes.addFlashAttribute("error", "該商品已適用其他優惠，請選擇其他商品。");
-            return "redirect:/ProductDiscountInserts";
-        }
-
         ProductDiscount productDiscount = new ProductDiscount();
         productDiscount.setDiscountName(discountName);
         productDiscount.setDiscountPercentage(discountPercentage);
@@ -61,9 +61,7 @@ public class ProductDiscountController {
         productDiscount.setEndDate(endDate);
         productDiscount.setIsActive(isActive);
 
-        
-        Product product = new Product();
-        product.setProductId(productId);
+        Product product = productService.findProductById(productId); 
         productDiscount.setProduct(product);
 
         productDiscountService.insert(productDiscount);
@@ -87,10 +85,13 @@ public class ProductDiscountController {
     @GetMapping("/ProductDiscountUpdates")
     public String showProductUpdateForm(@RequestParam("discountId") Integer discountId, Model model) {
         ProductDiscount productDiscount = productDiscountService.findById(discountId);
+        List<Product> products = productService.findAll();
         model.addAttribute("productDiscount", productDiscount);
+        model.addAttribute("products", products);
         return "back/liang/UpdateProductDiscount";
     }
 
+    
     @PostMapping("/ProductDiscountUpdate")
     public String productUpdate(@RequestParam("discountId") Integer discountId,
                                 @RequestParam("discountName") String discountName,
@@ -107,13 +108,10 @@ public class ProductDiscountController {
         productDiscount.setEndDate(endDate);
         productDiscount.setIsActive(isActive);
 
-        Product product = new Product();
-        product.setProductId(productId);
+        Product product = productService.findProductById(productId); // 获取商品信息
         productDiscount.setProduct(product);
 
         productDiscountService.update(productDiscount);
         return "redirect:/GetAllProductDiscount";
     }
-
 }
-

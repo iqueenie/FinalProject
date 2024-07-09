@@ -2,16 +2,7 @@ package six.liang.model;
 
 import java.sql.Date;
 import org.springframework.stereotype.Component;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import six.pinhong.model.Product;
 
 @Entity
@@ -30,10 +21,10 @@ public class ProductDiscount {
     private Integer isActive;
 
     @Column(name = "productId", insertable = false, updatable = false)
-	private Integer productId;
+    private Integer productId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
     // Getters and setters
