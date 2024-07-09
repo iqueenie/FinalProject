@@ -23,7 +23,7 @@
             <h2 class="col-12 text-center">編輯商品</h2>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="text" th:field="*{productName}" class="form-control" placeholder="商品名稱" required>
+                    <input type="text" th:field="*{productName}" class="form-control" placeholder="商品名稱" required maxlength="25">
                     <label for="productName">商品名稱:</label>
                 </div>
             </div>
@@ -43,19 +43,19 @@
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="text" th:field="*{productCost}" class="form-control" placeholder="成本" required>
+                    <input type="text" th:field="*{productCost}" class="form-control" placeholder="成本" required maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
                     <label for="productCost">成本:</label>
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="text" th:field="*{productPrice}" class="form-control" placeholder="售價" required>
+                    <input type="text" th:field="*{productPrice}" class="form-control" placeholder="售價" required maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
                     <label for="productPrice">售價:</label>
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="text" th:field="*{productExpirydate}" class="form-control" placeholder="效期" required>
+                    <input type="text" th:field="*{productExpirydate}" class="form-control" placeholder="效期" required maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
                     <label for="productExpirydate">效期:</label>
                 </div>
             </div>
@@ -67,7 +67,7 @@
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <input type="text" th:field="*{productQuantity}" class="form-control" placeholder="商品敘述" required>
+                    <input type="text" th:field="*{productQuantity}" class="form-control" placeholder="數量" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
                     <label for="productQuantity">數量:</label>
                 </div>
             </div>
@@ -104,6 +104,23 @@
 	$('form').submit(function (event) {
 	    event.preventDefault();
 	    var form = event.currentTarget;
+	    var productCost = parseFloat($('#productCost').val());
+        var productPrice = parseFloat($('#productPrice').val());
+
+        if (productPrice < productCost) {
+            Swal.fire({
+                title: "錯誤",
+                text: "售價不能低於成本！",
+                icon: "error",
+                confirmButtonText: "確定",
+                confirmButtonColor: "red",
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-outline-danger btn-sm me-2'
+                }
+            });
+            return false;
+        }
 	    Swal.fire({
 	        title: "確定要保存嗎？",
 	        icon: "question",
