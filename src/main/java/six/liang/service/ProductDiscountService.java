@@ -3,7 +3,6 @@ package six.liang.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import six.liang.model.ProductDiscount;
 import six.liang.model.DiscountProductRepository;
 
@@ -36,9 +35,8 @@ public class ProductDiscountService {
         return discountProductRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("折扣信息不存在"));
     }
-
-    public boolean existsByProductId(Integer productId) {
-        return discountProductRepo.existsByProductId(productId);
+    
+    public List<ProductDiscount> findByProductId(Integer productId) {
+        return discountProductRepo.findByProductProductId(productId);
     }
-
 }

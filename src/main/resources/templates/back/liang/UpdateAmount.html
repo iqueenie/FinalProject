@@ -11,6 +11,7 @@
     </style>
 </head>
 <body>
+<div th:replace="~{back/layout/navbar}"></div>
 <div class="container d-flex justify-content-center">
    <form action="#" th:action="@{/AmountUpdate}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4">
     <input type="hidden" id="discountId" name="discountId" th:value="${discount.discountId}">
