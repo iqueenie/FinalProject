@@ -117,7 +117,7 @@ public class DetailController {
 			}
 			buyService.saveBuy(buybean);
 			
-			return "redirect:/private/detail/getDetail?purchaseId=" + purchaseId;
+			return "redirect:/private/buy/findAll";
 		}
 	}
 

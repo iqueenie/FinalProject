@@ -168,25 +168,30 @@
             var currentPage = table.page(); // 當前頁碼
             var pageLength = table.page.len(); // 每頁顯示的筆數
 
-            axios.get("http://localhost:8080/FinalProject/private/buy/findAllAjax")
-                .then(response => {
-                    console.log(response.data);
-                    var data = response.data;
-                    table.clear(); // 清空表格
-                    data.forEach(buy => {
-                        // 将日期字符串转换为日期对象，并忽略时分秒
-                        let arrivedDate = new Date(buy.arrivedDate);
-                        arrivedDate.setHours(0, 0, 0, 0); // 将时分秒部分设置为0
+            function reloadTableData() {
+                var table = $('#myTable').DataTable();
+                var currentPage = table.page(); // 當前頁碼
+                var pageLength = table.page.len(); // 每頁顯示的筆數
 
-                        let currentDate = new Date();
-                        currentDate.setHours(0, 0, 0, 0); // 将时分秒部分设置为0
+                axios.get("http://localhost:8080/FinalProject/private/buy/findAllAjax")
+                    .then(response => {
+                        console.log(response.data);
+                        var data = response.data;
+                        table.clear(); // 清空表格
+                        data.forEach(buy => {
+                            // 將日期字符串轉換為日期對象，並忽略時分秒
+                            let arrivedDate = new Date(buy.arrivedDate);
+                            arrivedDate.setHours(0, 0, 0, 0); // 將時分秒部分設置為0
 
-                        let disabledAttr = buy.checkToInv ? 'disabled' : '';
+                            let currentDate = new Date();
+                            currentDate.setHours(0, 0, 0, 0); // 將時分秒部分設置為0
 
-                        // 比较日期对象的年月日部分，忽略时分秒
-                        let disabledDateAttr = arrivedDate > currentDate ? 'disabled' : '';
+                            let disabledAttr = buy.checkToInv ? 'disabled' : '';
 
-                        let html = `
+                            // 比較日期對象的年月日部分，忽略時分秒
+                            let disabledDateAttr = arrivedDate > currentDate ? 'disabled' : '';
+
+                            let html = `
                 <tr>
                     <td>${buy.purchaseId}</td>
                     <td>${buy.store.storeId}</td>
@@ -214,37 +219,59 @@
                         <form action="/FinalProject/private/buy/check" method="get" class="myform">
                             <input type="hidden" name="id" value="${buy.purchaseId}">
                             ${buy.checkToInv ?
-                                `<a href="/FinalProject/private/inventory/findAll" class="btn btn-outline-info btn-sm">
+                                    `<a href="/FinalProject/private/inventory/findAll" class="btn btn-outline-info btn-sm">
                                     查看存貨
                                 </a>` :
-                                `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
+                                    `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
                                     到貨確認
                                 </button>` }
                         </form>
                     </td>
                 </tr>`;
 
-                        let rowNode = table.row.add($(html)[0]).node();
+                            let rowNode = table.row.add($(html)[0]).node();
 
-                        // 恢复禁用状态
-                        $(rowNode).find('.btn').prop('disabled', function () {
-                            return $(this).attr('disabled') === 'disabled';
+                            // 恢復禁用狀態
+                            $(rowNode).find('.btn').prop('disabled', function () {
+                                return $(this).attr('disabled') === 'disabled';
+                            });
                         });
+
+                        table.draw(false); // 重新繪製表格
+
+                        // 檢查是否需要恢復到之前的頁碼
+                        if (currentPage > 0 && data.length % pageLength === 0 && (data.length / pageLength) - 1 !== currentPage) {
+                            table.page(currentPage - 1).draw(false); // 顯示上一頁
+                        } else {
+                            // 當前頁碼沒有改變
+                            table.page(currentPage).draw(false);
+                        }
+
+                        // 在表格重繪後重新綁定事件
+                        $('.myform').submit(function (event) {
+                            event.preventDefault();
+                            var form = event.currentTarget;
+                            Swal.fire({
+                                title: "確認到貨嗎？",
+                                icon: "question",
+                                showCancelButton: true,
+                                confirmButtonColor: "green",
+                                cancelButtonColor: "gray",
+                                confirmButtonText: "確認",
+                                cancelButtonText: "取消",
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    form.submit(); // 提交表單
+                                }
+                            });
+                        });
+
+                    })
+                    .catch(err => {
+                        console.error(err);
                     });
-
-                    table.draw(false); // 重新绘制表格
-
-                    // 检查是否需要恢复到之前的页码
-                    if (currentPage > 0 && data.length % pageLength === 0 && (data.length / pageLength) - 1 !== currentPage) {
-                        table.page(currentPage - 1).draw(false); // 显示上一页
-                    } else {
-                        // 当前页码没有改变
-                        table.page(currentPage).draw(false);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                });
+            }
         }
 
         $('.myform').submit(function (event) {
@@ -266,7 +293,7 @@
             });
         });
 
-
+        reloadTableData();
     </script>
 
 
