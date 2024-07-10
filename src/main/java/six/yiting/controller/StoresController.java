@@ -81,5 +81,13 @@ public class StoresController {
 		
 		return "redirect:/private/stores/findAll";
 	}
+	
+	@GetMapping("/public/front/storeSearch")
+	public String StoreSearch(Model model) {
+		
+		
+		
+		return "front/yiting/StoreSearch";
+	}
 
 }
