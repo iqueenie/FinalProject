@@ -35,7 +35,7 @@ public class StoresController {
 		return "back/yiting/GetAllStores";
 	}
 	
-	@GetMapping("/stores/findAllAjax")
+	@GetMapping("/private/stores/findAllAjax")
 	@ResponseBody
 	public List<StoresBean> findAllStoresAjax() {
 		
@@ -43,14 +43,14 @@ public class StoresController {
 		
 	}
 	
-	@GetMapping("/store/addStorePage")
+	@GetMapping("/private/store/addStorePage")
     public String storeInsertPage(Model m) {
 		m.addAttribute("store", new StoresBean());
 		return "back/yiting/insertStore";
 		
 	}
 	
-	@PostMapping("/store/insertStore")
+	@PostMapping("/private/store/insertStore")
     public String storeInsert(@ModelAttribute("store")StoresBean store,Model model) {
 		storeService.saveStore(store);
 		model.addAttribute("store",store);
@@ -59,14 +59,14 @@ public class StoresController {
 	}
 	
 	
-	@DeleteMapping("/store/delete")
+	@DeleteMapping("/private/store/delete")
 	@ResponseBody
 	public String deleteStore(@RequestParam Integer id) {
 	    storeService.deleteStore(id);
 	    return "success"; 
 	}
 	
-	@GetMapping("/store/edit")
+	@GetMapping("/private/store/edit")
 	public String editStore(@RequestParam Integer id, Model model) {
 		StoresBean store = storeService.findStoreById(id);
 		
@@ -75,7 +75,7 @@ public class StoresController {
 		return "back/yiting/editStore";
 	}
 	
-	@PutMapping("/store/editPost")
+	@PutMapping("/private/store/editPost")
 	public String editPost(@ModelAttribute StoresBean store) {
 		storeService.saveStore(store);
 		

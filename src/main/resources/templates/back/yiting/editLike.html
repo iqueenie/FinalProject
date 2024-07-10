@@ -13,7 +13,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container d-flex justify-content-center">
 
-        <form th:action="@{/like/editPost}" th:method="put" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <form th:action="@{/private/like/editPost}" th:method="put" class="mt-5 bg-secondary-subtle mw576px rounded-4">
             <div class="row g-2 m-2">
             <input name="likeId" th:value="${like.likeId}" type="hidden" />
                 <h2 class="col-12 text-center">店鋪收藏更新</h2>

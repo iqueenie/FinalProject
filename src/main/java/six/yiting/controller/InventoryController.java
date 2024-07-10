@@ -52,7 +52,7 @@ public class InventoryController {
 		return "back/yiting/GetAllInventory";
 	}
 	
-	@GetMapping("/inventory/findAllAjax")
+	@GetMapping("/private/inventory/findAllAjax")
 	@ResponseBody
 	public List<InventoryBean> findAllInvAjax() {
 		
@@ -60,7 +60,7 @@ public class InventoryController {
 		
 	}
 	
-	@GetMapping("/inventory/addInvPage")
+	@GetMapping("/private/inventory/addInvPage")
     public String invInsertPage(Model m) {
 		List<Product> products = productService.findAll();
 		List<StoresBean> stores = storeService.findAllStores();
@@ -72,7 +72,7 @@ public class InventoryController {
 		
 	}
 	
-	@PostMapping("/inventory/insertInv")
+	@PostMapping("/private/inventory/insertInv")
     public String invInsert(@RequestParam("deliveryDate") @DateTimeFormat(pattern = "yyyy/MM/dd")LocalDate deliveryDate,
 			@RequestParam("storeId") Integer storeId,
 			@RequestParam("productId[]") Integer[] productId,
@@ -127,7 +127,7 @@ public class InventoryController {
 	}
 	
 	
-	@GetMapping("/inventory/addByBuy")
+	@GetMapping("/private/inventory/addByBuy")
 	@ResponseBody
     public String invBuyCheck(@RequestParam("id") Integer id,Model m) {
 		
@@ -195,14 +195,14 @@ public class InventoryController {
 	
 	
 	
-	@DeleteMapping("/inventory/delete")
+	@DeleteMapping("/private/inventory/delete")
 	@ResponseBody
 	public String deleteInv(@RequestParam Integer id) {
 	   invService.deleteInventory(id);
 	    return "success"; 
 	}
 	
-	@GetMapping("/inventory/edit")
+	@GetMapping("/private/inventory/edit")
 	public String editInv(@RequestParam Integer id, Model model) {
 		InventoryBean inv = invService.findInvById(id);
 		
@@ -211,7 +211,7 @@ public class InventoryController {
 		return "back/yiting/editInv";
 	}
 	
-	@PutMapping("/inventory/editPost")
+	@PutMapping("/private/inventory/editPost")
 	public String editPost(@RequestParam("deliveryDate") @DateTimeFormat(pattern = "yyyy/MM/dd")LocalDate deliveryDate,
 			@RequestParam("storeId") Integer storeId,
 			@RequestParam("productId") Integer productId,

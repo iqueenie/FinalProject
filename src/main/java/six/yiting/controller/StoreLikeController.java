@@ -48,7 +48,7 @@ public class StoreLikeController {
 		return "back/yiting/GetAllStoreLikes";
 	}
 	
-	@GetMapping("/like/findAllAjax")
+	@GetMapping("/private/like/findAllAjax")
 	@ResponseBody
 	public List<StoreLikeBean> findAllStoresAjax() {
 		
@@ -56,7 +56,7 @@ public class StoreLikeController {
 		
 	}
 	
-	@GetMapping("/like/addLikePage")
+	@GetMapping("/private/like/addLikePage")
     public String storeInsertPage(Model m) {
 		List<StoresBean> stores = storeService.findAllStores();
 		List<MembersBean> members = membersService.findAll();
@@ -67,7 +67,7 @@ public class StoreLikeController {
 		
 	}
 	
-	@PostMapping("/like/insertLike")
+	@PostMapping("/private/like/insertLike")
     public String storeInsert(@RequestParam("storeId") Integer storeId,
 			@RequestParam("memberId") Integer memberId,Model m) {
 		
@@ -96,14 +96,14 @@ public class StoreLikeController {
 	}
 	
 	
-	@DeleteMapping("/like/delete")
+	@DeleteMapping("/private/like/delete")
 	@ResponseBody
 	public String deleteStore(@RequestParam Integer id) {
 	    likeService.deleteStoreLike(id);
 	    return "success"; 
 	}
 	
-	@GetMapping("/like/edit")
+	@GetMapping("/private/like/edit")
 	public String editLike(@RequestParam Integer id, Model model) {
 		
 		StoreLikeBean like = likeService.findLikeById(id);
@@ -116,7 +116,7 @@ public class StoreLikeController {
 		return "back/yiting/editLike";
 	}
 	
-	@PutMapping("/like/editPost")
+	@PutMapping("/private/like/editPost")
 	public String editPost(@RequestParam("storeId") Integer storeId,
 			@RequestParam("memberId") Integer memberId,@RequestParam("likeId") Integer likeId,Model m) {
 		StoresBean store = storeService.findStoreById(storeId);
@@ -143,7 +143,7 @@ public class StoreLikeController {
 		}
 	}
 	
-	@GetMapping("/like/count")
+	@GetMapping("/private/like/count")
 	public String countLike(Model m) {
 		
 		List<StoresBean> listStores = storeService.findAllStores();

@@ -58,7 +58,7 @@ public class BuyController {
 		return "back/yiting/GetAllBuys";
 	}
 	
-	@GetMapping("/buy/findAllAjax")
+	@GetMapping("/private/buy/findAllAjax")
 	@ResponseBody
 	public List<BuyBean> findAllStoresAjax() {
 		
@@ -66,7 +66,7 @@ public class BuyController {
 		
 	}
 	
-	@GetMapping("/buy/addBuyPage")
+	@GetMapping("/private/buy/addBuyPage")
     public String buyInsertPage(Model m) {
 		List<Product> products = productService.findAll();
 		List<StoresBean> stores = storeService.findAllStores();
@@ -79,7 +79,7 @@ public class BuyController {
 		
 	}
 	
-	@PostMapping("/buy/insertBuy")
+	@PostMapping("/private/buy/insertBuy")
     public String buyInsert(@RequestParam("arrivedDate") @DateTimeFormat(pattern = "yyyy/MM/dd")LocalDate arrivedDate,
 			@RequestParam("buyStoreId") Integer storeId,
 			@RequestParam("productId[]") Integer[] productId,
@@ -118,7 +118,7 @@ public class BuyController {
 	}
 	
 	
-	@DeleteMapping("/buy/delete")
+	@DeleteMapping("/private/buy/delete")
 	@ResponseBody
 	public String deleteBuy(@RequestParam("id") Integer id) {
 	    buyService.deleteBuy(id);
@@ -128,7 +128,7 @@ public class BuyController {
 	
 	
 	
-	@GetMapping("/buy/check")
+	@GetMapping("/private/buy/check")
     public String buyCheck(@RequestParam("id") Integer id,Model m) {
 		
 		BuyBean buy = buyService.findBuyById(id);

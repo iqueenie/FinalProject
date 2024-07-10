@@ -13,7 +13,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container d-flex justify-content-center">
 
-        <form th:action="@{/inventory/editPost}" th:method="put" class="mt-5 bg-secondary-subtle mw576px rounded-4" >
+        <form th:action="@{/private/inventory/editPost}" th:method="put" class="mt-5 bg-secondary-subtle mw576px rounded-4" >
             <div class="row g-2 m-2">
                 <h2 class="col-12 text-center">存貨更新</h2>
                 <input name="invId" th:value="${inv.inventoryId}" type="hidden" />
