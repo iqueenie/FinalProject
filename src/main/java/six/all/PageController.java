@@ -11,4 +11,9 @@ public class PageController {
 	public String backIndex() {
 		return "/back/Index";
 	}
+	
+	@GetMapping("/public/front")
+	public String frontIndex() {
+		return "/front/index";
+	}
 }
