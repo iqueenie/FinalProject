@@ -31,7 +31,7 @@ public class ProductController {
 	private ProductService productService;
 	
 	// 查全部
-	@GetMapping("/Product/GetAll")
+	@GetMapping("/private/Product/GetAll")
 	public String getAllProudcts(Model m) {
 
 		List<Product> products = productService.findAll();
@@ -51,14 +51,14 @@ public class ProductController {
 	}
 	
 	// 新增進入點
-	@GetMapping("/Product/AddProductPage")
+	@GetMapping("/private/Product/AddProductPage")
 	public String productInsertMain() {
 
 		return "back/pinhong/InsertProduct";
 	}
 	
 	// 新增 (傳統方法)
-	@PostMapping("/Product/InsertProduct")
+	@PostMapping("/private/Product/InsertProduct")
 	public String productInsert(
 			@RequestParam String productName,
 			@RequestParam String productType,
@@ -80,13 +80,54 @@ public class ProductController {
 		
 		productService.insertProduct(product);
 
-		return "redirect:/Product/GetAll";
+		return "redirect:/private/Product/GetAll";
 	}
+	
+	
+	// ---------------------------------- 新增進入點
+	@GetMapping("/InsertAllDefaultProduct")
+	public String productInsertMain1() {
+
+		return "back/pinhong/InsertAllDefaultProduct";
+	}
+	// 解決SQL會自動補0的問題，一次新增10張
+	@PostMapping("/private/Product/InsertProductForFinalProject")
+	public String productInsert(
+	        @RequestParam List<String> productName,
+	        @RequestParam List<String> productType,
+	        @RequestParam List<Integer> productCost,
+	        @RequestParam List<Integer> productPrice,
+	        @RequestParam List<Integer> productExpirydate,
+	        @RequestParam List<String> productDescription,
+	        @RequestParam List<Integer> productPublished,
+	        @RequestParam List<Integer> productQuantity,
+	        @RequestParam List<MultipartFile> imageFiles,
+	        Model m
+	) throws IOException {
+	    for (int i = 0; i < productName.size(); i++) {
+	        Product product = new Product(
+	            productName.get(i),
+	            productType.get(i),
+	            productCost.get(i),
+	            productPrice.get(i),
+	            productExpirydate.get(i),
+	            productDescription.get(i),
+	            productPublished.get(i),
+	            productQuantity.get(i)
+	        );
+	        ProductImage productImage = new ProductImage(imageFiles.get(i).getBytes());      
+	        product.setProductImage(productImage);
+	        productImage.setProduct(product);
+	        productService.insertProduct(product);
+	    }
+	    return "redirect:/private/Product/GetAll";
+	}
+	// ---------------------------------------------------------------------------
 	
 	
 	
 	// 刪除，Ajax
-	@DeleteMapping("/Product/delete")
+	@DeleteMapping("/private/Product/delete")
 	@ResponseBody
 	public String productDelete(@RequestParam("productId") Integer productId) {
 		productService.deleteById(productId);
@@ -108,7 +149,7 @@ public class ProductController {
 	}
 	
 	// 查詢
-	@GetMapping("/Product/UpdatePage")
+	@GetMapping("/private/Product/UpdatePage")
 	public String productUpdateMain(@RequestParam("productId") Integer productId, Model m) {
 		Product product = productService.findProductById(productId);
 		ProductImage productImage = productService.findImageById(productId);
@@ -118,7 +159,7 @@ public class ProductController {
 	}
 
 	// 更新 (MVC使用@ModelAttribute自動映射)
-	@PutMapping("/Product/Update")
+	@PutMapping("/private/Product/Update")
 	public String productFindById(@ModelAttribute("product") Product product,
 			@RequestParam MultipartFile imageFile) throws IOException {
 
@@ -139,19 +180,8 @@ public class ProductController {
 				productService.insertProduct(product); 
 			}
 				
-		return "redirect:/Product/GetAll";
+		return "redirect:/private/Product/GetAll";
 	}
-	
-//	// 查全部，前台商品頁
-//	@GetMapping("/ShowAllProducts")
-//	public String ShowAllProudcts(Model m) {
-//		
-//		List<Product> products = productService.findAll();
-//		
-//		m.addAttribute("products", products);
-//		
-//		return "front/pinhong/AllProductPage";
-//	}
 	
 	// 模糊查詢商品
 	@GetMapping("/search")
