@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 
 <head>
@@ -18,6 +18,7 @@
 </head>
 
 <body>
+<div th:replace="~{back/layout/navbar}"></div>
     <div class="container d-flex justify-content-center">
 		<form th:action="@{/private/insertMembers}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4" enctype="multipart/form-data">
 		    <div class="row g-2 m-2">

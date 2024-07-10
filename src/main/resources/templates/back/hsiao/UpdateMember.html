@@ -22,6 +22,7 @@
 </head>
 
 <body>
+<div th:replace="~{back/layout/navbar}"></div>
 	<div class="container d-flex justify-content-center">
 		<form
 			th:action="@{/private/updateMembers/{memberId}(memberId=${member.memberId})}"
