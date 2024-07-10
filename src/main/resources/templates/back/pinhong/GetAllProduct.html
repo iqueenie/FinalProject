@@ -27,7 +27,7 @@
     <main class="content">
         <div class="container mt-3">
             <div class="d-flex justify-content-center align-items-center">
-                <a th:href="@{/Product/AddProductPage}" class="btn btn-outline-success">新增</a>
+                <a th:href="@{/private/Product/AddProductPage}" class="btn btn-outline-success">新增</a>
            		<h1 class="m-auto">商品資料</h1>
             </div>
             <table id="productTable" class="w-100 display">
@@ -114,7 +114,7 @@
 
             // 刪除產品的函數
             function deleteProduct(id) {
-                axios.delete(`http://localhost:8080/FinalProject/Product/delete?productId=${id}`)
+                axios.delete(`http://localhost:8080/FinalProject/private/Product/delete?productId=${id}`)
                     .then(res => {
                         console.log(res);
                         if (res.data === "success") {
@@ -151,7 +151,7 @@
                                 product.productExpirydate,
                                 product.productQuantity,
                                 publishedStatus,
-                                `<a href="/FinalProject/Product/UpdatePage?productId=${product.productId}" class="btn btn-outline-warning btn-sm detail-btn">詳情</a>`,
+                                `<a href="/FinalProject/private/Product/UpdatePage?productId=${product.productId}" class="btn btn-outline-warning btn-sm detail-btn">詳情</a>`,
                                 `<a href="#" class="btn btn-outline-danger btn-sm delete-btn" data-product-id="${product.productId}">刪除</a>`
                             ]);
                         });
