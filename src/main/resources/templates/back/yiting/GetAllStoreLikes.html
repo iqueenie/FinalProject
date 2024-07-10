@@ -14,10 +14,10 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container mt-3">
         <div class="d-flex justify-content-center align-items-center">
-            <a th:href="@{/like/addLikePage}" class="btn btn-outline-success">新增</a>
+            <a th:href="@{/private/like/addLikePage}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">店鋪收藏列表</h1>
              <div>
-                <a th:href="@{/like/count}" class="btn btn-outline-info">收藏彙總</a>
+                <a th:href="@{/private/like/count}" class="btn btn-outline-info">收藏彙總</a>
             </div>
         </div>
         <table id="myTable" class="w-100 display">
@@ -40,7 +40,7 @@
                         <td th:text="${like.store.storeName}"></td>
                         <td th:text="${like.member.memberId}"></td>
                         <td th:text="${like.member.memberName}"></td>
-                        <td><a class="btn btn-outline-warning btn-sm" th:href="@{/like/edit(id=${like.likeId})}">更新</a></td>
+                        <td><a class="btn btn-outline-warning btn-sm" th:href="@{/private/like/edit(id=${like.likeId})}">更新</a></td>
                         <td>
                             <button id="myBtn" th:onclick="'confirmDelete(\'' + ${like.likeId} + '\')'"
                                 class="btn btn-outline-danger btn-sm">刪除</button>
@@ -83,7 +83,7 @@
 
         // 刪除店鋪
         function deleteLike(id) {
-            axios.delete(`http://localhost:8080/FinalProject/like/delete?id=${id}`)
+            axios.delete(`http://localhost:8080/FinalProject/private/like/delete?id=${id}`)
                 .then(res => {
                     console.log(res);
                     if (res.data === "success") {
@@ -106,7 +106,7 @@
             var currentPage = table.page(); // 當前頁碼
             var pageLength = table.page.len(); // 每頁顯示的筆數
 
-            axios.get("http://localhost:8080/FinalProject/like/findAllAjax")
+            axios.get("http://localhost:8080/FinalProject/private/like/findAllAjax")
                 .then(response => {
                     console.log(response.data);
                     var data = response.data;
@@ -118,7 +118,7 @@
                             like.store.storeName,
                             like.member.memberId,
                             like.member.memberName,
-                            `<a class="btn btn-outline-warning btn-sm" href="/FinalProject/like/edit?id=${like.likeId}">更新</a>`,
+                            `<a class="btn btn-outline-warning btn-sm" href="/FinalProject/private/like/edit?id=${like.likeId}">更新</a>`,
                             `<button onclick="confirmDelete(${like.likeId})" class="btn btn-outline-danger btn-sm">刪除</button>`
                         ]);
                     });

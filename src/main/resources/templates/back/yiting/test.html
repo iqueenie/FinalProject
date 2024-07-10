@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Address Map</title>
+    <!-- 略去其他標頭 -->
+</head>
+<body>
+    <h1>Address Map</h1>
+
+    <div th:if="${mapUrl != null}">
+        <iframe width="600" height="450" frameborder="0" style="border:0"
+                th:attr="src=${mapUrl}" allowfullscreen></iframe>
+    </div>
+
+    <div th:if="${mapUrl == null}">
+        <p>No address found or unable to generate map.</p>
+    </div>
+
+    <!-- 略去其他內容 -->
+</body>
+</html>

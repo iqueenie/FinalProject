@@ -13,7 +13,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container d-flex justify-content-center">
 
-        <form th:action="@{/detail/editPost}" th:method="PUT" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <form th:action="@{/private/detail/editPost}" th:method="PUT" class="mt-5 bg-secondary-subtle mw576px rounded-4">
             <div class="row g-2 m-2">
                 <h2 class="col-12 text-center">更新採購單</h2>
                 <input name="purchaseId" th:value="${buy.purchaseId}" type="hidden" />
@@ -99,7 +99,7 @@
                     </th:block>
                 </div>
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
-                    <a class="btn btn-secondary me-2"  th:href="@{/detail/getDetail(purchaseId=${buy.purchaseId})}">返回</a>
+                    <a class="btn btn-secondary me-2"  th:href="@{/private/detail/getDetail(purchaseId=${buy.purchaseId})}">返回</a>
                     <button type="submit" class="btn btn-success">更新</button>
                 </div>
                 <div style="color:red" th:text="${errorMsg} ? ${errorMsg}"></div>

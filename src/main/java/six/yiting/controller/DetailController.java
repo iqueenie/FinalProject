@@ -41,7 +41,7 @@ public class DetailController {
 	private DetailService detailService;
 	
 	
-	@GetMapping("/detail/getDetail")
+	@GetMapping("/private/detail/getDetail")
 	public String getDetail(@RequestParam("purchaseId")Integer pid,Model m) {
 	
 			List<DetailBean> details = detailService.findByPurchaseId(pid);
@@ -54,7 +54,7 @@ public class DetailController {
 	}
 
 	
-	@GetMapping("/detail/editPage")
+	@GetMapping("/private/detail/editPage")
     public String detailInsertPage(@ModelAttribute("purchaseId")Integer pid,Model m) {
 		List<Product> products = productService.findAll();
 		List<DetailBean> details = detailService.findByPurchaseId(pid);
@@ -68,7 +68,7 @@ public class DetailController {
 	}
 	
 	
-	@PutMapping("/detail/editPost")
+	@PutMapping("/private/detail/editPost")
 	public String editPost(@RequestParam("arrivedDate") @DateTimeFormat(pattern = "yyyy/MM/dd")LocalDate arrivedDate,
 			@RequestParam("buyStoreId") Integer storeId,
 			@RequestParam("productId[]") Integer[] productId,
@@ -117,7 +117,7 @@ public class DetailController {
 			}
 			buyService.saveBuy(buybean);
 			
-			return "redirect:/detail/getDetail?purchaseId=" + purchaseId;
+			return "redirect:/private/detail/getDetail?purchaseId=" + purchaseId;
 		}
 	}
 
