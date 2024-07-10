@@ -60,7 +60,7 @@
                                     </a>
                                 </th:block>
                                 <th:block th:unless="${buy.checkToInv}">
-                                    <button type="submit" class="btn btn-outline-info btn-sm check" th:text="到貨確認"
+                                    <button type="submit" class="btn btn-info btn-sm check" style="color:white" th:text="到貨確認"
                                         th:disabled="${#dates.create(buy.arrivedDate.year, buy.arrivedDate.monthValue, buy.arrivedDate.dayOfMonth)
                         			> #dates.createNow()}">
                                     </button>
@@ -222,7 +222,7 @@
                                     `<a href="/FinalProject/private/inventory/findAll" class="btn btn-outline-info btn-sm">
                                     查看存貨
                                 </a>` :
-                                    `<button type="submit" class="btn btn-outline-info btn-sm check" ${disabledDateAttr}>
+                                    `<button type="submit" class="btn btn-info btn-sm check" style="color:white" ${disabledDateAttr}>
                                     到貨確認
                                 </button>` }
                         </form>
