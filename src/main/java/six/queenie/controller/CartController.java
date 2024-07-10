@@ -54,7 +54,8 @@ public class CartController {
         return "front/queenie/cart";
     }
 
-    @PostMapping("/update-cart")
+    @PostMapping("/updateCart")
+    @ResponseBody
     public ResponseEntity<Map<String, Object>> updateCart(@RequestBody Map<String, Object> payload, HttpSession session) {
         List<Map<String, Object>> cartItemsData = (List<Map<String, Object>>) payload.get("cartItems");
         Integer totalAmount = 0;
@@ -64,30 +65,31 @@ public class CartController {
         }
 
         List<Product> updatedCartItems = new ArrayList<>();
+        Map<Integer, Integer> updatedQuantities = new HashMap<>();
+
         for (Map<String, Object> itemData : cartItemsData) {
-           
             if (itemData.get("productId") == null || itemData.get("quantity") == null) {
                 continue; 
             }
 
             Integer productId = Integer.valueOf(itemData.get("productId").toString());
             Integer quantity = Integer.valueOf(itemData.get("quantity").toString());
-            
+
             Product product = productService.findProductById(productId);
             if (product != null) {
                 for (int i = 0; i < quantity; i++) {
                     updatedCartItems.add(product);
                 }
+                updatedQuantities.put(productId, quantity);
             }
         }
+
         session.setAttribute(SESSION_CART, updatedCartItems);
 
-
-        cartService.calculateCartDiscounts(updatedCartItems, new ArrayList<>(), session, null);
+        cartService.calculateCartDiscounts(updatedCartItems, new ArrayList<>(updatedQuantities.values()), session, null);
         Integer discountAmount = (Integer) session.getAttribute("totalDiscount");
         Integer finalAmount = totalAmount - discountAmount;
 
-     
         Map<String, Object> response = new HashMap<>();
         response.put("discountAmount", discountAmount);
         response.put("finalAmount", finalAmount);
@@ -96,34 +98,11 @@ public class CartController {
     }
 
 
-    @PostMapping("/updateCartQuantities")
-    public String updateCartQuantities(@RequestParam Map<String, String> quantities, HttpSession session, RedirectAttributes redirectAttributes) {
-        List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
-        if (cartItems == null) {
-            cartItems = new ArrayList<>();
-            session.setAttribute(SESSION_CART, cartItems);
-        }
-
-        List<Integer> updatedQuantities = new ArrayList<>();
-        for (Product product : cartItems) {
-            String quantityStr = quantities.get("quantities[" + product.getProductId() + "]");
-            if (quantityStr != null) {
-                Integer quantity = Integer.parseInt(quantityStr);
-                updatedQuantities.add(quantity);
-            }
-        }
-
-        cartService.calculateCartDiscounts(cartItems, updatedQuantities, session, null);
-
-        redirectAttributes.addFlashAttribute("message", "購物車更新成功");
-        return "redirect:/GetAllCart/";
-    }
-
     @GetMapping("/product/{productId}")
     public String getProductPage(@PathVariable("productId") Integer productId, Model model) {
         Product product = productService.findProductById(productId);
         model.addAttribute("product", product);
-        return "/front/pinghong/AllProductPage";
+        return "front/pinhong/AllProductPage";
     }
 
     @PostMapping("/addToCart")
@@ -131,6 +110,7 @@ public class CartController {
         List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
         if (cartItems == null) {
             cartItems = new ArrayList<>();
+            
             session.setAttribute(SESSION_CART, cartItems);
         }
 
@@ -140,7 +120,7 @@ public class CartController {
         }
 
         cartService.calculateCartDiscounts(cartItems, new ArrayList<>(), session, null); 
-
+        
         redirectAttributes.addFlashAttribute("message", "商品添加成功");
         return "redirect:/product/" + productId;
     }

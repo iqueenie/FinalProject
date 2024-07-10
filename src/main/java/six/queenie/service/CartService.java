@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
-import six.hsiao.model.MembersRepository;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
 import six.liang.model.ProductDiscount;
@@ -42,13 +41,11 @@ public class CartService {
     @Autowired
     private OrdersRepository orderRepo;
     
-    public Product addToCart(Integer productId) {
-        return pService.findProductById(productId);
-    }
+    
     
     public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
         if (amountDiscountId == null) {
-            return 0; 
+            return total; 
         }
 
         Integer discountPercentage = 0;
@@ -60,7 +57,7 @@ public class CartService {
         }
 
         if (discountPercentage <= 0) {
-            return 0;
+            return total;
         }
 
         Integer discountAmount = (int)Math.floor(total * discountPercentage / 100.0);
@@ -91,6 +88,7 @@ public class CartService {
             details.put("productName", product.getProductName());
             details.put("productPrice", product.getProductPrice());
             details.put("productDescription", product.getProductDescription());
+            details.put("productQuantity", product.getProductQuantity());
                      
             if (product.getProductImage() != null) {
                 String imageUrl = "/ProductPhoto?productId=" + product.getProductId();
@@ -169,31 +167,31 @@ public class CartService {
     }
     
     
-    public void orderCheckedOut(MembersBean member, List<Product> cartItems, boolean isCheckedOut, HttpSession session) {
-        if (isCheckedOut) {
-            Orders newOrder = new Orders();
-            newOrder.setMembers(member);
-
-            Set<OrderDetails> orderDetails = new HashSet<>(); 
-            for (Product product : cartItems) {
-                OrderDetails detail = new OrderDetails();
-                detail.setProduct(product);
-                detail.setOrders(newOrder);
-                detail.setQuantity(1);
-                orderDetails.add(detail);
-            }
-
-            newOrder.setDetails(orderDetails);
-
-            calculateCartDiscounts(cartItems, new ArrayList<>(), session, null);
-
-            orderRepo.save(newOrder);
-
-            session.removeAttribute("cartItems");
-        } else {
-          
-            session.setAttribute("cartItems", cartItems);
-        }
-    }
+//    public void orderCheckedOut(MembersBean member, List<Product> cartItems, boolean isCheckedOut, HttpSession session) {
+//        if (isCheckedOut) {
+//            Orders newOrder = new Orders();
+//            newOrder.setMembers(member);
+//
+//            Set<OrderDetails> orderDetails = new HashSet<>(); 
+//            for (Product product : cartItems) {
+//                OrderDetails detail = new OrderDetails();
+//                detail.setProduct(product);
+//                detail.setOrders(newOrder);
+//                detail.setQuantity(product.getProductQuantity());
+//                orderDetails.add(detail);
+//            }
+//
+//            newOrder.setDetails(orderDetails);
+//
+//            calculateCartDiscounts(cartItems, new ArrayList<>(), session, null);
+//
+//            orderRepo.save(newOrder);
+//
+//            session.removeAttribute("cartItems");
+//        } else {
+//          
+//            session.setAttribute("cartItems", cartItems);
+//        }
+//    }
 
 }
