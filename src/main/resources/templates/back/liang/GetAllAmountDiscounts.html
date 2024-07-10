@@ -19,7 +19,7 @@
 
 	<div class="container mt-3">
 		<div class="d-flex justify-content-center align-items-center">
-			<a href="#" th:href="@{/AmountInserts}"
+			<a href="#" th:href="@{/private/AmountInserts}"
 				class="btn btn-outline-success">新增</a>
 			<h1 class="m-auto">節日優惠</h1>
 		</div>
@@ -49,10 +49,10 @@
 						<td th:text="${discount.endDate}"></td>
 						<td th:text="${discount.isActive == 1 ? '上架' : '下架'}"></td>
 						<td><a href="#"
-							th:href="@{/AmountUpdates(discountId=${discount.discountId})}"
+							th:href="@{/private/AmountUpdates(discountId=${discount.discountId})}"
 							class="btn btn-outline-warning btn-sm">更新</a></td>
 						<td>
-							<form th:action="@{/FinalProject/amountDiscount/delete}" method="post">
+							<form th:action="@{/FinalProject/private/amountDiscount/delete}" method="post">
 								<input type="hidden" name="id" th:value="${discount.discountId}" />
 								<button type="button" class="btn btn-outline-danger btn-sm"
 									onclick="confirmDelete(this.form)">刪除</button>
@@ -100,7 +100,7 @@
    // 刪除折扣
 function deleteDiscount(id) {
     $.ajax({
-        url: '/FinalProject/amountDiscount/delete',
+        url: '/FinalProject/private/amountDiscount/delete',
         type: 'DELETE',
         data: { id: id },
         success: function (data) {

@@ -28,16 +28,16 @@ public class ProductDiscountController {
     @Autowired
     private ProductService productService;
     
-    // 查全部
-    @GetMapping("/GetAllProductDiscount")
+     //查全部
+    @GetMapping("/private/GetAllProductDiscount")
     public String getAllProductDiscount(Model model) {
         List<ProductDiscount> products = productDiscountService.findAll();
         model.addAttribute("products", products);
         return "back/liang/GetAllProductDiscounts";
     }
 
-    // 新增表单
-    @GetMapping("/ProductDiscountInserts")
+    //新增表单
+    @GetMapping("/private/ProductDiscountInserts")
     public String showProductInsertForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
@@ -45,7 +45,7 @@ public class ProductDiscountController {
     }
 
     // 新增
-    @PostMapping("/ProductDiscountInsert")
+    @PostMapping("/private/ProductDiscountInsert")
     public String productInsert(@RequestParam("discountName") String discountName,
                                 @RequestParam("discountPercentage") Integer discountPercentage,
                                 @RequestParam("startDate") Date startDate,
@@ -66,11 +66,11 @@ public class ProductDiscountController {
 
         productDiscountService.insert(productDiscount);
 
-        return "redirect:/GetAllProductDiscount";
+        return "redirect:/private/GetAllProductDiscount";
     }
 
     // 刪除
-    @DeleteMapping("/productDiscount/delete")
+    @DeleteMapping("/private/productDiscount/delete")
     public ResponseEntity<String> deleteProductDiscount(@RequestParam Integer id) {
         System.out.println("Deleting discountId: " + id);
         try {
@@ -82,7 +82,7 @@ public class ProductDiscountController {
     }
 
     // 更新
-    @GetMapping("/ProductDiscountUpdates")
+    @GetMapping("/private/ProductDiscountUpdates")
     public String showProductUpdateForm(@RequestParam("discountId") Integer discountId, Model model) {
         ProductDiscount productDiscount = productDiscountService.findById(discountId);
         List<Product> products = productService.findAll();
@@ -92,7 +92,7 @@ public class ProductDiscountController {
     }
 
     
-    @PostMapping("/ProductDiscountUpdate")
+    @PostMapping("/private/ProductDiscountUpdate")
     public String productUpdate(@RequestParam("discountId") Integer discountId,
                                 @RequestParam("discountName") String discountName,
                                 @RequestParam("discountPercentage") Integer discountPercentage,
@@ -112,6 +112,6 @@ public class ProductDiscountController {
         productDiscount.setProduct(product);
 
         productDiscountService.update(productDiscount);
-        return "redirect:/GetAllProductDiscount";
+        return "redirect:/private/GetAllProductDiscount";
     }
 }

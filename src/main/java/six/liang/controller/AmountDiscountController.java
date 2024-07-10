@@ -23,7 +23,7 @@ public class AmountDiscountController {
     private AmountDiscountService amountDiscountService;
 
     // 查全部
-    @GetMapping("/GetAllAmountDiscount")
+    @GetMapping("/private/GetAllAmountDiscount")
     public String getAllAmountDiscount(Model m) {
         List<AmountDiscount> amount = amountDiscountService.findAll();
         m.addAttribute("amount", amount);
@@ -31,12 +31,12 @@ public class AmountDiscountController {
     }
 
     // 新增
-    @GetMapping("/AmountInserts")
+    @GetMapping("/private/AmountInserts")
     public String showAmountInsertForm() {
         return "back/liang/InsertAmount";
     }
 
-    @PostMapping("/AmountInsert")
+    @PostMapping("/private/AmountInsert")
     public String amountInsert(@RequestParam("discountName") String discountName,
                                @RequestParam("minPurchaseAmount") Integer minPurchaseAmount,
                                @RequestParam("discountPercentage") Integer discountPercentage,
@@ -52,11 +52,11 @@ public class AmountDiscountController {
         discount.setEndDate(endDate);
         discount.setIsActive(isActive);
         amountDiscountService.insert(discount);
-        return "redirect:/GetAllAmountDiscount";
+        return "redirect:/private/GetAllAmountDiscount";
     }
 
     // 刪除
-    @DeleteMapping("/amountDiscount/delete")
+    @DeleteMapping("/private/amountDiscount/delete")
     public ResponseEntity<String> deleteAmountDiscount(@RequestParam Integer id) {
         System.out.println("Deleting discountId: " + id);
         try {
@@ -69,14 +69,14 @@ public class AmountDiscountController {
 
 
     // 更新
-    @GetMapping("/AmountUpdates")
+    @GetMapping("/private/AmountUpdates")
     public String showAmountUpdateForm(@RequestParam("discountId") Integer discountId, Model model) {
         AmountDiscount discount = amountDiscountService.findById(discountId);
         model.addAttribute("discount", discount);
         return "back/liang/UpdateAmount";
     }
 
-    @PostMapping("/AmountUpdate")
+    @PostMapping("/private/AmountUpdate")
     public String amountUpdate(@RequestParam("discountId") Integer discountId,
                                @RequestParam("discountName") String discountName,
                                @RequestParam("minPurchaseAmount") Integer minPurchaseAmount,
@@ -93,7 +93,7 @@ public class AmountDiscountController {
         discount.setEndDate(endDate);
         discount.setIsActive(isActive);
         amountDiscountService.update(discount);
-        return "redirect:/GetAllAmountDiscount";
+        return "redirect:/private/GetAllAmountDiscount";
     }
     
 
