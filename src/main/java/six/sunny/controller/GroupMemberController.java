@@ -31,7 +31,7 @@ public class GroupMemberController {
 	@Autowired
 	private MembersService membersService;
 	
-	@GetMapping("private/GetGroupMemberByGroupBuy")
+	@GetMapping("private/back/GetGroupMemberByGroupBuy")
 	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, @RequestParam(value = "pus", defaultValue = "null") String pus, Model m) {
 		
 //		透過GroupBuy取得GroupMember
@@ -48,7 +48,7 @@ public class GroupMemberController {
 		return "back/sunny/GetGroupMemberByGroupBuy";
 	}
 	
-	@GetMapping("private/InsertGroupMemberForm")
+	@GetMapping("private/back/InsertGroupMemberForm")
 	public String insertGroupMemberForm(@RequestParam("id") Integer id, Model m) {
 		
 //		取得下拉式選單所需的列表
@@ -62,16 +62,16 @@ public class GroupMemberController {
 		return "back/sunny/InsertGroupMember";
 	}
 	
-	@PostMapping("private/InsertGroupMember")
+	@PostMapping("private/back/InsertGroupMember")
 	public String insertGroupMember(@ModelAttribute GroupMember gm) {
 		
 //		新增
 		groupMemberService.insert(gm);
 
-		return "redirect:/private/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
+		return "redirect:/private/back/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId();
 	}
 	
-	@DeleteMapping("private/DeleteGroupMember")
+	@DeleteMapping("private/back/DeleteGroupMember")
 	@ResponseBody
 	public ResponseEntity<Void> deleteGroupMember(@RequestParam("id") Integer groupMemberId) {
 		
@@ -85,7 +85,7 @@ public class GroupMemberController {
 	    }
 	}
 	
-	@GetMapping("private/UpdateGroupMemberForm")
+	@GetMapping("private/back/UpdateGroupMemberForm")
 	public String updateGroupMemberForm(@RequestParam("gmId") Integer groupMemberId, Model m) {
 
 //		取得表單使用內容
@@ -98,7 +98,7 @@ public class GroupMemberController {
 
 	}
 	
-	@PutMapping("private/UpdateGroupMember")
+	@PutMapping("private/back/UpdateGroupMember")
 	public String updateGroupMember(@ModelAttribute GroupMember gm) {
 		
 		
@@ -112,6 +112,6 @@ public class GroupMemberController {
 			pus = newGroupMember.getGroupMemberId();
 		}
 
-		return "redirect:/private/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId()+"&pus="+pus;
+		return "redirect:/private/back/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId()+"&pus="+pus;
 	}
 }
