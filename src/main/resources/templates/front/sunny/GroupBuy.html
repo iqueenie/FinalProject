@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
-  <title>Organic - Grocery Store HTML Website Template</title>
+  <title>團購列表</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,11 +37,10 @@
     <div class="hero-content py-0 py-md-5">
       <div class="container-lg d-flex flex-column d-md-block align-items-center">
         <nav class="breadcrumb">
-          <a class="breadcrumb-item nav-link" href="#">Home</a>
-          <a class="breadcrumb-item nav-link" href="#">Pages</a>
-          <span class="breadcrumb-item active" aria-current="page">Shop</span>
+          <a class="breadcrumb-item nav-link" href="#">首頁</a>
+          <span class="breadcrumb-item active" aria-current="page">團購</span>
         </nav>
-        <h1>Shop</h1>
+        <h1>團購</h1>
       </div>
     </div>
   </section>
@@ -140,7 +139,7 @@
         <main class="col-md-10">
           <div class="filter-shop d-flex justify-content-between">
             <div class="showing-product">
-              <p>Showing 1–10 of 25 results</p>
+              <p>Showing [[${gbs.number*5+1}]]–[[${gbs.number*5+6}]] of [[${gbs.totalElements}]] results</p>
             </div>
             <div class="sort-by">
               <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
@@ -197,31 +196,42 @@
           </div>
           <!-- / product-grid -->
 
-          <nav class="text-center py-4" aria-label="Page navigation" id="page">
+          <nav class="text-center py-4" th:if="${gbs.totalPages != 0}" aria-label="Page navigation" id="page">
             <ul class="pagination d-flex justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link bg-none border-0" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
+              <th:block th:switch="${gbs.number==0}">
+                <li th:case="${false}" class="page-item">
+                  <a class="page-link bg-none border-0" th:href="@{/public/front/GroupBuys(p=${gbs.number})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li th:case="${true}" class="page-item">
+                  <span class="page-link bg-none border-0" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </span>
+                </li>
+              </th:block>
               <th:block th:each="pageNumber:${#numbers.sequence(1,gbs.totalPages)}">
                 <th:block th:switch="${gbs.number+1==pageNumber}">
                   <li th:case="${false}" class="page-item">
-                    <a class="page-link border-0" th:href="@{/GroupBuys(p=${pageNumber})}" th:text="${pageNumber}"></a>
+                    <a class="page-link border-0" th:href="@{/public/front/GroupBuys(p=${pageNumber})}" th:text="${pageNumber}"></a>
                   </li>
                   <li th:case="${true}" class="page-item active">
-                    <a class="page-link border-0" th:href="@{/GroupBuys(p=${pageNumber})}" th:text="${pageNumber}" disable></a>
+                    <span class="page-link border-0 active" th:text="${pageNumber}"></span>
                   </li>
                 </th:block>
               </th:block>
-              <li class="page-item active" aria-current="page"><a class="page-link border-0" href="#">1</a></li>
-
-              <li class="page-item"><a class="page-link border-0" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link border-0" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
+              <th:block th:switch="${gbs.number==gbs.totalPages-1}">
+                <li class="page-item" th:case="${false}">
+                  <a class="page-link bg-none border-0" th:href="@{/public/front/GroupBuys(p=${gbs.number+2})}">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                <li class="page-item" th:case="${true}">
+                  <span class="page-link bg-none border-0" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </span>
+                </li>
+              </th:block>
             </ul>
 
           </nav>
@@ -234,7 +244,7 @@
 
   <div th:replace="~{front/layout/footer}"></div>
 
-  <script src="js/jquery-1.11.0.min.js"></script>
+  <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   <script th:src="@{/js/plugins.js}"></script>
