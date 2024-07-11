@@ -146,14 +146,24 @@ public class MembersController {
 		 MembersBean member = membersService.findByMemberAccountAndMemberPassword(memberAccount, memberPassword);
 		 
 		 if(member !=null) {
-			 session.setAttribute(memberAccount, member);
+			 session.setAttribute("loggedInMember", member);
 			 return "redirect:/public/front";
 		 }
 		 return "redirect:/front/frontLoginMain";
 	 }
 	 
 	 
-	 
+	 @GetMapping("/front/logout")
+	 public String logout(HttpSession session) {
+	     // 只刪除 session 中的管理員信息,但會保留登入信息
+		 //	session.removeAttribute("logInManagement");
+	     
+	     //下面的方法 可以讓當前使用者的session失效,完全清除session中的所有數據
+	     session.invalidate();
+	     
+	     
+	     return "redirect:/public/front";
+	 }
 	 
 	 
 	 
