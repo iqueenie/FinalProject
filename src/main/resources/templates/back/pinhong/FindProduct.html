@@ -27,6 +27,7 @@
                     <label for="productName">商品名稱:</label>
                 </div>
             </div>
+              	<div style="color:red" th:text="${errors} ? ${errors}"></div>
             <div class="col-12">
                 <div class="form-floating">
                     <select th:field="*{productType}" class="form-select" required>
