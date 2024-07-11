@@ -1,7 +1,9 @@
 package six.pinhong.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -72,17 +74,27 @@ public class ProductController {
 			Model m
 			) throws IOException{
 		
-		Product product = new Product(productName,productType,productCost,productPrice,productExpirydate,productDescription,productPublished,productQuantity);
-		ProductImage productImage = new ProductImage(imageFile.getBytes());
-		
-		product.setProductImage(productImage);
-		productImage.setProduct(product);
-		
-		productService.insertProduct(product);
+	    List<Product> products = productService.findAll();
 
-		return "redirect:/private/Product/GetAll";
-	}
-	
+	    for (Product orgainProduct : products) {
+	        if (productName.equals(orgainProduct.getProductName())) {
+	            m.addAttribute("errors", "已有相同產品，請重新輸入");
+	            return "back/pinhong/InsertProduct";
+	        }
+	    }
+	    // 這裡將在循環外創建和保存新產品
+	    Product product = new Product(productName, productType, productCost, productPrice, productExpirydate, productDescription, productPublished, productQuantity);
+	    ProductImage productImage = new ProductImage(imageFile.getBytes());
+
+	    product.setProductImage(productImage);
+	    productImage.setProduct(product);
+
+	    productService.insertProduct(product);
+
+	    return "redirect:/private/Product/GetAll";
+	};
+		
+
 	
 	// ---------------------------------- 新增進入點
 	@GetMapping("/InsertAllDefaultProduct")
@@ -161,8 +173,17 @@ public class ProductController {
 	// 更新 (MVC使用@ModelAttribute自動映射)
 	@PutMapping("/private/Product/Update")
 	public String productFindById(@ModelAttribute("product") Product product,
-			@RequestParam MultipartFile imageFile) throws IOException {
+			@RequestParam MultipartFile imageFile,
+			Model m) throws IOException {
 
+	    List<Product> products = productService.findAll();
+
+	    for (Product orgainProduct : products) {
+	        if (product.getProductName().equals(orgainProduct.getProductName())) {
+	            m.addAttribute("errors", "已有相同產品，請重新輸入");
+	            return "back/pinhong/FindProduct";
+	        }
+	    }
 								
 
 			if (imageFile != null && !imageFile.isEmpty()) {
