@@ -14,15 +14,15 @@
 
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
   <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-    rel="stylesheet">
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
 
 </head>
 
@@ -40,7 +40,7 @@
       <div class="row">
         <div class="col-lg-6 pt-5 mt-5">
           <h2 class="display-1 ls-1"><span class="fw-bold text-primary">Organic</span> Foods at your <span
-              class="fw-bold">Doorsteps</span></h2>
+                  class="fw-bold">Doorsteps</span></h2>
           <p class="fs-4">Dignissim massa diam elementum.</p>
           <div class="d-flex gap-3">
             <a href="#" class="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">Start Shopping</a>
@@ -241,14 +241,14 @@
         <div class="col-md-12">
 
           <div
-            class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+               class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
             <th:block th:each="product : ${products}">
               <div class="col">
                 <div class="product-item">
                   <figure>
                     <a href="single-product.html" title="Product Title">
                       <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail"
-                        class="tab-image">
+                           class="tab-image">
                     </a>
                   </figure>
                   <div class="d-flex flex-column text-center">
@@ -277,19 +277,19 @@
                       <del th:text="${product.productPrice}"></del>
                       <span class="text-dark fw-semibold">$18.00</span> <!-- 搭配優惠折扣後的價格 -->
                       <span
-                        class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
+                            class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
                         OFF</span> <!-- 優惠折扣的% -->
                     </div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
                         <div class="col-3"><input type="number" name="quantity"
-                            class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                                 class="form-control border-dark-subtle input-number quantity" value="1"></div>
                         <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg
-                              width="18" height="18">
+                                 width="18" height="18">
                               <use xlink:href="#cart"></use>
                             </svg> Add to Cart</a></div>
                         <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
-                              height="18">
+                                 height="18">
                               <use xlink:href="#heart"></use>
                             </svg></a></div>
                       </div>
@@ -315,7 +315,7 @@
           <div class="banner-blocks">
 
             <div class="banner-ad d-flex align-items-center large bg-info block-1"
-              style="background: url('images/banner-ad-1.jpg') no-repeat; background-size: cover;">
+                 style="background: url('images/banner-ad-1.jpg') no-repeat; background-size: cover;">
               <div class="banner-content p-5">
                 <div class="content-wrapper text-light">
                   <h3 class="banner-title text-light">Items on SALE</h3>
@@ -326,7 +326,7 @@
             </div>
 
             <div class="banner-ad bg-success-subtle block-2"
-              style="background:url('images/banner-ad-2.jpg') no-repeat;background-size: cover">
+                 style="background:url('images/banner-ad-2.jpg') no-repeat;background-size: cover">
               <div class="banner-content align-items-center p-5">
                 <div class="content-wrapper text-light">
                   <h3 class="banner-title text-light">Combo offers</h3>
@@ -337,7 +337,7 @@
             </div>
 
             <div class="banner-ad bg-danger block-3"
-              style="background:url('images/banner-ad-3.jpg') no-repeat;background-size: cover">
+                 style="background:url('images/banner-ad-3.jpg') no-repeat;background-size: cover">
               <div class="banner-content align-items-center p-5">
                 <div class="content-wrapper text-light">
                   <h3 class="banner-title text-light">Discount Coupons</h3>
@@ -380,62 +380,62 @@
 
           <div class="swiper">
             <div class="swiper-wrapper">
-                   
-                   <th:block th:each="product : ${products}">
-         
-              <div class="product-item swiper-slide">
-                <figure>
-                  <a href="single-product.html" title="Product Title">
-                    <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
-                  </a>
-                </figure>
-                <div class="d-flex flex-column text-center">
-                  <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
-                  <div>
-                    <span class="rating">
-                      <svg width="18" height="18" class="text-warning">
-                        <use xlink:href="#star-full"></use>
-                      </svg>
-                      <svg width="18" height="18" class="text-warning">
-                        <use xlink:href="#star-full"></use>
-                      </svg>
-                      <svg width="18" height="18" class="text-warning">
-                        <use xlink:href="#star-full"></use>
-                      </svg>
-                      <svg width="18" height="18" class="text-warning">
-                        <use xlink:href="#star-full"></use>
-                      </svg>
-                      <svg width="18" height="18" class="text-warning">
-                        <use xlink:href="#star-half"></use>
-                      </svg>
-                    </span>
-                    <span>(222)</span>
-                  </div>
-                  <div class="d-flex justify-content-center align-items-center gap-2" >
-                    <del th:text="${product.productPrice}"></del> <!-- 搭配優惠折扣後的價格 -->
-                    <span class="text-dark fw-semibold">$18.00</span>
-                    <span
-                      class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
-                      OFF</span> <!-- 優惠折扣比例 -->
-                  </div>
-                  <div class="button-area p-3 pt-0">
-                    <div class="row g-1 mt-2">
-                      <div class="col-3"><input type="number" name="quantity"
-                          class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                      <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18"
-                            height="18">
-                            <use xlink:href="#cart"></use>
-                          </svg> Add to Cart</a></div>
-                      <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
-                            height="18">
-                            <use xlink:href="#heart"></use>
-                          </svg></a></div>
+
+              <th:block th:each="product : ${products}">
+
+                <div class="product-item swiper-slide">
+                  <figure>
+                    <a href="single-product.html" title="Product Title">
+                      <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
+                    </a>
+                  </figure>
+                  <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
+                    <div>
+                      <span class="rating">
+                        <svg width="18" height="18" class="text-warning">
+                          <use xlink:href="#star-full"></use>
+                        </svg>
+                        <svg width="18" height="18" class="text-warning">
+                          <use xlink:href="#star-full"></use>
+                        </svg>
+                        <svg width="18" height="18" class="text-warning">
+                          <use xlink:href="#star-full"></use>
+                        </svg>
+                        <svg width="18" height="18" class="text-warning">
+                          <use xlink:href="#star-full"></use>
+                        </svg>
+                        <svg width="18" height="18" class="text-warning">
+                          <use xlink:href="#star-half"></use>
+                        </svg>
+                      </span>
+                      <span>(222)</span>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                      <del th:text="${product.productPrice}"></del> <!-- 搭配優惠折扣後的價格 -->
+                      <span class="text-dark fw-semibold">$18.00</span>
+                      <span
+                            class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
+                        OFF</span> <!-- 優惠折扣比例 -->
+                    </div>
+                    <div class="button-area p-3 pt-0">
+                      <div class="row g-1 mt-2">
+                        <div class="col-3"><input type="number" name="quantity"
+                                 class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18"
+                                 height="18">
+                              <use xlink:href="#cart"></use>
+                            </svg> Add to Cart</a></div>
+                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
+                                 height="18">
+                              <use xlink:href="#heart"></use>
+                            </svg></a></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-<th:block>
+                <th:block>
 
             </div>
           </div>
@@ -450,7 +450,7 @@
     <div class="container-lg">
 
       <div class="bg-secondary text-light py-5 my-5"
-        style="background: url('images/banner-newsletter.jpg') no-repeat; background-size: cover;">
+           style="background: url('images/banner-newsletter.jpg') no-repeat; background-size: cover;">
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-md-5 p-3">
@@ -464,12 +464,12 @@
                 <div class="mb-3">
                   <label for="name" class="form-label d-none">Name</label>
                   <input type="text" class="form-control form-control-md rounded-0" name="name" id="name"
-                    placeholder="Name">
+                         placeholder="Name">
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label d-none">Email</label>
                   <input type="email" class="form-control form-control-md rounded-0" name="email" id="email"
-                    placeholder="Email Address">
+                         placeholder="Email Address">
                 </div>
                 <div class="d-grid gap-2">
                   <button type="submit" class="btn btn-dark btn-md rounded-0">Submit</button>
@@ -486,17 +486,13 @@
     </div>
   </section>
 
- 
-
-  
-
   <div th:replace="~{front/layout/footer}"></div>
 
-  <script src="js/jquery-1.11.0.min.js"></script>
+  <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
-    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-    crossorigin="anonymous"></script>
+          integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+          crossorigin="anonymous"></script>
   <script th:src="@{/js/plugins.js}"></script>
   <script th:src="@{/js/script.js}"></script>
 </body>
