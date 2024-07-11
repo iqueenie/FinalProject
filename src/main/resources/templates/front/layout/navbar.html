@@ -408,12 +408,13 @@
 							th:href="@{/front/frontRegister}" class="nav-link text-primary">會員註冊</a>
 						</li>
 						
+						<li th:text="${session.loggedInMember != null ? '歡迎!! ' + session.loggedInMember.memberName : ''}">
+						</li>
+						
 						<li th:if="${session.loggedInMember != null} " class="nav-item"><a
 							th:href="@{/front/logout}" class="nav-link text-primary">登出</a>
 						</li>
 						
-						<li th:text="${session.loggedInMember != null ? '歡迎!! ' + session.loggedInMember.memberName : ''}">
-						</li>
 					</ul>
 				</div>
 
