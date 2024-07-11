@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
   <meta charset="UTF-8">
@@ -8,53 +8,9 @@
 </head>
 
 <body>
-  <section class="pb-4 my-4">
-    <div class="container-lg">
+  
 
-      <div class="bg-warning pt-5 rounded-5">
-        <div class="container">
-          <div class="row justify-content-center align-items-center">
-            <div class="col-md-4">
-              <h2 class="mt-5">Download Organic App</h2>
-              <p>Online Orders made easy, fast and reliable</p>
-              <div class="d-flex gap-2 flex-wrap mb-5">
-                <a href="#" title="App store"><img src="images/img-app-store.png" alt="app-store"></a>
-                <a href="#" title="Google Play"><img src="images/img-google-play.png" alt="google-play"></a>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <img src="images/banner-onlineapp.png" alt="phone" class="img-fluid">
-            </div>
-          </div>
-        </div>
-      </div>
 
-    </div>
-  </section>
-
-  <section class="py-4">
-    <div class="container-lg">
-      <h2 class="my-4">People are also looking for</h2>
-      <a href="#" class="btn btn-warning me-2 mb-2">Blue diamon almonds</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Angie’s Boomchickapop Corn</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Salty kettle Corn</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chobani Greek Yogurt</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Sweet Vanilla Yogurt</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Foster Farms Takeout Crispy wings</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Warrior Blend Organic</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chao Cheese Creamy</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chicken meatballs</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Blue diamon almonds</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Angie’s Boomchickapop Corn</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Salty kettle Corn</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chobani Greek Yogurt</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Sweet Vanilla Yogurt</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Foster Farms Takeout Crispy wings</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Warrior Blend Organic</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chao Cheese Creamy</a>
-      <a href="#" class="btn btn-warning me-2 mb-2">Chicken meatballs</a>
-    </div>
-  </section>
 
   <section class="py-5">
     <div class="container-lg">
@@ -134,7 +90,7 @@
 
         <div class="col-lg-3 col-md-6 col-sm-6">
           <div class="footer-menu">
-            <img src="images/logo.svg" width="240" height="70" alt="logo">
+            <img th:src="@{/img/all/logoHorizontal.png}" width="240" height="70" alt="logo">
             <div class="social-links mt-3">
               <ul class="d-flex list-unstyled gap-2">
                 <li>
