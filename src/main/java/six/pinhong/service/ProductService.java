@@ -84,4 +84,14 @@ public class ProductService {
 		Page<Product> page = productRepo.findAll(pgb);
 		return page;
 	}
+	
+	// 找5個庫存數量最多的產品	 
+	public List<Product> findTop5ByOrderByProductQuantityDesc() {
+		return productRepo.findTop5ByOrderByProductQuantityDesc();
+	}
+	
+	// 找5個最新上架的產品
+	public List<Product> findTop5ByOrderByProductIdDesc(){
+		return productRepo.findTop5ByOrderByProductIdDesc();
+	}
 }
