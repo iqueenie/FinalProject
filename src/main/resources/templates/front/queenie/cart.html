@@ -135,7 +135,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="product : ${cartItems}"  data-productId="${product.productId}">
+        <tr th:each="product : ${cartItems}" data-productId="${product.productId}">
           <td scope="row" class="py-4">
             <div class="cart-info d-flex flex-wrap align-items-center mb-4">
               <div class="col-lg-3">
@@ -192,6 +192,7 @@
               </tr>
             </tbody>
           </table>
+          </form>
         </div>
       </div>
 
@@ -216,7 +217,7 @@
                   <td data-title="discount">
                     <span class="price-amount amount text-dark ps-5">
                       <bdi>
-                        <span class="price-currency-symbol">TWD</span><span id="discountAmount" th:text="${totalDiscount}"></span>
+                        <span class="price-currency-symbol">TWD</span><span id="discount" th:text="${totalDiscount}"></span>
 
                       </bdi>
                     </span>
@@ -227,7 +228,7 @@
                   <td data-title="Final" >
                     <span class="price-amount amount text-dark ps-5">
                       <bdi>
-                         <span class="price-currency-symbol">TWD</span><span id="final" th:text="${finalAmount}"></span>
+                         <span class="price-currency-symbol">TWD</span><span id="finalAmount" th:text="${finalAmount}"></span>
                       </bdi>
                     </span>
                   </td>
@@ -238,7 +239,7 @@
           <div class="button-wrap row g-2">
             <div class="col-md-6" ><button type="submit" class="btn-update-cart btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">更新購物車</button></div>
             <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">繼續購物</button></div>
-            <div class="col-md-12"><button class="btn btn-primary py-3 px-4 text-uppercase btn-rounded-none w-100">結帳</button></div>
+            <div class="col-md-12"><button  class="btn btn-primary py-3 px-4 text-uppercase btn-rounded-none w-100">結帳</button></div>
           </div>
         </div>
       </div>
@@ -484,8 +485,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         const quantityInputs = document.querySelectorAll('.input-number input[type="number"]');
         const totalAmountElement = document.getElementById('totalAmount');
-        const discountAmountElement = document.getElementById('discountAmount');
-        const finalAmountElement = document.getElementById('final');
+        const discountAmountElement = document.getElementById('discount');
+        const finalAmountElement = document.getElementById('finalAmount');
 
         quantityInputs.forEach(input => {
             input.addEventListener('change', updateCart);
@@ -515,23 +516,24 @@
                 });
             });
 
-            final = totalAmount - discountAmount;
+            finalAmount = totalAmount - discountAmount;
             totalAmountElement.innerText = totalAmount;
-            finalAmountElement.innerText = final;
+            finalAmountElement.innerText = finalAmount;
 
-            
+            console.log('Data before sending:', { cartItems: cartItems, totalAmount: totalAmount,finalAmount:finalAmount,discount:discount });
+
             fetch('/FinalProject/update-cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ cartItems: cartItems, totalAmount: totalAmount })
+                body: JSON.stringify({ cartItems: cartItems, totalAmount: totalAmount,finalAmount:finalAmount,discount:discount })
             })
             .then(response => response.json())
             .then(data => {
-              
                 discountAmountElement.innerText = data.discountAmount;
                 finalAmountElement.innerText = data.finalAmount;
+                console.log('Data received from server:', data);
             })
             .catch(error => console.error('Error:', error));
         }
@@ -549,6 +551,7 @@
                     input.dispatchEvent(new Event('change'));
                 }
             });
+            updateCart();
         });
 
         document.querySelectorAll('.quantity-right-plus').forEach(button => {
@@ -559,10 +562,10 @@
             });
         });
 
-   
         updateCart();
     });
 </script>
+
 
 </body>
 </html>

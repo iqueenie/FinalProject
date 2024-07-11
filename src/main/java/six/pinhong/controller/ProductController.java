@@ -229,7 +229,11 @@ public class ProductController {
 
 	    Page<Product> page = productService.findByPage(pageNum);
 
-	    model.addAttribute("page", page);
+	    if (page != null) {
+	        model.addAttribute("page", page);
+	    } else {
+	        model.addAttribute("page", Page.empty()); // 返回一個空的 Page 對象
+	    }
 
 	    return "front/pinhong/AllProductPage";
 	}
