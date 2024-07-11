@@ -68,10 +68,10 @@
     <!-- 商品展示 -->
 
 		<div class="container mt-4">
-		    <div class="row row-cols-1 row-cols-md-3 g-4">
+		    <div class="row row-cols-1 row-cols-md-3 g-4" >
 		        <th:block th:each="product : ${page.content}">
 		            <div class="col">
-		                <div class="product-item">
+		                <div class="product-item" data-productId="${product.productId}">
 		                    <div class="product-image" style="height: 200px;">
 		                        <img th:src="@{/ProductPhoto(productId=${product.productId})}" class="img-fluid rounded" th:alt="${product.productName}" width="200px">
 		                    </div>
@@ -156,42 +156,43 @@
      
        <script th:inline="javascript">
     function addToCart(button) {
-        var productId = button.getAttribute('data-productId');
-        var productName = button.getAttribute('data-productName');
+    var productId = button.getAttribute('data-productId');
+    var productName = button.getAttribute('data-productName');
 
-        Swal.fire({
-            title: '確定加入購物車?',
-            html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '是的',
-            cancelButtonText: '取消'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                var formData = {
-                    productId: productId
-                };
+    Swal.fire({
+        title: '確定加入購物車?',
+        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = {
+                productId: productId
+            };
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/FinalProject/addToCart',
-                    data: formData,
-                    success: function(response) {
-                        Swal.fire({
-                            title: '成功加入購物車',
-                            icon: 'success'
-                        });
-                    },
-                    error: function(err) {
-                        Swal.fire({
-                            title: '加入購物車失敗',
-                            icon: 'error'
-                        });
-                    }
-                });
-            }
-        });
-    }
+            $.ajax({
+                type: 'POST',
+                url: '/FinalProject/addToCart',
+                data: formData,
+                success: function(response) {
+                    Swal.fire({
+                        title: '成功加入購物車',
+                        icon: 'success'
+                    });
+                },
+                error: function(err) {
+                    Swal.fire({
+                        title: '加入購物車失敗',
+                        text: xhr.responseText,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    });
+}
 </script>
 
 
