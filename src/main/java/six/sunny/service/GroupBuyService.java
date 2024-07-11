@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import six.pinhong.model.Product;
@@ -146,6 +150,13 @@ public class GroupBuyService{
 		}else {
 			return null;
 		}
+	}
+	
+	public Page<GroupBuy> findByGroupBuyStatus(String status, Integer page) {
+		
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+		
+		return groupBuyRepo.findByGroupBuyStatus(status,pgb);
 	}
 
 

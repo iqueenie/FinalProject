@@ -167,5 +167,9 @@ public class GroupBuy {
 		this.storeId = storeId;
 	}
 	
+	public Integer getProductPrice() {
+		return product.getProductPrice();
+	}
+	
 	
 }

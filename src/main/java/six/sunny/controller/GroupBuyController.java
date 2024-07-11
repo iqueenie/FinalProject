@@ -3,6 +3,8 @@ package six.sunny.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,18 +42,8 @@ public class GroupBuyController {
 	
 	@RequestMapping(path = "private/back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m) {
-
-//		List<GroupBuyBean> gbs = null;
-//
-//		if(storeId.isEmpty() && productId.isEmpty()) {
+		
 		List<GroupBuy> gbs = groupBuyService.findAll();	
-//		}else if(!storeId.isEmpty() && !productId.isEmpty()) {
-//			gbs = groupBuyService.getByProductStoreId(Integer.parseInt(productId), Integer.parseInt(storeId));
-//		}else if (!storeId.isEmpty()) {
-//			gbs = groupBuyService.getByStoreId(Integer.parseInt(storeId));
-//		}else if (!productId.isEmpty()) {
-//			gbs = groupBuyService.getByProductId(Integer.parseInt(productId));
-//		}
 
 //		右上角查詢下拉式選單用的store和product清單
 		List<StoresBean> stns = storeService.findAllStores();
@@ -143,7 +135,11 @@ public class GroupBuyController {
 	}
 	
 	@GetMapping("public/front/GroupBuys")
-	public String GroupBuys() {
+	public String GroupBuys(@RequestParam(value = "p",defaultValue = "1") Integer page,Model m) {
+		
+		Page<GroupBuy> gbs = groupBuyService.findByGroupBuyStatus("開團中",page);
+		m.addAttribute("gbs", gbs);
+		
 		return "front/sunny/GroupBuy";
 	}
 	
