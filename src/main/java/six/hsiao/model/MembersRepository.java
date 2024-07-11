@@ -18,5 +18,7 @@ public interface MembersRepository extends JpaRepository<MembersBean, Integer> {
 	List<Object[]> countRegistrationsPerMonth(@Param("startDate") LocalDate startDate);
 
 	MembersBean findByMemberAccount(String memberAccount);
+	
+	MembersBean  findByMemberAccountAndMemberPassword(String memberAccount, String memberPassword);
 
 }

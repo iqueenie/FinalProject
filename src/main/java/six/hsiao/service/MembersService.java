@@ -74,5 +74,12 @@ public class MembersService {
 			return null;
 		}
 	
+		
+		 public MembersBean findByMemberAccountAndMemberPassword(String memberAccount, String memberPassword) {
+		        return membersRepo.findByMemberAccountAndMemberPassword(memberAccount, memberPassword);
+		    }
+		
+		
+		
 	
 }

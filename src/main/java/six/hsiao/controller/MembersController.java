@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
 
@@ -132,6 +133,29 @@ public class MembersController {
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	     }
 	 }
+	 
+	 @GetMapping("/front/frontLoginMain")
+		public String BackLoginMain() {
+			return "back/hsiao/BackLoginAction";
+		}
+		 
+	 
+	 
+	 @PostMapping("/front/login")
+	 public String loginMember(@RequestParam("memberAccount")String memberAccount ,@RequestParam("memberPassword")String memberPassword,HttpSession session) {
+		 MembersBean member = membersService.findByMemberAccountAndMemberPassword(memberAccount, memberPassword);
+		 
+		 if(member !=null) {
+			 session.setAttribute(memberAccount, member);
+			 return "redirect:/public/front";
+		 }
+		 return "redirect:/front/frontLoginMain";
+	 }
+	 
+	 
+	 
+	 
+	 
 	 
 	 }
 	
