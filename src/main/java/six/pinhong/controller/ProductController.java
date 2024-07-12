@@ -212,22 +212,23 @@ public class ProductController {
 	                     @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
 	                     Model model) {
 
-	    Page<Product> searchResults = productService.searchProducts(searchTerm, pageNum, sortField, sortDir);
+	    Page<Product> searchResults = productService.searchProducts(searchTerm, pageNum, sortField, sortDir, 10);
 
 	    model.addAttribute("page", searchResults);
 	    model.addAttribute("searchTerm", searchTerm);
 	    model.addAttribute("sortField", sortField); // 哪個欄位排序
 	    model.addAttribute("sortDir", sortDir); // ASC或DESC
 
-	    return "front/pinhong/AllProductPage";
+	    return "front/pinhong/shop";
 	}
-
+	
 	@GetMapping("/ShowAllProducts")
-	public String findByPage(@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-
+	public String ShowAllProductsTest(@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+							          @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+							          @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
 	                         Model model) {
 
-	    Page<Product> page = productService.findByPage(pageNum);
+	    Page<Product> page = productService.findByPage(pageNum,sortField,sortDir);
 
 	    if (page != null) {
 	        model.addAttribute("page", page);
@@ -235,7 +236,7 @@ public class ProductController {
 	        model.addAttribute("page", Page.empty()); // 返回一個空的 Page 對象
 	    }
 
-	    return "front/pinhong/AllProductPage";
+	    return "front/pinhong/shop";
 	}
 }
 

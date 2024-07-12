@@ -66,9 +66,9 @@ public class ProductService {
 	}
 
 	// 商品頁模糊查詢
-	public Page<Product> searchProducts(String searchTerm, Integer pageNum, String sortField, String sortDir) {
+	public Page<Product> searchProducts(String searchTerm, Integer pageNum, String sortField, String sortDir, int page) {
         
-		Pageable pageable = PageRequest.of(pageNum - 1, 6, Sort.Direction.fromString(sortDir), sortField);
+		Pageable pageable = PageRequest.of(pageNum - 1, page, Sort.Direction.fromString(sortDir), sortField);
 
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return productRepo.findAll(pageable); // 如果搜索詞為空，返回所有產品
@@ -78,9 +78,8 @@ public class ProductService {
     }
     
     // 商品頁碼
-	
-	public Page<Product> findByPage(Integer pageNumber){
-		Pageable pgb = PageRequest.of(pageNumber-1, 6, Sort.Direction.ASC, "productId");
+	public Page<Product> findByPage(Integer pageNumber, String sortField, String sortDir){
+		Pageable pgb = PageRequest.of(pageNumber-1, 10, Sort.Direction.fromString(sortDir), sortField);
 		Page<Product> page = productRepo.findAll(pgb);
 		return page;
 	}
