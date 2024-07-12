@@ -19,5 +19,7 @@ public class WebConfig implements WebMvcConfigurer{
 	 @Override
 	    public void addInterceptors(InterceptorRegistry registry) {      //這裡攔截的是/private底下的所有路徑            //這裡除外路徑 有特別的功能 可以寫在這裡 
 	        registry.addInterceptor(authenticationInterceptor()).addPathPatterns("/private/**").excludePathPatterns("/public/**","/public/login");
-	    }
+	        	
+	 }
+	 
 }

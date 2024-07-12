@@ -1,109 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
-<title>會員登入</title>
- <style>
-        .btn-home, input[type="submit"] {
-            width: 100%; 
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 10px; 
-            box-sizing: border-box; 
-        }
+    <title>Organic - Grocery Store HTML Website Template</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
 
-        .btn-home:hover, input[type="submit"]:hover {
-            background-color: #45a049;
-        }
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+ 
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        .login-container {
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px;
-            text-align: center;
-        }
-
-        .login-container h2 {
-            margin-bottom: 20px;
-            color: #333333;
-        }
-
-        .login-container form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .login-container form label {
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .login-container form input[type="text"],
-        .login-container form input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #cccccc;
-            border-radius: 3px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .add-management-btn {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .add-management-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
 
 <body>
-	<div class="login-container">
-		<h2>會員登入</h2>
 
-		<form action="/FinalProject/front/login" method="post">
-			<label for="memberAccount">帳號：</label> <input type="text"
-				id="memberAccount" name="memberAccount" required><br>
-			<br> <label for="memberPassword">密碼：</label> <input
-				type="password" id="memberPassword" name="memberPassword"
-				required><br>
-			<br> <input type="submit" value="登入">
-			<button type="button" class="btn-home" onclick="window.location.href='/FinalProject/public/front';">返回首頁</button>
-		</form>
-	
-	</div>
-	
+
+    <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">登入</span>
+                </nav>
+                <h1>登入頁面</h1>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container-lg">
+        
+        
+   
+
+             <section class="py-5 my-5">
+        <div class="container-sm">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 d-flex align-items-end">
+                    <img src="" alt="Login" class="img-fluid">
+                </div>
+                <div class="col-lg-6 p-5 bg-white border shadow-sm">
+                    <h5 class="text-uppercase mb-4">登入</h5>
+                    <form action="/FinalProject/front/login" method="post"  id="form" class="form-group flex-wrap">
+                        <div class="col-12 pb-3">
+                            <label class="d-none">Username or email address *</label>
+                            <input type="text" name="memberAccount" id="memberAccount" placeholder="帳號" class="form-control">
+                        </div>
+                        <div class="col-12 pb-3">
+                            <label class="d-none">Password *</label>
+                            <input type="password" id="memberPassword" name="memberPassword" placeholder="密碼" class="form-control">
+                        </div>
+                        <div class="col-12 pb-3">
+                           <!--   <label>
+                                <input type="checkbox" required="">
+                                <span class="label-body">記住我</span>
+                            </label> -->
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" name="submit" class="btn btn-primary text-uppercase w-100">Log
+                                in</button>
+                            <p><a href="#">忘記密碼了嗎?</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+       
+    <div th:replace="~{front/layout/footer}"></div>
+
+    <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script th:src="@{/js/plugins.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

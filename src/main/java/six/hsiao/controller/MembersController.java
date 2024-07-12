@@ -135,7 +135,7 @@ public class MembersController {
 	 }
 	 
 	 @GetMapping("/front/frontLoginMain")
-		public String BackLoginMain() {
+		public String frontLoginMain() {
 			return "front/hsiao/FrontLoginAction";
 		}
 		 
@@ -165,8 +165,7 @@ public class MembersController {
 	     return "redirect:/public/front";
 	 }
 	 
-	 
-	 
+	
 	 }
 	
 	

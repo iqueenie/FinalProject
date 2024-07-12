@@ -28,6 +28,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 	        response.sendRedirect("/FinalProject/public/BackLoginMain");
 	        return false;
 	    }
+	 
 	}
 	
 

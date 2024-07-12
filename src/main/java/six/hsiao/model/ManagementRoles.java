@@ -1,5 +1,6 @@
 package six.hsiao.model;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import six.yiting.model.StoresBean;
 
 @Entity
 @Table(name = "managementRoles")
@@ -23,6 +25,10 @@ public class ManagementRoles {
 	@ManyToOne
 	@JoinColumn(name = "rolesId", referencedColumnName = "rolesId")
 	private Roles roles;
+	
+	@ManyToOne
+	@JoinColumn(name = "storeId",referencedColumnName = "storeId")
+	private StoresBean store;
 	
 	
 
