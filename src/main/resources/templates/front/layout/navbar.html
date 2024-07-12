@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
   <meta charset="UTF-8">
@@ -245,7 +245,7 @@
         <div class="col-8">
           <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
             <li class="nav-item">
-              <a href="index.html" class="nav-link">Home</a>
+              <a th:href="@{/public/front}" class="nav-link">首頁</a>
             </li>
             <li class="nav-item">
               <a href="index.html" class="nav-link">Home</a>
@@ -257,7 +257,7 @@
               <a href="index.html" class="nav-link">Home</a>
             </li>
             <li class="nav-item">
-              <a href="index.html" class="nav-link">Home</a>
+              <a th:href="@{/public/front/GroupBuys}" class="nav-link">團購</a>
             </li>
 
             <li class="nav-item">
