@@ -90,8 +90,8 @@ public class ProductService {
 		return productRepo.findTop5ByOrderByProductQuantityDesc();
 	}
 	
-	// 找5個最新上架的產品
-	public List<Product> findTop5ByOrderByProductIdDesc(){
-		return productRepo.findTop5ByOrderByProductIdDesc();
+	// 找10個最新上架的產品
+	public List<Product> findTop10ByOrderByProductIdDesc(){
+		return productRepo.findTop10ByOrderByProductIdDesc();
 	}
 }

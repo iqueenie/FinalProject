@@ -27,10 +27,10 @@ public class PageController {
 	@GetMapping("/public/front")
 	public String frontIndex(Model model) {
 		List<Product> products = productService.findTop5ByOrderByProductQuantityDesc();
-		List<Product> new5Products = productService.findTop5ByOrderByProductIdDesc();
+		List<Product> new10Products = productService.findTop10ByOrderByProductIdDesc();
 		
 		model.addAttribute("products", products);
-		model.addAttribute("new5Products", new5Products);
+		model.addAttribute("new10Products", new10Products);
 		return "/front/index";
 	}
 }
