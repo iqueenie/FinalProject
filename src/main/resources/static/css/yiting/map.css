@@ -1,0 +1,347 @@
+@charset "UTF-8";
+ a {
+            text-decoration: none;
+        }
+
+        .map_graybox03 {
+            border: 1px solid #d5d5d5;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #676767;
+            font-weight: bold;
+            padding-left: 10px;
+            padding: 7px 0 0 10px;
+            overflow: hidden;
+        }
+
+        .map_right {
+            width: 683px;
+            padding: 10px 0 0 0px;
+        }
+
+        .map_graybox03 input {
+            border: 0;
+            font-size: 13px;
+            color: #676767;
+            margin-bottom: 3px;
+        }
+
+        .map_graybox04 {
+            border: 1px solid #d5d5d5;
+            background: url(https://www.family.com.tw/Marketing/storemap/images/map/map.png) no-repeat;
+            height: 508px;
+            position: relative;
+        }
+
+        .city a {
+            display: block;
+            width: 67px;
+            height: 26px;
+            /*background:url(../images/map/citybg.png) no-repeat;*/
+            background-color: #00b347;
+            border-radius: 4px;
+            line-height: 26px;
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .city a:hover {
+            color: #00b347;
+            background-position: 0 bottom;
+            background-color: #FFF;
+            border: 1px solid #00b347;
+        }
+
+
+        .yilan {
+            position: absolute;
+            left: 458px;
+            top: 128px;
+        }
+
+        .hualien {
+            position: absolute;
+            left: 458px;
+            top: 212px;
+        }
+
+        .taitung {
+            position: absolute;
+            left: 388px;
+            top: 381px;
+        }
+
+        .keelung {
+            position: absolute;
+            left: 318px;
+            top: 39px;
+        }
+
+        .taipei {
+            position: absolute;
+            left: 318px;
+            top: 68px;
+        }
+
+        .newtaipei {
+            position: absolute;
+            left: 318px;
+            top: 98px;
+        }
+
+
+        .taoyuan {
+            position: absolute;
+            left: 235px;
+            top: 98px;
+        }
+
+
+        .hsinchu {
+            position: absolute;
+            left: 235px;
+            top: 127px;
+        }
+
+
+        .hsinchu02 {
+            position: absolute;
+            left: 235px;
+            top: 157px;
+        }
+
+
+        .Miaoli {
+            position: absolute;
+            left: 235px;
+            top: 187px;
+        }
+
+        .Yunlin {
+            position: absolute;
+            left: 235px;
+            top: 247px;
+        }
+
+        .Chiayi {
+            position: absolute;
+            left: 235px;
+            top: 276px;
+        }
+
+        .Chiayi02 {
+            position: absolute;
+            left: 235px;
+            top: 306px;
+        }
+
+        .Tainan {
+            position: absolute;
+            left: 235px;
+            top: 336px;
+        }
+
+        .Kaohsiung {
+            position: absolute;
+            left: 235px;
+            top: 394px;
+        }
+
+        .Pingtung {
+            position: absolute;
+            left: 235px;
+            top: 423px;
+        }
+
+        .Penghu {
+            position: absolute;
+            left: 156px;
+            top: 40px;
+        }
+
+        .Kinmen {
+            position: absolute;
+            left: 156px;
+            top: 69px;
+        }
+
+        .Lienchiang {
+            position: absolute;
+            left: 156px;
+            top: 98px;
+        }
+
+        .Taichung {
+            position: absolute;
+            left: 156px;
+            top: 188px;
+        }
+
+        .Changhua {
+            position: absolute;
+            left: 156px;
+            top: 217px;
+        }
+
+        .Nantou {
+            position: absolute;
+            left: 156px;
+            top: 247px;
+        }
+
+
+
+        .search_icon a {
+            display: block;
+            width: 25px;
+            height: 22px;
+            float: right;
+            padding-top: 3px;
+
+        }
+
+        .search_icon a i {
+            font-size: 20px;
+        }
+
+        .icon01 {
+            display: block;
+            width: 25px;
+            height: 25px;
+            float: left;
+            padding-top: 3px;
+        }
+
+        .icon01 i {
+            font-size: 20px;
+        }
+
+
+
+        /*---map01__左----*/
+
+        .search_word .search_icon {
+            float: right;
+            margin-right: 70px;
+        }
+
+        .map_left {
+            width: 210px;
+            padding: 10px 10px 0 0;
+            float: left;
+        }
+
+        .map_graybox {
+            border: 1px solid #d5d5d5;
+            background-color: #F0F0F0;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+        }
+
+        .search_word {
+            font-size: 15px;
+            color: #434343;
+            padding: 6px 0 0 10px;
+            font-weight: normal;
+        }
+
+        .search_box {
+            border: 1px solid #b9b9b9;
+            font-size: 12px;
+            color: #5c5c5c;
+            height: 28px;
+            line-height: 28px;
+            width: 124px;
+            margin-left: 8px;
+            /* margin-top: 5px; */
+            text-indent: 5px;
+            float: left;
+        }
+
+        .search_button {
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            /* margin-top: 5px; */
+            background-color: #00b347;
+            font-size: 13px;
+            margin-left: 135px;
+            text-align: center;
+        }
+
+        .search_button a {
+            display: block;
+            color: #FFFFFF;
+
+        }
+
+
+
+        /*---map01__右----*/
+
+        /*---map01__綠框----*/
+        .map_graybox05 {
+            border: 1px solid #5cc209;
+            margin-bottom: 10px;
+            background-color: #f6f6f6;
+            padding: 8px 0 12px 0px;
+            font-size: 15px;
+            color: #444444;
+            letter-spacing: 1px;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .map_graybox05 span {
+            padding-left: 12px;
+        }
+
+
+        /*---map01__搜尋結果__綠字----*/
+        .map_graybox05 ul.result {
+            padding-left: 12px;
+            margin-bottom: 50px;
+        }
+
+        span.result {
+            display: block;
+        }
+
+        .result li {
+            float: left;
+            padding: 10px 20px 5px 0;
+        }
+
+        .result a {
+            color: #2a9d14;
+            text-decoration: underline;
+        }
+
+        .result a:hover {
+            color: #77d200;
+        }
+
+        .search_rightbar li {
+            float: left;
+        }
+
+        .icon02 {
+            display: block;
+            background: url(../images/map/map_icon.png) no-repeat scroll -62px -29px transparent;
+            width: 22px;
+            height: 25px;
+            float: left;
+        }
+
+        .icon_arror {
+            display: block;
+            background: url(../images/map/map_icon.png) no-repeat scroll -63px -58px transparent;
+            width: 11px;
+            height: 20px;
+            float: left;
+            margin-left: 8px;
+            margin-right: 8px;
+            margin-top: 2px;
+        }
