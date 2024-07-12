@@ -138,16 +138,19 @@
     </div>
   </section>
 
-  <section class="py-5 overflow-hidden">
+  <section class="py-5 overflow-hidden" >
     <div class="container-lg">
       <div class="row">
         <div class="col-md-12">
 
           <div class="section-header d-flex flex-wrap justify-content-between mb-5">
             <h2 class="section-title">分類</h2>
-
             <div class="d-flex align-items-center">
               <a href="#" class="btn btn-primary me-2">View All</a>
+           		<div class="swiper-buttons">
+                  <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
+                  <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>     
+ 	           </div>
             </div>
           </div>
 
@@ -159,31 +162,31 @@
           <div class="category-carousel swiper">
             <div class="swiper-wrapper justify-content-center">
             
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='飲品')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-drink.png}"  class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">飲品</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='零食')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-snacks.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">零食</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='泡麵')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-instant-noodles.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">泡麵</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='熟食')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-spaguetti.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">熟食</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='生活用品')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-tissue-paper.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">生活用品</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='菸酒')}"class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-tobacco.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">菸酒</h4>
               </a>
-              <a href="category.html" class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='護理用品')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-sanitary-pad.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title" style= "font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500;color: #333;">護理用品</h4>
               </a>
