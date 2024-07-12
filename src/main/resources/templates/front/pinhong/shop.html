@@ -92,9 +92,9 @@
                 <p>Showing 1–10 of 25 results</p>
               </div>
               <div class="sort-by">
-				<select id="input-sort" class="form-control" name="sortField" onchange="updateSearch(1)">
-				  <option value="productId" th:selected="${param.sortField == 'productId'}">Default sorting</option>
-				  <option value="productIdNew" th:selected="${param.sortField == 'productId'}">最新</option>
+				<select id="input-sort" class="form-control" name="sortField">
+				  <option value="default" th:selected="${param.sortField == 'default'}">Default sorting</option>
+				  <option value="productIdNew" th:selected="${param.sortField == 'productIdNew'}">最新</option>
 				  <option value="productPrice" th:selected="${param.sortField == 'productPrice'}">價格由低至高</option>
 				</select>
               </div>
@@ -200,7 +200,7 @@
 		        </th:block>
 		       </ul>
 
-            </nav>
+    </nav>
 
           </main>
           
@@ -211,18 +211,29 @@
   <div th:replace="~{front/layout/footer}"></div>
   
 <script>
+let isUserAction = false;
+
 function updateSearch() {
   let sortField = document.getElementById('input-sort').value;
   let sortDir = 'asc'; // 默认升序
 
-  if (sortField === 'productIdNew') {
-    sortDir = 'desc'; // 如果是按名称排序,则使用降序
+  if (sortField === 'default') {
+    sortField = 'productId'; // 默认排序字段
+  } else if (sortField === 'productIdNew') {
+    sortDir = 'desc'; // 如果是按最新排序,则使用降序
     sortField = 'productId';
   }
 
-  const url = `http://localhost:8080/FinalProject/ShowAllProducts?p=1&sortField=${sortField}&sortDir=${sortDir}`;
-  window.location.href = url;
+  if (isUserAction) {
+    const url = `http://localhost:8080/FinalProject/ShowAllProducts?p=1&sortField=${sortField}&sortDir=${sortDir}`;
+    window.location.href = url;
+  }
 }
+
+document.getElementById('input-sort').addEventListener('change', function() {
+  isUserAction = true;
+  updateSearch();
+});
 </script>
 
   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>

@@ -11,6 +11,11 @@
     .pt2rem {
         padding-top: 2.1rem !important;
     }
+    .readonly-style {
+        background-color: #e9ecef;
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
 </style>  
 </head>
 <body>
@@ -107,19 +112,43 @@ document.addEventListener('DOMContentLoaded', function() {
     var productTypeSelect = document.getElementById('productType');
     var productPublishedSelect = document.getElementById('productPublished');
     var productDescriptionInput = document.getElementById('productDescription');
+    var productQuantityInput = document.getElementById('productQuantity');
+
+    function makeSelectReadonly(select, isReadonly) {
+        select.classList.toggle('readonly-style', isReadonly);
+        if (isReadonly) {
+            select.addEventListener('mousedown', preventChange);
+            select.addEventListener('keydown', preventChange);
+        } else {
+            select.removeEventListener('mousedown', preventChange);
+            select.removeEventListener('keydown', preventChange);
+        }
+    }
+
+    function preventChange(e) {
+        e.preventDefault();
+    }
 
     function updateFieldsBasedOnProductType() {
         if (productTypeSelect.value === '實體店') {
             productPublishedSelect.value = '0';
-            productPublishedSelect.disabled = true;
+            makeSelectReadonly(productPublishedSelect, true);
             productDescriptionInput.value = '實體店專用';
             productDescriptionInput.readOnly = true;
+            productDescriptionInput.classList.add('readonly-style');
+            productQuantityInput.value = '1';
+            productQuantityInput.readOnly = true;
+            productQuantityInput.classList.add('readonly-style');
         } else {
-            productPublishedSelect.disabled = false;
+            makeSelectReadonly(productPublishedSelect, false);
             productDescriptionInput.readOnly = false;
+            productDescriptionInput.classList.remove('readonly-style');
             if (productDescriptionInput.value === '實體店專用') {
                 productDescriptionInput.value = '';
+                productQuantityInput.value = '0';
             }
+            productQuantityInput.readOnly = false;
+            productQuantityInput.classList.remove('readonly-style');
         }
     }
 
@@ -129,6 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 當產品類型改變時也執行
     productTypeSelect.addEventListener('change', updateFieldsBasedOnProductType);
 });
+
+    
+    
 	$('form').submit(function (event) {
 	    event.preventDefault();
 	    var form = event.currentTarget;
