@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
@@ -142,5 +144,19 @@ public class GroupBuyController {
 		
 		return "front/sunny/GroupBuy";
 	}
+	
+	@GetMapping("public/front/GroupBuys/{id}")
+	public String getOneGroupBuy(@PathVariable("id") Integer id, HttpSession session, Model m) {
+		if (session.getAttribute("loggedInMember") == null) {
+			return "redirect:/front/frontLoginMain";
+		}
+		
+		GroupBuy groupBuy = groupBuyService.findById(id);
+		
+		m.addAttribute("gb", groupBuy);
+		
+		return "front/sunny/GroupBuyDetail";
+	}
+	
 	
 }
