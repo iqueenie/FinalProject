@@ -11,11 +11,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
 	// shop.html - 前台頁碼、查詢
 	@Query("SELECT p FROM Product p WHERE " +
-		       "(:searchTerm IS NULL OR :searchTerm = '' OR " +
-		       "LOWER(p.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-		       "LOWER(p.productDescription) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
-		       "AND (:productType IS NULL OR :productType = '' OR p.productType = :productType)")
+			"p.productPublished = 1 AND " +
+		    "(:searchTerm IS NULL OR :searchTerm = '' OR " +
+		    "LOWER(p.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+		    "LOWER(p.productDescription) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+		    "AND (:productType IS NULL OR :productType = '' OR p.productType = :productType)")
 	Page<Product> searchProducts(String searchTerm, String productType, Pageable pageable);
+	
+	// 有上架的商品
+	@Query("SELECT p FROM Product p WHERE p.productPublished = 1")
+	Page<Product> findAllPublished(Pageable pageable);
 	 
 	List<Product> findTop5ByOrderByProductQuantityDesc();
 	

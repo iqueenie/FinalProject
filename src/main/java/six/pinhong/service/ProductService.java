@@ -72,7 +72,7 @@ public class ProductService {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.Direction.fromString(sortDir), sortField);
 
         if ((searchTerm == null || searchTerm.trim().isEmpty()) && (productType == null || productType.trim().isEmpty())) {
-            return productRepo.findAll(pageable); // 如果搜索词和商品类型都为空，返回所有产品
+            return productRepo.findAllPublished(pageable); // 如果搜索词和商品类型都为空，返回所有产品
         }
 
         return productRepo.searchProducts(searchTerm.trim(), productType, pageable);
