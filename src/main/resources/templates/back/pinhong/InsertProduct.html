@@ -36,6 +36,7 @@
                         <option value="生活用品">生活用品</option>
                         <option value="菸酒">菸酒</option>
                         <option value="護理用品">護理用品</option>
+                        <option value="實體店">實體店</option>
                     </select>
                     <label for="productType">商品類型:</label>
                 </div>
@@ -102,6 +103,26 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    var productTypeSelect = document.getElementById('productType');
+	    var productPublishedSelect = document.getElementById('productPublished');
+	    var productDescriptionInput = document.getElementById('productDescription');
+	
+	    productTypeSelect.addEventListener('change', function() {
+	        if (this.value === '實體店') {
+	            productPublishedSelect.value = '0';
+	            productPublishedSelect.disabled = true;
+	            productDescriptionInput.value = '實體店專用';
+	            productDescriptionInput.readOnly = true;
+	        } else {
+	            productPublishedSelect.disabled = false;
+	            productDescriptionInput.readOnly = false;
+	            if (productDescriptionInput.value === '實體店專用') {
+	                productDescriptionInput.value = '';
+	            }
+	        }
+	    });
+	});
 	$('form').submit(function (event) {
 	    event.preventDefault();
 	    var form = event.currentTarget;
