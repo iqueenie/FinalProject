@@ -405,10 +405,10 @@
               <a th:href="@{/public/front/GroupBuys}" class="nav-link">團購</a>
             </li>
             <li th:if="${session.loggedInMember == null} " class="nav-item"><a
-                 th:href="@{/front/frontLoginMain}" class="nav-link text-primary">會員登入</a>
+                 th:href="@{/public/frontLoginMain}" class="nav-link text-primary">會員登入</a>
             </li>
             <li th:if="${session.loggedInMember == null}" class="nav-item"><a
-                 th:href="@{/front/frontRegister}" class="nav-link text-primary">會員註冊</a>
+                 th:href="@{/public/frontRegister}" class="nav-link text-primary">會員註冊</a>
             </li>
 
             <li th:text="${session.loggedInMember != null ? '歡迎!! ' + session.loggedInMember.memberName : ''}">

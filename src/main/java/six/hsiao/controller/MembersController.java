@@ -134,7 +134,7 @@ public class MembersController {
 	     }
 	 }
 	 
-	 @GetMapping("/front/frontLoginMain")
+	 @GetMapping("/public/frontLoginMain")
 		public String frontLoginMain() {
 			return "front/hsiao/FrontLoginAction";
 		}
@@ -149,7 +149,7 @@ public class MembersController {
 			 session.setAttribute("loggedInMember", member);
 			 return "redirect:/public/front";
 		 }
-		 return "redirect:/front/frontLoginMain";
+		 return "redirect:/public/frontLoginMain";
 	 }
 	 
 	 
@@ -165,7 +165,35 @@ public class MembersController {
 	     return "redirect:/public/front";
 	 }
 	 
+	 
+	 
+	 @GetMapping("/public/addMemberMain")
+	 public String addMemberMain() {
+		 return "front/hsiao/AddMember";
+	 }
+	 
+	 
+	 @GetMapping("/public/addMember")
+	 public String addMember(@ModelAttribute MembersBean member,
+				@RequestParam("memberPhotoFile") MultipartFile memberPhotoFile,Model model) {
+		 if(!memberPhotoFile.isEmpty()) {
+			 try {
+				byte[] memberPhoto = memberPhotoFile.getBytes();
+				member.setMemberPhoto(memberPhoto);
+			} catch (IOException e) {
+				
+				model.addAttribute("errorByPhoto","上傳圖片失敗,請檢查檔案大小");	
+				e.printStackTrace();
+			}
+			  membersService.insertMembers(member);
+			
+		 }
+		return "redirect:/public/frontLoginMain";
+		 
+	 }
+	 
+	 
 	
 	 }
 	
-	
+
