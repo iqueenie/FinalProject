@@ -65,24 +65,19 @@ public class ProductService {
 		return productRepo.save(product);
 	}
 
-	// 商品頁模糊查詢
-	public Page<Product> searchProducts(String searchTerm, Integer pageNum, String sortField, String sortDir, int page) {
-        
-		Pageable pageable = PageRequest.of(pageNum - 1, page, Sort.Direction.fromString(sortDir), sortField);
+	
+	// shop.html - 前台頁碼、查詢
+	
+    public Page<Product> findByPage(String searchTerm, String productType, Integer pageNum, String sortField, String sortDir, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.Direction.fromString(sortDir), sortField);
 
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return productRepo.findAll(pageable); // 如果搜索詞為空，返回所有產品
+        if ((searchTerm == null || searchTerm.trim().isEmpty()) && (productType == null || productType.trim().isEmpty())) {
+            return productRepo.findAll(pageable); // 如果搜索词和商品类型都为空，返回所有产品
         }
 
-        return productRepo.searchProducts(searchTerm.trim(), pageable);
+        return productRepo.searchProducts(searchTerm.trim(), productType, pageable);
     }
-    
-    // 商品頁碼
-	public Page<Product> findByPage(Integer pageNumber, String sortField, String sortDir){
-		Pageable pgb = PageRequest.of(pageNumber-1, 10, Sort.Direction.fromString(sortDir), sortField);
-		Page<Product> page = productRepo.findAll(pgb);
-		return page;
-	}
+
 	
 	// 找5個庫存數量最多的產品	 
 	public List<Product> findTop5ByOrderByProductQuantityDesc() {

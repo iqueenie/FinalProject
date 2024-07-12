@@ -204,37 +204,24 @@ public class ProductController {
 		return "redirect:/private/Product/GetAll";
 	}
 	
-	// 模糊查詢商品
-	@GetMapping("/search")
-	public String search(@RequestParam(name = "term", required = false) String searchTerm,
-	                     @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-	                     @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-	                     @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-	                     Model model) {
-
-	    Page<Product> searchResults = productService.searchProducts(searchTerm, pageNum, sortField, sortDir, 10);
-
-	    model.addAttribute("page", searchResults);
-	    model.addAttribute("searchTerm", searchTerm);
-	    model.addAttribute("sortField", sortField); // 哪個欄位排序
-	    model.addAttribute("sortDir", sortDir); // ASC或DESC
-
-	    return "front/pinhong/shop";
-	}
-	
-	@GetMapping("/ShowAllProducts")
-	public String ShowAllProductsTest(@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-							          @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-							          @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+	// shop.html - 前台頁碼、查詢
+	@GetMapping("/public/Products")
+	public String ShowAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+								  @RequestParam(value = "productType", defaultValue = "") String productType,
+								  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+							      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+							      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
 	                         Model model) {
+        int pageSize = 5;
 
-	    Page<Product> page = productService.findByPage(pageNum,sortField,sortDir);
-
-	    if (page != null) {
+        Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+        
 	        model.addAttribute("page", page);
-	    } else {
-	        model.addAttribute("page", Page.empty()); // 返回一個空的 Page 對象
-	    }
+	        model.addAttribute("searchTerm", searchTerm);
+	        model.addAttribute("productType", productType); // 商品種類
+	        model.addAttribute("sortField", sortField); // 哪個欄位排序
+	        model.addAttribute("sortDir", sortDir); // ASC或DESC
+
 
 	    return "front/pinhong/shop";
 	}
