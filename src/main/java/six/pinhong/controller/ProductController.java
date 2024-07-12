@@ -221,6 +221,11 @@ public class ProductController {
 	        model.addAttribute("productType", productType); // 商品種類
 	        model.addAttribute("sortField", sortField); // 哪個欄位排序
 	        model.addAttribute("sortDir", sortDir); // ASC或DESC
+	        
+	        int start = pageNum * pageSize - (pageSize - 1);
+	        int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
+
+	        model.addAttribute("currentRange", start + "–" + end);
 
 
 	    return "front/pinhong/shop";
