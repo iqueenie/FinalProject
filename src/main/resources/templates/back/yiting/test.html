@@ -2,12 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Address Map</title>
-    <!-- 略去其他標頭 -->
+    <style>
+        .map-container {
+            position: relative;
+            width: 600px; /* 設置地圖容器的寬度 */
+            height: 450px; /* 設置地圖容器的高度 */
+        }
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .map-overlay img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+             width: 40px; /* 設置 logo 的寬度 */
+        height: auto; /* 讓高度根據寬度自動調整 */
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
 </head>
 <body>
     <h1>Address Map</h1>
 
-    <div th:if="${mapUrl != null}">
+    <div th:if="${mapUrl != null}" class="map-container">
+        <!-- 使用背景地圖，並加入 logo 的圖片 -->
+        <div class="map-overlay">
+            <img th:src="@{/img/all/logo.png}" alt="Logo">
+        </div>
         <iframe width="600" height="450" frameborder="0" style="border:0"
                 th:attr="src=${mapUrl}" allowfullscreen></iframe>
     </div>
@@ -15,7 +42,7 @@
     <div th:if="${mapUrl == null}">
         <p>No address found or unable to generate map.</p>
     </div>
-
-    <!-- 略去其他內容 -->
+    
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek&callback=initMap" async defer></script>
 </body>
 </html>
