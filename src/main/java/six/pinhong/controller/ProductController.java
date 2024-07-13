@@ -204,33 +204,78 @@ public class ProductController {
 		return "redirect:/private/Product/GetAll";
 	}
 	
+//	// shop.html - 前台頁碼、查詢
+//	@GetMapping("/public/Products")
+//	public String ShowAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+//								  @RequestParam(value = "productType", defaultValue = "") String productType,
+//								  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+//							      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+//							      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+//	                         Model model) {
+//        int pageSize = 5;
+//
+//        Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+//        
+//	        model.addAttribute("page", page);
+//	        model.addAttribute("searchTerm", searchTerm);
+//	        model.addAttribute("productType", productType); // 商品種類
+//	        model.addAttribute("sortField", sortField); // 哪個欄位排序
+//	        model.addAttribute("sortDir", sortDir); // ASC或DESC
+//	        
+//	        int start = pageNum * pageSize - (pageSize - 1);
+//	        int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
+//
+//	        model.addAttribute("currentRange", start + "–" + end);
+//
+//
+//	    return "front/pinhong/shop";
+//	}
+	
 	// shop.html - 前台頁碼、查詢
 	@GetMapping("/public/Products")
 	public String ShowAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-								  @RequestParam(value = "productType", defaultValue = "") String productType,
-								  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-							      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-							      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-	                         Model model) {
-        int pageSize = 5;
-
-        Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
-        
-	        model.addAttribute("page", page);
-	        model.addAttribute("searchTerm", searchTerm);
-	        model.addAttribute("productType", productType); // 商品種類
-	        model.addAttribute("sortField", sortField); // 哪個欄位排序
-	        model.addAttribute("sortDir", sortDir); // ASC或DESC
-	        
-	        int start = pageNum * pageSize - (pageSize - 1);
-	        int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
-
-	        model.addAttribute("currentRange", start + "–" + end);
-
-
-	    return "front/pinhong/shop";
+			  	@RequestParam(value = "productType", defaultValue = "") String productType,
+			  	@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+			  	@RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+			  	@RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+		      				Model model) {
+		int pageSize = 5;
+		
+		Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("searchTerm", searchTerm);
+		model.addAttribute("productType", productType); // 商品種類
+		model.addAttribute("sortField", sortField); // 哪個欄位排序
+		model.addAttribute("sortDir", sortDir); // ASC或DESC
+		
+		int start = pageNum * pageSize - (pageSize - 1);
+		int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
+		
+		model.addAttribute("currentRange", start + "–" + end);
+		
+		
+		return "front/pinhong/shop";
 	}
+	
+	@GetMapping("/public/api/products")
+	@ResponseBody
+	public ResponseEntity<Page<Product>> showAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+	                                      @RequestParam(value = "productType", defaultValue = "") String productType,
+	                                      @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+	                                      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+	                                      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+	    int pageSize = 10;
+		Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+
+		// 檢查頁碼是否超過總頁數
+	    if (pageNum > page.getTotalPages() && page.getTotalPages() > 0) {
+	        pageNum = page.getTotalPages(); // 將頁碼設置為最後一頁
+	        page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize); // 重新查詢
+	    }
+
+	    return ResponseEntity.ok(page);
+	}
+
 }
-
-
 	
