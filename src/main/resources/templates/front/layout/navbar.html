@@ -408,7 +408,7 @@
 							th:href="@{/public/frontLoginMain}" class="nav-link text-primary">會員登入</a>
 						</li>
 						<li th:if="${session.loggedInMember == null}" class="nav-item"><a
-							th:href="@{/front/frontRegister}" class="nav-link text-primary">會員註冊</a>
+							th:href="@{/public/addMemberMain}" class="nav-link text-primary">會員註冊</a>
 						</li>
 
 						<li
@@ -431,7 +431,8 @@
 									id="dropdownUser1" data-bs-toggle="dropdown"
 									aria-expanded="false"> <img src="https://github.com/mdo.png"
 									alt="" width="32" height="32" class="rounded-circle me-2">
-									<strong>會員</strong>
+									 <span><strong>會員</strong></span>
+									
 								</a>
 								<ul 
 									class="dropdown-menu dropdown-menu-dark text-small shadow "
