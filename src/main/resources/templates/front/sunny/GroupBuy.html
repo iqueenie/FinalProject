@@ -182,7 +182,7 @@
                   </div>
                 </div>
                 <div class="p-3 pt-0 col-2 d-flex">
-                  <a th:href="@{/public/front/GroupBuys/{id}(id=${gb.groupBuyId})}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto" id="joinBtn">
+                  <a th:href="@{/public/front/group-buys/{id}(id=${gb.groupBuyId})}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto" id="joinBtn">
                     <svg width="18" height="18">
                       <use xlink:href="#cart"></use>
                     </svg> 我要跟團
@@ -198,7 +198,7 @@
             <ul class="pagination d-flex justify-content-center">
               <th:block th:switch="${gbs.number==0}">
                 <li th:case="${false}" class="page-item">
-                  <a class="page-link bg-none border-0" th:href="@{/public/front/GroupBuys(p=${gbs.number})}" aria-label="Previous">
+                  <a class="page-link bg-none border-0" th:href="@{/public/front/group-buys(p=${gbs.number})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
@@ -211,7 +211,7 @@
               <th:block th:each="pageNumber:${#numbers.sequence(1,gbs.totalPages)}">
                 <th:block th:switch="${gbs.number+1==pageNumber}">
                   <li th:case="${false}" class="page-item">
-                    <a class="page-link border-0" th:href="@{/public/front/GroupBuys(p=${pageNumber})}" th:text="${pageNumber}"></a>
+                    <a class="page-link border-0" th:href="@{/public/front/group-buys(p=${pageNumber})}" th:text="${pageNumber}"></a>
                   </li>
                   <li th:case="${true}" class="page-item active">
                     <span class="page-link border-0 active" th:text="${pageNumber}"></span>
@@ -220,7 +220,7 @@
               </th:block>
               <th:block th:switch="${gbs.number==gbs.totalPages-1}">
                 <li class="page-item" th:case="${false}">
-                  <a class="page-link bg-none border-0" th:href="@{/public/front/GroupBuys(p=${gbs.number+2})}">
+                  <a class="page-link bg-none border-0" th:href="@{/public/front/group-buys(p=${gbs.number+2})}">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>

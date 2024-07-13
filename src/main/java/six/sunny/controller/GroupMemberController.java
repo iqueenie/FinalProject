@@ -1,9 +1,12 @@
 package six.sunny.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,14 +14,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
+import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
+import six.sunny.model.GroupMemberDTO;
 import six.sunny.service.GroupBuyService;
 import six.sunny.service.GroupMemberService;
 
@@ -113,5 +121,27 @@ public class GroupMemberController {
 		}
 
 		return "redirect:/private/back/GetGroupMemberByGroupBuy?gbId="+gm.getGroupBuyId()+"&pus="+pus;
+	}
+	
+	@ResponseBody
+	@PostMapping("public/front/group-members")
+	public ResponseEntity<Void> orderGroupBuy(@RequestBody GroupMemberDTO groupMemberDTO) {
+		
+		GroupMember gm = new GroupMember();
+		gm.setGroupBuyId(groupMemberDTO.getGroupBuyId());
+		gm.setMemberId(groupMemberDTO.getMemberId());
+		gm.setQuantity(groupMemberDTO.getQuantity());
+		
+		groupMemberService.insert(gm);
+		
+	    URI location = null;
+	    try {
+	    	location = new URI("http://localhost:8080/FinalProject/public/front/group-buy-orders");
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.created(location).build();
 	}
 }

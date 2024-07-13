@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
+import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
 import six.sunny.model.GroupBuy;
+import six.sunny.model.GroupMember;
 import six.sunny.service.GroupBuyService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
@@ -136,7 +138,7 @@ public class GroupBuyController {
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
-	@GetMapping("public/front/GroupBuys")
+	@GetMapping("public/front/group-buys")
 	public String GroupBuys(@RequestParam(value = "p",defaultValue = "1") Integer page,Model m) {
 		
 		Page<GroupBuy> gbs = groupBuyService.findByGroupBuyStatus("開團中",page);
@@ -145,7 +147,7 @@ public class GroupBuyController {
 		return "front/sunny/GroupBuy";
 	}
 	
-	@GetMapping("public/front/GroupBuys/{id}")
+	@GetMapping("public/front/group-buys/{id}")
 	public String getOneGroupBuy(@PathVariable("id") Integer id, HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
 			return "redirect:/front/frontLoginMain";
@@ -158,5 +160,15 @@ public class GroupBuyController {
 		return "front/sunny/GroupBuyDetail";
 	}
 	
+	@GetMapping("public/front/group-buy-orders")
+	public String getGroupBuyOrders(HttpSession session) {
+		if (session.getAttribute("loggedInMember") == null) {
+			return "redirect:/front/frontLoginMain";
+		}
+//		TODO
+		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		
+		return "front/sunny/GroupBuyOrder";
+	}
 	
 }
