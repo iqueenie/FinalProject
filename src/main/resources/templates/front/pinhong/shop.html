@@ -106,19 +106,21 @@
             
             
             <!-- 商品 -->
+            <!-- 骨架 -->
+
             <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
                 
-                </div>
+     		</div>
             <!-- /商品 -->
-            
 
-
+			<!-- 頁碼 -->
+			<!-- 骨架 -->
 		<nav class="text-center py-4" aria-label="Page navigation">
 		  <ul class="pagination d-flex justify-content-center">
 		    
 		  </ul>
 		</nav>
-
+			<!-- /頁碼 -->
 
           </main>
           
@@ -159,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         loadProducts(1);
     });
-
+	
+	// 每次載入時呼叫所有產品的方法, (page)則是第幾頁
     function loadProducts(page) {
         const searchTerm = document.querySelector('input[name="searchTerm"]').value;
         const sortField = sortSelect.value === 'default' ? 'productId' : sortSelect.value;
@@ -180,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
             productGrid.innerHTML = '';
 
             products.forEach(product => {
+            	// 每個產品的皮膚、內臟、器官 會植入到html <!-- 商品 --> 的 骨架內
                 const productElement = `
                     <div class="col">
                         <div class="product-item">
@@ -231,11 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+	// 處理頁數
     function updatePagination(data) {
         const totalPages = data.totalPages;
         const currentPage = data.number + 1;
 
+        // 每種頁數(第一頁、上一頁、頁碼、下一頁、最後一頁) 的皮膚、內臟、器官，都會植入到html 頁數的骨架內
         pagination.innerHTML = '';
+        
 		
 		// 第一頁
         pagination.innerHTML += `
@@ -274,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		`;
     }
 	    
-
+	// 顯示商品頁左上的 show xx-xx of xx results 
     function updateShowingRange(data) {
         const start = data.number * data.size + 1;
         const end = Math.min(start + data.numberOfElements - 1, data.totalElements);

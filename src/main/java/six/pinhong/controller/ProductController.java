@@ -204,47 +204,25 @@ public class ProductController {
 		return "redirect:/private/Product/GetAll";
 	}
 	
-//	// shop.html - 前台頁碼、查詢
-//	@GetMapping("/public/Products")
-//	public String ShowAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-//								  @RequestParam(value = "productType", defaultValue = "") String productType,
-//								  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-//							      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-//							      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-//	                         Model model) {
-//        int pageSize = 5;
-//
-//        Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
-//        
-//	        model.addAttribute("page", page);
-//	        model.addAttribute("searchTerm", searchTerm);
-//	        model.addAttribute("productType", productType); // 商品種類
-//	        model.addAttribute("sortField", sortField); // 哪個欄位排序
-//	        model.addAttribute("sortDir", sortDir); // ASC或DESC
-//	        
-//	        int start = pageNum * pageSize - (pageSize - 1);
-//	        int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
-//
-//	        model.addAttribute("currentRange", start + "–" + end);
-//
-//
-//	    return "front/pinhong/shop";
-//	}
-	
 	// shop.html - 前台頁碼、查詢
 	@GetMapping("/public/Products")
-	public String ShowAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-			  	@RequestParam(value = "productType", defaultValue = "") String productType,
-			  	@RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-			  	@RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-			  	@RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-		      				Model model) {
-		int pageSize = 5;
-		
+	public String showAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+							  	  @RequestParam(value = "productType", defaultValue = "") String productType,
+							  	  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+							  	  @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
+							  	  @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+							  	  Model model) {
+		int pageSize=10;
 		Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+		//findByPage 的 Service內有處理查詢(searchProducts)、或沒有查詢時(findAllPublished)的方法
+		//findAllPublished = 只秀出已上架的商品
+		/*
+		但是理想一點，這邊可以用ProductRepository的findAllPublished
+		讓showAllProductsAjax處理查詢或沒有查詢的狀況(findByPage)，不過我目前懶得改.
+		*/
 		
-		model.addAttribute("page", page);
-		model.addAttribute("searchTerm", searchTerm);
+		model.addAttribute("page", page); // 處理頁數
+		model.addAttribute("searchTerm", searchTerm); // 查啥產品
 		model.addAttribute("productType", productType); // 商品種類
 		model.addAttribute("sortField", sortField); // 哪個欄位排序
 		model.addAttribute("sortDir", sortDir); // ASC或DESC
@@ -260,7 +238,7 @@ public class ProductController {
 	
 	@GetMapping("/public/api/products")
 	@ResponseBody
-	public ResponseEntity<Page<Product>> showAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+	public ResponseEntity<Page<Product>> showAllProductsAjax(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
 	                                      @RequestParam(value = "productType", defaultValue = "") String productType,
 	                                      @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
 	                                      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
@@ -275,6 +253,7 @@ public class ProductController {
 	    }
 
 	    return ResponseEntity.ok(page);
+	    // 這個會比單純 return page 更好	    
 	}
 
 }
