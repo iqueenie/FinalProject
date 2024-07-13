@@ -424,17 +424,17 @@
 						<li th:if="${session.loggedInMember != null} " class="nav-item">
 							<div class="dropdown">
 								<a href="#"
-									class="d-flex align-items-center text-white text-decoration-none dropdown-toggle show"
+									class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
 									id="dropdownUser1" data-bs-toggle="dropdown"
-									aria-expanded="true"> <img src="https://github.com/mdo.png"
+									aria-expanded="false"> <img src="https://github.com/mdo.png"
 									alt="" width="32" height="32" class="rounded-circle me-2">
-									<strong></strong>
+									<strong>會員</strong>
 								</a>
 								<ul 
-									class="dropdown-menu dropdown-menu-dark text-small shadow show"
+									class="dropdown-menu dropdown-menu-dark text-small shadow "
 									aria-labelledby="dropdownUser1"
-									style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(0px, -34px, 0px);"
-									data-popper-placement="top-start">
+									
+									data-popper-placement="bottom-start">
 									<li><a class="dropdown-item" href="#">個人資料</a></li>
 									<li><a class="dropdown-item" href="#">訂單</a></li>
 									<li><a class="dropdown-item" href="#">團購</a></li>
