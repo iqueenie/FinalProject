@@ -16,12 +16,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.service.ProductService;
@@ -233,7 +235,7 @@ public class ProductController {
 		model.addAttribute("currentRange", start + "–" + end);
 		
 		
-		return "front/pinhong/shop";
+		return "front/pinhong/Shop";
 	}
 	
 	@GetMapping("/public/api/products")
@@ -256,5 +258,14 @@ public class ProductController {
 	    // 這個會比單純 return page 更好	    
 	}
 
+	
+	// 新增進入點
+	@GetMapping("/public/Products/{productId}")
+	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model) {
+			Product product = productService.findProductById(productId);	
+			model.addAttribute("product", product);
+
+			return "front/pinhong/SingleProduct";
+	}
 }
 	
