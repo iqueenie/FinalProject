@@ -165,6 +165,17 @@ public class MembersController {
 	     return "redirect:/public/front";
 	 }
 	 
+	 @ResponseBody
+	 @GetMapping("/front/checkLogging")
+	 public boolean getMethodName(HttpSession session) {
+		if (session.getAttribute("loggedInMember") == null) {
+			return false;
+		}else {
+			return true;
+		}
+	 }
+	 
+	 
 	 
 	 
 	 @GetMapping("/public/addMemberMain")
