@@ -61,26 +61,26 @@
                   <li class="cat-item">
                     <a th:href="@{/public/Products}" class="nav-link">全部</a>
                   </li>
+			      <li class="cat-item">
+			         <a th:href="@{/public/Products(productType='飲品')}" th:classappend="${productType == '飲品'} ? 'active' : ''" class="nav-link">飲品</a>
+			      </li>
+			      <li class="cat-item">
+			         <a th:href="@{/public/Products(productType='零食')}" th:classappend="${productType == '零食'} ? 'active' : ''" class="nav-link">零食</a>
+			      </li>
                   <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='飲品')}" class="nav-link">飲品</a>
+                    <a th:href="@{/public/Products(productType='泡麵')}"  th:classappend="${productType == '泡麵'} ? 'active' : ''" class="nav-link">泡麵</a>
                   </li>
                   <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='零食')}" class="nav-link">零食</a>
+                    <a th:href="@{/public/Products(productType='熟食')}"  th:classappend="${productType == '熟食'} ? 'active' : ''"class="nav-link">熟食</a>
                   </li>
                   <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='泡麵')}" class="nav-link">泡麵</a>
+                    <a th:href="@{/public/Products(productType='生活用品')}" th:classappend="${productType == '生活用品'} ? 'active' : ''" class="nav-link">生活用品</a>
                   </li>
                   <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='熟食')}" class="nav-link">熟食</a>
+                    <a th:href="@{/public/Products(productType='菸酒')}" th:classappend="${productType == '菸酒'} ? 'active' : ''" class="nav-link">菸酒</a>
                   </li>
                   <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='生活用品')}" class="nav-link">生活用品</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='菸酒')}" class="nav-link">菸酒</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='護理用品')}" class="nav-link">護理用品</a>
+                    <a th:href="@{/public/Products(productType='護理用品')}" th:classappend="${productType == '護理用品'} ? 'active' : ''" class="nav-link">護理用品</a>
                   </li>
                 </ul>
               </div>
@@ -96,9 +96,9 @@
               </div>
               <div class="sort-by">
 				<select id="input-sort" class="form-control" name="sortField">
-				  <option>排序</option>
-				  <option value="productIdNew" th:selected="${param.sortField == 'productIdNew'}">最新</option>
-				  <option value="productPrice" th:selected="${param.sortField == 'productPrice'}">價格由低至高</option>
+				<option value="default" th:selected="${param.sortField == 'default'}">預設排序</option>
+				<option value="productId" th:selected="${param.sortField == 'productId'}">最新上市</option>
+				<option value="productPrice" th:selected="${param.sortField == 'productPrice'}">價格由低至高</option>
 				</select>
               </div>
             </div>
@@ -106,104 +106,19 @@
             
             
             <!-- 商品 -->
-              
             <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
-                  
-                <th:block th:each="product : ${page.content}">
-              <div class="col">
-                <div class="product-item">
-                  <figure>
-                    <a href="single-product.html" title="Product Title">
-                      <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image" th:alt="${product.productName}" style="width:200px ; height:200px">
-                    </a>
-                  </figure>
-                  <div class="d-flex flex-column text-center">
-                    <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
-                    <div>
-                      <span class="rating">
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                      </span>
-                      <span>(222)</span>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center gap-2">
-                      <del th:text="${product.productPrice}"></del>
-                      <span class="text-dark fw-semibold">$18.00</span>
-                      <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10% OFF</span>
-                    </div>
-                    <div class="button-area p-3 pt-0">
-                      <div class="row g-1 mt-2">
-                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
-                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href="#heart"></use></svg></a></div>
-                      </div>
-                    </div>
-                  </div>
+                
                 </div>
-              </div>
-              </th:block>
-              
             <!-- /商品 -->
-            </div>
+            
 
-            <nav class="text-center py-4" aria-label="Page navigation">
-              <ul class="pagination d-flex justify-content-center">
-            <!-- 第一頁 -->
-		        <th:block th:switch="${page.number != 0}">
-		         <li th:case="${true}" class="page-item">
-		             <a class="page-link border-0" th:href="@{/public/Products(p=${1}, sortField=${param.sortField}, sortDir=${param.sortDir}, searchTerm=${searchTerm}, productType=${productType})}">＜</a>
-		         </li>
-		          <li th:case="${false}" class="page-item active disabled">
-		             <a class="page-link border-0" >＜</a>
-		         </li>
-		        </th:block>
-		    <!-- 上一頁 -->
-		        <th:block th:switch="${page.number != 0}">
-		         <li th:case="${true}" class="page-item">
-		             <a class="page-link border-0" th:href="@{/public/Products(p=${page.number}, sortField=${param.sortField}, sortDir=${param.sortDir}, searchTerm=${searchTerm}, productType=${productType})}">上一頁</a>
-		         </li>
-		          <li th:case="${false}" class="page-item active disabled">
-		             <a class="page-link border-0" >上一頁</a>
-		         </li>
-		        </th:block>
-		        
-		    <!-- 頁碼 -->
-		        <th:block th:each="pageNumber : ${#numbers.sequence(1,page.totalPages)}">
-		          <th:block th:switch="${page.number + 1 == pageNumber}">
-		           <li th:case="${false}" class="page-item">
- 					 <a class="page-link" th:href="@{/public/Products(p=${pageNumber}, sortField=${param.sortField}, sortDir=${param.sortDir}, searchTerm=${searchTerm}, productType=${productType})}" th:text="${pageNumber}"></a>
-		           </li>
-		           <li th:case="${true}" class="page-item active">
-		             <span class="page-link" th:text="${pageNumber}"></span>
-		           </li>
-		           </th:block>
-		        </th:block>
-		        
-		   <!-- 下一頁 -->
-		        <th:block th:switch="${page.number + 1 == page.totalPages}">
-			         <li th:case="${false}" class="page-item">
-			             <a class="page-link" th:href="@{/public/Products(p=${page.number + 2}, sortField=${param.sortField}, sortDir=${param.sortDir}, searchTerm=${searchTerm}, productType=${productType})}">下一頁</a>
-			         </li>
-			         <li th:case="${true}" class="page-item disabled">
-			             <a class="page-link">下一頁</a>
-			         </li>
-		        </th:block>
-        
-        	<!-- 最末頁 -->
-		        <th:block th:switch="${page.number + 1 == page.totalPages}">
-			         <li th:case="${false}" class="page-item">
-			             <a class="page-link" th:href="@{/public/Products(p=${page.totalPages}, sortField=${param.sortField}, sortDir=${param.sortDir}, searchTerm=${searchTerm}, productType=${productType})}">＞</a>
-			         </li>
-			         <li th:case="${true}" class="page-item disabled">
-			             <a class="page-link">＞</a>
-			         </li>
-		        </th:block>
-		       </ul>
 
-    </nav>
+		<nav class="text-center py-4" aria-label="Page navigation">
+		  <ul class="pagination d-flex justify-content-center">
+		    
+		  </ul>
+		</nav>
+
 
           </main>
           
@@ -214,32 +129,165 @@
   <div th:replace="~{front/layout/footer}"></div>
   
 <script>
-let isUserAction = false;
+document.addEventListener('DOMContentLoaded', function() {
+    const productGrid = document.querySelector('.product-grid');
+    const pagination = document.querySelector('.pagination');
+    const sortSelect = document.getElementById('input-sort');
+    const searchForm = document.querySelector('form[role="search"]');
 
-function updateSearch() {
-  let sortField = document.getElementById('input-sort').value;
-  let sortDir = 'asc'; // 默认升序
+    // 第一次進來時跳到第一頁
+    loadProducts(1);
 
-  if (sortField === 'default') {
-    sortField = 'productId'; // 默认排序字段
-  } else if (sortField === 'productIdNew') {
-    sortDir = 'desc'; // 如果是按最新排序,则使用降序
-    sortField = 'productId';
-  }
+    // 頁碼的點擊事件
+    pagination.addEventListener('click', function(e) {
+        if (e.target.classList.contains('page-link')) {
+            e.preventDefault();
+            const page = e.target.getAttribute('data-page');
+            if (page) {
+                loadProducts(parseInt(page));
+            }
+        }
+    });
+	
+	// 選擇排序，自動重新loading第一頁的產品數據
+    sortSelect.addEventListener('change', function() {
+        loadProducts(1);
+    });
+	
+	// 搜尋時，自動重新loading第一頁的產品數據
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        loadProducts(1);
+    });
 
-  if (isUserAction) {
-    const url = `http://localhost:8080/FinalProject/public/Products?p=1&sortField=${sortField}&sortDir=${sortDir}`;
-    window.location.href = url;
-  }
-}
+    function loadProducts(page) {
+        const searchTerm = document.querySelector('input[name="searchTerm"]').value;
+        const sortField = sortSelect.value === 'default' ? 'productId' : sortSelect.value;
+        const sortDir = sortSelect.value === 'productId' ? 'desc' : 'asc';
+        const productType = document.querySelector('.product-categories .nav-link.active')?.textContent || '';
 
-document.getElementById('input-sort').addEventListener('change', function() {
-  isUserAction = true;
-  updateSearch();
+        axios.get('/FinalProject/public/api/products', {
+            params: {
+                p: page,
+                searchTerm: searchTerm,
+                sortField: sortField,
+                sortDir: sortDir,
+                productType: productType
+            }
+        })
+        .then(response => {
+            const products = response.data.content;
+            productGrid.innerHTML = '';
+
+            products.forEach(product => {
+                const productElement = `
+                    <div class="col">
+                        <div class="product-item">
+                            <figure>
+                                <a href="single-product.html" title="${product.productName}">
+                                    <img src="/FinalProject/ProductPhoto?productId=${product.productId}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
+                                </a>
+                            </figure>
+                            <div class="d-flex flex-column text-center">
+                                <h3 class="fs-6 fw-normal">${product.productName}</h3>
+                                <div>
+                                <span class="rating">
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
+			                    </span>
+			                    <span>(222)</span>
+			                    </div>
+                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                	<del>${product.productPrice}</del>
+                                	<span class="text-dark fw-semibold">$${Math.round(product.productPrice*0.8)}</span>
+                     				<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
+                                </div>    
+                                   <div class="button-area p-3 pt-0">
+                      <div class="row g-1 mt-2">
+                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
+                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href="#heart"></use></svg></a></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+                `;
+                productGrid.innerHTML += productElement;
+            });
+
+            // 更新分頁
+            updatePagination(response.data);
+            
+            // 更新顯示範圍
+            updateShowingRange(response.data);
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+        });
+    }
+
+    function updatePagination(data) {
+        const totalPages = data.totalPages;
+        const currentPage = data.number + 1;
+
+        pagination.innerHTML = '';
+		
+		// 第一頁
+        pagination.innerHTML += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="1">第一頁</a>
+            </li>
+		`;
+        // 上一頁
+        pagination.innerHTML += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">＜</a>
+            </li>
+        `;
+
+        // 頁碼
+        for (let i = 1; i <= totalPages; i++) {
+            pagination.innerHTML += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>
+            `;
+        }
+
+        // 下一頁
+        pagination.innerHTML += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">＞</a>
+            </li>
+        `;
+        
+        // 最末頁
+		pagination.innerHTML += `
+		    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+		      <a class="page-link" href="#" data-page="${totalPages}">最末頁</a>
+		    </li>
+		`;
+    }
+	    
+
+    function updateShowingRange(data) {
+        const start = data.number * data.size + 1;
+        const end = Math.min(start + data.numberOfElements - 1, data.totalElements);
+        const showingProduct = document.querySelector('.showing-product p');
+        if (showingProduct) {
+            showingProduct.textContent = `Showing ${start}–${end} of ${data.totalElements} results`;
+        }
+    }
 });
 </script>
 
   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
           integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
