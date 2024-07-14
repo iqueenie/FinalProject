@@ -77,6 +77,11 @@ public class ProductService {
 
         return productRepo.searchProducts(searchTerm.trim(), productType, pageable);
     }
+    
+	// 隨機五個同類型商品當推薦，且排除目前正在單一商品頁查看的productId
+	public List<Product> findSametype5Products(String productType, Integer currentProductId){
+		return productRepo.findSametype5Products(productType, currentProductId);
+	}
 
 	
 	// 找5個庫存數量最多的產品	 

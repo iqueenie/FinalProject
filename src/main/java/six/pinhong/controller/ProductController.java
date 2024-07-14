@@ -264,6 +264,8 @@ public class ProductController {
 	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model) {
 			Product product = productService.findProductById(productId);	
 			model.addAttribute("product", product);
+			List<Product> recommend5Products = productService.findSametype5Products(product.getProductType(), productId);
+			model.addAttribute("recommend5Products", recommend5Products);
 
 			return "front/pinhong/SingleProduct";
 	}

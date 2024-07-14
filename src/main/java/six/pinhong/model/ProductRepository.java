@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p WHERE " +
 			"p.productPublished = 1 AND " +
 		    "(:searchTerm IS NULL OR :searchTerm = '' OR " +
-		    "LOWER(p.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+		    	
 		    "LOWER(p.productDescription) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
 		    "AND (:productType IS NULL OR :productType = '' OR p.productType = :productType)")
 	Page<Product> searchProducts(String searchTerm, String productType, Pageable pageable);
@@ -21,7 +21,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	// 有上架的商品
 	@Query("SELECT p FROM Product p WHERE p.productPublished = 1")
 	Page<Product> findAllPublished(Pageable pageable);
-	 
+	
+	// 隨機五個同類型商品當推薦，且排除目前正在單一商品頁查看的productId
+    @Query(value = "SELECT TOP 5 * FROM Product p WHERE p.productPublished = 1 " +
+    		 "AND p.productType = :productType " +
+    		 "AND p.productId <> :currentProductId ORDER BY NEWID()", nativeQuery = true)
+    List<Product> findSametype5Products(String productType, Integer currentProductId);
+	
 	List<Product> findTop5ByOrderByProductQuantityDesc();
 	
 	List<Product> findTop10ByOrderByProductIdDesc();
