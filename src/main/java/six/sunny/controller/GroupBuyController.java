@@ -27,6 +27,7 @@ import six.pinhong.service.ProductService;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
 import six.sunny.service.GroupBuyService;
+import six.sunny.service.GroupMemberService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
 
@@ -35,6 +36,9 @@ public class GroupBuyController {
 	
 	@Autowired
 	private GroupBuyService groupBuyService;
+	
+	@Autowired
+	private GroupMemberService groupMemberService;
 	
 //	TODO
 	@Autowired
@@ -150,7 +154,7 @@ public class GroupBuyController {
 	@GetMapping("public/front/group-buys/{id}")
 	public String getOneGroupBuy(@PathVariable("id") Integer id, HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
-			return "redirect:/front/frontLoginMain";
+			return "redirect:/public/frontLoginMain";
 		}
 		
 		GroupBuy groupBuy = groupBuyService.findById(id);
@@ -161,12 +165,15 @@ public class GroupBuyController {
 	}
 	
 	@GetMapping("public/front/group-buy-orders")
-	public String getGroupBuyOrders(HttpSession session) {
+	public String getGroupBuyOrders(HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
-			return "redirect:/front/frontLoginMain";
+			return "redirect:/public/frontLoginMain";
 		}
-//		TODO
+
 		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		List<GroupMember> list = groupMemberService.findByMemberId(member.getMemberId());
+		
+		m.addAttribute("gms",list);
 		
 		return "front/sunny/GroupBuyOrder";
 	}

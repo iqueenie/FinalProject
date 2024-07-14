@@ -134,5 +134,9 @@ public class GroupMemberService{
 		}
 		return pickupStatus;
 	}
+	
+	public List<GroupMember> findByMemberId(Integer id) {
+		return groupMemberRepo.findByMemberId(id);
+	}
 
 }

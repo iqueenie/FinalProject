@@ -25,10 +25,10 @@
 
 <body>
 
-  <!-- <div class="preloader-wrapper">
+  <div class="preloader-wrapper">
     <div class="preloader">
     </div>
-  </div> -->
+  </div>
 
   <div th:replace="~{front/layout/navbar}"></div>
 
@@ -182,7 +182,7 @@
                   </div>
                 </div>
                 <div class="p-3 pt-0 col-2 d-flex">
-                  <a th:href="@{/public/front/group-buys/{id}(id=${gb.groupBuyId})}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto" id="joinBtn">
+                  <a th:href="@{/public/front/group-buys/{id}(id=${gb.groupBuyId})}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto joinBtn">
                     <svg width="18" height="18">
                       <use xlink:href="#cart"></use>
                     </svg> 我要跟團
@@ -250,7 +250,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    document.querySelector("#joinBtn").addEventListener("click", function (e) {
+    $(document).on("click", ".joinBtn", function (e) {
       e.preventDefault();
       axios.get("http://localhost:8080/FinalProject/front/checkLogging")
         .then(res => {
@@ -269,20 +269,20 @@
               cancelButtonText: "取消"
             }).then((result) => {
               if (result.isConfirmed) {
-                window.location.href = "http://localhost:8080/FinalProject/front/frontLoginMain";
+                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
               } else if (result.isDenied) {
-                window.location.href = "http://localhost:8080/FinalProject/front/frontRegister";
+                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
               }
             });
-
           } else {
             window.location.href = e.target.href;
           }
         })
         .catch(err => {
           console.error(err);
-        })
+        });
     });
+
   </script>
 </body>
 
