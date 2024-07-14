@@ -116,6 +116,88 @@ a {
 }
 
 
+.ui-accordion .ui-accordion-header {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 0 0 0;
+    padding: .5em .5em .5em .7em;
+    font-size: 100%;
+}
+
+
+
+.note {
+    color: #ababab;
+    font-size: 13px;
+    width: 200px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 10px;
+    -webkit-text-size-adjust: none;
+    font-weight: normal;
+}
+
+.map_graybox02 {
+    border: 1px solid #d5d5d5;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+}
+
+.store {
+    border-top: 1px solid #d5d5d5;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+
+
+
+.store11 {
+    display: block;
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-right: 5px;
+    text-indent: -9999px;
+}
+
+.store input {
+    box-sizing: border-box;
+    padding: 0;
+    float: left;
+    margin-top: 8px;
+    margin-right: 5px;
+    /* 调整复选框与文字之间的间距 */
+}
+
+
+.accordion-item {
+    margin-bottom: 1rem;
+}
+
+.accordion-button {
+    display: flex;
+    align-items: center;
+}
+
+.accordion-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-body ul {
+    margin-left: 15px;
+    margin-top: 5px;
+    padding: 0px;
+}
+
+.accordion-body li {
+    font-size: 14px;
+    color: #424242;
+    line-height: 30px;
+    list-style-type: none;
+}
+
+
 
 /*---map01__搜尋結果__綠字----*/
 .map_graybox05 ul.result {
@@ -227,7 +309,7 @@ a {
 }
 
 #taiwanMap {
-    background: url(https://www.family.com.tw/Marketing/storemap/images/map/map.png) no-repeat;
+    background: url(http://localhost:8080/FinalProject/img/yiting/map.png) no-repeat;
 }
 
 /* 縣市 */

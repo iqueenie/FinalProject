@@ -76,6 +76,11 @@ public class StoreService {
 		return storesRepo.countByCityAndAreaAndStreet(city, area, street);
 	}
 	
+	public long countByCityAndStreet(String city,String street) {
+		return storesRepo.countByCityAndStreet(city, street);
+	}
+	
+	
 	public List<StoresBean> findByCityAndArea(String city,String area){
 		List<StoresBean> byCityAndArea = storesRepo.findByCityAndArea(city, area);
 		if(byCityAndArea!=null) {
@@ -92,6 +97,29 @@ public class StoreService {
 		 return null;
 	}
 	
+	public List<StoresBean> findByCityAndStreet(String city,String street){
+		List<StoresBean> byCityAndStreet = storesRepo.findByCityAndStreet(city, street);
+		if(byCityAndStreet!=null) {	 
+			return byCityAndStreet;
+		 }
+		 return null;
+	}
+	
+	public String findByZip(String cityNum){
+		String byZip = storesRepo.findByZip(cityNum);
+		if(byZip!=null) {	 
+			return byZip;
+		 }
+		 return null;
+	}
+	
+	public List<StoresBean> findByName(String name) {
+		List<StoresBean> storeByName = storesRepo.findStoreByName(name);
+		if(storeByName!=null) {	 
+			return storeByName;
+		 }
+		 return null;
+	}
 }
 
 	
