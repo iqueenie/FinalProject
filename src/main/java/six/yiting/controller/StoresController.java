@@ -89,5 +89,49 @@ public class StoresController {
 		
 		return "front/yiting/StoreSearch";
 	}
+	
+	@GetMapping("/public/front/findBycity")
+	@ResponseBody
+	public List<StoresBean> findByCity(String city){
+		return storeService.findStoreByCity(city);
+	}
+
+	
+	@GetMapping("/public/front/findAreaBycity")
+	@ResponseBody
+	public List<String> findAreaByCity(String city){
+		return storeService.findAreaByCity(city);
+	}
+	
+	@GetMapping("/public/front/findStreetByArea")
+	@ResponseBody
+	public List<String> findStreetByArea(String city,String area){
+		return storeService.findStreetByArea(city, area);
+	}
+	
+	@GetMapping("/public/front/countStores")
+	@ResponseBody
+	public long countStores(String city,String area){
+		return storeService.countStores(city, area);
+	}
+	
+	
+	@GetMapping("/public/front/countStoreByStreet")
+	@ResponseBody
+	public long countStoreByStreet(String city,String area,String street){
+		return storeService.countStoresByStreet(city, area, street);
+	}
+	
+	@GetMapping("/public/front/findByArea")
+	@ResponseBody
+	public List<StoresBean> findByArea(String city,String area){
+		return storeService.findByCityAndArea(city, area);
+	}
+	
+	@GetMapping("/public/front/findByStreet")
+	@ResponseBody
+	public List<StoresBean> findByStreet(String city,String area,String street){
+		return storeService.findByCityAndAreaAndStreet(city, area, street);
+	}
 
 }

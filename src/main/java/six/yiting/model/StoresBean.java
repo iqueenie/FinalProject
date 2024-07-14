@@ -18,6 +18,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 
+/**
+ * 
+ */
 @Entity @Table(name="stores")
 public class StoresBean{
 	
@@ -29,6 +32,7 @@ public class StoresBean{
 	private String city;
 	private String area;
 	private String street;
+	private String detail;
 	private String tel;
 	
 	@JsonIgnore
@@ -48,12 +52,13 @@ public class StoresBean{
 		
 	}
 	
-	public StoresBean(String storeName, String cityNum, String city, String area, String street, String tel) {
+	public StoresBean(String storeName, String cityNum, String city, String area, String street,String detail, String tel) {
 		this.storeName = storeName;
 		this.cityNum = cityNum;
 		this.city = city;
 		this.area = area;
 		this.street = street;
+		this.detail=detail;
 		this.tel = tel;
 	}
 	
@@ -111,5 +116,14 @@ public class StoresBean{
 	public void setStoreInvs(Set<InventoryBean> storeInvs) {
 		this.storeInvs = storeInvs;
 	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+	
 	
 }

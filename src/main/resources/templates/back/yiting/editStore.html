@@ -39,12 +39,20 @@
                                 </div>
                                 <div id="cityEmpty" style="color:red"></div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-5">
                                 <!-- 右侧的 form-floating -->
                                 <div class="form-floating mt-2">
                                     <textarea class="form-control rounded" id="street" th:field="*{street}"
                                         placeholder="street" style="width: 100%;" required></textarea>
-                                    <label for="street">詳細地址</label>
+                                    <label for="street">街道(街/路/段)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- 右侧的 form-floating -->
+                                <div class="form-floating mt-2">
+                                    <textarea class="form-control rounded" id="detail" th:field="*{detail}"
+                                        placeholder="detail" style="width: 100%;" required></textarea>
+                                    <label for="detail">詳細地址(巷弄/門號/樓層)</label>
                                 </div>
                             </div>
                         </div>

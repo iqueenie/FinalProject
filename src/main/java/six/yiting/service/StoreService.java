@@ -38,9 +38,63 @@ public class StoreService {
 		return null;
 	}
 	
+	public List<StoresBean> findStoreByCity(String city) {
+		
+	 List<StoresBean> byCity = storesRepo.findByCity(city);
+	 
+	 if(byCity!=null) {
+		 return byCity;
+	 }
+	 return null;
+		
+	}
 	
-	
+	public List<String> findAreaByCity(String city){
+		List<String> areaByCity = storesRepo.findAreaByCity(city);
+		 if(areaByCity!=null) {
+			 return areaByCity;
+		 }
+		 return null;
+			
+		}
 	
 
+	public List<String> findStreetByArea(String city,String area){
+		List<String> streetByArea = storesRepo.findStreetByArea(city, area);
+		 if(streetByArea!=null) {
+			 return streetByArea;
+		 }
+		 return null;
+			
+	}
+	
+	public long countStores(String city,String area) {
+		return storesRepo.countByCityAndArea(city, area);
+	}
+	
+	public long countStoresByStreet(String city,String area,String street) {
+		return storesRepo.countByCityAndAreaAndStreet(city, area, street);
+	}
+	
+	public List<StoresBean> findByCityAndArea(String city,String area){
+		List<StoresBean> byCityAndArea = storesRepo.findByCityAndArea(city, area);
+		if(byCityAndArea!=null) {
+			 return byCityAndArea;
+		 }
+		 return null;
+	}
+	
+	public List<StoresBean> findByCityAndAreaAndStreet(String city,String area,String street){
+	 List<StoresBean> byCityAndAreaAndStreet = storesRepo.findByCityAndAreaAndStreet(city, area, street);
+		if(byCityAndAreaAndStreet!=null) {
+			 return byCityAndAreaAndStreet;
+		 }
+		 return null;
+	}
+	
 }
+
+	
+
+
 

@@ -39,7 +39,7 @@
                         <td th:text="${store.cityNum}"></td>
                         <td th:text="${store.city}"></td>
                         <td th:text="${store.area}"></td>
-                        <td th:text="${store.street}"></td>
+                        <td th:text="${store.street + ' ' + store.detail}"></td>
                         <td th:text="${store.tel}"></td>
 
                         <td><a class="btn btn-outline-warning btn-sm" th:href="@{/private/store/edit(id=${store.storeId})}">更新</a></td>
@@ -120,7 +120,7 @@
                             store.cityNum,
                             store.city,
                             store.area,
-                            store.street,
+                            store.street+store.detail,
                             store.tel,
                             `<a class="btn btn-outline-warning btn-sm" href="/FinalProject/private/store/edit?id=${store.storeId}">更新</a>`,
                             `<button onclick="confirmDelete(${store.storeId})" class="btn btn-outline-danger btn-sm">刪除</button>`

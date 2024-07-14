@@ -66,7 +66,7 @@ public class GeocodingService {
 	        }
 	    }
 
-	    private LatLng geocodeAddress(String address) {
+	    public LatLng geocodeAddress(String address) {
 	        GeoApiContext context = new GeoApiContext.Builder()
 	                .apiKey(apiKey)
 	                .build();
