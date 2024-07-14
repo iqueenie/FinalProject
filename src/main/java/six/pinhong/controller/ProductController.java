@@ -235,7 +235,7 @@ public class ProductController {
 		model.addAttribute("currentRange", start + "–" + end);
 		
 		
-		return "front/pinhong/Shop";
+		return "front/pinhong/shop";
 	}
 	
 	@GetMapping("/public/api/products")

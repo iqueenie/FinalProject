@@ -86,7 +86,7 @@
                     </div>
                     <div class="qty-button d-flex flex-wrap pt-3">
                       <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3">直接購買</button>
-                      <button type="submit" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3">加入購物車</button>                      
+                      <button type="submit" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">加入購物車</button>                      
                       <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入追蹤</button>                      
                     </div>
                   </div>
@@ -314,5 +314,40 @@
     });
   });
 </script>
+  <script>
+    document.querySelector(".btn-cart").addEventListener("click", function (e) {
+      e.preventDefault();
+      axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+        .then(res => {
+          let isLoggedIn = res.data;
+          if (!isLoggedIn) {
+            Swal.fire({
+              title: "請先登入或註冊",
+              icon: "warning",
+              text: "您即將前往登入或註冊頁",
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#6BB252",
+              confirmButtonText: "登入",
+              denyButtonColor: "#f7a422",
+              denyButtonText: "註冊",
+              cancelButtonText: "取消"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+              } else if (result.isDenied) {
+                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+              }
+            });
+
+          } else {
+            window.location.href = e.target.href;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    });
+  </script>
   </body>
 </html>
