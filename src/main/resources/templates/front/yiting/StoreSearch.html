@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<html lang="UTF-8" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
     <title>Organic - Grocery Store HTML Website Template</title>
@@ -60,7 +60,15 @@
                                 <table border="0">
                                     <tr>
                                         <td valign="top">
+                                            <!----------------------左menu------------------------>
                                             <div id="map_left" class="map_left">
+                                                <div id="chgSearchList" style="display: none">
+                                                    <div class="map_graybox" style="cursor: pointer"
+                                                        onclick="showPage('default')">
+                                                        <h2 class="search_word">查詢方式變更<span class="search_icon"><a
+                                                                    href="#">搜尋</a></span> </h2>
+                                                    </div>
+                                                </div>
                                                 <div id="searchList">
                                                     <div class="map_graybox">
                                                         <h2 class="search_word">依郵遞區號查詢</h2>
@@ -76,9 +84,10 @@
                                                                 搜尋
                                                             </a>
                                                         </div>
-                                                        <div class="note ms-2"> *請輸入店名(例：中賓店)</div>
+                                                        <div class="note ms-2"> *請輸入店名(例：爪哇店)</div>
                                                     </div>
                                                 </div>
+                                            </div>
                                         </td>
                                         <td valign="top">
                                             <div id="map_right" class="map_right">
@@ -91,13 +100,30 @@
                                                 <div id="roadSearchBar" class="map_graybox03" style="display: block;">
                                                     <span class="icon01"> <i
                                                             class="fa-solid fa-location-dot"></i></span>
-                                                    <input type="text" id="croadWord" value="請輸入縣市及街道路名查詢"
+                                                    <input type="text" id="croadWord" placeholder="請輸入縣市及街道路名查詢"
                                                         size="30"><span class="note">(EX.臺北市中山北路二段)</span>
                                                     <span class="search_icon">
                                                         <a href="#" id="croadSearch">
                                                             <i class="fa-solid fa-magnifying-glass"></i>
                                                         </a>
                                                     </span>
+                                                </div>
+                                                <!--麵包屑顯示-->
+                                                <div class="map_graybox03 result"
+                                                    style="--bs-breadcrumb-divider: '>';display:none;">
+                                                    <ul class="breadcrumb">
+                                                        <li class="breadcrumb-item"> <span class="icon01"> <i
+                                                                    class="fa-solid fa-location-dot"></i></span>店鋪查詢
+                                                        </li>
+                                                        <li class="breadcrumb-item">
+                                                            <span>所在縣市 (<span
+                                                                    class="search_green"><a></a></span>)</span>
+                                                        </li>
+                                                        <li class="breadcrumb-item" id="breadStreet">
+                                                            <span>所在鄉鎮區 (<span
+                                                                    class="search_green"><a></a></span>)</span>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                                 <!----------------------地圖------------------------>
                                                 <!--臺灣全地圖-->
@@ -148,9 +174,33 @@
                                                     <div class="Nantou city"><a href="#"
                                                             onclick="showAdminArea('南投縣')">南投縣</a></div>
                                                 </div>
+                                                <!--點選city後-->
+                                                <div class="map_graybox05" id="areaResult" style="display: none;">
+
+                                                </div>
+                                                <!--店鋪列表-->
+                                                <div id="showShopList" style="overflow: hidden;display: none;">
+                                                    <table width="683" border="0" cellspacing="0" cellpadding="0"
+                                                        class="graybigbox">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="greenbox">店舖名</td>
+                                                                <td class="greenbox">店舖情報</td>
+                                                                <td class="greenbox">店內特殊商品
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                        <tbody class="searchResult">
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
                                             </div>
+
                                         </td>
                                     </tr>
+
                                 </table>
                             </div>
                         </div>
@@ -174,6 +224,23 @@
         crossorigin="anonymous"></script>
     <script th:src="@{/js/plugins.js}"></script>
     <script th:src="@{/js/script.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script th:src="@{/js/yiting/findCity.js}"></script>
+    <script>
+
+
+        function showDefaultContent() {
+            // Resetting UI elements to initial state
+            $("#roadSearchBar").show();
+            $("#taiwanMap").show();
+            $(".map_graybox03.result").hide();
+            $("#breadStreet").hide();
+            $("#areaResult").html(""); // Clear any previous results
+            $(".map_graybox05").css("display", "none");
+            $("#showShopList").css("display", "none");
+        }
+
+    </script>
 </body>
 
 </html>

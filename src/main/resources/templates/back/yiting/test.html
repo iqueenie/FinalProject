@@ -2,47 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Address Map</title>
-    <style>
-        .map-container {
-            position: relative;
-            width: 600px; /* 設置地圖容器的寬度 */
-            height: 450px; /* 設置地圖容器的高度 */
-        }
-        .map-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .map-overlay img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-             width: 40px; /* 設置 logo 的寬度 */
-        height: auto; /* 讓高度根據寬度自動調整 */
-            max-width: 100%;
-            max-height: 100%;
-        }
-    </style>
+   
 </head>
 <body>
     <h1>Address Map</h1>
-
-    <div th:if="${mapUrl != null}" class="map-container">
-        <!-- 使用背景地圖，並加入 logo 的圖片 -->
-        <div class="map-overlay">
-            <img th:src="@{/img/all/logo.png}" alt="Logo">
-        </div>
-        <iframe width="600" height="450" frameborder="0" style="border:0"
-                th:attr="src=${mapUrl}" allowfullscreen></iframe>
-    </div>
-
-    <div th:if="${mapUrl == null}">
-        <p>No address found or unable to generate map.</p>
-    </div>
-    
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek&callback=initMap" async defer></script>
+    <div id="map" style="height: 400px; width: 100%;"></div>
+    <input type="hidden" id="latitude" th:value="${latitude}">
+    <input type="hidden" id="longitude" th:value="${longitude}">
 </body>
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
+    <script>
+        function initMap() {
+            var lat = parseFloat(document.getElementById('latitude').value);
+            var lng = parseFloat(document.getElementById('longitude').value);
+            var center = { lat: lat, lng: lng };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: center,
+                zoom: 15
+            });
+
+            var marker = new google.maps.Marker({
+                position: center,
+                map: map,
+                icon: {
+                    url: '/FinalProject/img/all/logo.png',
+                    scaledSize: new google.maps.Size(40, 40)
+                }
+            });
+
+            map.addListener('center_changed', function() {
+                window.setTimeout(function() {
+                    map.panTo(marker.getPosition());
+                }, 3000);
+            });
+        }
+
+        window.onload = initMap;
+    </script>
 </html>
