@@ -1,7 +1,9 @@
 package six.yiting.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.hibernate.boot.jaxb.mapping.marshall.LockModeTypeMarshalling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,48 +92,89 @@ public class StoresController {
 		return "front/yiting/StoreSearch";
 	}
 	
+	//用城市找店鋪
 	@GetMapping("/public/front/findBycity")
 	@ResponseBody
 	public List<StoresBean> findByCity(String city){
 		return storeService.findStoreByCity(city);
 	}
-
 	
-	@GetMapping("/public/front/findAreaBycity")
-	@ResponseBody
-	public List<String> findAreaByCity(String city){
-		return storeService.findAreaByCity(city);
-	}
-	
-	@GetMapping("/public/front/findStreetByArea")
-	@ResponseBody
-	public List<String> findStreetByArea(String city,String area){
-		return storeService.findStreetByArea(city, area);
-	}
-	
-	@GetMapping("/public/front/countStores")
-	@ResponseBody
-	public long countStores(String city,String area){
-		return storeService.countStores(city, area);
-	}
-	
-	
-	@GetMapping("/public/front/countStoreByStreet")
-	@ResponseBody
-	public long countStoreByStreet(String city,String area,String street){
-		return storeService.countStoresByStreet(city, area, street);
-	}
-	
+	//用城市和區域找店鋪
 	@GetMapping("/public/front/findByArea")
 	@ResponseBody
 	public List<StoresBean> findByArea(String city,String area){
 		return storeService.findByCityAndArea(city, area);
 	}
 	
+	//用城市和區域和街道找店鋪
 	@GetMapping("/public/front/findByStreet")
 	@ResponseBody
 	public List<StoresBean> findByStreet(String city,String area,String street){
 		return storeService.findByCityAndAreaAndStreet(city, area, street);
 	}
+	
+	//用城市和街道找店鋪
+	@GetMapping("/public/front/findByCityStreet")
+	@ResponseBody
+	public List<StoresBean> findByCityStreet(String city,String street){
+		return storeService.findByCityAndStreet(city, street);
+	}
+	
+	
+
+	//用城市找區域
+	@GetMapping("/public/front/findAreaBycity")
+	@ResponseBody
+	public List<String> findAreaByCity(String city){
+		return storeService.findAreaByCity(city);
+	}
+	
+	//用區域找街道
+	@GetMapping("/public/front/findStreetByArea")
+	@ResponseBody
+	public List<String> findStreetByArea(String city,String area){
+		return storeService.findStreetByArea(city, area);
+	}
+	
+	//用城市和區域算店鋪數
+	@GetMapping("/public/front/countStores")
+	@ResponseBody
+	public long countStores(String city,String area){
+		return storeService.countStores(city, area);
+	}
+	
+	//用城市和區域和街道算店鋪數
+	@GetMapping("/public/front/countStoreByStreet")
+	@ResponseBody
+	public long countStoreByStreet(String city,String area,String street){
+		return storeService.countStoresByStreet(city, area, street);
+	}
+	
+	@GetMapping("/public/front/countByCityAndStreet")
+	@ResponseBody
+	public long countByCityAndStreet(String city,String street) {
+		return storeService.countByCityAndStreet(city, street);
+	}
+	
+	@GetMapping("/public/front/findByZip")
+	@ResponseBody
+	public String[] findByZip(String cityNum) {
+		
+		 String byZip = storeService.findByZip(cityNum);
+		 if(byZip!=null) {	 
+			 String[] parts = byZip.split(",");
+			 
+				return parts;
+			 }
+			 return null;
+		 
+	}
+	
+	@GetMapping("/public/front/findByName")
+	@ResponseBody
+	public List<StoresBean> findByName(@RequestParam("storeName") String name) {
+		return storeService.findByName(name);
+	}
+	
 
 }

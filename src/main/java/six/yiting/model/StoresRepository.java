@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.List;
 
 
@@ -21,8 +22,18 @@ public interface StoresRepository extends JpaRepository<StoresBean, Integer>  {
 	
 	long countByCityAndAreaAndStreet(String city, String area, String street);
 	
+	long countByCityAndStreet(String city,String street);
+	
 	List<StoresBean> findByCityAndArea(String city, String area);
 	
+	List<StoresBean> findByCityAndStreet(String city, String street);
+	
 	List<StoresBean> findByCityAndAreaAndStreet(String city, String area, String street);
+	
+	@Query(value="SELECT DISTINCT city, area FROM StoresBean WHERE cityNum= :cityNum ")
+	String findByZip(@Param(value = "cityNum") String cityNum);
+	
+	@Query("from StoresBean where storeName like %:storeName%")
+	List<StoresBean> findStoreByName(@Param(value = "storeName") String storeName);
 	
 }
