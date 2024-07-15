@@ -57,6 +57,8 @@ public class MembersBean {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate registrationDate;
 	
+	private String resetToken;
+	
 	// 品宏的評論	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
@@ -213,6 +215,14 @@ public class MembersBean {
 	public void prePersist() {
 	      this.registrationDate = LocalDate.now(); 
 	 }
+
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
 
 	 
 
