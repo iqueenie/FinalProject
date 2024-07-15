@@ -1,5 +1,6 @@
 package six.sunny.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
@@ -27,6 +31,7 @@ import six.pinhong.service.ProductService;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
 import six.sunny.service.GroupBuyService;
+import six.sunny.service.GroupMemberService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
 
@@ -35,6 +40,12 @@ public class GroupBuyController {
 	
 	@Autowired
 	private GroupBuyService groupBuyService;
+	
+	@Autowired
+	private GroupMemberService groupMemberService;
+
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
 	
 //	TODO
 	@Autowired
@@ -45,17 +56,30 @@ public class GroupBuyController {
 	private StoreService storeService;
 	
 	@RequestMapping(path = "private/back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
-	public String getAllGroupBuy(Model m) {
+	public String getAllGroupBuy(Model m, HttpSession session) {
 		
-		List<GroupBuy> gbs = groupBuyService.findAll();	
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
 
-//		右上角查詢下拉式選單用的store和product清單
-		List<StoresBean> stns = storeService.findAllStores();
-		List<Product> pdns = productService.findAll();
+		if (managementRole.getStore()!=null) {
+			List<GroupBuy> gbs = groupBuyService.findByStoreId(managementRole.getStore().getStoreId());
+			
+			m.addAttribute("gbs", gbs);
+			m.addAttribute("role", "店長");
+		}else {
+			List<GroupBuy> gbs = groupBuyService.findAll();	
+
+//			右上角查詢下拉式選單用的store和product清單
+			List<StoresBean> stns = storeService.findAllStores();
+			List<Product> pdns = productService.findAll();
+			
+			m.addAttribute("gbs", gbs);
+			m.addAttribute("stns", stns);
+			m.addAttribute("pdns", pdns);
+		}
 		
-		m.addAttribute("gbs", gbs);
-		m.addAttribute("stns", stns);
-		m.addAttribute("pdns", pdns);
+
 		
 		return "/back/sunny/GetAllGroupBuy";
 	}
@@ -82,11 +106,39 @@ public class GroupBuyController {
 		
 	}
 	
+	@ResponseBody
+	@GetMapping("private/back/FindByStatus")
+	public List<GroupBuy> findByStatus(
+			@RequestParam(value = "status", defaultValue = "") String status) {
+		
+		List<GroupBuy> gbs = null;
+		
+		if(status.isEmpty()) {
+			gbs = groupBuyService.findAll();
+		}else {
+			gbs = groupBuyService.findByGroupBuyStatus(status);
+		}
+		
+		return gbs;
+		
+	}
+	
 	@GetMapping("private/back/InsertGroupBuyForm")
-	public String insertGroupBuyForm(Model m) {
+	public String insertGroupBuyForm(Model m, HttpSession session) {
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
 //		取得表單填寫所需的List
+		List<StoresBean> stns = new ArrayList<>();
+		if (managementRole.getStore()!=null) {
+			StoresBean stn = storeService.findStoreById(managementRole.getStore().getStoreId());
+			stns.add(stn);
+		}else {
+			stns = storeService.findAllStores();
+		}
 		List<Product> pdns = productService.findAll();
-		List<StoresBean> stns = storeService.findAllStores();
+
 		
 		m.addAttribute("pdns", pdns);
 		m.addAttribute("stns", stns);
@@ -113,10 +165,21 @@ public class GroupBuyController {
 	}
 	
 	@GetMapping("private/back/UpdateGroupBuyForm")
-	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m) {		
-//		取得下拉式選單會用到的資料
+	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m, HttpSession session) {	
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+//		取得表單填寫所需的List
+		List<StoresBean> stns = new ArrayList<>();
+		if (managementRole.getStore()!=null) {
+			StoresBean stn = storeService.findStoreById(managementRole.getStore().getStoreId());
+			stns.add(stn);
+			m.addAttribute("role", "店長");
+		}else {
+			stns = storeService.findAllStores();
+		}
 		List<Product> pdns = productService.findAll();
-		List<StoresBean> stns = storeService.findAllStores();
 		
 		GroupBuy nowGb = groupBuyService.findById(groupBuyId);
 		
@@ -125,6 +188,14 @@ public class GroupBuyController {
 		m.addAttribute("groupBuy", nowGb);
 
 		return "back/sunny/UpdateGroupBuy";
+	}
+	
+	@GetMapping("private/back/ChangeGroupBuyStatus")
+	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status, Model m) {		
+		
+		groupBuyService.changeGroupBuyStatus(id, status);
+		
+		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
 	@PutMapping("private/back/UpdateGroupBuy")
@@ -150,7 +221,7 @@ public class GroupBuyController {
 	@GetMapping("public/front/group-buys/{id}")
 	public String getOneGroupBuy(@PathVariable("id") Integer id, HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
-			return "redirect:/front/frontLoginMain";
+			return "redirect:/public/frontLoginMain";
 		}
 		
 		GroupBuy groupBuy = groupBuyService.findById(id);
@@ -161,12 +232,15 @@ public class GroupBuyController {
 	}
 	
 	@GetMapping("public/front/group-buy-orders")
-	public String getGroupBuyOrders(HttpSession session) {
+	public String getGroupBuyOrders(HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
-			return "redirect:/front/frontLoginMain";
+			return "redirect:/public/frontLoginMain";
 		}
-//		TODO
+
 		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		List<GroupMember> list = groupMemberService.findByMemberId(member.getMemberId());
+		
+		m.addAttribute("gms",list);
 		
 		return "front/sunny/GroupBuyOrder";
 	}

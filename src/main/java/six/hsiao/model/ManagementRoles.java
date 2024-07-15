@@ -56,4 +56,14 @@ public class ManagementRoles {
 		this.roles = roles;
 	}
 
+	public StoresBean getStore() {
+		return store;
+	}
+
+	public void setStore(StoresBean store) {
+		this.store = store;
+	}
+	
+	
+
 }

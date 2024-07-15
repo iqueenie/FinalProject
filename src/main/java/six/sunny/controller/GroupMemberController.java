@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
 import six.sunny.model.GroupBuy;
@@ -39,8 +43,11 @@ public class GroupMemberController {
 	@Autowired
 	private MembersService membersService;
 	
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
+	
 	@GetMapping("private/back/GetGroupMemberByGroupBuy")
-	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, @RequestParam(value = "pus", defaultValue = "null") String pus, Model m) {
+	public String getGroupMemberByGroupBuy(@RequestParam("gbId") Integer gbId, @RequestParam(value = "pus", defaultValue = "null") String pus, Model m, HttpSession session) {
 		
 //		透過GroupBuy取得GroupMember
 		List<GroupMember> gms = groupMemberService.findByGroupBuyId(gbId);
@@ -50,6 +57,14 @@ public class GroupMemberController {
 			String status = groupMemberService.findById(pus2).getPickupStatus();
 			m.addAttribute("pus", status);
 		}
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+
+		if (managementRole.getStore()!=null) {
+			m.addAttribute("role", "店長");			
+		}
+		
 		m.addAttribute("gbId", gbId);
 		m.addAttribute("gms", gms);
 
@@ -138,10 +153,21 @@ public class GroupMemberController {
 	    try {
 	    	location = new URI("http://localhost:8080/FinalProject/public/front/group-buy-orders");
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return ResponseEntity.created(location).build();
+	}
+	
+	@ResponseBody
+	@PutMapping("public/front/group-members/{id}")
+	public ResponseEntity<GroupMember> deleteGroupBuyOrder(@PathVariable("id") Integer groupMemberId) {
+	    GroupMember delete = groupMemberService.updateStatusToDelete(groupMemberId);
+	    
+	    if (delete != null) {
+	        return ResponseEntity.ok(delete);
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
 	}
 }
