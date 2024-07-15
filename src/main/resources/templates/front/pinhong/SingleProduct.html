@@ -51,7 +51,7 @@
                         <div class="rating-container d-flex align-items-center">
                           <span class="rating me-2">
 								<th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
-						    
+								
 							      	<th:block th:if="${averageRating != null}">
 							            <th:block th:each="star : ${#numbers.sequence(1, averageRating)}">
 									    <svg width="24" height="24" class="text-warning">
@@ -66,12 +66,14 @@
 							        	     <use xlink:href="#star-half"></use>
 							       		</svg>
 							            </th:block>
+						    		     
 							    </th:block>
 							</th:block>
 							<!-- 000 -->
 							</span>
-                    		<span class="rating-count" th:text="'(' +${averageRatings[__${product.productId}__]}+ ')'"></span>
                         </div>
+						<span class="rating-count" th:text="${'('+ (averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★)'}"></span>
+						<span class="rating-count" th:text="${'共' + allProductReviews.size}+'則評論'"></span>   
                         <!-- 商品評分及星數 -->
             <div class="product-price pt-3 pb-3">
               <strong class="text-primary display-6 fw-bold">$[[${product.productPrice}]]</strong><del class="ms-2">$[[${product.productPrice}]]</del>
