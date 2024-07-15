@@ -2,6 +2,7 @@ package six.hsiao.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,15 +20,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
+import six.hsiao.service.EmailService;
 import six.hsiao.service.MembersService;
 
 
 
 @Controller
 public class MembersController {
+	
+	
+	
 	
 	@Autowired
 	private MembersService membersService;
@@ -202,6 +208,10 @@ public class MembersController {
 		return "redirect:/public/frontLoginMain";
 		 
 	 }
+	 
+	 
+
+		
 	 
 	 
 	
