@@ -209,6 +209,24 @@ public class MembersController {
 		 
 	 }
 	 
+		@GetMapping("/MemberPhoto")
+		public ResponseEntity<byte[]> getMemberPhotoForFront(@RequestParam Integer memberId) {
+		   
+		    MembersBean member = membersService.findByMemberId(memberId);
+		    
+		    if (member == null || member.getMemberPhoto() == null) {
+		        // 如果找不到會員或者會員圖片為空，返回 404 狀態碼
+		        return ResponseEntity.notFound().build();
+		    }
+		    
+		    byte[] memberPhoto = member.getMemberPhoto(); //儲存在 memberPhoto 屬性中
+		    
+		    HttpHeaders headers = new HttpHeaders();
+		    headers.setContentType(MediaType.IMAGE_JPEG); // 設置 Content-Type 為圖片類型，JPEG 圖片
+		    
+		    return ResponseEntity.ok().headers(headers).body(memberPhoto);
+		}
+	 
 	 
 
 		
