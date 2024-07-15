@@ -282,12 +282,13 @@
                     </div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
-                        <div class="col-3"><input type="number" name="quantity"
-                            class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg
-                              width="18" height="18">
-                              <use xlink:href="#cart"></use>
-                            </svg> Add to Cart</a></div>
+                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                        <div class="col-7"><button class="btn btn-primary rounded-1 p-2 fs-7 addToCart"
+                          th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
+                          <svg width="18" height="18">
+                            <use xlink:href="#cart"></use>
+                          </svg> 加入購物車
+                        </button></div>
                         <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
                               height="18">
                               <use xlink:href="#heart"></use>
@@ -420,12 +421,13 @@
                   </div>
                   <div class="button-area p-3 pt-0">
                     <div class="row g-1 mt-2">
-                      <div class="col-3"><input type="number" name="quantity"
-                          class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                      <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18"
-                            height="18">
+                      <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                      <div class="col-7">
+                        <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
+                          <svg width="18" height="18">
                             <use xlink:href="#cart"></use>
-                          </svg> Add to Cart</a></div>
+                          </svg> 加入購物車
+                        </a>
                       <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
                             height="18">
                             <use xlink:href="#heart"></use>
@@ -486,19 +488,60 @@
     </div>
   </section>
 
- 
-
-  
-
   <div th:replace="~{front/layout/footer}"></div>
 
-  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
   <script th:src="@{/js/plugins.js}"></script>
   <script th:src="@{/js/script.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script th:inline="javascript">
+   function addToCart(button) {
+    var productId = button.getAttribute('data-productId');
+    var productName = button.getAttribute('data-productName');
+    var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
+
+    Swal.fire({
+        title: '確定加入購物車?',
+        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = {
+                productId: productId,
+                quantity: quantity 
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/FinalProject/public/addToCart',
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        title: '成功加入購物車',
+                        icon: 'success'
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: '加入購物車失敗',
+                        text: xhr.responseText,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    });
+}
+
+</script>
+
 </body>
 
 </html>

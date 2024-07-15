@@ -232,7 +232,7 @@ public class ProductController {
 	    if (page != null) {
 	        model.addAttribute("page", page);
 	    } else {
-	        model.addAttribute("page", Page.empty()); // 返回一個空的 Page 對象
+	        model.addAttribute("page", Page.empty()); 
 	    }
 
 	    return "front/pinhong/AllProductPage";

@@ -1,6 +1,7 @@
 package six.pinhong.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
@@ -137,5 +138,20 @@ public class Product implements Serializable {
 		this.productQuantity = productQuantity;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (obj instanceof Product) {
+			Product product =(Product) obj;
+			boolean isEqual = productId.equals(product.getProductId());
+			return isEqual;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(productId);
+	}
 	
 }
