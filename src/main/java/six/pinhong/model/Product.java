@@ -1,7 +1,9 @@
 package six.pinhong.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -39,7 +42,20 @@ public class Product implements Serializable {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
 	private ProductImage productImage;
+	
+	// 商品評論
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+	private Set<ProductReview> reviews  = new HashSet<>(); 
 
+	public Set<ProductReview> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(Set<ProductReview> reviews) {
+		this.reviews = reviews;
+	}
+	// -- 
 	public Product(String productName, String productType, Integer productCost, Integer productPrice,
 			Integer productExpirydate, String productDescription, Integer productPublished, Integer productQuantity) {
 		super();
