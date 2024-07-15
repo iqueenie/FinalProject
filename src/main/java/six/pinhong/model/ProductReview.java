@@ -2,12 +2,14 @@ package six.pinhong.model;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import six.hsiao.model.MembersBean;
@@ -30,7 +32,8 @@ public class ProductReview {
     
 	private Integer stars; // 評論星數
     
-	private Integer reviewContent; // 評論內容
+	@Column(length = 300)
+	private String reviewContent; // 評論內容
 
 	public Integer getReviewId() {
 		return reviewId;
@@ -64,15 +67,15 @@ public class ProductReview {
 		this.stars = stars;
 	}
 
-	public Integer getReviewContent() {
+	public String getReviewContent() {
 		return reviewContent;
 	}
 
-	public void setReviewContent(Integer reviewContent) {
+	public void setReviewContent(String reviewContent) {
 		this.reviewContent = reviewContent;
 	}
 
-	public ProductReview(MembersBean member, Product product, Integer stars, Integer reviewContent) {
+	public ProductReview(MembersBean member, Product product, Integer stars, String reviewContent) {
 		super();
 		this.member = member;
 		this.product = product;
