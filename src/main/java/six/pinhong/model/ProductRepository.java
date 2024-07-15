@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p WHERE " +
 			"p.productPublished = 1 AND " +
 		    "(:searchTerm IS NULL OR :searchTerm = '' OR " +
-		    	
+		    "LOWER(p.productName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
 		    "LOWER(p.productDescription) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
 		    "AND (:productType IS NULL OR :productType = '' OR p.productType = :productType)")
 	Page<Product> searchProducts(String searchTerm, String productType, Pageable pageable);
