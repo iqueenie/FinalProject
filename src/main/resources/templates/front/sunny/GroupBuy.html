@@ -49,89 +49,44 @@
     <div class="container-lg">
       <div class="row g-5">
         <aside class="col-md-2">
-          <div class="sidebar">
-            <div class="widget-menu">
-              <div class="widget-search-bar">
-                <form role="search" method="get" class="d-flex position-relative">
-                  <form class="d-flex mt-3 gap-0" action="index.html">
-                    <input class="form-control form-control-lg rounded-2 bg-light" type="email" placeholder="Search here" aria-label="Search here">
-                    <button class="btn bg-transparent position-absolute end-0" type="submit"><svg width="24" height="24" viewBox="0 0 24 24">
-                        <use xlink:href="#search"></use>
-                      </svg></button>
-                  </form>
-                </form>
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Accordion Item #1
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="navbar-nav">
+                    <a class="nav-link btn btn-warning" href="#">Home</a>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="widget-product-categories pt-5">
-              <h5 class="widget-title">Categories</h5>
-              <ul class="product-categories sidebar-list list-unstyled">
-                <li class="cat-item">
-                  <a href="/collections/categories">All</a>
-                </li>
-                <li class="cat-item">
-                  <a href="#" class="nav-link">Phones</a>
-                </li>
-                <li class="cat-item">
-                  <a href="#" class="nav-link">Accessories</a>
-                </li>
-                <li class="cat-item">
-                  <a href="#" class="nav-link">Tablets</a>
-                </li>
-                <li class="cat-item">
-                  <a href="#" class="nav-link">Watches</a>
-                </li>
-              </ul>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Accordion Item #2
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+              </div>
             </div>
-            <div class="widget-product-tags pt-3">
-              <h5 class="widget-title">Tags</h5>
-              <ul class="product-tags sidebar-list list-unstyled">
-                <li class="tags-item">
-                  <a href="#" class="nav-link">White</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Cheap</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Mobile</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Modern</a>
-                </li>
-              </ul>
-            </div>
-            <div class="widget-product-brands pt-3">
-              <h5 class="widget-title">Brands</h5>
-              <ul class="product-tags sidebar-list list-unstyled">
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Apple</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Samsung</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Huwai</a>
-                </li>
-              </ul>
-            </div>
-            <div class="widget-price-filter pt-3">
-              <h5 class="widget-titlewidget-title">Filter By Price</h5>
-              <ul class="product-tags sidebar-list list-unstyled">
-                <li class="tags-item">
-                  <a href="#" class="nav-link">Less than $10</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">$10- $20</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">$20- $30</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">$30- $40</a>
-                </li>
-                <li class="tags-item">
-                  <a href="#" class="nav-link">$40- $50</a>
-                </li>
-              </ul>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Accordion Item #3
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+              </div>
             </div>
           </div>
         </aside>
@@ -140,19 +95,6 @@
           <div class="filter-shop d-flex justify-content-between">
             <div class="showing-product">
               <p>Showing [[${gbs.number*5+1}]]–[[${gbs.number*5+5}]] of [[${gbs.totalElements}]] results</p>
-            </div>
-            <div class="sort-by">
-              <select id="input-sort" class="form-control" data-filter-sort="" data-filter-order="">
-                <option value="">Default sorting</option>
-                <option value="">Name (A - Z)</option>
-                <option value="">Name (Z - A)</option>
-                <option value="">Price (Low-High)</option>
-                <option value="">Price (High-Low)</option>
-                <option value="">Rating (Highest)</option>
-                <option value="">Rating (Lowest)</option>
-                <option value="">Model (A - Z)</option>
-                <option value="">Model (Z - A)</option>
-              </select>
             </div>
           </div>
 
