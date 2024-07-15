@@ -16,7 +16,7 @@
         <div class="d-flex justify-content-center align-items-center">
             <a th:href="@{/private/back/InsertGroupBuyForm}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">團購列表</h1>
-            <div>
+            <div th:if="${role!='店長'}">
                 <form action="">
                     <label for="productId">商品：</label>
                     <select id="productId">
@@ -27,6 +27,21 @@
                     <select id="storeId">
                         <option value=""></option>
                         <option th:each="stn : ${stns}" th:value="${stn.storeId}" th:text="${stn.storeName}">
+                    </select>
+                    <button class="btn btn-outline-info">查詢</button>
+                </form>
+            </div>
+            <div th:if="${role=='店長'}">
+                <form action="">
+                    <label for="groupBuyStatus">狀態：</label>
+                    <select id="groupBuyStatus">
+                        <option value=""></option>
+                        <option value="未開團">未開團</option>
+                        <option value="開團中">開團中</option>
+                        <option value="已結單">已結單</option>
+                        <option value="不成立">不成立</option>
+                        <option value="已到貨">已到貨</option>
+                        <option value="已結束">已結束</option>
                     </select>
                     <button class="btn btn-outline-info">查詢</button>
                 </form>
@@ -45,8 +60,8 @@
                     <td>到達日期
                     <td>結束日期
                     <td>狀態
-                    <td>刪除
                     <td>更新
+                    <td>刪除
                     <td>查看訂購者
                 </tr>
             </thead>
@@ -63,8 +78,25 @@
                         <td>[[${gb.arrivalDate}]]</td>
                         <td>[[${gb.endDate}]]</td>
                         <td>[[${gb.groupBuyStatus}]]</td>
-                        <td><a th:href="@{/private/back/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a></td>
-                        <td><a href="#" th:id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a></td>
+                        <td th:if="${role!='店長'}"><a th:href="@{/private/back/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a></td>
+                        <td th:if="${role=='店長'}" th:switch="${gb.groupBuyStatus}">
+                            <th:block th:case="未開團">
+                                <a th:href="@{/private/back/UpdateGroupBuyForm(id=${gb.groupBuyId})}" class="btn btn-outline-warning btn-sm">更新</a>
+                                <a th:href="@{/private/back/ChangeGroupBuyStatus(id=${gb.groupBuyId}, status='開團中')}" class="btn btn-outline-warning btn-sm">開團</a>
+                            </th:block>
+                            <th:block th:case="開團中">
+                                <a th:href="@{/private/back/ChangeGroupBuyStatus(id=${gb.groupBuyId}, status='已結單')}" class="btn btn-outline-warning btn-sm">叫貨</a>
+                                <a th:href="@{/private/back/ChangeGroupBuyStatus(id=${gb.groupBuyId}, status='不成立')}" class="btn btn-outline-warning btn-sm">不成立</a>
+                            </th:block>
+                            <a th:case="已結單" th:href="@{/private/back/ChangeGroupBuyStatus(id=${gb.groupBuyId}, status='已到貨')}" class="btn btn-outline-warning btn-sm">確認到貨</a>
+                            <a th:case="已到貨" th:href="@{/private/back/ChangeGroupBuyStatus(id=${gb.groupBuyId}, status='已結束')}" class="btn btn-outline-warning btn-sm">取貨結束</a>
+                            <a th:case="不成立" href="#" class="btn btn-outline-warning btn-sm disabled">不成立</a>
+                            <a th:case="已結束" href="#" class="btn btn-outline-warning btn-sm disabled">已結束</a>
+                        </td>
+                        <td>
+                            <a th:if="${role!='店長' ||  gb.groupBuyStatus=='未開團'}" href="#" th:id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a>
+                            <a th:if="${role=='店長' &&  gb.groupBuyStatus!='未開團'}" href="#" th:id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete disabled">刪除</a>
+                        </td>
                         <td><a th:href="@{/private/back/GetGroupMemberByGroupBuy(gbId=${gb.groupBuyId})}" class="btn btn-outline-primary btn-sm">查看訂購者</a></td>
                     </tr>
                 </th:block>
@@ -129,7 +161,8 @@
                 console.error('Error deleting group buy:', error);
             }
         };
-
+    </script>
+    <script th:if="${role!='店長'}">
         $("form").submit(
             function (event) {
                 event.preventDefault();
@@ -140,6 +173,43 @@
                     params: {
                         productId: productId,
                         storeId: storeId
+                    }
+                })
+                    .then(res => {
+                        console.log(res);
+                        let data = res.data;
+                        $("#myTable").DataTable().clear().draw();
+                        data.forEach(gb => {
+                            table.row.add([
+                                gb.groupBuyId,
+                                gb.productName,
+                                gb.storeName,
+                                gb.price,
+                                gb.targetQuantity,
+                                gb.nowQuantity,
+                                gb.orderDate,
+                                gb.arrivalDate,
+                                gb.endDate,
+                                gb.groupBuyStatus,
+                                `<a href="/FinalProject/private/back/UpdateGroupBuyForm?id=${gb.groupBuyId}" class="btn btn-outline-warning btn-sm">更新</a>`,
+                                `<a href="#" id="${gb.groupBuyId}" class="btn btn-outline-danger btn-sm delete">刪除</a>`,
+                                `<a href="/FinalProject/private/back/GetGroupMemberByGroupBuy?gbId=${gb.groupBuyId}" class="btn btn-outline-primary btn-sm">查看訂購者</a>`
+                            ]).draw();
+                        });
+                    })
+            }
+        )
+
+    </script>
+    <script th:if="${role=='店長'}">
+        $("form").submit(
+            function (event) {
+                event.preventDefault();
+                var groupBuyStatus = $("#groupBuyStatus").val();
+                var url = "http://localhost:8080/FinalProject/private/back/FindByStatus";
+                axios.get(url, {
+                    params: {
+                        status: groupBuyStatus
                     }
                 })
                     .then(res => {

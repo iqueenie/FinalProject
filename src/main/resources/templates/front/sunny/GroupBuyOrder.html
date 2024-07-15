@@ -32,11 +32,10 @@
     <div class="hero-content py-0 py-md-5">
       <div class="container-lg d-flex flex-column d-md-block align-items-center">
         <nav class="breadcrumb">
-          <a class="breadcrumb-item nav-link" href="#">Home</a>
-          <a class="breadcrumb-item nav-link" href="#">Pages</a>
-          <span class="breadcrumb-item active" aria-current="page">Cart</span>
+          <a class="breadcrumb-item nav-link" href="#">首頁</a>
+          <span class="breadcrumb-item active" aria-current="page">團購訂單</span>
         </nav>
-        <h1>Cart</h1>
+        <h1>團購訂單</h1>
       </div>
     </div>
   </section>
@@ -58,104 +57,62 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td scope="row" class="py-4">
+                <tr th:each="gm : ${gms}">
+                  <td scope="row" class="py-4" width="50%">
                     <div class="cart-info d-flex flex-wrap align-items-center mb-4">
-                      <div class="col-lg-3">
+                      <div class="col-lg-4">
                         <div class="card-image">
-                          <img src="images/product-thumb-11.png" alt="product name" class="img-fluid">
+                          <img th:src="@{/ProductPhoto(productId=${gm.groupBuy.product.productId})}" class="img-fluid" th:alt="${gm.groupBuy.productName}">
                         </div>
                       </div>
-                      <div class="col-lg-9">
+                      <div class="col-lg-8">
                         <div class="card-detail ps-3">
                           <h5 class="card-title">
-                            <a href="#" class="text-decoration-none">Product Name 1</a>
+                            <a href="#" class="text-decoration-none">[[${gm.groupBuy.productName}]]</a>
                           </h5>
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td class="py-4">
+                  <td class="py-4" width="10%">
                     <div class="input-group product-qty w-50">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center"
-                             value="1">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus"
-                                data-field="">
-                          <svg width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                    </div>
-                  </td>
-                  <td class="py-4">
-                    <div class="total-price">
-                      <span class="money text-dark">$150.00</span>
-                    </div>
-                  </td>
-                  <td class="py-4">
-                    <div class="cart-remove">
-                      <a href="#">
-                        <svg width="24" height="24">
-                          <use xlink:href="#trash"></use>
-                        </svg>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td scope="row" class="py-4">
-                    <div class="cart-info d-flex flex-wrap align-items-center">
-                      <div class="col-lg-3">
-                        <div class="card-image">
-                          <img src="images/product-thumb-12.png" alt="product" class="img-fluid">
-                        </div>
-                      </div>
-                      <div class="col-lg-9">
-                        <div class="card-detail ps-3">
-                          <h5 class="card-title">
-                            <a href="#" class="text-decoration-none">Product Name 2</a>
-                          </h5>
-                        </div>
+                      <div class="quantity">
+                        <span class="text-dark">[[${gm.quantity}]]</span>
                       </div>
                     </div>
                   </td>
-                  <td class="py-4">
-                    <div class="input-group product-qty w-50">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center"
-                             value="1">
-                      <span class="input-group-btn">
-                        <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus"
-                                data-field="">
-                          <svg width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </span>
-                    </div>
-                  </td>
-                  <td class="py-4">
+                  <td class="py-4" width="10%">
                     <div class="total-price">
-                      <span class="money text-dark">$70.00</span>
+                      <span class="money text-dark">$[[${gm.total}]]</span>
                     </div>
                   </td>
-                  <td class="py-4">
-                    <div class="cart-remove">
+                  <td class="py-4" width="30%">
+                    <div class="status">
+                      <th:block th:switch="${gm.pickupStatus}">
+                        <span th:case="已訂購" class="text-dark">
+                          <th:block th:if="${gm.groupBuy.groupBuyStatus=='開團中'}">
+                            已訂購，預計 [[${gm.groupBuy.orderDate}]] 由店長叫貨
+                          </th:block>
+                          <th:block th:if="${gm.groupBuy.groupBuyStatus=='已結單'}">
+                            店長已下單，等待發貨中
+                          </th:block>
+                        </span>
+                        <span th:case="已刪除" class="text-dark">
+                          <th:block th:if="${gm.quantity==0}">
+                            已刪除
+                          </th:block>
+                          <th:block th:if="${gm.quantity!=0}">
+                            揪團失敗
+                          </th:block>
+                        </span>
+                        <span th:case="待取貨" class="text-dark">已到貨，請於 [[${gm.groupBuy.endDate}]] 前取貨</span>
+                        <span th:case="已取貨" class="text-dark">已取貨</span>
+                        <span th:case="未取貨" class="text-danger">未取貨</span>
+                      </th:block>
+                    </div>
+                  </td>
+                  <td th:if="${gm.groupBuy.groupBuyStatus=='開團中' && gm.pickupStatus=='已訂購'}" class="py-4" width="10%">
+                    <div class="cart-remove" th:id="${gm.groupMemberId}">
                       <a href="#">
                         <svg width="24" height="24">
                           <use xlink:href="#trash"></use>
@@ -183,6 +140,24 @@
   <script th:src="@{/js/script.js}"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(".cart-remove").on("click", function () {
+      event.preventDefault()
+      let gmId = $(this).attr("id");
+      let row = $(this).closest("tr");
+      axios.put("http://localhost:8080/FinalProject/public/front/group-members/" + gmId)
+        .then(res => {
+          console.log(res);
+          row.find(".text-dark").text(res.data.pickupStatus);
+          row.find(".product-qty .text-dark").text(res.data.quantity);
+          row.find(".total-price .money").text('$' + res.data.total);
+          row.find(".cart-remove").remove();
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+  </script>
 </body>
 
 </html>

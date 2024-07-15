@@ -138,5 +138,26 @@ public class GroupMemberService{
 	public List<GroupMember> findByMemberId(Integer id) {
 		return groupMemberRepo.findByMemberId(id);
 	}
+	
+	public GroupMember updateStatusToDelete(Integer id) {
+		
+		Optional<GroupMember> optional = groupMemberRepo.findById(id);
+		if (optional.isPresent()) {
+			GroupMember groupMember = optional.get();
+			
+			groupMember.setPickupStatus("已刪除");
+			groupMember.setQuantity(0);
+			groupMember.setTotal(0);
+			
+			groupMemberRepo.save(groupMember);
+			
+			groupBuyService.updateNowQuantityById(groupMember.getGroupBuyId());
+			
+			return groupMember;
+		}
+		
+		return null;
+		
+	}
 
 }

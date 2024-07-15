@@ -17,4 +17,5 @@ public interface GroupBuyRepository extends JpaRepository<GroupBuy, Integer> {
 	
 	Page<GroupBuy> findByGroupBuyStatus(String groupBuyStatus, Pageable pageable);
 
+	List<GroupBuy> findByGroupBuyStatus(String groupBuyStatus);
 }

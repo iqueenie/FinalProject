@@ -71,10 +71,10 @@
                         <select th:field="*{groupBuyStatus}" class="form-select" id="groupBuyStatus" required>
                             <option value="未開團">未開團</option>
                             <option value="開團中">開團中</option>
-                            <option value="已結單">已結單</option>
-                            <option value="不成立">不成立</option>
-                            <option value="已到貨">已到貨</option>
-                            <option value="已結束">已結束</option>
+                            <option value="已結單" th:if="${role!='店長'}">已結單</option>
+                            <option value="不成立" th:if="${role!='店長'}">不成立</option>
+                            <option value="已到貨" th:if="${role!='店長'}">已到貨</option>
+                            <option value="已結束" th:if="${role!='店長'}">已結束</option>
                         </select>
                         <label for="groupBuyStatus">狀態</label>
                     </div>

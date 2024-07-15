@@ -83,6 +83,26 @@ public class GroupBuyService{
 		GroupBuy update = groupBuyRepo.save(gb);
 		return update;
 	}
+	
+	public GroupBuy changeGroupBuyStatus(Integer id, String status) {
+		GroupBuy gb = groupBuyRepo.findById(id).get();
+		gb.setGroupBuyStatus(status);
+		if (status.equals("已到貨")) {
+			LocalDate now = LocalDate.now();
+			gb.setArrivalDate(Date.valueOf(now));
+			now.plusDays(3);
+			gb.setEndDate(Date.valueOf(now.plusDays(3)));
+		}
+		GroupBuy save = groupBuyRepo.save(gb);
+		
+		List<GroupMember> gms = groupMemberService.findByGroupBuyId(gb.getGroupBuyId());
+		for (GroupMember gm : gms) {
+			groupMemberService.update(gm);
+		}
+		
+		return save;
+		
+	}
 
 	public GroupBuy update(GroupBuy groupBuy) {
 		
@@ -157,6 +177,11 @@ public class GroupBuyService{
 		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
 		
 		return groupBuyRepo.findByGroupBuyStatus(status,pgb);
+	}
+	
+	public List<GroupBuy> findByGroupBuyStatus(String status) {
+		
+		return groupBuyRepo.findByGroupBuyStatus(status);
 	}
 
 
