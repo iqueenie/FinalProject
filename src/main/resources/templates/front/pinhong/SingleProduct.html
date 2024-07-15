@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head>
-  <title>團購</title>
+  <title th:text="${product.productName}"></title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +47,32 @@
             <div class="element-header">
               <h2 itemprop="name">[[${product.productName}]]</h2>
             </div>
+            		<!-- 商品評分及星數 -->
+                        <div class="rating-container d-flex align-items-center">
+                          <span class="rating me-2">
+								<th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
+						    
+							      	<th:block th:if="${averageRating != null}">
+							            <th:block th:each="star : ${#numbers.sequence(1, averageRating)}">
+									    <svg width="24" height="24" class="text-warning">
+									         <use xlink:href="#star-full"></use>
+									    </svg>
+							            </th:block>
+							        </th:block>
+							        
+							    	<th:block th:if="${averageRating != null}">
+							            <th:block th:if="${averageRating % 1 != 0}">
+							       		<svg width="24" height="24" class="text-warning">
+							        	     <use xlink:href="#star-half"></use>
+							       		</svg>
+							            </th:block>
+							    </th:block>
+							</th:block>
+							<!-- 000 -->
+							</span>
+                    		<span class="rating-count" th:text="'(' +${averageRatings[__${product.productId}__]}+ ')'"></span>
+                        </div>
+                        <!-- 商品評分及星數 -->
             <div class="product-price pt-3 pb-3">
               <strong class="text-primary display-6 fw-bold">$[[${product.productPrice}]]</strong><del class="ms-2">$[[${product.productPrice}]]</del>
             </div>
@@ -98,128 +124,6 @@
         </div>
       </div>
     </section>
-
-    <section class="product-info-tabs py-5">
-      <div class="container-lg">
-        <div class="row">
-          <div>
-            <div class="tab-content py-4" id="v-pills-tabContent">
-                <h5>商品評論</h5>
-              <div class="tab-pane fade show active " id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab" tabindex="0">
-                <div class="review-box d-flex flex-wrap">
-                  <div class="col-lg-6 d-flex flex-wrap gap-3">
-                    <div class="col-md-2">
-                      <div class="image-holder">
-                        <img src="images/reviewer-1.jpg" alt="review" class="img-fluid rounded-circle">
-                      </div>
-                    </div>
-                    <div class="col-md-8">
-                      <div class="review-content">
-                        <div class="rating-container d-flex align-items-center">
-                          <span class="rating me-2">
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                          </span>
-                          <span class="rating-count">(3.5)</span>
-                        </div>
-                        <div class="review-header">
-                          <span class="author-name">Tina Johnson</span>
-                          <span class="review-date">– 03/07/2023</span>
-                        </div>
-                        <p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis convallis</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 d-flex flex-wrap gap-3">
-                    <div class="col-md-2">
-                      <div class="image-holder">
-                        <img src="images/reviewer-2.jpg" alt="review" class="img-fluid rounded-circle">
-                      </div>
-                    </div>
-                    <div class="col-md-8">
-                      <div class="review-content">
-                        <div class="rating-container d-flex align-items-center">
-                          <span class="rating me-2">
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                          </span>
-                          <span class="rating-count">(3.5)</span>
-                        </div>
-                        <div class="review-header">
-                          <span class="author-name">Jenny Willis</span>
-                          <span class="review-date">– 03/06/2022</span>
-                        </div>
-                        <p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at lectus urna duis convallis convallis</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-				
-				<button type="button" class="btn btn-primary mt-3" id="add-review-btn">新增評論</button>
-				
-				
-                <div class="add-review-form mt-5" style="display:none" >
-                  <h3>新增評論</h3>
-                  <p>Your email address will not be published. Required fields are marked *</p>
-                  <form id="form" class="form-group">
-
-                    <div class="pb-3">
-                      <div class="review-rating">
-                        <span>Your rating *</span>
-                        <div class="rating-container d-flex align-items-center">
-                          <input type="radio" class="btn-check" name="options-rating" id="rating1" autocomplete="off" checked>
-                          <label class="btn" for="rating1"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating2" autocomplete="off">
-                          <label class="btn" for="rating2"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating3" autocomplete="off">
-                          <label class="btn" for="rating3"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating4" autocomplete="off">
-                          <label class="btn" for="rating4"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-                          
-                          <input type="radio" class="btn-check" name="options-rating" id="rating5" autocomplete="off">
-                          <label class="btn" for="rating5"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="pb-3">
-                      <label>Your Review *</label>
-                      <textarea class="form-control" placeholder="Write your review here"></textarea>
-                    </div>
-                    <div class="pb-3">
-                      <label>Your Name *</label>
-                      <input type="text" name="name" placeholder="Write your name here" class="form-control">
-                    </div>
-                    <div class="pb-3">
-                      <label>Your Email *</label>
-                      <input type="text" name="email" placeholder="Write your email here" class="form-control">
-                    </div>
-                    <div class="pb-3">
-                      <label>
-                        <input type="checkbox" required="">
-                        <span class="label-body">Save my name, email, and website in this browser for the next
-                          time.</span>
-                      </label>
-                    </div>
-                    <button type="submit" name="submit"
-                      class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
 
 	 <!-- 你可能會喜歡的商品 -->
     <section id="related-products" class="products-carousel">
@@ -290,6 +194,111 @@
       </div>
     </section>
             <!-- 你可能會喜歡的商品-->
+            
+    <section class="product-info-tabs py-5">
+      <div class="container-lg">
+        <div class="row">
+          <div>
+            <div class="tab-content py-4" id="v-pills-tabContent">
+            	<div class="mb-4"><h5>商品評論</h5></div>
+              <div class="tab-pane fade show active " id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab" tabindex="0">
+                <div class="review-box d-flex flex-wrap mb-3">
+                <!-- 評論 -->
+                <th:block th:each="productReview : ${productReviews}">
+                  <div class="col-lg-6 d-flex flex-wrap gap-3 mb-2">
+                    <div class="col-md-2">
+                      <div class="image-holder">
+                        <img th:src="@{/MemberPhoto(memberId=${productReview.member.memberId})}" alt="review" class="img-fluid rounded-circle">
+                      </div>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="review-content">
+                        <div class="rating-container d-flex align-items-center">
+                          <span class="rating me-2">
+						    <th:block th:each="star : ${#numbers.sequence(1, productReview.stars)}">
+						        <!-- 判断是否是最后一个星星，如果是且有小数部分，则使用半星 -->
+						        <svg width="24" height="24" class="text-warning">
+						            <th:block th:if="${star == productReview.stars and productReview.stars % 1 != 0}">
+						                <use xlink:href="#star-half"></use>
+						            </th:block>
+						            <th:block th:unless="${star == productReview.stars and productReview.stars % 1 != 0}">
+						                <use xlink:href="#star-full"></use>
+						            </th:block>
+						        </svg>
+						    		</th:block>
+							</span>
+                          <span class="rating-count" th:text="'(' +${productReview.stars}+ ')'"></span>
+                        </div>
+                        <div class="review-header">
+                          <span class="author-name" th:text="${productReview.member.memberName}"></span>
+                          <span class="review-date" th:text="'–' +  ${#dates.format(productReview.reviewTime, 'yyyy年MM月dd日 HH:mm:ss')}"></span>
+                        </div>
+                        <p th:text="${productReview.reviewContent}"></p>
+                      </div>
+                    </div>
+                  </div>
+                   </th:block>
+					<!-- 評論 -->
+                </div>
+				<div class="qty-button d-flex flex-wrap pt-3">
+                      <button type="button" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">所有評論</button>                      
+                      <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3" id="add-review-btn">新增評論</button>                    
+                </div>
+                <div class="add-review-form mt-5" style="display:none" >
+                  <h3>新增評論</h3>
+                  <p>Your email address will not be published. Required fields are marked *</p>
+                  <form id="form" class="form-group">
+
+                    <div class="pb-3">
+                      <div class="review-rating">
+                        <span>Your rating *</span>
+                        <div class="rating-container d-flex align-items-center">
+                          <input type="radio" class="btn-check" name="options-rating" id="rating1" autocomplete="off" checked>
+                          <label class="btn" for="rating1"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+
+                          <input type="radio" class="btn-check" name="options-rating" id="rating2" autocomplete="off">
+                          <label class="btn" for="rating2"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+
+                          <input type="radio" class="btn-check" name="options-rating" id="rating3" autocomplete="off">
+                          <label class="btn" for="rating3"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+
+                          <input type="radio" class="btn-check" name="options-rating" id="rating4" autocomplete="off">
+                          <label class="btn" for="rating4"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+                          
+                          <input type="radio" class="btn-check" name="options-rating" id="rating5" autocomplete="off">
+                          <label class="btn" for="rating5"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pb-3">
+                      <label>Your Review *</label>
+                      <textarea class="form-control" placeholder="Write your review here"></textarea>
+                    </div>
+                    <div class="pb-3">
+                      <label>Your Name *</label>
+                      <input type="text" name="name" placeholder="Write your name here" class="form-control">
+                    </div>
+                    <div class="pb-3">
+                      <label>Your Email *</label>
+                      <input type="text" name="email" placeholder="Write your email here" class="form-control">
+                    </div>
+                    <div class="pb-3">
+                      <label>
+                        <input type="checkbox" required="">
+                        <span class="label-body">Save my name, email, and website in this browser for the next
+                          time.</span>
+                      </label>
+                    </div>
+                    <button type="submit" name="submit"
+                      class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div th:replace="~{front/layout/footer}"></div>
 

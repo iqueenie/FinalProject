@@ -1,6 +1,8 @@
 package six.pinhong.controller;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
+import six.pinhong.model.ProductReview;
+import six.pinhong.service.ProductReviewService;
 import six.pinhong.service.ProductService;
 
 @Controller
@@ -33,6 +37,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ProductReviewService productReviewService;
 	
 	// 查全部
 	@GetMapping("/private/Product/GetAll")
@@ -262,10 +269,49 @@ public class ProductController {
 	// 新增進入點
 	@GetMapping("/public/Products/{productId}")
 	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model) {
+		
 			Product product = productService.findProductById(productId);	
 			model.addAttribute("product", product);
+			
 			List<Product> recommend5Products = productService.findSametype5Products(product.getProductType(), productId);
 			model.addAttribute("recommend5Products", recommend5Products);
+			
+			List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
+			model.addAttribute("allProductReviews", allProductReviews);
+			
+			List<ProductReview> productReviews = productReviewService.findTop4ByProductIdOrderByReviewTimeDesc(productId);
+			model.addAttribute("productReviews", productReviews);
+			
+		 
+		    Map<Integer, Double> averageRatings = new HashMap<>();
+		    
+		    List<ProductReview> allReviews = productReviewService.findAll();
+		    Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
+		    for (ProductReview review : allReviews) {
+		        int productIdKey = review.getProduct().getProductId();
+		        
+		        if (!reviewsByProductId.containsKey(productIdKey)) {
+		            reviewsByProductId.put(productIdKey, new ArrayList<>());
+		        }
+		        reviewsByProductId.get(productIdKey).add(review);
+		    }
+		    
+		    for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
+		        int pid = entry.getKey();
+		        List<ProductReview> reviews = entry.getValue();
+		        
+		        double totalStars = 0;
+		        for (ProductReview review : reviews) {
+		            totalStars += review.getStars();
+		        }
+		        double averageRating = totalStars / reviews.size();
+		        DecimalFormat df = new DecimalFormat("#.#");
+		        averageRating = Double.parseDouble(df.format(averageRating));
+		        averageRatings.put(pid, averageRating);
+		    }
+
+		
+		    model.addAttribute("averageRatings", averageRatings); 
 
 			return "front/pinhong/SingleProduct";
 	}
