@@ -113,14 +113,16 @@ public class GroupBuyController {
 	@ResponseBody
 	@GetMapping("private/back/FindByStatus")
 	public List<GroupBuy> findByStatus(
-			@RequestParam(value = "status", defaultValue = "") String status) {
-		
+			@RequestParam(value = "status", defaultValue = "") String status, HttpSession session) {
 		List<GroupBuy> gbs = null;
 		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
 		if(status.isEmpty()) {
-			gbs = groupBuyService.findAll();
+			gbs = groupBuyService.findByStoreId(managementRole.getStore().getStoreId());
 		}else {
-			gbs = groupBuyService.findByGroupBuyStatus(status);
+			gbs = groupBuyService.findByGroupBuyStatusAndStoreId(status, managementRole.getStore().getStoreId());
 		}
 		
 		return gbs;
@@ -221,6 +223,9 @@ public class GroupBuyController {
 	public String GroupBuys(@RequestParam(value = "p",defaultValue = "1") Integer page,Model m) {
 		
 		Page<GroupBuy> gbs = groupBuyService.findByGroupBuyStatus("開團中",page);
+		
+		
+		
 		m.addAttribute("gbs", gbs);
 		
 		return "front/sunny/GroupBuy";

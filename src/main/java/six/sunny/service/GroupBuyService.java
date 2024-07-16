@@ -179,9 +179,9 @@ public class GroupBuyService{
 		return groupBuyRepo.findByGroupBuyStatus(status,pgb);
 	}
 	
-	public List<GroupBuy> findByGroupBuyStatus(String status) {
+	public List<GroupBuy> findByGroupBuyStatusAndStoreId(String status, Integer storeId) {
 		
-		return groupBuyRepo.findByGroupBuyStatus(status);
+		return groupBuyRepo.findByGroupBuyStatusAndStoreId(status, storeId);
 	}
 
 

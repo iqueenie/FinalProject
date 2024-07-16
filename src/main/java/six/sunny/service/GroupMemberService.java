@@ -1,5 +1,7 @@
 package six.sunny.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,6 +159,15 @@ public class GroupMemberService{
 		}
 		
 		return null;
+		
+	}
+	
+	public GroupMember changeGroupMemberStatus(Integer id, String status) {
+		GroupMember gm = groupMemberRepo.findById(id).get();
+		gm.setPickupStatus(status);
+		GroupMember save = groupMemberRepo.save(gm);
+		
+		return save;
 		
 	}
 
