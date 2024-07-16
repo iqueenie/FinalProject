@@ -120,6 +120,10 @@ public class StoreService {
 		 }
 		 return null;
 	}
+	
+	public List<String> findDistinctCities() {
+		return storesRepo.findDistinctCities();
+	}
 }
 
 	
