@@ -25,6 +25,7 @@ import six.hsiao.dto.ManagementDTO;
 import six.hsiao.model.ManagementRoles;
 import six.hsiao.model.ManagementRolesRepository;
 import six.hsiao.model.MembersBean;
+import six.hsiao.service.EmailService;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
@@ -54,6 +55,9 @@ public class GroupBuyController {
 //	TODO
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@RequestMapping(path = "private/back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m, HttpSession session) {
@@ -194,6 +198,10 @@ public class GroupBuyController {
 	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status, Model m) {		
 		
 		groupBuyService.changeGroupBuyStatus(id, status);
+		
+		if (status.equals("已到貨")) {
+			emailService.sendGroupBuyEmail(id);
+		}
 		
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
