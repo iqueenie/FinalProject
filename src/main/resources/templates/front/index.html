@@ -23,7 +23,35 @@
   <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
+	<style>
+    .carousel-container {
+      width: 100%;
+      height: 75vh;
+      margin: 0 auto;
+      background-color: black;
+    }
 
+    .carousel-inner img {
+      object-fit: contain;
+      max-width: 60%;
+      max-height: 100%;
+    }
+    .discount-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: red;
+      color: white;
+      padding: 5px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    .product-item {
+      position: relative;
+    }
+  </style>
+	
 </head>
 
 <body>
@@ -35,106 +63,44 @@
 
   <div th:replace="~{front/layout/navbar}"></div>
 
-  <section style="background-image: url('images/banner-1.jpg');background-repeat: no-repeat;background-size: cover;">
-    <div class="container-lg">
-      <div class="row">
-        <div class="col-lg-6 pt-5 mt-5">
-          <h2 class="display-1 ls-1"><span class="fw-bold text-primary">Organic</span> Foods at your <span
-                  class="fw-bold">Doorsteps</span></h2>
-          <p class="fs-4">Dignissim massa diam elementum.</p>
-          <div class="d-flex gap-3">
-            <a href="#" class="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">Start Shopping</a>
-            <a href="#" class="btn btn-dark text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">Join Now</a>
-          </div>
-          <div class="row my-5">
-            <div class="col">
-              <div class="row text-dark">
-                <div class="col-auto">
-                  <p class="fs-1 fw-bold lh-sm mb-0">14k+</p>
-                </div>
-                <div class="col">
-                  <p class="text-uppercase lh-sm mb-0">Product Varieties</p>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="row text-dark">
-                <div class="col-auto">
-                  <p class="fs-1 fw-bold lh-sm mb-0">50k+</p>
-                </div>
-                <div class="col">
-                  <p class="text-uppercase lh-sm mb-0">Happy Customers</p>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="row text-dark">
-                <div class="col-auto">
-                  <p class="fs-1 fw-bold lh-sm mb-0">10+</p>
-                </div>
-                <div class="col">
-                  <p class="text-uppercase lh-sm mb-0">Store Locations</p>
-                </div>
-              </div>
-            </div>
-          </div>
+  <section>
+    <div id="carouselExampleIndicators" class="carousel slide carousel-container" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6" aria-label="Slide 7"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="7" aria-label="Slide 8"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="8" aria-label="Slide 9"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="9" aria-label="Slide 10"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="10" aria-label="Slide 11"></button>
+      </div>
+      <div class="carousel-inner" style="height: 100%;">
+        <!-- 設置高度 -->
+        <!-- Holiday Discounts -->
+        <div th:each="discount, iterStat : ${holidayDiscounts}" th:classappend="${iterStat.index == 0} ? ' active' : ''" class="carousel-item">
+          <a th:href="@{/public/Products}" class="d-flex align-items-center justify-content-center" style="height: 100%;">
+            <img th:src="'data:image/jpeg;base64,' + ${holidayDiscountImagesBase64[iterStat.index]}" class="d-block" alt="...">
+          </a>
+        </div>
+        <!-- Amount Discounts -->
+        <div th:each="discount, iterStat : ${amountDiscounts}" th:classappend="${holidayDiscounts.size() == 0 && iterStat.index == 0} ? ' active' : ''" class="carousel-item">
+          <a th:href="@{/public/front/Discount}" class="d-flex align-items-center justify-content-center" style="height: 100%;">
+            <img th:src="'data:image/jpeg;base64,' + ${amountDiscountImagesBase64[iterStat.index]}" class="d-block" alt="...">
+          </a>
         </div>
       </div>
-
-      <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-3 g-0 justify-content-center">
-        <div class="col">
-          <div class="card border-0 bg-primary rounded-0 p-4 text-light">
-            <div class="row">
-              <div class="col-md-3 text-center">
-                <svg width="60" height="60">
-                  <use xlink:href="#fresh"></use>
-                </svg>
-              </div>
-              <div class="col-md-9">
-                <div class="card-body p-0">
-                  <h5 class="text-light">Fresh from farm</h5>
-                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card border-0 bg-secondary rounded-0 p-4 text-light">
-            <div class="row">
-              <div class="col-md-3 text-center">
-                <svg width="60" height="60">
-                  <use xlink:href="#organic"></use>
-                </svg>
-              </div>
-              <div class="col-md-9">
-                <div class="card-body p-0">
-                  <h5 class="text-light">100% Organic</h5>
-                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card border-0 bg-danger rounded-0 p-4 text-light">
-            <div class="row">
-              <div class="col-md-3 text-center">
-                <svg width="60" height="60">
-                  <use xlink:href="#delivery"></use>
-                </svg>
-              </div>
-              <div class="col-md-9">
-                <div class="card-body p-0">
-                  <h5 class="text-light">Free delivery</h5>
-                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
   </section>
 
@@ -253,22 +219,22 @@
                       <span>(222)</span>
                     </div>
                     <div class="d-flex justify-content-center align-items-center gap-2">
-                      <del th:text="${product.productPrice}"></del>
-                      <span class="text-dark fw-semibold">$18.00</span> <!-- 搭配優惠折扣後的價格 -->
-                      <span
-                            class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
-                        OFF</span> <!-- 優惠折扣的% -->
-                    </div>
+                      <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+                      <span class="text-dark fw-semibold"
+          					th:if="${productDiscountMap[product.productId] != null}"
+          					th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+    				  <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
+          					th:if="${productDiscountMap[product.productId] != null}"
+          					th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
+					</div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
-                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                        <div class="col-7"><button class="btn btn-primary rounded-1 p-2 fs-7 addToCart"
-                          th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
-                          <svg width="18" height="18">
-                            <use xlink:href="#cart"></use>
-                          </svg> 加入購物車
-                        </button></div>
-
+                        <div class="col-3"><input type="number" name="quantity"
+                                 class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg
+                                 width="18" height="18">
+                              <use xlink:href="#cart"></use>
+                            </svg> 加入購物車</a></div>
                         <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
                                  height="18">
                               <use xlink:href="#heart"></use>
@@ -395,32 +361,33 @@
                     <span>(222)</span>
                   </div>
                   <div class="d-flex justify-content-center align-items-center gap-2" >
-                    <del th:text="${product.productPrice}"></del> <!-- 搭配優惠折扣後的價格 -->
-                    <span class="text-dark fw-semibold">$18.00</span>
-                    <span
-                      class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10%
-                      OFF</span> <!-- 優惠折扣比例 -->
+                    <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+                    <span class="text-dark fw-semibold"
+          						th:if="${productDiscountMap[product.productId] != null}"
+          						th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+                   <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
+          						th:if="${productDiscountMap[product.productId] != null}"
+          						th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
                   </div>
                   <div class="button-area p-3 pt-0">
-                    <div class="row g-1 mt-2">
-                      <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                      <div class="col-7">
-                        <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
-                          <svg width="18" height="18">
-                            <use xlink:href="#cart"></use>
-                          </svg> 加入購物車
-                        </a>
-                      <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
-                            height="18">
-                            <use xlink:href="#heart"></use>
-                          </svg></a></div>
+                      <div class="row g-1 mt-2">
+                        <div class="col-3"><input type="number" name="quantity"
+                                 class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg
+                                 width="18" height="18">
+                              <use xlink:href="#cart"></use>
+                            </svg> 加入購物車</a></div>
+                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
+                                 height="18">
+                              <use xlink:href="#heart"></use>
+                            </svg></a></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <th:block>
-
-            </div>
+              </div>
+            </th:block>
+          </div>
           </div>
           <!-- / products-carousel -->
 
@@ -481,6 +448,13 @@
   <script th:src="@{/js/plugins.js}"></script>
   <script th:src="@{/js/script.js}"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    var myCarousel = document.querySelector('#carouselExampleIndicators');
+    var carousel = new bootstrap.Carousel(myCarousel, {
+      interval: 2000, 
+      wrap: true
+    });
+  </script>
  <script th:inline="javascript">
    function addToCart(button) {
     var productId = button.getAttribute('data-productId');

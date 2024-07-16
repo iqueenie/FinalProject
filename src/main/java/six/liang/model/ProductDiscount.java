@@ -27,7 +27,6 @@ public class ProductDiscount {
     @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
-    // Getters and setters
     public Integer getDiscountId() {
         return discountId;
     }

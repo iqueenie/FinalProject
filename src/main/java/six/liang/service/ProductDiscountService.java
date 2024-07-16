@@ -14,7 +14,8 @@ public class ProductDiscountService {
 
     @Autowired
     private DiscountProductRepository discountProductRepo;
-
+    
+    @Autowired
     public List<ProductDiscount> findAll() {
         return discountProductRepo.findAll();
     }
@@ -37,6 +38,6 @@ public class ProductDiscountService {
     }
     
     public List<ProductDiscount> findByProductId(Integer productId) {
-        return discountProductRepo.findByProductProductId(productId);
+        return discountProductRepo.findByProductId(productId);
     }
 }

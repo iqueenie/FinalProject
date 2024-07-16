@@ -13,7 +13,7 @@
 <body>
 <div th:replace="~{back/layout/navbar}"></div>
 <div class="container d-flex justify-content-center">
-    <form action="#" th:action="@{/private/AmountInsert}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+    <form action="#" th:action="@{/private/AmountInsert}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4" enctype="multipart/form-data">
         <div class="row g-2 m-2">
             <h2 class="col-12 text-center">新增折扣</h2>
             <div class="col-12">
@@ -55,6 +55,16 @@
                     <label for="isActive">狀態</label>
                 </div>
             </div>
+            <div class="col-12">
+                <div class="form-floating">
+                    <textarea class="form-control" id="discountDescription" name="discountDescription" placeholder="折扣描述" required></textarea>
+                    <label for="discountDescription">折扣描述</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="discountImage" class="form-label">折扣圖片</label>
+                <input type="file" class="form-control" id="discountImage" name="discountImage" required>
+            </div>
             <div class="mt-3 col-12 d-flex justify-content-center mb-3">
                 <a th:href="@{/private/GetAllAmountDiscount}" class="btn btn-secondary me-2">返回</a>
                 <button type="submit" class="btn btn-success">新增</button>
@@ -67,46 +77,40 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-    // 當開始日期或結束日期改變時進行驗證
-    $('#startDate, #endDate').on('change', function() {
-        var startDate = $('#startDate').val();
-        var endDate = $('#endDate').val();
-
-        if (startDate && endDate) {
-            if (new Date(endDate) < new Date(startDate)) {
-                Swal.fire({
-                    title: '日期錯誤',
-                    text: '結束日期不能早於開始日期！',
-                    icon: 'error',
-                    confirmButtonText: '確認'
-                }).then(function() {
-                    $('#endDate').val('');
-                });
-            }
-        }
-    });
-
-    // 提交表單時的確認彈窗
-    $('form').submit(function(event) {
-        event.preventDefault();
-        Swal.fire({
-            title: "確定要新增嗎？",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "green",
-            cancelButtonColor: "gray",
-            confirmButtonText: "新增",
-            cancelButtonText: "取消",
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.submit();
+        $('#startDate, #endDate').on('change', function() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            if (startDate && endDate) {
+                if (new Date(endDate) < new Date(startDate)) {
+                    Swal.fire({
+                        title: '日期錯誤',
+                        text: '結束日期不能早於開始日期！',
+                        icon: 'error',
+                        confirmButtonText: '確認'
+                    }).then(function() {
+                        $('#endDate').val('');
+                    });
+                }
             }
         });
+        $('form').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "確定要新增嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                cancelButtonColor: "gray",
+                confirmButtonText: "新增",
+                cancelButtonText: "取消",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
     });
-});
-
 </script>
-
 </body>
 </html>
