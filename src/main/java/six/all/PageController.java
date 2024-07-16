@@ -1,6 +1,7 @@
 package six.all;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,11 +27,17 @@ public class PageController {
 	
 	@GetMapping("/public/front")
 	public String frontIndex(Model model) {
-		List<Product> products = productService.findTop5ByOrderByProductQuantityDesc();
-		List<Product> new10Products = productService.findTop10ByOrderByProductIdDesc();
-		
-		model.addAttribute("products", products);
-		model.addAttribute("new10Products", new10Products);
-		return "/front/index";
+	    Map<String, Object> homePageDetails = productService.getHomePageDetails();
+	    
+	    System.out.println(homePageDetails.get("averageRatings"));
+	    System.out.println(homePageDetails.get("products"));
+	    
+
+	    model.addAttribute("products", homePageDetails.get("products"));
+	    model.addAttribute("new10Products", homePageDetails.get("new10Products"));
+	    model.addAttribute("averageRatings", homePageDetails.get("averageRatings"));
+	    model.addAttribute("reviewCounts", homePageDetails.get("reviewCounts"));
+
+	    return "/front/index";
 	}
 }

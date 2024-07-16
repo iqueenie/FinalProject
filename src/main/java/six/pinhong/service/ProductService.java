@@ -192,4 +192,64 @@ public class ProductService {
 
         return reviewCounts;
     }
+    
+    public Map<String, Object> getHomePageDetails() {
+        Map<String, Object> result = new HashMap<>();
+
+        List<Product> products = findTop5ByOrderByProductQuantityDesc();
+        result.put("products", products);
+
+        List<Product> new10Products = findTop10ByOrderByProductIdDesc();
+        result.put("new10Products", new10Products);
+
+        // 計算所有商品的平均評分
+        Map<Integer, Double> averageRatings = new HashMap<>();
+        Map<Integer, Integer> reviewCounts = new HashMap<>();
+        List<ProductReview> allReviews = productReviewService.findAll();
+
+        // 處理 products
+        for (Product product : products) {
+            calculateProductRating(product, allReviews, averageRatings, reviewCounts);
+        }
+
+        // 處理 new10Products
+        for (Product product : new10Products) {
+            if (!averageRatings.containsKey(product.getProductId())) {
+                calculateProductRating(product, allReviews, averageRatings, reviewCounts);
+            }
+        }
+
+        result.put("averageRatings", averageRatings);
+        result.put("reviewCounts", reviewCounts);
+
+        return result;
+    }
+
+    private void calculateProductRating(Product product, List<ProductReview> allReviews, 
+                                        Map<Integer, Double> averageRatings, 
+                                        Map<Integer, Integer> reviewCounts) {
+        int productId = product.getProductId();
+        List<ProductReview> productReviews = new ArrayList<>();
+
+        for (ProductReview review : allReviews) {
+            if (review.getProduct().getProductId() == productId) {
+                productReviews.add(review);
+            }
+        }
+
+        if (!productReviews.isEmpty()) {
+            double totalStars = 0;
+            for (ProductReview review : productReviews) {
+                totalStars += review.getStars();
+            }
+            double averageRating = totalStars / productReviews.size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            averageRating = Double.parseDouble(df.format(averageRating));
+            averageRatings.put(productId, averageRating);
+            reviewCounts.put(productId, productReviews.size());
+        } else {
+            averageRatings.put(productId, 0.0);
+            reviewCounts.put(productId, 0);
+        }
+    }
 }

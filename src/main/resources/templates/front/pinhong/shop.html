@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function generateStars(rating) {
         let fullStars = Math.floor(rating);
-        const halfStars = rating % 1 >= 0.5 ? 1 : 0;
+        const halfStars = rating % 1 > 0 ? 1 : 0;
         const emptyStars = 5 - fullStars - halfStars;
         let stars = '';
 
