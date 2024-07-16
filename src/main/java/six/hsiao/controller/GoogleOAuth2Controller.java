@@ -88,6 +88,7 @@ public class GoogleOAuth2Controller {
 			System.out.println("payloadResponse" + payloadResponse);
 			JsonNode userinfo = new ObjectMapper().readTree(payloadResponse);
 			String loginUserEmail = userinfo.get("email").asText();
+			
 			boolean result = membersService.checkMemberAccount(loginUserEmail);
 			
 			if(result ) {
@@ -95,6 +96,7 @@ public class GoogleOAuth2Controller {
 				MembersBean member = membersService.findByMemberAccount(loginUserEmail);
 				session.setAttribute("loggedInMember",member);
 			}else {
+				
 				MembersBean member = membersService.addMemberByGoogleLogin(loginUserEmail);
 				session.setAttribute("loggedInMember",member);
 			}
