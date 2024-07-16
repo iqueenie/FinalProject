@@ -11,6 +11,7 @@ function showAdminArea(city) {
     $('#specialList').css("display", "block");
     $(".map_graybox05").css("display", "block");
     $("#showShopList").css("display", "block");
+    $("#map").css("display", "none");
 
     // $('#areaResult').css("border", "1px solid #2a9d14");
 
@@ -30,6 +31,10 @@ function showAdminArea(city) {
 
     if ($('#searchStreet').is(':visible')) {
         $('#searchStreet').hide();
+    }
+
+    if ($('#storeName').is(':visible')) {
+        $('#storeName').hide();
     }
 
     //找到該城市有哪些區
@@ -95,11 +100,26 @@ function storeListCity(data) {
     data.forEach(function (store) {
         storeCity += '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>'
         storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>'
-        storeCity += '<td align="right"><div class="shop_add_map"><a href="#"onclick="showMap(' + store.storeId + ')"><span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>'
+        storeCity += '<td align="right"><div class="shop_add_map"><a href="#"onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>'
+        storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>'
         storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>'
         storeCity += '電話：' + store.tel + '</td >' + '<td class="graybox"><span class="store02">霜淇淋</span>'
         storeCity += '<span class="store04"></span><span class="store10"></span><span class="store39"></span></td></tr >'
     });
+    $('.searchResult').html(storeCity);
+}
+
+//單筆結果
+function storeOneResult(store) {
+    let storeCity = '';
+    storeCity += '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>'
+    storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>'
+    storeCity += '<td align="right"><div class="shop_add_map"><a href="#"onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>'
+    storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>'
+    storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>'
+    storeCity += '電話：' + store.tel + '</td >' + '<td class="graybox"><span class="store02">霜淇淋</span>'
+    storeCity += '<span class="store04"></span><span class="store10"></span><span class="store39"></span></td></tr >'
+
     $('.searchResult').html(storeCity);
 }
 
@@ -113,16 +133,19 @@ function searchByArea(city, area) {
     $('#breadStreet').find('a')
         .text(`${area}`)
         .attr("href", "#")
-        .click(function (event) {
+        .click(function () {
             searchByArea(city, area);
         });
 
     $('#breadStreet').show();
-
+    $("#map").css("display", "none");
     $('#areaResult').html("");
     $('.searchResult').html("");
     if ($('#searchStreet').is(':visible')) {
         $('#searchStreet').hide();
+    }
+    if ($('#storeName').is(':visible')) {
+        $('#storeName').hide();
     }
 
     // $('#areaResult').removeAttr('style')
@@ -203,6 +226,7 @@ function htmlMakerArea(data, city, area) {
 function searchByStreet(city, area, street) {
     console.log(street);
     var scrollPosition = window.scrollY;
+    $("#map").css("display", "none");
     $('.searchResult').html("");
 
     axios.get('http://localhost:8080/FinalProject/public/front/findByStreet', {
@@ -264,37 +288,11 @@ function searchByStreet(city, area, street) {
 
 //用上方搜尋列找城市跟路名
 function showCityStreet() {
-
     var scrollPosition = window.scrollY;
     let inputVal = $('#croadWord').val();
     let city = inputVal.substring(0, 3);
     let street = inputVal.substring(3);
-    $("#roadSearchBar").hide();
-    $("#taiwanMap").hide();
-    $('#searchList').hide();
-    $("#chgSearchList").css("display", "block");
-    $('#specialList').css("display", "block");
-    $(".map_graybox05").css("display", "block");
-    $("#showShopList").css("display", "block");
 
-    const breadcrumbDiv = $(".map_graybox03.result");
-    breadcrumbDiv.css("display", "block");
-    breadcrumbDiv.find(".breadcrumb-item:nth-child(4) a")
-        .text(`${inputVal}`)
-        .attr("href", "#")
-        .click(function (event) {
-            showCityStreet();
-        });
-
-    $('#searchStreet').show();
-    if ($('#cityLocation').is(':visible')) {
-        $('#cityLocation').hide();
-    }
-
-
-    if ($('#breadStreet').is(':visible')) {
-        $('#breadStreet').hide();
-    }
 
     axios.get('http://localhost:8080/FinalProject/public/front/findByCityStreet', {
         params: {
@@ -304,6 +302,37 @@ function showCityStreet() {
     })
         .then(res => {
             if (res.data && res.data.length >= 1) {
+                // 如果找到結果，執行以下操作
+                $("#roadSearchBar").hide();
+                $("#taiwanMap").hide();
+                $('#searchList').hide();
+                $("#chgSearchList").css("display", "block");
+                $('#specialList').css("display", "block");
+                $(".map_graybox05").css("display", "block");
+                $("#showShopList").css("display", "block");
+                $("#map").css("display", "none");
+                const breadcrumbDiv = $(".map_graybox03.result");
+                breadcrumbDiv.css("display", "block");
+                breadcrumbDiv.find(".breadcrumb-item:nth-child(4) a")
+                    .text(`${inputVal}`)
+                    .attr("href", "#")
+                    .click(function (event) {
+                        showCityStreet();
+                    });
+
+                $('#searchStreet').show();
+                if ($('#cityLocation').is(':visible')) {
+                    $('#cityLocation').hide();
+                }
+
+                if ($('#breadStreet').is(':visible')) {
+                    $('#breadStreet').hide();
+                }
+
+                if ($('#storeName').is(':visible')) {
+                    $('#storeName').hide();
+                }
+
                 storeListCity(res.data);
                 let storeStreet = '';
                 var storeNum = 0;
@@ -313,10 +342,9 @@ function showCityStreet() {
                         street: street
                     }
                 }).then(res => {
-                    // 符合街道路名為台北市中山北路二段的店舖，共有6家
                     console.log(res.data);
                     storeNum = res.data;
-                    storeStreet += '<span class="result">從<a href="#" onclick="showDefaultContent()">地圖</a>'
+                    storeStreet += '<span class="result">從<a href="#" onclick="showDefaultContent()">查詢首頁</a>'
                     storeStreet += '符合街道路名為' + inputVal + '的店鋪，共有' + storeNum + '家</span>'
 
                     $('#areaResult').html(storeStreet);
@@ -327,15 +355,16 @@ function showCityStreet() {
                     });
                 window.scrollTo(0, scrollPosition);
             } else {
+                // 如果沒有找到結果，顯示 alert
                 alert('查無此縣市及路名，請確定格式符合!');
                 window.scrollTo(0, scrollPosition);
                 $('#croadWord').val("");
                 showDefaultContent();
             }
-        }).catch(err => {
+        })
+        .catch(err => {
             console.error(err);
         });
-
 };
 
 
@@ -353,6 +382,7 @@ function zipSearch() {
                 console.log(res.data[0], res.data[1]);
                 $("#roadSearchBar").hide();
                 $("#taiwanMap").hide();
+                $("#map").css("display", "none");
                 $('#searchList').hide();
                 $("#chgSearchList").css("display", "block");
                 $('#specialList').css("display", "block");
@@ -382,39 +412,76 @@ function zipSearch() {
 function findByStoreName() {
     let nameVal = $('#shopName').val();
     var scroll = window.scrollY;
+
     axios.get('http://localhost:8080/FinalProject/public/front/findByName', {
         params: {
             storeName: nameVal
         }
     })
         .then(res => {
-            if (res.data && res.data.length >= 1) {
-                // console.log(res.data[0], res.data[1]);
+            if (res.data && res.data.length >= 1 && nameVal.length >= 1) {
+                // 如果找到結果，執行以下操作
                 $("#roadSearchBar").hide();
                 $("#taiwanMap").hide();
                 $('#searchList').hide();
+                $("#map").css("display", "none");
                 $("#chgSearchList").css("display", "block");
                 $('#specialList').css("display", "block");
                 $(".map_graybox05").css("display", "block");
                 $("#showShopList").css("display", "block");
-                // const breadcrumbDiv = $(".map_graybox03.result");
-                // breadcrumbDiv.css("display", "block");
-                // breadcrumbDiv.find(".breadcrumb-item:nth-child(2) a")
-                //     .text(`${res.data[0]}`)
-                //     .attr("href", "#")
-                //     .click(function (event) {
-                //         showAdminArea(res.data[0]);
-                //     });
-                console.log(res.data);
+
+                // 麵包屑調整
+                const breadcrumbDiv = $(".map_graybox03.result");
+                breadcrumbDiv.css("display", "block");
+                breadcrumbDiv.find(".breadcrumb-item:nth-child(5) a")
+                    .text(`${nameVal}`)
+                    .attr("href", "#")
+                    .click(function (event) {
+                        findByStoreName();
+                    });
+
+                $('#storeName').show();
+                if ($('#cityLocation').is(':visible')) {
+                    $('#cityLocation').hide();
+                }
+
+                if ($('#breadStreet').is(':visible')) {
+                    $('#breadStreet').hide();
+                }
+
+                if ($('#searchStreet').is(':visible')) {
+                    $('#searchStreet').hide();
+                }
+
                 storeListCity(res.data);
+                let storeStreet = '';
+                var storeNum = 0;
+                axios.get('http://localhost:8080/FinalProject/public/front/countByWordName', {
+                    params: {
+                        storeName: nameVal
+                    }
+                }).then(res => {
+                    console.log(res.data);
+                    storeNum = res.data;
+                    storeStreet += '<span class="result">從<a href="#" onclick="showDefaultContent()">查詢首頁</a>'
+                    storeStreet += '符合店名為"' + nameVal + '"的店舖，共有' + storeNum + '家</span>'
+
+                    $('#areaResult').html(storeStreet);
+
+                })
+                    .catch(err => {
+                        console.error(err);
+                    });
                 window.scrollTo(0, scroll);
             } else {
+                // 如果沒有找到結果，顯示 alert
+                alert('查無符合店名!');
                 window.scrollTo(0, scroll);
                 $('#shopName').val("");
-                alert('查無符合店名!');
             }
-
-        }).catch(err => {
+        })
+        .catch(err => {
             console.error(err);
         });
 }
+

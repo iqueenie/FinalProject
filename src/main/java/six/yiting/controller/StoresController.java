@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.maps.model.LatLng;
 
 import six.yiting.model.StoresBean;
+import six.yiting.service.GeocodingService;
 import six.yiting.service.StoreService;
 
 @Controller
@@ -24,6 +26,9 @@ public class StoresController {
 	
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private GeocodingService geocodingService;
 	
 	
 	@GetMapping("/private/stores/findAll")
@@ -44,6 +49,8 @@ public class StoresController {
 		return storeService.findAllStores();
 		
 	}
+
+	
 	
 	@GetMapping("/private/store/addStorePage")
     public String storeInsertPage(Model m) {
@@ -84,12 +91,20 @@ public class StoresController {
 		return "redirect:/private/stores/findAll";
 	}
 	
+	
+	//前台店鋪搜尋
 	@GetMapping("/public/front/storeSearch")
 	public String StoreSearch(Model model) {
-		
-		
-		
 		return "front/yiting/StoreSearch";
+	}
+	
+	//用id找店鋪
+	@GetMapping("/public/front/findById")
+	@ResponseBody
+	public StoresBean findStoreById(Integer storeId) {
+		
+		return storeService.findStoreById(storeId);
+		
 	}
 	
 	//用城市找店鋪
@@ -150,12 +165,14 @@ public class StoresController {
 		return storeService.countStoresByStreet(city, area, street);
 	}
 	
+	//用城市和街道算店鋪數
 	@GetMapping("/public/front/countByCityAndStreet")
 	@ResponseBody
 	public long countByCityAndStreet(String city,String street) {
 		return storeService.countByCityAndStreet(city, street);
 	}
 	
+	//用郵遞區號找縣市、區域
 	@GetMapping("/public/front/findByZip")
 	@ResponseBody
 	public String[] findByZip(String cityNum) {
@@ -170,11 +187,28 @@ public class StoresController {
 		 
 	}
 	
+	//模糊查詢找店鋪
 	@GetMapping("/public/front/findByName")
 	@ResponseBody
 	public List<StoresBean> findByName(@RequestParam("storeName") String name) {
 		return storeService.findByName(name);
 	}
 	
+	//用模糊查詢結果算店鋪數
+	@GetMapping("/public/front/countByWordName")
+	@ResponseBody
+	public long countByWordName(String storeName) {
+		return storeService.countByWordName(storeName);
+	}
+	
+	//地圖經緯度回傳
+	 @GetMapping("/public/front/map")
+	 @ResponseBody
+	    public LatLng getAddressMap(@RequestParam("id") Integer id, Model model) {
+	        String address = geocodingService.getAddressFromDatabase(id);
+	        return geocodingService.geocodeAddress(address);
+	    }
+	 
+	 
 
 }
