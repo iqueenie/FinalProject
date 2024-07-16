@@ -80,6 +80,9 @@ public class StoreService {
 		return storesRepo.countByCityAndStreet(city, street);
 	}
 	
+	public long countByWordName(String storeName) {
+		return storesRepo.countByWordStoreName(storeName);
+	}
 	
 	public List<StoresBean> findByCityAndArea(String city,String area){
 		List<StoresBean> byCityAndArea = storesRepo.findByCityAndArea(city, area);

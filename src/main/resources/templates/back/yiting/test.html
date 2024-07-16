@@ -6,17 +6,19 @@
 </head>
 <body>
     <h1>Address Map</h1>
-    <div id="map" style="height: 400px; width: 100%;"></div>
+    <div id="map" style="height: 400px; width: 800px;"></div>
     <input type="hidden" id="latitude" th:value="${latitude}">
     <input type="hidden" id="longitude" th:value="${longitude}">
 </body>
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
-    <script>
+     <script th:inline="javascript">
         function initMap() {
-            var lat = parseFloat(document.getElementById('latitude').value);
-            var lng = parseFloat(document.getElementById('longitude').value);
+            var lat = parseFloat($('#latitude').val());
+            var lng = parseFloat($('#longitude').val());
             var center = { lat: lat, lng: lng };
-            var map = new google.maps.Map(document.getElementById('map'), {
+            var map = new google.maps.Map($('#map')[0], {
                 center: center,
                 zoom: 15
             });
@@ -37,6 +39,7 @@
             });
         }
 
-        window.onload = initMap;
+        $(window).on('load', initMap);
     </script>
+</body>
 </html>

@@ -4,6 +4,19 @@ a {
     text-decoration: none;
 }
 
+/* 地圖 */
+.map_container {
+    border: 1px solid #5cc209;
+    margin-bottom: 10px;
+    background-color: #f6f6f6;
+    padding: 8px 0 12px 0px;
+    font-size: 15px;
+    color: #444444;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+
 /* 商店列表 */
 .graybigbox {
     border: 1px solid #d5d5d5;
@@ -26,6 +39,24 @@ a {
     border-bottom: 1px solid #d5d5d5;
     padding: 10px 0 10px 15px;
     vertical-align: top;
+}
+
+.shop_add_map {
+    float: right;
+    margin-right: 10px;
+}
+
+
+
+.shop_add_map a {
+    /* background: url(../images/map/shop_map_btn_01.png) no-repeat; */
+
+    /* border: 1px solid #d5d5d5;
+    padding-top: 2px; */
+    width: 77px;
+    height: 24px;
+    display: block;
+    color: #5ac20f;
 }
 
 

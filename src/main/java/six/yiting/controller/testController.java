@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.maps.model.LatLng;
 
@@ -22,8 +23,8 @@ public class testController {
 	
 	
 	
-	 @GetMapping("/address/{id}")
-	    public String getAddressMap(@PathVariable Integer id, Model model) {
+	 @GetMapping("/address")
+	    public String getAddressMap(@RequestParam("id") Integer id, Model model) {
 	        String address = geocodingService.getAddressFromDatabase(id);
 	        LatLng latLng= geocodingService.geocodeAddress(address);
 	        if (latLng != null) {

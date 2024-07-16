@@ -90,7 +90,7 @@
                                             <h2 class="search_word" id="specialListShow">依特定服務項目查詢</h2>
                                             <div class="store">
                                                 <div class="note">
-                                                    *請勾選項目<br>
+                                                    *請勾選項目後點選搜尋<br>
                                                 </div>
                                                 <!--收合式選單 begin-->
                                                 <div id="accordion"
@@ -134,10 +134,10 @@
                                 <td valign="top">
                                     <div id="map_right" class="map_right">
                                         <!--Loading icon-->
-                                        <div id="loadingDiv" class="loadingDiv" style="display: none;">
+                                        <!-- <div id="loadingDiv" class="loadingDiv" style="display: none;">
                                             <img id="loading" th:src=@{/img/yiting/loading.gif} alt="loading"
                                                 style="position: relative">
-                                        </div>
+                                        </div> -->
                                         <!--上方搜尋列-->
                                         <div id="roadSearchBar" class="map_graybox03" style="display: block;">
                                             <span class="icon01"> <i class="fa-solid fa-location-dot"></i></span>
@@ -165,6 +165,9 @@
                                                 </li>
                                                 <li class="breadcrumb-item" id="searchStreet">
                                                     <span>查詢路名 (<span class="search_green"><a></a></span>)</span>
+                                                </li>
+                                                <li class="breadcrumb-item" id="storeName">
+                                                    <span>店名 (<span class="search_green"><a></a></span>)</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -221,6 +224,11 @@
                                         <div class="map_graybox05" id="areaResult" style="display: none;">
 
                                         </div>
+                                        <!-- 地圖 -->
+
+                                        <div class="map_container" id="map"
+                                            style="width: 680px; height: 300px;display: none;"></div>
+                                        <!-- <br> -->
                                         <!--店鋪列表-->
                                         <div id="showShopList" style="overflow: hidden;display: none;">
                                             <table width="683" border="0" cellspacing="0" cellpadding="0"
@@ -256,6 +264,7 @@
     <div th:replace="~{front/layout/footer}"></div>
 
     <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
@@ -268,13 +277,15 @@
 
 
         function showDefaultContent() {
+            var scrollPosition = window.scrollY;
             // Resetting UI elements to initial state
             $("#roadSearchBar").show();
             $("#taiwanMap").show();
             $(".map_graybox03.result").hide();
             $("#breadStreet").hide();
             $("#areaResult").html(""); // Clear any previous results
-            $(".map_graybox05").css("display", "none");
+
+            $("#map").css("display", "none");
             $("#showShopList").css("display", "none");
             $('#croadWord').val("");
             $('#shopName').val("");
@@ -283,6 +294,61 @@
             $('#chgSearchList').css("display", "none");
             $('#loadingDiv').css("display", "none");
             $('#searchList').show();
+            window.scrollTo(0, scrollPosition);
+        }
+
+    </script>
+    //地圖呈現
+    <script th:inline="javascript">
+        function showMap(storeId) {
+            $(".map_graybox05").css("display", "none");
+            $('.searchResult').html("");
+            $("#map").css("display", "block");
+
+            axios.get('http://localhost:8080/FinalProject/public/front/map', {
+                params: {
+                    id: storeId
+                }
+            })
+                .then(res => {
+                    var lat = parseFloat(res.data.lat);
+                    var lng = parseFloat(res.data.lng);
+                    var center = { lat: lat, lng: lng };
+                    var map = new google.maps.Map($('#map')[0], {
+                        center: center,
+                        zoom: 15
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: center,
+                        map: map,
+                        icon: {
+                            url: '/FinalProject/img/all/logo.png',
+                            scaledSize: new google.maps.Size(40, 40)
+                        }
+                    });
+
+                    map.addListener('center_changed', function () {
+                        window.setTimeout(function () {
+                            map.panTo(marker.getPosition());
+                        }, 3000);
+                    });
+
+                    axios.get('http://localhost:8080/FinalProject/public/front/findById', {
+                        params: {
+                            storeId: storeId
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data)
+                            storeOneResult(res.data)
+                        })
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+
         }
 
     </script>
