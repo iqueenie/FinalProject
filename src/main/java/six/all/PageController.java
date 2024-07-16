@@ -44,9 +44,10 @@ public class PageController {
 	
 	@GetMapping("/public/front")
 	public String frontIndex(Model model) {
-	    List<Product> products = productService.findTop5ByOrderByProductQuantityDesc();
-	    List<Product> new10Products = productService.findTop10ByOrderByProductIdDesc();
+	    Map<String, Object> homePageDetails = productService.getHomePageDetails();
 	    
+	    List<Product> products = productService.findTop5ByOrderByProductQuantityDesc();
+
 	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
 	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
 	    
@@ -70,13 +71,12 @@ public class PageController {
 	    List<String> holidayDiscountImagesBase64 = holidayDiscounts.stream()
 	            .map(discount -> holidayDiscountService.getDiscountImageBase64(discount.getDiscountImage()))
 	            .collect(Collectors.toList());
-
+	    
 	    List<String> amountDiscountImagesBase64 = amountDiscounts.stream()
 	            .map(discount -> amountDiscountService.getDiscountImageBase64(discount.getDiscountImage()))
 	            .collect(Collectors.toList());
 	    
-	    model.addAttribute("products", products);
-	    model.addAttribute("new10Products", new10Products);
+
 	    model.addAttribute("holidayDiscounts", holidayDiscounts);
 	    model.addAttribute("amountDiscounts", amountDiscounts);
 	    model.addAttribute("holidayDiscountImagesBase64", holidayDiscountImagesBase64);
@@ -84,6 +84,12 @@ public class PageController {
 	    model.addAttribute("productDiscountMap", productDiscountMap);
 	    model.addAttribute("roundedDiscountedPriceMap", roundedDiscountedPriceMap);
 	    
+	    
+	    model.addAttribute("products", homePageDetails.get("products"));
+	    model.addAttribute("new10Products", homePageDetails.get("new10Products"));
+	    model.addAttribute("averageRatings", homePageDetails.get("averageRatings"));
+	    model.addAttribute("reviewCounts", homePageDetails.get("reviewCounts"));
+
 	    return "/front/index";
 	}
 }

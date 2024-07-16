@@ -51,23 +51,42 @@
                         <div class="rating-container d-flex align-items-center">
                           <span class="rating me-2">
 								<th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
-								
-							      	<th:block th:if="${averageRating != null}">
-							            <th:block th:each="star : ${#numbers.sequence(1, averageRating)}">
-									    <svg width="24" height="24" class="text-warning">
-									         <use xlink:href="#star-full"></use>
-									    </svg>
-							            </th:block>
-							        </th:block>
-							        
-							    	<th:block th:if="${averageRating != null}">
-							            <th:block th:if="${averageRating % 1 != 0}">
-							       		<svg width="24" height="24" class="text-warning">
-							        	     <use xlink:href="#star-half"></use>
-							       		</svg>
-							            </th:block>
-						    		     
+							  <th:block th:if="${averageRating < 1}">
+							    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-empty"></use>
+							      </svg>
 							    </th:block>
+							  </th:block>
+							  <th:block th:if="${averageRating > 0}">
+							    <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-full"></use>
+							      </svg>
+							    </th:block>
+							    <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-half"></use>
+							      </svg>
+							      <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
+							        <svg width="24" height="24" class="text-warning">
+							          <use xlink:href="#star-empty"></use>
+							        </svg>
+							      </th:block>
+							    </th:block>
+							      <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
+							        <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-half"></use>
+							      	</svg>
+							      </th:block>
+							    <th:block th:if="${averageRating % 1 == 0}">
+							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
+							        <svg width="24" height="24" class="text-warning">
+							          <use xlink:href="#star-empty"></use>
+							        </svg>
+							      </th:block>
+							    </th:block>
+							  </th:block>
 							</th:block>
 							<!-- 000 -->
 							</span>
@@ -163,35 +182,43 @@
                   <div class="d-flex flex-column text-center">
                     <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
                     <div>
-                    
-                     <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
-                     
-                     				<th:block th:if="${averageRating == null}">
-                						<th:block th:each="star : ${#numbers.sequence(1, 5)}">
-								            <svg width="24" height="24" class="text-warning">
-								                <use xlink:href="#star-empty"></use>
-								            </svg>
-								        </th:block>
-                     				</th:block>
-								
-							      	<th:block th:if="${averageRating != null}">
-							            <th:block th:each="star : ${#numbers.sequence(2, 5-averageRating)}">
-									    <svg width="24" height="24" class="text-warning">
-									         <use xlink:href="#star-full"></use>
-									    </svg>
-							            </th:block>
-							            <th:block th:if="${averageRating % 1 != 0}">
-							       		<svg width="24" height="24" class="text-warning">
-							        	     <use xlink:href="#star-half"></use>
-							       		</svg>
-							            </th:block>
-							            <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
-								            <svg width="24" height="24" class="text-warning">
-								                <use xlink:href="#star-empty"></use>
-								            </svg>
-								        </th:block>
-
+						  <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
+							  <th:block th:if="${averageRating < 1}">
+							    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-empty"></use>
+							      </svg>
 							    </th:block>
+							  </th:block>
+							  <th:block th:if="${averageRating > 0}">
+							    <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-full"></use>
+							      </svg>
+							    </th:block>
+							    <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
+							      <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-half"></use>
+							      </svg>
+							      <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
+							        <svg width="24" height="24" class="text-warning">
+							          <use xlink:href="#star-empty"></use>
+							        </svg>
+							      </th:block>
+							    </th:block>
+							      <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
+							        <svg width="24" height="24" class="text-warning">
+							        <use xlink:href="#star-half"></use>
+							      	</svg>
+							      </th:block>
+							    <th:block th:if="${averageRating % 1 == 0}">
+							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
+							        <svg width="24" height="24" class="text-warning">
+							          <use xlink:href="#star-empty"></use>
+							        </svg>
+							      </th:block>
+							    </th:block>
+							  </th:block>
 							</th:block>
 							
 					  <span class="rating-count" th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
