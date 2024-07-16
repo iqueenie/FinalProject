@@ -181,6 +181,55 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             const products = response.data.content;
             productGrid.innerHTML = '';
+
+            products.forEach(product => {
+            	// 每個產品的皮膚、內臟、器官 會植入到html <!-- 商品 --> 的 骨架內
+                const productElement = `
+                    <div class="col">
+                        <div class="product-item">
+                            <figure>
+ 									 <a href="http://localhost:8080/FinalProject/public/Products/${product.productId}" title="${product.productName}">
+                                     <img src="/FinalProject/ProductPhoto?productId=${product.productId}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
+                                </a>
+                            </figure>
+                            <div class="d-flex flex-column text-center">
+                                <h3 class="fs-6 fw-normal">${product.productName}</h3>
+                                <div>
+                                <span class="rating">
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
+			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
+			                    </span>
+			                    <span>(222)</span>
+			                    </div>
+                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                	<del>${product.productPrice}</del>
+                                	<span class="text-dark fw-semibold">$${Math.round(product.productPrice*0.8)}</span>
+                     				<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
+                                </div>    
+                                   <div class="button-area p-3 pt-0">
+                      <div class="row g-1 mt-2">
+                       <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
+                                <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"
+                                                         data-productId="${product.productId}" data-productName="${product.productName}">
+                                        <svg width="18" height="18"><use xlink:href="#cart"></use></svg> 加入購物車
+                                    </a></div>
+                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href="#heart"></use></svg></a></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+                `;
+                productGrid.innerHTML += productElement;
+            });
+
+            // 更新分頁
+            updatePagination(response.data);
+
             
              axios.get('/FinalProject/productRatings/api')
                 .then(ratingsResponse => {
@@ -285,6 +334,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function bindCartButtonClick() {
+    const cartButtons = document.querySelectorAll('.btn-cart');
+    cartButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            addToCart(this);
+        });
+    });
+}
+
+
+function addToCart(button) {
+    var productId = button.getAttribute('data-productId');
+    var productName = button.getAttribute('data-productName');
+    var quantity = parseInt(button.closest('.product-item').querySelector('.quantity').value);
+
+    Swal.fire({
+        title: '確定加入購物車?',
+        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var params = new URLSearchParams();
+            params.append('productId', productId);
+            params.append('quantity', quantity);
+
+            axios.post(`/FinalProject/public/addToCart?${params.toString()}`)
+                .then(res => {
+                    Swal.fire({
+                        title: '成功加入購物車',
+                        icon: 'success'
+                    });
+                })
+                .catch(err => {
+                    console.error('加入購物車失敗:', err);
+                    Swal.fire({
+                        title: '加入購物車失敗',
+                        text: err.message || '加入購物車時發生錯誤',
+                        icon: 'error'
+                    });
+                });
+        }
+    });
+}
+
+
 </script>
 
   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>

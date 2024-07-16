@@ -61,7 +61,10 @@ public class Orders {
    
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders", cascade = CascadeType.ALL)
     private Set<OrderDetails> details = new LinkedHashSet<>();
-
+    public static final String STATUS_PENDING_SHIPMENT = "待出貨";
+    public static final String STATUS_PENDING_RECEIPT = "待收貨";
+    public static final String STATUS_COMPLETED = "訂單已完成";
+    public static final String STATUS_CANCELLED = "不成立";
     public Orders() {
     }
 

@@ -1,12 +1,14 @@
 package six.queenie.controller;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetails;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -66,12 +69,13 @@ public class OrderController {
         return "back/queenie/InsertOrder"; 
     }
 
-    @PostMapping("/private/insertOrder")
+	@PostMapping("/private/insertOrder")
     public String insertOrder(Model model, HttpServletRequest request) {
         Orders order = orderService.insertOrder(request);
         model.addAttribute("order", order);
         return "redirect:/private/GetAllOrders"; 
     }
+
     @GetMapping("/private/showOrder")
     public String showUpdate(@RequestParam("orderId") Integer orderId,Model model) {
     	

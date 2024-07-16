@@ -6,15 +6,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jakarta.servlet.http.HttpServletRequest;
+import six.hsiao.model.MembersBean;
+import six.hsiao.model.MembersRepository;
+import six.hsiao.service.MembersService;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
 import six.liang.model.ProductDiscount;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
+import six.queenie.model.OrderDetails;
+import six.queenie.model.Orders;
+import six.queenie.model.OrdersRepository;
 import six.queenie.model.ProductDiscountRepository;
+import six.yiting.model.StoresBean;
 
 @Service
 public class CartService {
@@ -24,23 +36,42 @@ public class CartService {
 
     @Autowired
     private ProductDiscountRepository pdRepository;
+    
+    @Autowired
+	private OrdersRepository ordersRepository;
+	@Autowired
+	private ProductService pService;
+	
+	@Autowired
+	private OrderDetailService odservice;
+	
+	@Autowired
+	private MembersRepository mRepository;
+	@Autowired
+	private MembersService mService;
+	@Autowired
+	private StoresService stService;
+	@Autowired
+	private OrderService oService;
    
     public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
-        if (amountDiscountId == null) {
-            return 0;
+    	if (amountDiscountId == null) {
+	        return total; 
+	    }
+        Integer discountPercentage=0;
+          
+        Optional<AmountDiscount> mdOptional= atRepository.findById(amountDiscountId);
+        if(mdOptional.isPresent()) {
+        	AmountDiscount md = mdOptional.get();
+         
+        	discountPercentage = md.getDiscountPercentage();
+        	
+        } if (discountPercentage!= 0 ) {
+            total=total- ((int)Math.floor(total * discountPercentage / 100.0));           
+        }else {
+        	return total;
         }
-
-        Optional<AmountDiscount> mdOptional = atRepository.findById(amountDiscountId);
-        if (mdOptional.isPresent()) {
-            AmountDiscount md = mdOptional.get();
-            Integer discountPercentage = md.getDiscountPercentage();
-
-            if (discountPercentage != 0) {
-                return (int) Math.floor(total * discountPercentage / 100.0);
-            }
-        }
-
-        return 0;
+        return total;
     }
 
     public Integer getProductDiscount(Integer productDiscountId, Date orderDate) {
@@ -56,6 +87,12 @@ public class CartService {
         }
         return discountPercentage;
     }
+    public  Integer getMemberPoints(Integer memberId) {
+		  
+	 	   MembersBean md =mService.findByMemberId(memberId);	 	  
+	 	   Integer mPoints = md.getPoints();
+	 	    return mPoints;
+	}
 
     public List<Map<String, Object>> getProductDetails(List<Product> cartItems) {
         List<Map<String, Object>> productDetails = new ArrayList<>();
@@ -117,7 +154,7 @@ public class CartService {
 
         Integer amountDiscountId = atRepository.findAmountDiscountId(total, orderDate);
         Integer amountDiscount = getAmountDiscount(total, amountDiscountId);
-        Integer discountMoney = amountDiscount + (sumTotal - total);
+        Integer discountMoney = sumTotal - amountDiscount;
         Integer finalAmount = total - discountMoney;
 
         Map<String, Integer> cartDetails = new HashMap<>();
@@ -130,5 +167,204 @@ public class CartService {
         return cartDetails;
     }
     
-   
+    public Orders insertOrderFromCart(List<Product> cartItems, Map<Integer, Integer> productQuantities, Integer memberId, HttpServletRequest request) {
+        Integer storeId = Integer.parseInt(request.getParameter("storeId"));
+        LocalDate currentDate = LocalDate.now();
+        Date orderDate = Date.valueOf(currentDate);
+        String paymentMethod = request.getParameter("paymentMethod");
+        Integer usePoints = Integer.parseInt(request.getParameter("pointUse"));
+
+        String unpaidCountParam = request.getParameter("unpaidCount");
+        Integer unpaidCount = unpaidCountParam != null && !unpaidCountParam.isEmpty() ? Integer.parseInt(unpaidCountParam) : 0;
+        if (unpaidCount > 2) {
+            lockAccountForOneMonth(memberId);
+        } else {
+            updateAccountStatus(memberId, "正常");
+        }
+
+        String status = request.getParameter("status");
+
+        MembersBean member = mService.findByMemberId(memberId);
+        StoresBean store = stService.findByStoreId(storeId);
+        List<OrderDetails> orderDetailsList = new LinkedList<>();
+        Integer total = 0;
+        Integer sumTotal = 0;
+
+        for (Product product : cartItems) {
+            Integer productId = product.getProductId();
+            Integer quantity = productQuantities.get(productId);
+
+            Integer productDiscountId = pdRepository.findProductDiscountId(productId, orderDate);
+            Integer productPrice = product.getProductPrice();
+            Integer productDiscount = getProductDiscount(productDiscountId, orderDate);
+
+            Integer subTotal;
+            if (productDiscountId != null && productDiscountId != 0) {
+                double result = productPrice * productDiscount / 100.0 * quantity;
+                subTotal = productPrice * quantity - (int) Math.floor(result);
+            } else {
+                subTotal = productPrice * quantity;
+            }
+            total += subTotal;
+            sumTotal += productPrice * quantity;
+
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetails.setProduct(product);
+            orderDetails.setQuantity(quantity);
+            orderDetails.setSubTotal(subTotal);
+            orderDetailsList.add(orderDetails);
+        }
+
+        Integer amountDiscountId = atRepository.findAmountDiscountId(total, orderDate);
+        Integer amountDiscount = getAmountDiscount(total, amountDiscountId);
+        Integer discountMoney = sumTotal - amountDiscount;
+        Integer points = getMemberPoints(memberId);
+        Integer finalAmount;
+        Integer pointUse;
+
+        if (usePoints == 1 && points != null && points <= amountDiscount) {
+            pointUse = points;
+            finalAmount = amountDiscount - pointUse;
+        } else {
+            pointUse = 0;
+            finalAmount = amountDiscount;
+        }
+
+        Integer pointGet = (int) (finalAmount * 0.10);
+        if (member != null) {
+            member.setPoints(points != null ? points - pointUse + pointGet : pointGet);
+        }
+
+        Orders insertBean = new Orders();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(orderDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        Date orderSuccessDate = new Date(calendar.getTimeInMillis());
+        calendar.setTime(orderDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        Date pickupDate = new Date(calendar.getTimeInMillis());
+
+        insertBean.setMembers(member);
+        insertBean.setStoresBean(store);
+        insertBean.setOrderDate(orderDate);
+        insertBean.setPointUse(pointUse);
+        insertBean.setPaymentMethod(paymentMethod);
+        insertBean.setUnpaidCount(unpaidCount);
+        insertBean.setTotal(sumTotal);
+        insertBean.setDiscountMoney(discountMoney);
+        insertBean.setFinalAmount(finalAmount);
+        insertBean.setStatus(status);
+        insertBean.setPointGet(pointGet);
+        insertBean.setOrderSuccessDate(orderSuccessDate);
+        insertBean.setPickupDate(pickupDate);
+
+        Orders insertedOrder = ordersRepository.save(insertBean);
+
+        for (OrderDetails orderDetails : orderDetailsList) {
+            orderDetails.setOrders(insertedOrder);
+        }
+        odservice.insertOrderDetails(orderDetailsList, insertedOrder);
+
+        return insertedOrder;
+    }
+
+    
+
+    public List<Orders> getOrdersByMember(MembersBean member) {
+        return ordersRepository.findByMembers(member);
+    }
+    
+    //設定會員鎖定狀態
+    public void lockAccountForOneMonth(Integer memberId) {
+    	MembersBean member = mService.findByMemberId(memberId);
+     
+    	if (member != null) {           
+
+            member.lock(LocalDate.now());    
+            mRepository.save(member);
+        } else {
+            throw new RuntimeException("會員未找到");
+        }
+    }
+    
+    public void unlockAccountIfNeeded(Integer memberId) {
+    	MembersBean member = mService.findByMemberId(memberId);
+     
+            if (member != null) {
+            	if(member.isLocked() && member.getLockDate().plusMonths(1).isBefore(LocalDate.now())) {
+                member.unlock();
+                mRepository.save(member);
+            }
+        }   else {
+            throw new RuntimeException("會員未找到");
+        }
+    }
+    
+    public void updateAccountStatus(Integer memberId, String lockStatus) {
+    	MembersBean member = mService.findByMemberId(memberId);
+        if (member != null) {          
+            member.setLockStatus(lockStatus);
+            mRepository.save(member);
+        } else {
+            throw new RuntimeException("會員未找到");
+        }
+    }
+    //修改訂單狀態
+    public void updateOrderStatus(Integer orderId,String status) {
+    	
+		Orders order = oService.getOrderById(orderId);
+		if(order !=null) {
+			order.setStatus(status);
+			ordersRepository.save(order);
+		}else {
+            throw new RuntimeException("未找到訂單編號：" + orderId);
+        }
+	}
+    public boolean processCheckout(Integer orderId, String paymentMethod) {
+        if ("信用卡".equals(paymentMethod)) {
+            updateOrderStatus(orderId, "訂單成立已付款");
+        } else if ("現金支付".equals(paymentMethod)) {
+           updateOrderStatus(orderId, "訂單成立未付款");
+        } else {
+        	 updateOrderStatus(orderId, "訂單不成立");
+        }
+		return false;
+    }
+    public  Map<String, List<Orders>> getOrdersGroupedByStatus(){
+    	Map<String, List<Orders>> ordersByStatus = new HashMap<>();
+      
+        List<Orders> allOrders = ordersRepository.findAll();
+        
+        for (Orders order : allOrders) {
+            String status = order.getStatus();
+            String mappedStatus = mapStatus(status);
+            //沒有值創建一個新的值插入
+            ordersByStatus.computeIfAbsent(mappedStatus, k -> new ArrayList<>()).add(order);
+        }
+        
+        return ordersByStatus;
+    }
+		
+    private String mapStatus(String status) {
+        switch (status) {
+        case "訂單成立已付款":
+            return "待出貨";
+            case "訂單成立未付款":
+                return "待出貨";           
+            case "待發貨":
+                return "待出貨";
+            case "已送達":
+                return "待收貨";
+            case "運送中":
+                return "待收貨";
+            case "已出貨":
+                return "待收貨";
+            case "完成訂單":
+                return "訂單已完成";
+            case "訂單不成立":
+                return "不成立";
+            default:
+                return status;
+        }
+    }
 }

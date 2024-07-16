@@ -237,4 +237,26 @@ public class MembersBean {
 
 	 
 
+	public boolean isLocked() {
+        return lockStatus != null && lockStatus.startsWith("locked:");
+    }
+
+
+    public LocalDate getLockDate() {
+        if (isLocked()) {
+            String timestampStr = lockStatus.substring("locked:".length());
+            return LocalDate.parse(timestampStr);
+        }
+        return null;
+    }
+
+    public void lock(LocalDate lockDate) {
+        this.lockStatus = "locked:" + lockDate.toString();
+    }
+
+    public void unlock() {
+        this.lockStatus = "正常";
+    }
 }
+
+
