@@ -20,5 +20,6 @@ public interface MembersRepository extends JpaRepository<MembersBean, Integer> {
 	MembersBean findByMemberAccount(String memberAccount);
 	
 	MembersBean  findByMemberAccountAndMemberPassword(String memberAccount, String memberPassword);
-
+	
+	
 }

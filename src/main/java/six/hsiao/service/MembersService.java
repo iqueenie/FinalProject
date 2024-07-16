@@ -80,6 +80,28 @@ public class MembersService {
 		    }
 		
 		
+		 public boolean checkMemberAccount(String memberAccount) {
+				
+				MembersBean dbUsers = membersRepo.findByMemberAccount(memberAccount);
+				
+				if(dbUsers == null) {
+					return false;
+				}
+				
+				return true;
+					
+			}
 		
+	public MembersBean findByMemberAccount(String memberAccount) {
+	return	membersRepo.findByMemberAccount(memberAccount);
+	}
+	
+	public MembersBean addMemberByGoogleLogin(String memberEmail) {
+		MembersBean membersBean = new MembersBean();
+		membersBean.setMemberAccount(memberEmail);
+		membersBean.setGoogleLogin(Boolean.TRUE);
+		return membersRepo.save(membersBean);
+		
+	}
 	
 }
