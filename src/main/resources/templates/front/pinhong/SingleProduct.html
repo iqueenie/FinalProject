@@ -132,8 +132,8 @@
                       </span>
                     </div>
                     <div class="qty-button d-flex flex-wrap pt-3">
-                      <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3 btn-cart">直接購買</button>
-                      <button type="submit" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3" th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">加入購物車</button>                      
+                      <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3">直接購買</button>
+                      <button type="submit" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">加入購物車</button>                      
                       <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入追蹤</button>                      
                     </div>
                   </div>
@@ -211,7 +211,7 @@
 							        <use xlink:href="#star-half"></use>
 							      	</svg>
 							      </th:block>
-							    <th:block th:if="${averageRating % 1 == 0}">
+							    <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
 							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
 							        <svg width="24" height="24" class="text-warning">
 							          <use xlink:href="#star-empty"></use>
@@ -269,7 +269,7 @@
                       <div class="review-content">
                         <div class="rating-container d-flex align-items-center">
                           <span class="rating me-2">
-						        <!-- 判断是否是最后一个星星，如果是且有小数部分，则使用半星 -->
+                           <!-- 判断是否是最后一个星星，如果是且有小数部分，则使用半星 -->
 						    <th:block th:each="star : ${#numbers.sequence(1, productReview.stars)}">
 						        <svg width="24" height="24" class="text-warning">
 						             <use xlink:href="#star-full"></use>
@@ -278,11 +278,11 @@
 						   <th:block th:if="${productReview.stars <5}">
 						   <th:block th:each="star : ${#numbers.sequence(productReview.stars+1,5)}">
 						        <svg width="24" height="24" class="text-warning">
-						             <use xlink:href="#star-empty"></use>
+						        	<use xlink:href="#star-empty"></use>
 						        </svg>
 						   </th:block>
 						   </th:block>
-							</span>
+						   </span>
                           <span class="rating-count" th:text="'(' +${productReview.stars}+ ')'"></span>
                         </div>
                         <div class="review-header">
@@ -356,78 +356,6 @@
       </div>
     </section>
 
-
-
-	 <!-- 你可能會喜歡的商品 -->
-    <section id="related-products" class="products-carousel">
-      <div class="container-lg overflow-hidden py-5">
-        <div class="row">
-          <div class="col-md-12">
-
-            <div class="section-header d-flex flex-wrap justify-content-between my-4">
-              
-              <h2 class="section-title">你可能會喜歡的產品 </h2>
-
-              <div class="d-flex align-items-center">
-                <div class="swiper-buttons">
-                  <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
-                  <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
-                </div>  
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-
-            <div class="swiper">
-              <div class="swiper-wrapper">
-                <!-- for each -->
-                <th:block th:each="product : ${recommend5Products}">
-                <div class="product-item swiper-slide">
-                  <figure>
-                    <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
-                      <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
-                    </a>
-                  </figure>
-                  <div class="d-flex flex-column text-center">
-                    <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
-                    <div>
-                      <span class="rating">
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                      </span>
-                      <span>(222)</span>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center gap-2">
-                      <del th:text=" '$'+ ${product.productPrice}">$24.00</del>
-						<span class="text-dark fw-semibold" th:text="'$'+${T(java.lang.Math).round(product.productPrice * 0.8)}"></span>
-                      <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
-                    </div>
-                    <div class="button-area p-3 pt-0">
-                      <div class="row g-1 mt-2">
-                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7" th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> 加入購物車</a></div>
-                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href="#heart"></use></svg></a></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                </th:block>
-                  <!-- /for each -->
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </section>
-            <!-- 你可能會喜歡的商品-->
-
     <div th:replace="~{front/layout/footer}"></div>
 
   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
@@ -437,9 +365,8 @@
   <script th:src="@{/js/script.js}"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
- <script type="text/javascript">
- 
- document.addEventListener('DOMContentLoaded', function() {
+  <script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
     var addReviewBtn = document.getElementById('add-review-btn');
     var addReviewForm = document.querySelector('.add-review-form');
 
@@ -451,91 +378,41 @@
       }
     });
   });
-
-  function addToCart(button) {
-    var productId = button.getAttribute('data-productId');
-    var productName = button.getAttribute('data-productName');
-    var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
-
-    Swal.fire({
-        title: '確定加入購物車?',
-        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: '是的',
-        cancelButtonText: '取消'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var formData = {
-                productId: productId,
-                quantity: quantity 
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: '/FinalProject/public/addToCart',
-                data: formData,
-                success: function (response) {
-                    Swal.fire({
-                        title: '成功加入購物車',
-                        icon: 'success'
-                    });
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire({
-                        title: '加入購物車失敗',
-                        text: xhr.responseText,
-                        icon: 'error'
-                    });
-                }
-            });
-        }
-    });
-  }
-	 function bindCartButtonClick() {
-    document.querySelectorAll(".btn-cart").forEach(button => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault(); 
-
-            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
-                .then(res => {
-                    let isLoggedIn = res.data;
-                    if (!isLoggedIn) {
-                    sessionStorage.setItem("checkoutIntention", "true");
-                        Swal.fire({
-                            title: "請先登入或註冊",
-                            icon: "warning",
-                            text: "您即將前往登入或註冊頁",
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonColor: "#6BB252",
-                            confirmButtonText: "登入",
-                            denyButtonColor: "#f7a422",
-                            denyButtonText: "註冊",
-                            cancelButtonText: "取消"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
-                            } else if (result.isDenied) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
-                            }
-                        });
-                    } else {                 
-                        window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-        });
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    bindCartButtonClick();
-});
-
 </script>
+  <script>
+    document.querySelector(".btn-cart").addEventListener("click", function (e) {
+      e.preventDefault();
+      axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+        .then(res => {
+          let isLoggedIn = res.data;
+          if (!isLoggedIn) {
+            Swal.fire({
+              title: "請先登入或註冊",
+              icon: "warning",
+              text: "您即將前往登入或註冊頁",
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#6BB252",
+              confirmButtonText: "登入",
+              denyButtonColor: "#f7a422",
+              denyButtonText: "註冊",
+              cancelButtonText: "取消"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+              } else if (result.isDenied) {
+                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+              }
+            });
 
+          } else {
+            window.location.href = e.target.href;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    });
+  </script>
   </body>
 </html>
