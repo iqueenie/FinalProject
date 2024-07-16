@@ -39,12 +39,14 @@ public class ProductReviewService {
 		productReviewRepo.deleteById(id);
 	}
 	
+	// 找該商品所有的評論
 	public List<ProductReview> findProductReviewsByProductId(Integer productId){
 		return productReviewRepo.findByProductProductId(productId);
 	}
 	
-	public List<ProductReview> findTop4ByProductIdOrderByReviewTimeDesc(Integer productId){
-		return productReviewRepo.findTop4ByProductIdOrderByReviewTimeDesc(productId);
+	// 商品頁顯示兩則最新的評論
+	public List<ProductReview> findTop2ByProductIdOrderByReviewTimeDesc(Integer productId){
+		return productReviewRepo.findTop2ByProductIdOrderByReviewTimeDesc(productId);
 	}
 	
 //	// 商品 更新+新增	

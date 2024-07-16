@@ -1,6 +1,10 @@
 package six.pinhong.service;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductImageRepository;
 import six.pinhong.model.ProductRepository;
+import six.pinhong.model.ProductReview;
 
 @Service
 @Transactional
@@ -25,6 +30,8 @@ public class ProductService {
 	
 	@Autowired
 	private ProductImageRepository productImageRepo;
+	
+	@Autowired ProductReviewService productReviewService;
 	
 	// 找全部	
 	public List<Product> findAll(){
@@ -93,4 +100,96 @@ public class ProductService {
 	public List<Product> findTop10ByOrderByProductIdDesc(){
 		return productRepo.findTop10ByOrderByProductIdDesc();
 	}
+	
+    public Map<String, Object> getProductDetails(Integer productId) {
+        Map<String, Object> result = new HashMap<>();
+
+        Product product = findProductById(productId);
+        result.put("product", product);
+        
+        List<Product> recommend5Products = findSametype5Products(product.getProductType(), productId);
+        result.put("recommend5Products", recommend5Products);
+        
+        List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
+        result.put("allProductReviews", allProductReviews);
+        
+        List<ProductReview> productReviews = productReviewService.findTop2ByProductIdOrderByReviewTimeDesc(productId);
+        result.put("productReviews", productReviews);
+
+        // Calculate average ratings
+        Map<Integer, Double> averageRatings = new HashMap<>();
+        List<ProductReview> allReviews = productReviewService.findAll();
+        Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
+        for (ProductReview review : allReviews) {
+            int productIdKey = review.getProduct().getProductId();
+            
+            if (!reviewsByProductId.containsKey(productIdKey)) {
+                reviewsByProductId.put(productIdKey, new ArrayList<>());
+            }
+            reviewsByProductId.get(productIdKey).add(review);
+        }
+        
+        for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
+            int pid = entry.getKey();
+            List<ProductReview> reviews = entry.getValue();
+            double totalStars = reviews.stream().mapToDouble(ProductReview::getStars).sum();
+            double averageRating = totalStars / reviews.size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            averageRating = Double.parseDouble(df.format(averageRating));
+            averageRatings.put(pid, averageRating);
+        }
+        result.put("averageRatings", averageRatings);
+
+        // Create a map for review counts
+        Map<Integer, Integer> reviewCounts = new HashMap<>();
+        for (Product recommendedProduct : recommend5Products) {
+            int recommendedProductId = recommendedProduct.getProductId();
+            int reviewCount = productReviewService.findProductReviewsByProductId(recommendedProductId).size();
+            reviewCounts.put(recommendedProductId, reviewCount);
+        }
+        result.put("reviewCounts", reviewCounts);
+
+        return result;
+    }
+    
+    // shop.html所有商品的平均評分 key = productId, value = 平均評分
+    public Map<Integer, Double> getAverageRatings() {
+        Map<Integer, Double> averageRatings = new HashMap<>();
+        List<ProductReview> allReviews = productReviewService.findAll();
+        Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
+
+        for (ProductReview review : allReviews) {
+        	Integer productIdKey = review.getProduct().getProductId();
+        	
+            if (!reviewsByProductId.containsKey(productIdKey)) {
+                reviewsByProductId.put(productIdKey, new ArrayList<>());
+            }
+            reviewsByProductId.get(productIdKey).add(review);
+        }
+
+        for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
+        	Integer pid = entry.getKey();
+            List<ProductReview> reviews = entry.getValue();
+            double totalStars = reviews.stream().mapToDouble(ProductReview::getStars).sum();
+            double averageRating = totalStars / reviews.size();
+            DecimalFormat df = new DecimalFormat("#.#");
+            averageRating = Double.parseDouble(df.format(averageRating));
+            averageRatings.put(pid, averageRating);
+        }
+
+        return averageRatings;
+    }
+
+ // shop.html所有商品的平均評分 key = productId, value = 評論總數
+    public Map<Integer, Integer> getReviewCounts() {
+        Map<Integer, Integer> reviewCounts = new HashMap<>();
+        List<ProductReview> allReviews = productReviewService.findAll();
+        
+        for (ProductReview review : allReviews) {
+        	Integer productIdKey = review.getProduct().getProductId();
+            reviewCounts.put(productIdKey, reviewCounts.getOrDefault(productIdKey, 0) + 1);
+        }
+
+        return reviewCounts;
+    }
 }

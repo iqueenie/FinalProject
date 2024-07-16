@@ -163,17 +163,42 @@
                   <div class="d-flex flex-column text-center">
                     <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
                     <div>
-                      <span class="rating">
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
-                      </span>
-                      <span>(222)</span>
+                    
+                     <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
+                     
+                     				<th:block th:if="${averageRating == null}">
+                						<th:block th:each="star : ${#numbers.sequence(1, 5)}">
+								            <svg width="24" height="24" class="text-warning">
+								                <use xlink:href="#star-empty"></use>
+								            </svg>
+								        </th:block>
+                     				</th:block>
+								
+							      	<th:block th:if="${averageRating != null}">
+							            <th:block th:each="star : ${#numbers.sequence(2, 5-averageRating)}">
+									    <svg width="24" height="24" class="text-warning">
+									         <use xlink:href="#star-full"></use>
+									    </svg>
+							            </th:block>
+							            <th:block th:if="${averageRating % 1 != 0}">
+							       		<svg width="24" height="24" class="text-warning">
+							        	     <use xlink:href="#star-half"></use>
+							       		</svg>
+							            </th:block>
+							            <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
+								            <svg width="24" height="24" class="text-warning">
+								                <use xlink:href="#star-empty"></use>
+								            </svg>
+								        </th:block>
+
+							    </th:block>
+							</th:block>
+							
+					  <span class="rating-count" th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
+               		  <span class="rating-count" th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                     </div>
                     <div class="d-flex justify-content-center align-items-center gap-2">
-                      <del th:text=" '$'+ ${product.productPrice}">$24.00</del>
+                      <del th:text=" '$'+ ${product.productPrice}"></del>
 						<span class="text-dark fw-semibold" th:text="'$'+${T(java.lang.Math).round(product.productPrice * 0.8)}"></span>
                       <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
                     </div>

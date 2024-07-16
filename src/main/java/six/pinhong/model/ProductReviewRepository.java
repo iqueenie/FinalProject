@@ -11,6 +11,6 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, In
 	List<ProductReview> findByProductProductId(Integer productId);
 	
 	  @Query(value = "SELECT TOP 2 * FROM ProductReview WHERE productId = :productId ORDER BY reviewTime DESC, stars DESC", nativeQuery = true)
-	  List<ProductReview> findTop4ByProductIdOrderByReviewTimeDesc(Integer productId);
+	  List<ProductReview> findTop2ByProductIdOrderByReviewTimeDesc(Integer productId);
 }
 

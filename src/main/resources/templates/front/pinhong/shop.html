@@ -181,156 +181,110 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             const products = response.data.content;
             productGrid.innerHTML = '';
-
-            products.forEach(product => {
-            	// 每個產品的皮膚、內臟、器官 會植入到html <!-- 商品 --> 的 骨架內
-                const productElement = `
-                    <div class="col">
-                        <div class="product-item">
-                            <figure>
- 									 <a href="http://localhost:8080/FinalProject/public/Products/${product.productId}" title="${product.productName}">
-                                     <img src="/FinalProject/ProductPhoto?productId=${product.productId}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
-                                </a>
-                            </figure>
-                            <div class="d-flex flex-column text-center">
-                                <h3 class="fs-6 fw-normal">${product.productName}</h3>
-                                <div>
-                                <span class="rating">
-			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>
-			                        <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
-			                    </span>
-			                    <span>(222)</span>
-			                    </div>
-                                <div class="d-flex justify-content-center align-items-center gap-2">
-                                	<del>${product.productPrice}</del>
-                                	<span class="text-dark fw-semibold">$${Math.round(product.productPrice*0.8)}</span>
-                     				<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
-                                </div>    
-                                   <div class="button-area p-3 pt-0">
-                      <div class="row g-1 mt-2">
-                        <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                        <div class="col-7"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"><svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart</a></div>
-                        <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href="#heart"></use></svg></a></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </div>
-                `;
-                productGrid.innerHTML += productElement;
-            });
-
-            // 更新分頁
-            updatePagination(response.data);
             
-            // 更新顯示範圍
-            updateShowingRange(response.data);
-            
-            // 重新綁定購物車按鈕的點擊事件
-            bindCartButtonClick();
+             axios.get('/FinalProject/productRatings/api')
+                .then(ratingsResponse => {
+                    const { averageRatings, reviewCounts } = ratingsResponse.data;
+
+             products.forEach(product => {
+                        const productRating = averageRatings[product.productId] || 0;
+                        const reviewCount = reviewCounts[product.productId] || 0;
+
+                        const productElement = `
+                            <div class="col">
+                                <div class="product-item">
+                                    <figure>
+                                        <a href="http://localhost:8080/FinalProject/public/Products/${product.productId}" title="${product.productName}">
+                                            <img src="/FinalProject/ProductPhoto?productId=${product.productId}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
+                                        </a>
+                                    </figure>
+                                    <div class="d-flex flex-column text-center">
+                                        <h3 class="fs-6 fw-normal">${product.productName}</h3>
+                                        <div>
+                                            <span class="rating">
+                                                ${generateStars(productRating)}
+                                            </span>
+                                            <span>${productRating}★(${reviewCount})</span>
+                                        </div>
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
+                                            <del>${product.productPrice}</del>
+                                            <span class="text-dark fw-semibold">$${Math.round(product.productPrice * 0.8)}</span>
+                                            <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
+                                        </div>
+                                        <div class="button-area p-3 pt-0">
+                                            <div class="row g-1 mt-2">
+                                                <div class="col-3">
+                                                    <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1">
+                                                </div>
+                                                <div class="col-7">
+                                                    <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
+                                                        <svg width="18" height="18">
+                                                            <use xlink:href="#cart"></use>
+                                                        </svg> Add to Cart
+                                                    </a>
+                                                </div>
+                                                <div class="col-2">
+                                                    <a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6">
+                                                        <svg width="18" height="18">
+                                                            <use xlink:href="#heart"></use>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        productGrid.insertAdjacentHTML('beforeend', productElement);
+                    });
+
+                    // 更新分页
+                    updatePagination(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching product ratings:', error);
+                });
         })
         .catch(error => {
-            console.error('Error loading products:', error);
+            console.error('Error fetching products:', error);
         });
     }
 
-	// 處理頁數
-    function updatePagination(data) {
-        const totalPages = data.totalPages;
-        const currentPage = data.number + 1;
+    function generateStars(rating) {
+        let fullStars = Math.floor(rating);
+        const halfStars = rating % 1 >= 0.5 ? 1 : 0;
+        const emptyStars = 5 - fullStars - halfStars;
+        let stars = '';
 
-        // 每種頁數(第一頁、上一頁、頁碼、下一頁、最後一頁) 的皮膚、內臟、器官，都會植入到html 頁數的骨架內
-        pagination.innerHTML = '';
-        
-		
-		// 第一頁
-        pagination.innerHTML += `
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="1">第一頁</a>
-            </li>
-		`;
-        // 上一頁
-        pagination.innerHTML += `
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage - 1}">＜</a>
-            </li>
-        `;
-
-        // 頁碼
-        for (let i = 1; i <= totalPages; i++) {
-            pagination.innerHTML += `
-                <li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a class="page-link" href="#" data-page="${i}">${i}</a>
-                </li>
-            `;
+        for (let i = 0; i < fullStars; i++) {
+            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>';
+        }
+        for (let i = 0; i < halfStars; i++) {
+            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>';
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-empty"></use></svg>';
         }
 
-        // 下一頁
-        pagination.innerHTML += `
-            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage + 1}">＞</a>
-            </li>
-        `;
-        
-        // 最末頁
-		pagination.innerHTML += `
-		    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-		      <a class="page-link" href="#" data-page="${totalPages}">最末頁</a>
-		    </li>
-		`;
+        return stars;
     }
-	    
-	// 顯示商品頁左上的 show xx-xx of xx results 
-    function updateShowingRange(data) {
-        const start = data.number * data.size + 1;
-        const end = Math.min(start + data.numberOfElements - 1, data.totalElements);
-        const showingProduct = document.querySelector('.showing-product p');
-        if (showingProduct) {
-            showingProduct.textContent = `Showing ${start}–${end} of ${data.totalElements} results`;
+
+    function updatePagination(data) {
+        pagination.innerHTML = '';
+
+        if (data.totalPages > 1) {
+            for (let i = 1; i <= data.totalPages; i++) {
+                const pageItem = `
+                    <li class="page-item ${i === data.number + 1 ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `;
+                pagination.insertAdjacentHTML('beforeend', pageItem);
+            }
         }
     }
 });
-
-    function bindCartButtonClick() {
-    document.querySelectorAll(".btn-cart").forEach(button => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
-            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
-                .then(res => {
-                    let isLoggedIn = res.data;
-                    if (!isLoggedIn) {
-                        Swal.fire({
-                            title: "請先登入或註冊",
-                            icon: "warning",
-                            text: "您即將前往登入或註冊頁",
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonColor: "#6BB252",
-                            confirmButtonText: "登入",
-                            denyButtonColor: "#f7a422",
-                            denyButtonText: "註冊",
-                            cancelButtonText: "取消"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
-                            } else if (result.isDenied) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
-                            }
-                        });
-                    } else {
-                        window.location.href = e.target.href;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                })
-        });
-    });
-}
 </script>
 
   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>

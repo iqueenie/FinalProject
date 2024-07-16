@@ -269,51 +269,25 @@ public class ProductController {
 	// 新增進入點
 	@GetMapping("/public/Products/{productId}")
 	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model) {
-		
-			Product product = productService.findProductById(productId);	
-			model.addAttribute("product", product);
-			
-			List<Product> recommend5Products = productService.findSametype5Products(product.getProductType(), productId);
-			model.addAttribute("recommend5Products", recommend5Products);
-			
-			List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
-			model.addAttribute("allProductReviews", allProductReviews);
-			
-			List<ProductReview> productReviews = productReviewService.findTop4ByProductIdOrderByReviewTimeDesc(productId);
-			model.addAttribute("productReviews", productReviews);
-			
-		 
-		    Map<Integer, Double> averageRatings = new HashMap<>();
-		    
-		    List<ProductReview> allReviews = productReviewService.findAll();
-		    Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
-		    for (ProductReview review : allReviews) {
-		        int productIdKey = review.getProduct().getProductId();
-		        
-		        if (!reviewsByProductId.containsKey(productIdKey)) {
-		            reviewsByProductId.put(productIdKey, new ArrayList<>());
-		        }
-		        reviewsByProductId.get(productIdKey).add(review);
-		    }
-		    
-		    for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
-		        int pid = entry.getKey();
-		        List<ProductReview> reviews = entry.getValue();
-		        
-		        double totalStars = 0;
-		        for (ProductReview review : reviews) {
-		            totalStars += review.getStars();
-		        }
-		        double averageRating = totalStars / reviews.size();
-		        DecimalFormat df = new DecimalFormat("#.#");
-		        averageRating = Double.parseDouble(df.format(averageRating));
-		        averageRatings.put(pid, averageRating);
-		    }
+	    Map<String, Object> productDetails = productService.getProductDetails(productId);
 
-		
-		    model.addAttribute("averageRatings", averageRatings); 
+	    model.addAttribute("product", productDetails.get("product"));
+	    model.addAttribute("recommend5Products", productDetails.get("recommend5Products"));
+	    model.addAttribute("allProductReviews", productDetails.get("allProductReviews"));
+	    model.addAttribute("productReviews", productDetails.get("productReviews"));
+	    model.addAttribute("averageRatings", productDetails.get("averageRatings"));
+	    model.addAttribute("reviewCounts", productDetails.get("reviewCounts"));
 
-			return "front/pinhong/SingleProduct";
+	    return "front/pinhong/SingleProduct";
 	}
+	
+	@ResponseBody
+    @GetMapping("/productRatings/api")
+    public ResponseEntity<Map<String, Object>> getProductRatings() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("averageRatings", productService.getAverageRatings());
+        result.put("reviewCounts", productService.getReviewCounts());
+        return ResponseEntity.ok(result);
+    }
 }
 	
