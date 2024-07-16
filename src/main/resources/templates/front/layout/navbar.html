@@ -327,7 +327,7 @@
                                     </li>
                                     <li class="nav-item"><a href="index.html" class="nav-link">Home</a>
                                     </li>
-                                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a>
+                                    <li class="nav-item"><a th:href="@{/public/GetAllCart}" class="nav-link">購物車</a>
                                     </li>
                                     <li class="nav-item">
                                           <a th:href="@{/public/front/storeSearch}" class="nav-link">店鋪查詢</a>
@@ -375,7 +375,7 @@
                                                       aria-labelledby="dropdownUser1"
                                                       data-popper-placement="bottom-start">
                                                       <li><a class="dropdown-item" href="#">個人資料</a></li>
-                                                      <li><a class="dropdown-item" href="#">訂單</a></li>
+                                                      <li><a class="dropdown-item" th:href="@{/public/MemberOrder}">訂單</a></li>
                                                       <li><a class="dropdown-item" href="#">團購</a></li>
                                                       <li><a class="dropdown-item" href="#">優惠</a></li>
                                                       <li><a class="dropdown-item" href="#">...</a></li>
@@ -440,11 +440,53 @@
             <p>購物車是空的，請添加商品</p>
           </div>
         </div>
-        <button class="w-100 btn btn-primary btn-lg" type="submit">结账</button>
+        <button class="w-100 btn btn-primary btn-lg btn-cart" type="submit">去買單</button>
       </div>
     </div>
   </div>
+   <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script th:src="@{/js/plugins.js}"></script>
+  <script th:src="@{/js/script.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+document.querySelector(".btn-cart").addEventListener("click", function (e) {
+      e.preventDefault();
+      axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+        .then(res => {
+          let isLoggedIn = res.data;
+          if (!isLoggedIn) {
+          sessionStorage.setItem("checkoutIntention", "true");
+            Swal.fire({
+              title: "請先登入或註冊",
+              icon: "warning",
+              text: "您即將前往登入或註冊頁",
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#6BB252",
+              confirmButtonText: "登入",
+              denyButtonColor: "#f7a422",
+              denyButtonText: "註冊",
+              cancelButtonText: "取消"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+              } else if (result.isDenied) {
+                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+              }
+            });
 
+          } else {
+           window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    });
+    </script>
 </body>
 
 </html>

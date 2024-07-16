@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <title>會員訂單</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div th:replace="~{front/layout/navbar}"></div>
+
+<section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                <span class="breadcrumb-item active" aria-current="page">會員訂單</span>
+            </nav>
+            <h1>會員訂單</h1>
+        </div>
+    </div>
+</section>
+
+<section class="my-3">
+    <div class="container-lg text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form class="d-flex justify-content-end mb-3">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">搜尋</button>
+                </form>
+                <div class="bootstrap-tabs">
+                    <nav>
+                        <div class="nav nav-tabs btn btn-outline-primary" id="nav-tab" role="tablist">
+                            <button class="nav-link me-4 active" id="nav-profile-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-pending-ship" type="button" role="tab"
+                                    aria-controls="tab-pending-ship" aria-selected="false">待出貨
+                            </button>
+                            <button class="nav-link me-4" id="nav-contact-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-pending-receive" type="button" role="tab"
+                                    aria-controls="tab-pending-receive" aria-selected="false">待收貨
+                            </button>
+                            <button class="nav-link me-4" id="nav-completed-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-completed" type="button" role="tab"
+                                    aria-controls="tab-completed" aria-selected="false">訂單已完成
+                            </button>
+                            <button class="nav-link me-4" id="nav-cancelled-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-cancelled" type="button" role="tab"
+                                    aria-controls="#tab-cancelled" aria-selected="false">不成立
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent" th:each="order : ${orders}">
+                        <!-- 待出貨 -->
+                        <div class="tab-pane fade show active" id="tab-pending-ship" role="tabpanel"
+                             aria-labelledby="nav-profile-tab">
+                            <div class="col" th:each="order : ${ordersByStatus['待出貨']}">
+                                <div class="card mb-4 rounded-3 shadow-sm">
+                                    <div class="card-body">
+                                        <img th:src="@{/ProductPhoto(productId=${order.details.productId})}"
+                                             th:alt="${product.productName}" class="img-fluid">
+                                        <h1 class="card-title pricing-card-title">
+                                            <strong th:text="${order.details.product.productName}"></strong>
+                                            <small class="text-muted fw-light"
+                                                   th:text="${order.details.product.quantity}"></small>
+                                        </h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li th:text="${order.finalAmount}"></li>
+                                            <li th:text="${order.status}"></li>
+                                        </ul>
+                                        <p>點選訂單完成前請務必檢查商品</p>
+                                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">完成訂單
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 待發貨 -->
+                        <div class="tab-pane fade" id="tab-pending-receive" role="tabpanel"
+                             aria-labelledby="nav-contact-tab">
+                            <div class="col" th:each="order : ${ordersByStatus['待收貨']}">
+                                <div class="card mb-4 rounded-3 shadow-sm">
+                                    <div class="card-body">
+                                        <img th:src="@{/ProductPhoto(productId=${order.details.productId})}"
+                                             th:alt="${product.productName}" class="img-fluid">
+                                        <h1 class="card-title pricing-card-title">
+                                            <strong th:text="${order.details.product.productName}"></strong>
+                                            <small class="text-muted fw-light"
+                                                   th:text="${order.details.product.quantity}"></small>
+                                        </h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li th:text="${order.finalAmount}"></li>
+                                            <li th:text="${order.status}"></li>
+                                        </ul>
+                                        <p>點選訂單完成前請務必檢查商品</p>
+                                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">完成訂單
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 訂單已完成 -->
+                        <div class="tab-pane fade" id="tab-completed" role="tabpanel"
+                             aria-labelledby="nav-completed-tab">
+                            <div class="col" th:each="order : ${ordersByStatus['訂單已完成']}">
+                                <div class="card mb-4 rounded-3 shadow-sm">
+                                    <div class="card-body">
+                                        <img th:src="@{/ProductPhoto(productId=${order.details.productId})}"
+                                             th:alt="${product.productName}" class="img-fluid">
+                                        <h1 class="card-title pricing-card-title">
+                                            <strong th:text="${order.details.product.productName}"></strong>
+                                            <small class="text-muted fw-light"
+                                                   th:text="${order.details.product.quantity}"></small>
+                                        </h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li th:text="${order.finalAmount}"></li>
+                                            <li th:text="${order.status}"></li>
+                                        </ul>
+                                        <p>點選訂單完成前請務必檢查商品</p>
+                                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">完成訂單
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 訂單不成立 -->
+                        <div class="tab-pane fade" id="tab-cancelled" role="tabpanel"
+                             aria-labelledby="nav-cancelled-tab">
+                            <div class="col" th:each="order : ${ordersByStatus['不成立']}">
+                                <div class="card mb-4 rounded-3 shadow-sm">
+                                    <div class="card-body">
+                                        <img th:src="@{/ProductPhoto(productId=${order.details.productId})}"
+                                             th:alt="${product.productName}" class="img-fluid">
+                                        <h1 class="card-title pricing-card-title">
+                                            <strong th:text="${order.details.product.productName}"></strong>
+                                            <small class="text-muted fw-light"
+                                                   th:text="${order.details.product.quantity}"></small>
+                                        </h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li th:text="${order.finalAmount}"></li>
+                                            <li th:text="${order.status}"></li>
+                                        </ul>
+                                        <p>點選訂單完成前請務必檢查商品</p>
+                                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">完成訂單
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="~{front/layout/footer}"></div>
+
+  <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script th:src="@{/js/plugins.js}"></script>
+  <script th:src="@{/js/script.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+</html>

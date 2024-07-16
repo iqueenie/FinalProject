@@ -11,17 +11,14 @@
   <meta name="keywords" content="">
   <meta name="description" content="">
 
-  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
-  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
   </head>
 <body>
@@ -33,7 +30,18 @@
     </div>
   </div> -->
   <div th:replace="~{front/layout/navbar}"></div>
-
+<section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">購物車</span>
+                </nav>
+                <h1>購物車</h1>
+            </div>
+        </div>
+    </section>
 <section class="py-5">
   <div class="container-lg">
     <div class="row g-5">
@@ -59,36 +67,34 @@
                         <img th:src="@{/ProductPhoto(productId=${product.productId})}" th:alt="${product.productName}" class="img-fluid">
                     </div>
                 </div>
-                <div class="col-lg-9">
-                    <div class="card-detail ps-3">
+                <div class="col-lg-8">
+                    <div class="card-detail">
                         <h5 class="card-title">
                             <a th:href="@{/product/{productId}(productId=${product.productId})}" class="text-decoration-none" th:text="${product.productName}"></a>
                         </h5>
+                        <small class="text-body-secondary" th:text="${product.productDescription}"></small>
                     </div>
                 </div>
             </div>
         </td>
-        <td class="py-2">
+        <td class="py-6">
             <span th:text="'TWD ' + ${product.productPrice}" data-productId="${product.productId}"></span>
           </td>
         <td class="py-4">
-            <div class="input-group product-qty w-50">
-        <span class="input-group-btn">
-            <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-productId="${product.productId}">
-                <svg width="16" height="16">
-                    <use xlink:href="#minus"></use>
-                </svg>
-            </button>
-        </span>
-        <input type="number" name="quantity" class="form-control input-number text-center" min="1" th:value="${session.productQuantities[product.productId]}" data-productId="${product.productId}">
-        <span class="input-group-btn">
-            <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-productId="${product.productId}">
-                <svg width="16" height="16">
-                    <use xlink:href="#plus"></use>
-                </svg>
-            </button>
-        </span>
-    </div>
+            <div class="input-group product-qty" style="max-width: 150px;">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-light btn-number"  data-type="minus" data-field="">
+                            <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                          </button>
+                      </span>
+                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" min="1" value="1" th:value="${session.productQuantities[product.productId]}" data-productId="${product.productId}"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                              <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                          </button>
+                      </span>
+                    </div>
         </td>
         <td class="py-4">
             <div class="total-price">
@@ -154,196 +160,60 @@
             </table>
           </div>
           <div class="button-wrap row g-2">
-            <div class="col-md-6" ><button type="submit" class="btn-update-cart btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">更新購物車</button></div>
-            <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">繼續購物</button></div>
-            <div class="col-md-12"><button  class="btn btn-primary py-3 px-4 text-uppercase btn-rounded-none w-100">結帳</button></div>
+            <div class="col-md-6" ><button type="submit" class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100">更新購物車</button></div>
+            <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100" onclick="window.location.href='/FinalProject/public/Products'">繼續購物</button></div>
+            <div class="col-md-12"><button class="w-100 btn btn-primary btn-lg btn-cart" type="submit">去買單</button></div>           
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-  <section class="py-5">
-    <div class="container-lg">
-      <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
-        <div class="col">
-          <div class="card mb-3 border border-dark-subtle p-3">
-            <div class="text-dark mb-3">
-              <svg width="32" height="32"><use xlink:href="#package"></use></svg>
-            </div>
-            <div class="card-body p-0">
-              <h5>Free delivery</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card mb-3 border border-dark-subtle p-3">
-            <div class="text-dark mb-3">
-              <svg width="32" height="32"><use xlink:href="#secure"></use></svg>
-            </div>
-            <div class="card-body p-0">
-              <h5>100% secure payment</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card mb-3 border border-dark-subtle p-3">
-            <div class="text-dark mb-3">
-              <svg width="32" height="32"><use xlink:href="#quality"></use></svg>
-            </div>
-            <div class="card-body p-0">
-              <h5>Quality guarantee</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card mb-3 border border-dark-subtle p-3">
-            <div class="text-dark mb-3">
-              <svg width="32" height="32"><use xlink:href="#savings"></use></svg>
-            </div>
-            <div class="card-body p-0">
-              <h5>guaranteed savings</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card mb-3 border border-dark-subtle p-3">
-            <div class="text-dark mb-3">
-              <svg width="32" height="32"><use xlink:href="#offers"></use></svg>
-            </div>
-            <div class="card-body p-0">
-              <h5>Daily offers</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   
   <div th:replace="~{front/layout/footer}"></div>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
-    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   <script th:src="@{/js/plugins.js}"></script>
   <script th:src="@{/js/script.js}"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-   document.addEventListener('DOMContentLoaded', function() {
-    const quantityMinusButtons = document.querySelectorAll('.quantity-left-minus');
-    const quantityPlusButtons = document.querySelectorAll('.quantity-right-plus');
-    const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    quantityMinusButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            updateQuantity(this, -1);
-        });
+<script> 
+ $(document).ready(function() {
+
+    $('.input-number').on('input', function() {
+        var quantityInput = $(this);
+        var productId = quantityInput.data('productId');
+        var newQuantity = parseInt(quantityInput.val());
+
+        updateCart(productId, newQuantity);
     });
 
-    quantityPlusButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            updateQuantity(this, 1);
-        });
-    });
-
-    quantityInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const productId = this.getAttribute('data-productId');
-            let quantity = parseInt(this.value);
-            if (isNaN(quantity) || quantity < 1) {
-                quantity = 1;
-                this.value = quantity;
+    function updateCart(productId, newQuantity) {
+        $.ajax({
+            type: 'POST',
+            url: '/FinalProject/public/update-cart',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                cartItems: [{
+                    productId: productId,
+                    quantity: newQuantity
+                }]
+            }),
+            success: function(response) {
+                $('#totalAmount').text(response.sumTotal); 
+                $('#discount').text(response.discountMoney);  
+                $('#finalAmount').text(response.finalAmount);  
+            },
+            error: function() {
+                alert('數量更新失敗');
             }
-            updateCart(productId, quantity);
         });
-    });
-
-    removeButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            const productId = this.getAttribute('data-productId');
-            deleteProduct(productId);
-        });
-    });
+    }
 });
 
-function updateQuantity(button, delta) {
-    const productId = button.getAttribute('data-productId');
-    const quantityInput = document.querySelector(`input[name="quantity"][data-productId="${productId}"]`);
-    let quantity = parseInt(quantityInput.value) + delta;
-    if (quantity < 1) {
-        quantity = 1;
-    }
-    quantityInput.value = quantity;
-    updateCart(productId, quantity);
-}
 
-function updateCart(productId, quantity) {
-    const requestData = {
-        cartItems: [{ productId: parseInt(productId), quantity: parseInt(quantity) }]
-    };
-
-    fetch('/FinalProject/public/update-cart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        updateCartDisplay(data);
-    })
-    .catch(error => {
-        console.error('Error updating cart:', error);
-    });
-}
-
-function updateCartDisplay(data) {
-    if (!data) {
-        console.error('Invalid data format: data object is undefined or null.');
-        return;
-    }
-
-    const cartItems = data.cartItems;
-    if (cartItems && Array.isArray(cartItems)) {
-        cartItems.forEach(item => {
-            const productId = item.productId;
-            const subtotalElement = document.querySelector(`.subTotal[data-productId="${productId}"]`);
-            if (subtotalElement) {
-                const quantity = item.quantity;
-                const product = getProductById(productId);
-                if (product) {
-                    const subtotal = product.productPrice * quantity;
-                    subtotalElement.innerText = `TWD ${subtotal}`;
-                } else {
-                    console.error(`Product not found for productId: ${productId}`);
-                }
-            } else {
-                console.error(`Subtotal element not found for productId: ${productId}`);
-            }
-        });
-    } else {
-        console.error('Invalid data format: cartItems is not an array or is undefined.');
-    }
-
-    document.getElementById('totalAmount').innerText = `TWD ${data.sumTotal}`;
-    document.getElementById('discount').innerText = `TWD ${data.discountMoney}`;
-    document.getElementById('finalAmount').innerText = `TWD ${data.finalAmount}`;
-}
  document.addEventListener('DOMContentLoaded', function() {
     const removeLinks = document.querySelectorAll('.btn-remove-product');
 
@@ -386,6 +256,49 @@ function updateCartDisplay(data) {
                 console.error(`Product element not found for productId: ${productId}`);
             }
         }
+         function bindCartButtonClick() {
+    document.querySelectorAll(".btn-cart").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault(); 
+
+            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+                .then(res => {
+                    let isLoggedIn = res.data;
+                    if (!isLoggedIn) {
+                    sessionStorage.setItem("checkoutIntention", "true");
+                        Swal.fire({
+                            title: "請先登入或註冊",
+                            icon: "warning",
+                            text: "您即將前往登入或註冊頁",
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: "#6BB252",
+                            confirmButtonText: "登入",
+                            denyButtonColor: "#f7a422",
+                            denyButtonText: "註冊",
+                            cancelButtonText: "取消"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+                            } else if (result.isDenied) {
+                                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+                            }
+                        });
+                    } else {                 
+                        window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    bindCartButtonClick();
+});
+       
 </script>
 
 
