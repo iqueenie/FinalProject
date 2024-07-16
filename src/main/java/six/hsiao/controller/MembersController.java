@@ -153,12 +153,8 @@ public class MembersController {
 		 
 		 if(member !=null) {
 			 session.setAttribute("loggedInMember", member);
-			 String checkoutIntention = (String) session.getAttribute("checkoutIntention");
-	            if ("true".equals(checkoutIntention)) {
-	                session.removeAttribute("checkoutIntention");
-	                return "redirect:/public/CheckOut";
-	            }
 			 return "redirect:/public/front";
+//		 }
 		 }
 		 return "redirect:/public/frontLoginMain";
 	 }

@@ -332,7 +332,7 @@
                         <li class="nav-item">
                         	<a th:href="@{/public/front/Discount}" class="nav-link">活動</a>
                         </li>
-                        <li class="nav-item"><a href="index.html" class="nav-link">Home</a>
+                        <li class="nav-item"><a th:href=@{/public/GetAllCart} class="nav-link">購物車</a>
                         </li>
                         <li class="nav-item">
                             <a th:href="@{/public/front/storeSearch}" class="nav-link">店鋪查詢</a>
@@ -380,7 +380,7 @@
                                     aria-labelledby="dropdownUser1"
                                     data-popper-placement="bottom-start">
                                     <li><a class="dropdown-item" href="#">個人資料</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/public/memberOrder}">訂單</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/public/memberOrder}">會員訂單</a></li>
                                     <li><a class="dropdown-item" th:href="@{/public/front/group-buy-orders}">團購訂單</a></li>
                                     <li><a class="dropdown-item" href="#">優惠</a></li>
                                     <li><a class="dropdown-item" href="#">...</a></li>

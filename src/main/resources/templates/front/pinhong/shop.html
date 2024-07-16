@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 更新分頁
             updatePagination(response.data);
-
+			bindCartButtonClick();
             
              axios.get('/FinalProject/productRatings/api')
                 .then(ratingsResponse => {
