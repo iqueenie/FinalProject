@@ -45,7 +45,7 @@ public class MembersBean {
 	
 	private String memberAddress;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String memberEmail;
 	
 	@Column(nullable = true) //這裡有改
@@ -58,6 +58,9 @@ public class MembersBean {
 	private LocalDate registrationDate;
 	
 	private String resetToken;
+	
+	
+	private Boolean googleLogin;
 	
 	// 品宏的評論	
 	@JsonIgnore
@@ -222,6 +225,14 @@ public class MembersBean {
 
 	public void setResetToken(String resetToken) {
 		this.resetToken = resetToken;
+	}
+
+	public Boolean getGoogleLogin() {
+		return googleLogin;
+	}
+
+	public void setGoogleLogin(Boolean googleLogin) {
+		this.googleLogin = googleLogin;
 	}
 
 	 
