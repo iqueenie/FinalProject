@@ -170,7 +170,7 @@
               <th:block th:each="pageNumber:${#numbers.sequence(1,gbs.totalPages)}">
                 <th:block th:switch="${gbs.number+1==pageNumber}">
                   <li th:case="${false}" class="page-item">
-                    <a class="page-link border-0" th:page="${pageNumber}" th:text="${pageNumber}"></a>
+                    <a class="page-link border-0 page-btn" href="#" th:data-page="${pageNumber}" th:text="${pageNumber}"></a>
                   </li>
                   <li th:case="${true}" class="page-item active">
                     <span class="page-link border-0 active" th:text="${pageNumber}"></span>
@@ -179,7 +179,7 @@
               </th:block>
               <th:block th:switch="${gbs.number==gbs.totalPages-1}">
                 <li class="page-item" th:case="${false}">
-                  <a class="page-link bg-none border-0" th:page="${gbs.number+2}">
+                  <a class="page-link bg-none border-0 page-btn" href="#" th:data-page="${gbs.number+2}">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
@@ -209,6 +209,11 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    $('.page-btn').on('click', function (e) {
+      e.preventDefault();
+      findGroupBuyAll($(this).data('page'))
+    });
+
     $("#clear").on("click", function (e) {
       $("#city-field").text("請選擇縣市名稱");
       $("#area-field").text("請選擇鄉鎮市區");
@@ -225,30 +230,39 @@
       $('#area-field').addClass('collapsed');
       $('#street-field').addClass('collapsed');
       $('#store-field').addClass('collapsed');
-      findGroupBuyAll()
+      findGroupBuyAll(1)
     });
 
-    function findGroupBuyAll() {
+    function findGroupBuyAll(page) {
       axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/all", {
         params: {
+          p: page
         }
       })
         .then(res => {
-          res = res.data.content;
           console.log(res);
-          $(".showing-product").html("");
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyAll($(this).data('page'))
+          });
           $(".product-grid").html("");
-          $("#page").html("");
           res.forEach(groupBuy => {
             $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
           });
+          $(window).scrollTop(0);
         })
     }
 
 
     $(document).on('click', '.city', function (e) {
       e.preventDefault();
-      findGroupBuyByCity(e.target.id);
+      findGroupBuyByCity(e.target.id, 1);
       axios.get("http://localhost:8080/FinalProject/public/front/findAreaBycity", {
         params: {
           city: e.target.id
@@ -273,21 +287,29 @@
         })
     });
 
-    function findGroupBuyByCity(city) {
+    function findGroupBuyByCity(city, page) {
       axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city", {
         params: {
-          city: city
+          city: city,
+          p: page
         }
       })
         .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
           res = res.data.content;
-          console.log(res);
-          $(".showing-product").html("");
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
           $(".product-grid").html("");
-          $("#page").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCity(city, $(this).data('page'))
+          });
           res.forEach(groupBuy => {
             $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
           });
+          $(window).scrollTop(0);
         })
     }
 
@@ -296,7 +318,7 @@
     $(document).on('click', '.area', function (e) {
       e.preventDefault();
       let city = $("#city-field").text();
-      findGroupBuyByCityAndArea(city, e.target.id);
+      findGroupBuyByCityAndArea(city, e.target.id, 1);
       axios.get("http://localhost:8080/FinalProject/public/front/findStreetByArea", {
         params: {
           city: city,
@@ -320,22 +342,30 @@
         })
     });
 
-    function findGroupBuyByCityAndArea(city, area) {
+    function findGroupBuyByCityAndArea(city, area, page) {
       axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city-area", {
         params: {
           city: city,
-          area: area
+          area: area,
+          p: page
         }
       })
         .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
           res = res.data.content;
-          console.log(res);
-          $(".showing-product").html("");
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
           $(".product-grid").html("");
-          $("#page").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCityAndArea(city, area, $(this).data('page'))
+          });
           res.forEach(groupBuy => {
             $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
           });
+          $(window).scrollTop(0);
         })
     }
 
@@ -343,7 +373,7 @@
       e.preventDefault();
       let city = $("#city-field").text();
       let area = $("#area-field").text();
-      findGroupBuyByCityAndAreaAndStreet(city, area, e.target.id)
+      findGroupBuyByCityAndAreaAndStreet(city, area, e.target.id, 1)
       axios.get("http://localhost:8080/FinalProject/public/front/findByStreet", {
         params: {
           city: city,
@@ -366,67 +396,63 @@
         })
     });
 
-    function findGroupBuyByCityAndAreaAndStreet(city, area, street) {
+    function findGroupBuyByCityAndAreaAndStreet(city, area, street, page) {
       axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city-area-street", {
         params: {
           city: city,
           area: area,
-          street: street
+          street: street,
+          p: page
         }
       })
         .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
           res = res.data.content;
-          console.log(res);
-          $(".showing-product").html("");
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
           $(".product-grid").html("");
-          $("#page").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCityAndAreaAndStreet(city, area, street, $(this).data('page'))
+          });
           res.forEach(groupBuy => {
             $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
           });
-        })
-    }
-
-    function findGroupBuyByCityAndAreaAndStreet(city, area, street) {
-      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city-area-street", {
-        params: {
-          city: city,
-          area: area,
-          street: street
-        }
-      })
-        .then(res => {
-          res = res.data.content;
-          console.log(res);
-          $(".showing-product").html("");
-          $(".product-grid").html("");
-          $("#page").html("");
-          res.forEach(groupBuy => {
-            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
-          });
+          $(window).scrollTop(0);
         })
     }
 
     $(document).on('click', '.store', function (e) {
       e.preventDefault();
       $("#store-field").text(e.target.innerText);
-      findGroupBuyByStoreId(e.target.id);
+      findGroupBuyByStoreId(e.target.id, 1);
     });
 
-    function findGroupBuyByStoreId(id) {
+    function findGroupBuyByStoreId(id, page) {
       axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-storeId", {
         params: {
-          id: id
+          id: id,
+          p: page
         }
       })
         .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
           res = res.data.content;
-          console.log(res);
-          $(".showing-product").html("");
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
           $(".product-grid").html("");
-          $("#page").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByStoreId(id, $(this).data('page'))
+          });
           res.forEach(groupBuy => {
             $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
           });
+          $(window).scrollTop(0);
         })
     }
 
@@ -504,6 +530,70 @@
 
       return groupBuyTemplate;
     };
+
+    function generatePage(currentPage, totalPage) {
+      if (totalPage == 0) {
+        return "查無資料"
+      }
+      let pageTemplate = '<ul class="pagination d-flex justify-content-center">';
+      if (currentPage == 0) {
+        pageTemplate += `
+              <li class="page-item">
+                <span class="page-link bg-none border-0" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </span>
+              </li>`;
+      } else {
+        pageTemplate += `
+              <li class="page-item">
+                <a class="page-link bg-none border-0 page-btn" href="#" data-page="${currentPage}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>`;
+      }
+      for (let i = 0; i < totalPage; i++) {
+        if (i == currentPage) {
+          pageTemplate += `
+              <li class="page-item">
+                <span class="page-link border-0 active" data-page="${i + 1}">${i + 1}</span>
+              </li>`;
+        } else {
+          pageTemplate += `
+              <li class="page-item">
+                <a class="page-link border-0 page-btn" href="#" data-page="${i + 1}">${i + 1}</a>
+              </li>`;
+        }
+      }
+      if (currentPage == totalPage - 1) {
+        pageTemplate += `
+              <li class="page-item">
+                <span class="page-link bg-none border-0" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </span>
+              </li>`;
+      } else {
+        pageTemplate += `
+              <li class="page-item">
+                <a class="page-link bg-none border-0 page-btn" href="#" data-page="${currentPage + 2}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>`;
+      }
+      pageTemplate += '</ul>';
+      return pageTemplate;
+    }
+
+    function generateShowing(currentPage, totalPage, totalElement) {
+      if (totalElement == 0) {
+        return null;
+      } else if (totalElement < 5) {
+        return `<p>Showing 1–${totalElement} of ${totalElement} results</p>`
+      } else if (currentPage + 1 == totalPage) {
+        return `<p>Showing ${currentPage * 5 + 1}–${totalElement} of ${totalElement} results</p>`
+      } else {
+        return `<p>Showing ${currentPage * 5 + 1}–${currentPage * 5 + 5} of ${totalElement} results</p>`
+      }
+    }
 
   </script>
 </body>

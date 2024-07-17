@@ -312,6 +312,7 @@ public class GroupBuyController {
 	@ResponseBody
 	@GetMapping("public/front/groupbuys/all")
 	public Page<GroupBuy> findAll(@RequestParam(value = "p", defaultValue = "1") Integer page) {
+		System.out.println(page);
 		return groupBuyService.findByGroupBuyStatus("開團中" ,page);
 	}
 	
