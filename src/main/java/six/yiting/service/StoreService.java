@@ -128,7 +128,6 @@ public class StoreService {
 		 return null;
 	}
 	
-	
 	public List<Product> findByType(){
 		List<Product> allProduct = productRepo.findAll();
 		List<Product> productType = new ArrayList<Product>();
@@ -139,7 +138,11 @@ public class StoreService {
 		}
 		return productType;
 	}
-}
+
+	public List<String> findDistinctCities() {
+		return storesRepo.findDistinctCities();
+	}
+
 
 	
 

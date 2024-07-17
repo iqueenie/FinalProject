@@ -170,4 +170,12 @@ public class GroupMemberController {
 	        return ResponseEntity.notFound().build();
 	    }
 	}
+	
+	@GetMapping("private/back/ChangePickupStatus")
+	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status) {		
+		
+		groupMemberService.changeGroupMemberStatus(id, status);
+		
+		return "redirect:/private/back/GetGroupMemberByGroupBuy?gbId="+groupMemberService.findById(id).getGroupBuyId();
+	}
 }

@@ -36,8 +36,10 @@ public interface StoresRepository extends JpaRepository<StoresBean, Integer>  {
 	@Query("from StoresBean where storeName like %:storeName%")
 	List<StoresBean> findStoreByName(@Param(value = "storeName") String storeName);
 	
-	
 	@Query(value="SELECT COUNT(*)from StoresBean where storeName like %:storeName%")
 	long countByWordStoreName(@Param(value = "storeName") String storeName);
+
+    @Query("SELECT DISTINCT s.city FROM StoresBean s")
+    List<String> findDistinctCities();
 	
 }

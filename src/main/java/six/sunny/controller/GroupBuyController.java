@@ -48,20 +48,19 @@ public class GroupBuyController {
 	@Autowired
 	private ManagementRolesRepository managementRolesRepo;
 	
-//	TODO
 	@Autowired
-	private ProductRepository productService;
+	private ProductService productService;
 	
-//	TODO
 	@Autowired
 	private StoreService storeService;
 	
 	@Autowired
 	private EmailService emailService;
 	
+	
+	
 	@RequestMapping(path = "private/back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m, HttpSession session) {
-		
 		
 		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
 		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
@@ -83,10 +82,10 @@ public class GroupBuyController {
 			m.addAttribute("pdns", pdns);
 		}
 		
-
-		
 		return "/back/sunny/GetAllGroupBuy";
 	}
+	
+	
 	
 	@ResponseBody
 	@GetMapping("private/back/FindByProductIdAndStoreId")
@@ -110,22 +109,28 @@ public class GroupBuyController {
 		
 	}
 	
+	
+	
 	@ResponseBody
 	@GetMapping("private/back/FindByStatus")
 	public List<GroupBuy> findByStatus(
-			@RequestParam(value = "status", defaultValue = "") String status) {
-		
+			@RequestParam(value = "status", defaultValue = "") String status, HttpSession session) {
 		List<GroupBuy> gbs = null;
 		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
 		if(status.isEmpty()) {
-			gbs = groupBuyService.findAll();
+			gbs = groupBuyService.findByStoreId(managementRole.getStore().getStoreId());
 		}else {
-			gbs = groupBuyService.findByGroupBuyStatus(status);
+			gbs = groupBuyService.findByGroupBuyStatusAndStoreId(status, managementRole.getStore().getStoreId());
 		}
 		
 		return gbs;
 		
 	}
+	
+	
 	
 	@GetMapping("private/back/InsertGroupBuyForm")
 	public String insertGroupBuyForm(Model m, HttpSession session) {
@@ -143,7 +148,6 @@ public class GroupBuyController {
 		}
 		List<Product> pdns = productService.findAll();
 
-		
 		m.addAttribute("pdns", pdns);
 		m.addAttribute("stns", stns);
 		m.addAttribute("groupBuy", new GroupBuy());
@@ -151,11 +155,15 @@ public class GroupBuyController {
 		return "back/sunny/InsertGroupBuy";
 	}
 	
+	
+	
 	@PostMapping("private/back/InsertGroupBuy")
 	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
 		groupBuyService.insert(groupBuy);
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
+	
+	
 	
 	@ResponseBody
 	@DeleteMapping("private/back/DeleteGroupBuy")
@@ -167,6 +175,8 @@ public class GroupBuyController {
 	        return ResponseEntity.notFound().build();
 	    }
 	}
+	
+	
 	
 	@GetMapping("private/back/UpdateGroupBuyForm")
 	public String updateGroupBuyForm(@RequestParam("id") Integer groupBuyId, Model m, HttpSession session) {	
@@ -194,6 +204,8 @@ public class GroupBuyController {
 		return "back/sunny/UpdateGroupBuy";
 	}
 	
+	
+	
 	@GetMapping("private/back/ChangeGroupBuyStatus")
 	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status, Model m) {		
 		
@@ -206,10 +218,10 @@ public class GroupBuyController {
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
+	
+	
 	@PutMapping("private/back/UpdateGroupBuy")
 	public String updateGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuyBean) {
-
-
 		
 //		更新
 		groupBuyService.update(groupBuyBean);
@@ -217,14 +229,22 @@ public class GroupBuyController {
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
+	
+	
 	@GetMapping("public/front/group-buys")
-	public String GroupBuys(@RequestParam(value = "p",defaultValue = "1") Integer page,Model m) {
+	public String GroupBuys(Model m) {
 		
-		Page<GroupBuy> gbs = groupBuyService.findByGroupBuyStatus("開團中",page);
+		Page<GroupBuy> gbs = groupBuyService.findByGroupBuyStatus("開團中", 1);
+		
+		List<String> cities = storeService.findDistinctCities();
+		
+		m.addAttribute("cities", cities);
 		m.addAttribute("gbs", gbs);
 		
 		return "front/sunny/GroupBuy";
 	}
+	
+	
 	
 	@GetMapping("public/front/group-buys/{id}")
 	public String getOneGroupBuy(@PathVariable("id") Integer id, HttpSession session, Model m) {
@@ -239,6 +259,8 @@ public class GroupBuyController {
 		return "front/sunny/GroupBuyDetail";
 	}
 	
+	
+	
 	@GetMapping("public/front/group-buy-orders")
 	public String getGroupBuyOrders(HttpSession session, Model m) {
 		if (session.getAttribute("loggedInMember") == null) {
@@ -251,6 +273,47 @@ public class GroupBuyController {
 		m.addAttribute("gms",list);
 		
 		return "front/sunny/GroupBuyOrder";
+	}
+	
+	
+	
+	@ResponseBody
+    @GetMapping("public/front/groupbuys/by-city")
+    public Page<GroupBuy> getGroupBuysByCity(@RequestParam String city, @RequestParam(value = "p", defaultValue = "1") Integer page) {
+        return groupBuyService.findByCityAndStatus(city, "開團中", page);
+    }
+	
+	
+
+	@ResponseBody
+    @GetMapping("public/front/groupbuys/by-city-area")
+    public Page<GroupBuy> getGroupBuysByCityAndArea(@RequestParam String city, @RequestParam String area, @RequestParam(value = "p", defaultValue = "1") Integer page) {
+        return groupBuyService.findByCityAndAreaAndStatus(city, area, "開團中", page);
+    }
+	
+	
+
+	@ResponseBody
+    @GetMapping("public/front/groupbuys/by-city-area-street")
+    public Page<GroupBuy> getGroupBuysByCityAreaAndStreet(@RequestParam String city, @RequestParam String area, @RequestParam String street, @RequestParam(value = "p", defaultValue = "1") Integer page) {
+        return groupBuyService.findByCityAreaAndStreetAndStatus(city, area, street, "開團中", page);
+    }
+	
+	
+    
+	@ResponseBody
+    @GetMapping("public/front/groupbuys/by-storeId")
+    public Page<GroupBuy> findByStoreId(@RequestParam Integer id, @RequestParam(value = "p", defaultValue = "1") Integer page) {
+        return groupBuyService.findByGroupBuyStatusAndStoreId("開團中", id, page);
+    }
+	
+	
+	
+	@ResponseBody
+	@GetMapping("public/front/groupbuys/all")
+	public Page<GroupBuy> findAll(@RequestParam(value = "p", defaultValue = "1") Integer page) {
+		System.out.println(page);
+		return groupBuyService.findByGroupBuyStatus("開團中" ,page);
 	}
 	
 }
