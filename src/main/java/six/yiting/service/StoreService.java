@@ -1,12 +1,14 @@
 package six.yiting.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import six.pinhong.model.Product;
+import six.pinhong.model.ProductRepository;
 import six.yiting.model.StoresBean;
 import six.yiting.model.StoresRepository;
 
@@ -15,6 +17,8 @@ public class StoreService {
 	
 	@Autowired
 	private StoresRepository storesRepo;
+	
+	@Autowired ProductRepository productRepo;
 
 	public List<StoresBean> findAllStores(){
 		return storesRepo.findAll();
@@ -122,6 +126,18 @@ public class StoreService {
 			return storeByName;
 		 }
 		 return null;
+	}
+	
+	
+	public List<Product> findByType(){
+		List<Product> allProduct = productRepo.findAll();
+		List<Product> productType = new ArrayList<Product>();
+		for(Product product: allProduct) {
+			if(product.getProductType().equals("實體店")) {
+				productType.add(product);
+			}
+		}
+		return productType;
 	}
 }
 

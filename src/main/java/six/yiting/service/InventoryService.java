@@ -65,6 +65,15 @@ public class InventoryService {
 	} 
 	
 	
+	public InventoryBean findByStoreAndProduct(StoresBean store,Integer pid) {
+		InventoryBean inv = invRepo.findByStoreAndProductId(store, pid);
+		if(inv == null) {
+			return null;
+		}
+		
+		return inv;
+	}
+	
 	
 
 }

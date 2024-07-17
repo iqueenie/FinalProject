@@ -1,6 +1,13 @@
-// 點選地圖上的縣市
+let globalStores = [];
+let globalCity = "";
+let globalArea = "";
+let globalStreet = "";
+// 點選地圖上的縣市後查出區域
 function showAdminArea(city) {
-
+    globalStores = [];
+    globalCity = city;
+    globalArea = "";
+    globalStreet = "";
     //上方列出對應的區域選項
     console.log(city);
     var scrollPosition = window.scrollY;
@@ -12,19 +19,26 @@ function showAdminArea(city) {
     $(".map_graybox05").css("display", "block");
     $("#showShopList").css("display", "block");
     $("#map").css("display", "none");
+    //收起商品選項
+    $('#flush-collapseOne').collapse('hide');
+    // 清除已勾选项
+    $('#selectList input[type="checkbox"]').prop('checked', false);
 
     // $('#areaResult').css("border", "1px solid #2a9d14");
 
     const breadcrumbDiv = $(".map_graybox03.result");
     breadcrumbDiv.css("display", "block");
+
     breadcrumbDiv.find(".breadcrumb-item:nth-child(2) a")
+        .unbind("click")
         .text(`${city}`)
         .attr("href", "#")
-        .click(function (event) {
+        .attr("onclick", `showAdminArea('${city}')`)
+        .click(function () {
             showAdminArea(city);
         });
-
     $('#cityLocation').show();
+
     if ($('#breadStreet').is(':visible')) {
         $('#breadStreet').hide();
     }
@@ -47,6 +61,27 @@ function showAdminArea(city) {
             console.log(res.data);
             htmlMakerCity(res.data, city);
             window.scrollTo(0, scrollPosition);
+            $('.storeProduct').off('click').on('click', function () {
+                let storeProduct = '';
+
+                axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+                    .then(res => {
+                        console.log(res);
+                        let data = res.data;
+                        data.forEach(function (product) {
+                            storeProduct += '<li><input type="checkbox" name="specialItem" productId=' + product.productId + '>' + product.productName;
+                            storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                        });
+                        $('#selectList').html(storeProduct);
+
+                        // 將所有生成的 input 元素的 onclick 屬性修改為 newfunction()
+                        $('#selectList li input[type="checkbox"]').attr('onclick', 'storeFilterByProduct()');
+
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            });
         })
         .catch(err => {
             console.error(err);
@@ -60,18 +95,97 @@ function showAdminArea(city) {
         }
     })
         .then(res => {
-            console.log(res.data);
-            storeListCity(res.data);
+            console.log("stores" + res.data);
+            globalStores = res.data;
+            storeListCity(globalStores);
             window.scrollTo(0, scrollPosition);
         })
         .catch(err => {
             console.error(err);
         });
+    //按下左邊秀出商品選項
+    $('.storeProduct').on('click', function () {
+        let storeProduct = '';
 
+        axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+            .then(res => {
+                console.log(res);
+                let data = res.data;
+                data.forEach(function (product) {
+                    storeProduct += '<li><input type="checkbox" name="specialItem" onclick="storeFilterByProduct()" productId=' + product.productId + '>' + product.productName;
+                    storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                });
+                $('#selectList').html(storeProduct);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
 
 
 
 }
+
+
+//勾選商品後變換畫面(縣市換區域)
+function storeFilterByProduct() {
+    var scroll = window.scrollY;
+    // 檢查被選中的復選框
+    console.log(globalStores);
+    var selectedItems = [];
+    $('input[name="specialItem"]:checked').each(function () {
+        selectedItems.push($(this).attr('productid'));
+        console.log(selectedItems);
+    });
+
+    if (selectedItems.length >= 1) {
+        var requestData = {
+            stores: globalStores,
+            selectedItems: selectedItems
+        };
+
+        axios.post('http://localhost:8080/FinalProject/public/front/filterByProduct', requestData)
+            .then(function (response) {
+
+                if (response.data.length >= 1) {
+                    storeListCity(response.data);
+                    let data = response.data;
+                    globalCity = data[0].city;
+                    // 使用 Set 來確保 area 的唯一性
+                    //把符合條件的store的area放進去
+                    let uniqueAreas = new Set();
+                    data.forEach(store => {
+                        uniqueAreas.add(store.area);
+                    });
+
+                    // 將 Set 轉換為陣列
+                    let uniqueAreasArray = Array.from(uniqueAreas);
+
+                    //傳入區域跟縣市 找出有哪些區域
+                    htmlMakerCity(uniqueAreasArray, data[0].city)
+                }
+                else {
+                    $('.searchResult').html("");
+                    let storeArea = '';
+                    storeArea += '<span>依特定商品查詢</span>';
+                    storeArea += '<span class="line02"></span>';
+                    storeArea += '<span class="result">查無結果，回<a href="#" onclick="showDefaultContent()">地圖</a>頁查詢</span>'
+                    $('#areaResult').html(storeArea);
+                }
+            })
+            .catch(function (error) {
+                // 請求失敗處理
+                console.error(error);
+            });
+    } else {
+        //依縣市輸出區域
+        console.log(globalCity);
+        showAdminArea(globalCity);
+    }
+    window.scrollTo(0, scroll);
+}
+
+
 
 //依縣市查到的區域結果
 function htmlMakerCity(data, city) {
@@ -93,54 +207,115 @@ function htmlMakerCity(data, city) {
     $('#areaResult').html(storeArea);
 }
 
-//依縣市查的商店列表***************
-function storeListCity(data) {
-    let storeCity = '';
 
-    data.forEach(function (store) {
-        storeCity += '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>'
-        storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>'
-        storeCity += '<td align="right"><div class="shop_add_map"><a href="#"onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>'
-        storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>'
-        storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>'
-        storeCity += '電話：' + store.tel + '</td >' + '<td class="graybox"><span class="store02">霜淇淋</span>'
-        storeCity += '<span class="store04"></span><span class="store10"></span><span class="store39"></span></td></tr >'
+//商店列表**************************
+function storeListCity(data) {
+    let storeCities = [];
+    let requests = [];
+
+    data.forEach(function (store, index) {
+        let storeCity = '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>';
+        storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>';
+        storeCity += '<td align="right"><div class="shop_add_map"><a href="#" onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>';
+        storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>';
+        storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>';
+        storeCity += '電話：' + store.tel + '</td><td class="graybox">';
+
+        // 在陣列中保留每個 store 的 HTML，等待完成請求後再合併
+        storeCities[index] = storeCity;
+
+        let request = axios.post('http://localhost:8080/FinalProject/public/front/storeSpecial', store)
+            .then(res => {
+                if (res.data.length >= 1) {
+                    let productsHtml = '';
+                    res.data.forEach(function (product) {
+                        productsHtml += '<span class="storeIcon"><img src="/FinalProject/ProductPhoto?productId=' + product + '" class="storeIcon"></span>';
+                    });
+                    // 將產品圖片添加到對應的 storeCity 中
+                    storeCities[index] += productsHtml + '</td></tr>';
+                } else {
+                    storeCities[index] += '</td></tr>';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                storeCities[index] += '</td></tr>';
+            });
+
+        requests.push(request);
     });
-    $('.searchResult').html(storeCity);
+
+    Promise.all(requests).then(() => {
+        // 將所有 storeCities 合併成一個字串
+        let storeCityHtml = storeCities.join('');
+        $('.searchResult').html(storeCityHtml);
+    });
 }
 
 //單筆結果
 function storeOneResult(store) {
     let storeCity = '';
-    storeCity += '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>'
-    storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>'
-    storeCity += '<td align="right"><div class="shop_add_map"><a href="#"onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>'
-    storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>'
-    storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>'
-    storeCity += '電話：' + store.tel + '</td >' + '<td class="graybox"><span class="store02">霜淇淋</span>'
-    storeCity += '<span class="store04"></span><span class="store10"></span><span class="store39"></span></td></tr >'
 
-    $('.searchResult').html(storeCity);
+    storeCity += '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>';
+    storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>';
+    storeCity += '<td align="right"><div class="shop_add_map"><a href="#" onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-location-dot"></i>';
+    storeCity += '<span class="add_map_word">地圖檢視</span></a></div></td></tr></tbody></table>';
+    storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>';
+    storeCity += '電話：' + store.tel + '</td><td class="graybox">';
+
+    axios.post('http://localhost:8080/FinalProject/public/front/storeSpecial', store)
+        .then(res => {
+            if (res.data.length >= 1) {
+                console.log(res);
+                let data = res.data;
+                data.forEach(function (product) {
+                    storeCity += '<span class="storeIcon"><img src="/FinalProject/ProductPhoto?productId=' + product + '" class="storeIcon"></span>';
+                });
+            }
+            storeCity += '</td></tr>';
+            $('.searchResult').html(storeCity); // 在請求完成後更新 HTML
+        })
+        .catch(err => {
+            console.error(err);
+            storeCity += '</td></tr>';
+            $('.searchResult').html(storeCity); // 在發生錯誤後更新 HTML
+        });
 }
 
 
 //依縣市和區域查街道
 function searchByArea(city, area) {
+
+    globalStores = [];
+    globalCity = city;
+    globalArea = area;
+    globalStreet = "";
     console.log(area);
     var scrollPosition = window.scrollY;
 
 
+
     $('#breadStreet').find('a')
+        .unbind("click")
         .text(`${area}`)
         .attr("href", "#")
+        .attr("onclick", `searchByArea('${city}','${area}')`)
         .click(function () {
             searchByArea(city, area);
         });
 
+
+
     $('#breadStreet').show();
     $("#map").css("display", "none");
+    $('#specialList').css("display", "block");
     $('#areaResult').html("");
     $('.searchResult').html("");
+    //收起商品選項
+    $('#flush-collapseOne').collapse('hide');
+    // 清除已勾选项
+    $('#selectList input[type="checkbox"]').prop('checked', false);
+
     if ($('#searchStreet').is(':visible')) {
         $('#searchStreet').hide();
     }
@@ -148,7 +323,6 @@ function searchByArea(city, area) {
         $('#storeName').hide();
     }
 
-    // $('#areaResult').removeAttr('style')
     axios.get('http://localhost:8080/FinalProject/public/front/findStreetByArea', {
         params: {
             city: city,
@@ -174,12 +348,93 @@ function searchByArea(city, area) {
     })
         .then(res => {
             console.log(res.data);
-            storeListCity(res.data)
+            globalStores = res.data;
+            storeListCity(globalStores)
             window.scrollTo(0, scrollPosition);
+            $('.storeProduct').off('click').on('click', function () {
+                let storeProduct = '';
+
+                axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+                    .then(res => {
+                        console.log(res);
+                        let data = res.data;
+                        data.forEach(function (product) {
+                            storeProduct += '<li><input type="checkbox" name="specialItem" productId=' + product.productId + '>' + product.productName;
+                            storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                        });
+                        $('#selectList').html(storeProduct);
+
+                        // 將所有生成的 input 元素的 onclick 屬性修改為 newfunction()
+                        $('#selectList li input[type="checkbox"]').attr('onclick', 'storeFilterByAreaProduct()');
+
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            });
         })
         .catch(err => {
             console.error(err);
         });
+
+}
+
+//勾選商品後變換畫面(區域換街道)
+function storeFilterByAreaProduct() {
+    var scroll = window.scrollY;
+    // 檢查被選中的復選框
+    console.log(globalStores);
+    var selectedItems = [];
+    $('input[name="specialItem"]:checked').each(function () {
+        selectedItems.push($(this).attr('productid'));
+        console.log(selectedItems);
+    });
+
+    if (selectedItems.length >= 1) {
+        var requestData = {
+            stores: globalStores,
+            selectedItems: selectedItems
+        };
+
+        axios.post('http://localhost:8080/FinalProject/public/front/filterByProduct', requestData)
+            .then(function (response) {
+
+                if (response.data.length >= 1) {
+                    storeListCity(response.data);
+                    let data = response.data;
+                    globalCity = data[0].city;
+                    globalArea = data[0].area;
+                    // 使用 Set 來確保 street 的唯一性
+                    //把符合條件的store的street放進去
+                    let uniqueAreas = new Set();
+                    data.forEach(store => {
+                        uniqueAreas.add(store.street);
+                    });
+
+                    // 將 Set 轉換為陣列
+                    let uniqueAreasArray = Array.from(uniqueAreas);
+
+                    //傳入區域跟縣市 找出有哪些區域
+                    htmlMakerArea(uniqueAreasArray, data[0].city, data[0].area)
+                }
+                else {
+                    $('.searchResult').html("");
+                    let storeArea = '';
+                    storeArea += '<span>依特定商品查詢</span>';
+                    storeArea += '<span class="line02"></span>';
+                    storeArea += '<span class="result">查無結果，回<a href="#" onclick="showDefaultContent()">地圖</a>頁查詢</span>'
+                    $('#areaResult').html(storeArea);
+                }
+            })
+            .catch(function (error) {
+                // 請求失敗處理
+                console.error(error);
+            });
+    } else {
+        //依區域輸出街道
+        searchByArea(globalCity, globalArea);
+    }
+    window.scrollTo(0, scroll);
 }
 
 
@@ -187,7 +442,9 @@ function searchByArea(city, area) {
 function htmlMakerArea(data, city, area) {
     let storeArea = '';
     var storeNum = 0;
+    $(".map_graybox05").css("display", "block");
     $('#areaResult').html("");
+
     axios.get('http://localhost:8080/FinalProject/public/front/countStores', {
         params: {
             city: city,
@@ -212,6 +469,8 @@ function htmlMakerArea(data, city, area) {
 
             storeArea += '</ul>';
 
+            console.log(storeArea);
+
             $('#areaResult').html(storeArea);
 
         })
@@ -224,10 +483,18 @@ function htmlMakerArea(data, city, area) {
 
 //街道的結果
 function searchByStreet(city, area, street) {
+    globalStores = [];
+    globalCity = city;
+    globalArea = area;
+    globalStreet = street;
     console.log(street);
     var scrollPosition = window.scrollY;
     $("#map").css("display", "none");
     $('.searchResult').html("");
+    //收起商品選項
+    $('#flush-collapseOne').collapse('hide');
+    // 清除已勾选项
+    $('#selectList input[type="checkbox"]').prop('checked', false);
 
     axios.get('http://localhost:8080/FinalProject/public/front/findByStreet', {
         params: {
@@ -277,13 +544,105 @@ function searchByStreet(city, area, street) {
         }
     })
         .then(res => {
-            storeListCity(res.data)
+            globalStores = res.data;
+            storeListCity(globalStores);
+            console.log("street" + res.data);
             window.scrollTo(0, scrollPosition);
+            $('.storeProduct').off('click').on('click', function () {
+                let storeProduct = '';
+
+                axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+                    .then(res => {
+                        console.log(res);
+                        let data = res.data;
+                        data.forEach(function (product) {
+                            storeProduct += '<li><input type="checkbox" name="specialItem" productId=' + product.productId + '>' + product.productName;
+                            storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                        });
+                        $('#selectList').html(storeProduct);
+
+                        // 將所有生成的 input 元素的 onclick 屬性修改為 newfunction()
+                        $('#selectList li input[type="checkbox"]').attr('onclick', 'storeFilterByStreetProduct()');
+
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            });
         })
         .catch(err => {
             console.error(err);
         });
 
+}
+
+function storeFilterByStreetProduct() {
+    var scroll = window.scrollY;
+    // 檢查被選中的復選框
+    console.log(globalStores);
+    var selectedItems = [];
+    $('input[name="specialItem"]:checked').each(function () {
+        selectedItems.push($(this).attr('productid'));
+        console.log(selectedItems);
+    });
+
+    if (selectedItems.length >= 1) {
+        var requestData = {
+            stores: globalStores,
+            selectedItems: selectedItems
+        };
+
+        axios.post('http://localhost:8080/FinalProject/public/front/filterByProduct', requestData)
+            .then(function (response) {
+
+                if (response.data.length >= 1) {
+                    storeListCity(response.data);
+                    let data = response.data;
+                    globalCity = data[0].city;
+                    globalArea = data[0].area;
+                    globalStreet = data[0].street;
+
+
+                    let storeArea = '';
+                    var storeNum = 0;
+                    axios.get('http://localhost:8080/FinalProject/public/front/countStoreByStreet', {
+                        params: {
+                            city: globalCity,
+                            area: globalArea,
+                            street: globalStreet
+                        }
+                    }).then(res => {
+                        console.log(res.data);
+                        storeNum = res.data;
+                        storeArea += '<span class="result">'
+                        storeArea += '<a href="#" onclick="searchByArea(\'' + city + '\', \'' + area + '\');">' + area + '</a>';
+                        storeArea += '符合路名為' + street + '的店鋪，共有' + storeNum + '家</span>'
+
+
+                        $('#areaResult').html(storeArea);
+
+                    })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                }
+                else {
+                    $('.searchResult').html("");
+                    let storeArea = '';
+                    storeArea += '<span>依特定商品查詢</span>';
+                    storeArea += '<span class="line02"></span>';
+                    storeArea += '<span class="result">查無結果，回<a href="#" onclick="showDefaultContent()">地圖</a>頁查詢</span>'
+                    $('#areaResult').html(storeArea);
+                }
+            })
+            .catch(function (error) {
+                // 請求失敗處理
+                console.error(error);
+            });
+    } else {
+        searchByStreet(globalCity, globalArea, globalStreet);
+    }
+    window.scrollTo(0, scroll);
 }
 
 //用上方搜尋列找城市跟路名
@@ -292,7 +651,10 @@ function showCityStreet() {
     let inputVal = $('#croadWord').val();
     let city = inputVal.substring(0, 3);
     let street = inputVal.substring(3);
-
+    globalStores = [];
+    globalCity = city;
+    globalArea = "";
+    globalStreet = street;
 
     axios.get('http://localhost:8080/FinalProject/public/front/findByCityStreet', {
         params: {
@@ -311,14 +673,22 @@ function showCityStreet() {
                 $(".map_graybox05").css("display", "block");
                 $("#showShopList").css("display", "block");
                 $("#map").css("display", "none");
+                $('#flush-collapseOne').collapse('hide');
+                // 清除已勾选项
+                $('#selectList input[type="checkbox"]').prop('checked', false);
+
+
                 const breadcrumbDiv = $(".map_graybox03.result");
                 breadcrumbDiv.css("display", "block");
                 breadcrumbDiv.find(".breadcrumb-item:nth-child(4) a")
+                    .unbind("click")
                     .text(`${inputVal}`)
                     .attr("href", "#")
-                    .click(function (event) {
+                    .attr("onclick", "showCityStreet()")
+                    .click(function () {
                         showCityStreet();
                     });
+
 
                 $('#searchStreet').show();
                 if ($('#cityLocation').is(':visible')) {
@@ -332,8 +702,31 @@ function showCityStreet() {
                 if ($('#storeName').is(':visible')) {
                     $('#storeName').hide();
                 }
-
+                globalStores = res.data;
                 storeListCity(res.data);
+                $('.storeProduct').off('click').on('click', function () {
+                    let storeProduct = '';
+
+                    axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+                        .then(res => {
+                            console.log(res);
+                            let data = res.data;
+                            data.forEach(function (product) {
+                                storeProduct += '<li><input type="checkbox" name="specialItem" productId=' + product.productId + '>' + product.productName;
+                                storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                            });
+                            $('#selectList').html(storeProduct);
+
+                            // 將所有生成的 input 元素的 onclick 屬性修改為 newfunction()
+                            $('#selectList li input[type="checkbox"]').attr('onclick', 'storeFilterByStreetProduct()');
+
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                });
+
+
                 let storeStreet = '';
                 var storeNum = 0;
                 axios.get('http://localhost:8080/FinalProject/public/front/countByCityAndStreet', {
@@ -371,6 +764,8 @@ function showCityStreet() {
 //用右邊搜尋郵遞區號
 function zipSearch() {
     let zipVal = $('#zip').val();
+    globalStores = [];
+    globalStreet = "";
     var scroll = window.scrollY;
     axios.get('http://localhost:8080/FinalProject/public/front/findByZip', {
         params: {
@@ -391,11 +786,17 @@ function zipSearch() {
                 const breadcrumbDiv = $(".map_graybox03.result");
                 breadcrumbDiv.css("display", "block");
                 breadcrumbDiv.find(".breadcrumb-item:nth-child(2) a")
+                    .unbind("click")
                     .text(`${res.data[0]}`)
                     .attr("href", "#")
-                    .click(function (event) {
+                    .attr("onclick", `showAdminArea(${res.data[0]})`)
+                    .click(function () {
                         showAdminArea(res.data[0]);
                     });
+
+                globalCity = res.data[0];
+                globalArea = res.data[1];
+
                 searchByArea(res.data[0], res.data[1]);
             } else {
                 window.scrollTo(0, scroll);
@@ -411,6 +812,14 @@ function zipSearch() {
 //用右邊搜尋店鋪名稱
 function findByStoreName() {
     let nameVal = $('#shopName').val();
+    globalStores = [];
+    globalCity = "";
+    globalArea = "";
+    globalStreet = "";
+    //收起商品選項
+    $('#flush-collapseOne').collapse('hide');
+    // 清除已勾选项
+    $('#selectList input[type="checkbox"]').prop('checked', false);
     var scroll = window.scrollY;
 
     axios.get('http://localhost:8080/FinalProject/public/front/findByName', {
@@ -434,9 +843,11 @@ function findByStoreName() {
                 const breadcrumbDiv = $(".map_graybox03.result");
                 breadcrumbDiv.css("display", "block");
                 breadcrumbDiv.find(".breadcrumb-item:nth-child(5) a")
+                    .unbind("click")
                     .text(`${nameVal}`)
                     .attr("href", "#")
-                    .click(function (event) {
+                    .attr("onclick", "findByStoreName()")
+                    .click(function () {
                         findByStoreName();
                     });
 
@@ -453,7 +864,31 @@ function findByStoreName() {
                     $('#searchStreet').hide();
                 }
 
+                globalStores = res.data;
+
                 storeListCity(res.data);
+
+                $('.storeProduct').off('click').on('click', function () {
+                    let storeProduct = '';
+
+                    axios.get('http://localhost:8080/FinalProject/public/front/storeProduct')
+                        .then(res => {
+                            console.log(res);
+                            let data = res.data;
+                            data.forEach(function (product) {
+                                storeProduct += '<li><input type="checkbox" name="specialItem" productId=' + product.productId + '>' + product.productName;
+                                storeProduct += '<img src="/FinalProject/ProductPhoto?productId=' + product.productId + '" class="storeIcon"></li>';
+                            });
+                            $('#selectList').html(storeProduct);
+
+                            // 將所有生成的 input 元素的 onclick 屬性修改為 newfunction()
+                            $('#selectList li input[type="checkbox"]').attr('onclick', 'storeFilterByNameProduct()');
+
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                });
                 let storeStreet = '';
                 var storeNum = 0;
                 axios.get('http://localhost:8080/FinalProject/public/front/countByWordName', {
@@ -483,5 +918,67 @@ function findByStoreName() {
         .catch(err => {
             console.error(err);
         });
+}
+
+function storeFilterByNameProduct() {
+    var scroll = window.scrollY;
+    // 檢查被選中的復選框
+    console.log(globalStores);
+    var selectedItems = [];
+    $('input[name="specialItem"]:checked').each(function () {
+        selectedItems.push($(this).attr('productid'));
+        console.log(selectedItems);
+    });
+
+    if (selectedItems.length >= 1) {
+        var requestData = {
+            stores: globalStores,
+            selectedItems: selectedItems
+        };
+
+        axios.post('http://localhost:8080/FinalProject/public/front/filterByProduct', requestData)
+            .then(function (response) {
+
+                if (response.data.length >= 1) {
+                    storeListCity(response.data);
+                    let data = response.data;
+
+
+                    let storeArea = '';
+                    var storeNum = 0;
+                    axios.get('http://localhost:8080/FinalProject/public/front/countByWordName', {
+                        params: {
+                            storeName: nameVal
+                        }
+                    }).then(res => {
+                        console.log(res.data);
+                        storeNum = res.data;
+                        storeStreet += '<span class="result">從<a href="#" onclick="showDefaultContent()">查詢首頁</a>'
+                        storeStreet += '符合店名為"' + nameVal + '"的店舖，共有' + storeNum + '家</span>'
+
+                        $('#areaResult').html(storeStreet);
+
+                    })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                }
+                else {
+                    $('.searchResult').html("");
+                    let storeArea = '';
+                    storeArea += '<span>依特定商品查詢</span>';
+                    storeArea += '<span class="line02"></span>';
+                    storeArea += '<span class="result">查無結果，回<a href="#" onclick="showDefaultContent()">地圖</a>頁查詢</span>'
+                    $('#areaResult').html(storeArea);
+                }
+            })
+            .catch(function (error) {
+                // 請求失敗處理
+                console.error(error);
+            });
+    } else {
+        findByStoreName();
+    }
+    window.scrollTo(0, scroll);
 }
 
