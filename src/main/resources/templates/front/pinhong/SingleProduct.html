@@ -132,8 +132,10 @@
                       </span>
                     </div>
                     <div class="qty-button d-flex flex-wrap pt-3">
-                      <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3">直接購買</button>
-                      <button type="submit" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">加入購物車</button>                      
+                      <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3 btn-cart">直接購買</button>
+                      <button type="submit" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3"
+                        th:attr="data-productId=${product.productId}, data-productName=${product.productName}"
+                        onclick="addToCart(this)">加入購物車</button>
                       <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入追蹤</button>                      
                     </div>
                   </div>
@@ -380,39 +382,89 @@
   });
 </script>
   <script>
-    document.querySelector(".btn-cart").addEventListener("click", function (e) {
-      e.preventDefault();
-      axios.get("http://localhost:8080/FinalProject/front/checkLogging")
-        .then(res => {
-          let isLoggedIn = res.data;
-          if (!isLoggedIn) {
-            Swal.fire({
-              title: "請先登入或註冊",
-              icon: "warning",
-              text: "您即將前往登入或註冊頁",
-              showDenyButton: true,
-              showCancelButton: true,
-              confirmButtonColor: "#6BB252",
-              confirmButtonText: "登入",
-              denyButtonColor: "#f7a422",
-              denyButtonText: "註冊",
-              cancelButtonText: "取消"
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
-              } else if (result.isDenied) {
-                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+    function addToCart(button) {
+        var productId = button.getAttribute('data-productId');
+        var productName = button.getAttribute('data-productName');
+        var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
+
+        Swal.fire({
+          title: '確定加入購物車?',
+          html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: '是的',
+          cancelButtonText: '取消'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var formData = {
+              productId: productId,
+              quantity: quantity
+            };
+
+            $.ajax({
+              type: 'POST',
+              url: '/FinalProject/public/addToCart',
+              data: formData,
+              success: function (response) {
+                Swal.fire({
+                  title: '成功加入購物車',
+                  icon: 'success'
+                });
+              },
+              error: function (xhr, status, error) {
+                Swal.fire({
+                  title: '加入購物車失敗',
+                  text: xhr.responseText,
+                  icon: 'error'
+                });
               }
             });
-
-          } else {
-            window.location.href = e.target.href;
           }
-        })
-        .catch(err => {
-          console.error(err);
-        })
-    });
+        });
+      }
+      function bindCartButtonClick() {
+        document.querySelectorAll(".btn-cart").forEach(button => {
+          button.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+              .then(res => {
+                let isLoggedIn = res.data;
+                if (!isLoggedIn) {
+                  sessionStorage.setItem("checkoutIntention", "true");
+                  Swal.fire({
+                    title: "請先登入或註冊",
+                    icon: "warning",
+                    text: "您即將前往登入或註冊頁",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonColor: "#6BB252",
+                    confirmButtonText: "登入",
+                    denyButtonColor: "#f7a422",
+                    denyButtonText: "註冊",
+                    cancelButtonText: "取消"
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+                    } else if (result.isDenied) {
+                      window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+                    }
+                  });
+                } else {
+                  window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        bindCartButtonClick();
+      });
+
   </script>
   </body>
 </html>
