@@ -40,7 +40,7 @@
         <div class="hero-content py-0 py-md-5">
             <div class="container-lg d-flex flex-column d-md-block align-items-center">
                 <nav class="breadcrumb">
-                    <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
                     <span class="breadcrumb-item active" aria-current="page">店鋪查詢</span>
                 </nav>
                 <h1>店鋪查詢</h1>
@@ -90,7 +90,7 @@
                                             <h2 class="search_word" id="specialListShow">依特定服務項目查詢</h2>
                                             <div class="store">
                                                 <div class="note">
-                                                    *請勾選項目後點選搜尋<br>
+                                                    *請勾選項目<br>
                                                 </div>
                                                 <!--收合式選單 begin-->
                                                 <div id="accordion"
@@ -98,8 +98,8 @@
                                                     role="tablist">
                                                     <div class="accordion-item">
                                                         <h3 class="accordion-header" id="flush-headingOne">
-                                                            <button class="accordion-button collapsed" type="button"
-                                                                data-bs-toggle="collapse"
+                                                            <button class="accordion-button collapsed storeProduct"
+                                                                type="button" data-bs-toggle="collapse"
                                                                 data-bs-target="#flush-collapseOne"
                                                                 aria-expanded="false" aria-controls="flush-collapseOne">
                                                                 商品
@@ -110,13 +110,7 @@
                                                             data-bs-parent="#accordionFlushExample">
                                                             <div class="accordion-body">
                                                                 <ul id="selectList">
-                                                                    <!-- <li>
 
-                                                                        <input type="checkbox" name="specialItem"
-                                                                            value="Smart">智能咖啡機<img
-                                                                            src="/FinalProject/ProductPhoto?productId=11"
-                                                                            class="store11">
-                                                                    </li> -->
 
                                                                 </ul>
                                                             </div>
@@ -124,9 +118,9 @@
                                                     </div>
                                                 </div>
 
-                                                <span class="line"></span>
-                                                <div class="search_button" id="specialSearch" style="display: block;"><a
-                                                        href="#" id="specialItemSearch">搜尋</a></div>
+                                                <!-- <span class="line"></span> -->
+                                                <!-- <div class="search_button" id="specialSearch" style=" display: block;">
+                                                    <a href="#" id="specialItemSearch">搜尋</a></div> -->
                                             </div>
                                         </div>
 
@@ -278,23 +272,46 @@
 
         function showDefaultContent() {
             var scrollPosition = window.scrollY;
-            // Resetting UI elements to initial state
+
+            console.log("*****" + scrollPosition);
+            // 上方搜尋列
             $("#roadSearchBar").show();
+            // 上方搜尋列的值
+            $('#croadWord').val("");
+            // 台灣圖
             $("#taiwanMap").show();
+            // 麵包屑
             $(".map_graybox03.result").hide();
             $("#breadStreet").hide();
-            $("#areaResult").html(""); // Clear any previous results
+            $("#areaResult").html(""); // 清除先前的結果
 
-            $("#map").css("display", "none");
+            // 結果表
+            $(".map_graybox05").css("display", "none");
             $("#showShopList").css("display", "none");
-            $('#croadWord').val("");
-            $('#shopName').val("");
-            $('#zip').val("");
-            $('#specialList').css("display", "none");
-            $('#chgSearchList').css("display", "none");
-            $('#loadingDiv').css("display", "none");
+
+            // 地圖
+            $(".map_container").css("display", "none");
+
+            // 左方查詢列
             $('#searchList').show();
-            window.scrollTo(0, scrollPosition);
+            // 左方店鋪名搜尋
+            $('#shopName').val("");
+            // 左方郵遞區號搜尋
+            $('#zip').val("");
+            // 左方整塊特殊商品
+            $('#specialList').css("display", "none");
+            // 收起商品選項
+            $('#flush-collapseOne').collapse('hide');
+            // 清除已勾选项
+            $('#selectList input[type="checkbox"]').prop('checked', false);
+
+            // 左方換畫面後回首頁選項
+            $('#chgSearchList').css("display", "none");
+
+            // 使用 requestAnimationFrame 進行滾動操作
+            requestAnimationFrame(function () {
+                window.scrollTo(0, scrollPosition);
+            });
         }
 
     </script>
@@ -304,6 +321,7 @@
             $(".map_graybox05").css("display", "none");
             $('.searchResult').html("");
             $("#map").css("display", "block");
+            $('#specialList').css("display", "none");
 
             axios.get('http://localhost:8080/FinalProject/public/front/map', {
                 params: {

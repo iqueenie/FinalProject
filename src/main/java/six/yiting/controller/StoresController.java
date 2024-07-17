@@ -1,5 +1,6 @@
 package six.yiting.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,13 +13,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.maps.model.LatLng;
 
+import six.pinhong.model.Product;
+import six.yiting.dto.SelectProductDto;
+import six.yiting.model.InventoryBean;
 import six.yiting.model.StoresBean;
 import six.yiting.service.GeocodingService;
+import six.yiting.service.InventoryService;
 import six.yiting.service.StoreService;
 
 @Controller
@@ -29,6 +35,9 @@ public class StoresController {
 	
 	@Autowired
 	private GeocodingService geocodingService;
+	
+	@Autowired
+	private InventoryService inventoryService;
 	
 	
 	@GetMapping("/private/stores/findAll")
@@ -204,11 +213,57 @@ public class StoresController {
 	//地圖經緯度回傳
 	 @GetMapping("/public/front/map")
 	 @ResponseBody
-	    public LatLng getAddressMap(@RequestParam("id") Integer id, Model model) {
-	        String address = geocodingService.getAddressFromDatabase(id);
-	        return geocodingService.geocodeAddress(address);
+    public LatLng getAddressMap(@RequestParam("id") Integer id, Model model) {
+        String address = geocodingService.getAddressFromDatabase(id);
+        return geocodingService.geocodeAddress(address);
+    }
+	 
+	//實體店商品
+	 @GetMapping("public/front/storeProduct")
+	 @ResponseBody
+	 public List<Product> getProductByType(){
+		 return storeService.findByType();
+	 }
+	 
+	 //符合勾選條件的店鋪
+	 @PostMapping("/public/front/filterByProduct")
+	 @ResponseBody
+	 public List<StoresBean> handlePostData(@RequestBody SelectProductDto requestData) {
+	        List<StoresBean> stores = requestData.getStores();
+	        List<String> selectedItems = requestData.getSelectedItems();
+	        List<StoresBean> resultList = new ArrayList<StoresBean>();
+	        
+	        for(StoresBean store:stores) {
+	        	boolean check = true;
+	        	for(String prdId:selectedItems) {
+	        		int pid = Integer.parseInt(prdId);
+	        		 InventoryBean invResult= inventoryService.findByStoreAndProduct(store, pid);
+	        		 if(invResult == null) {
+	        			 check = false;
+	        			 break;
+	        		 }
+	        	}
+	        	if(check) {
+	        		resultList.add(store);
+	        	}
+	        }
+	        return resultList;
 	    }
 	 
-	 
+	 //找出店鋪有哪些特殊商品
+	 @PostMapping("public/front/storeSpecial")
+	 @ResponseBody
+	 public List<Integer> getProductByStore(@RequestBody StoresBean store){
+		List<Product> byType = storeService.findByType();
+		List<Integer> resultList = new ArrayList<Integer>();
+		for(Product product : byType) {
+			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
+			if(inv!=null) {
+				resultList.add(product.getProductId());
+			}
+		}
+		return resultList;
+		
+	 }
 
 }
