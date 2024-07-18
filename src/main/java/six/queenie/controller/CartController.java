@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
+import six.hsiao.service.EmailService;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
+import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
 import six.queenie.model.ProductDiscountRepository;
 import six.queenie.service.CartService;
+import six.queenie.service.OrderDetailService;
 import six.queenie.service.OrderService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
@@ -53,7 +56,10 @@ public class CartController {
 	private AmountDiscountRepository atRepository;
 	@Autowired
 	private ProductDiscountRepository pdRepository;
-	
+	@Autowired
+	private EmailService emailService;
+	@Autowired
+	private OrderDetailService odService;
 	
 	@PostMapping("/public/addToCart")
 	@ResponseBody
@@ -215,7 +221,8 @@ public class CartController {
 
 	@PostMapping("/public/insert")
 	public String insertOrder(Model model, HttpServletRequest request, HttpSession session,
-	                          @RequestParam(required = false) Integer memberId) {
+	                          @RequestParam(required = false) Integer memberId,
+	                          @RequestParam String paymentMethod) {
 	    List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
 	    Map<Integer, Integer> productQuantities = (Map<Integer, Integer>) session.getAttribute(SESSION_PRODUCT_QUANTITIES);
 	    MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
@@ -228,9 +235,18 @@ public class CartController {
 	            memberId = Integer.parseInt(memberIdParam);
 	        }
 	    }
-	    String paymentMethod = request.getParameter("paymentMethod");
+
 	    Orders order = cartService.insertOrderFromCart(cartItems, productQuantities, memberId, request);	
-	    
+
+	    //更新訂單狀態
+	    cartService.processCheckout(order.getOrderId(), paymentMethod);
+	    //發送訂單成功信件
+	    emailService.sendOrderEmail(order.getOrderId());
+	   
+	    // 獲取訂單狀態分組
+	    Map<String, List<Orders>> status = cartService.getOrdersGroupedByStatus();
+
+	    model.addAttribute("status", status);
 	    model.addAttribute("order", order);
 	    session.setAttribute(SESSION_CART, new ArrayList<>());
 	    session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>()); 
@@ -248,15 +264,30 @@ public class CartController {
 	    }
 
 	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
+	    System.out.println(ordersList);
 
 	    Map<String, List<Orders>> ordersByStatus = ordersList.stream()
-	    		 .filter(order -> order.getStatus() != null)
-	             .collect(Collectors.groupingBy(Orders::getStatus)); 
+	            .filter(order -> order.getStatus() != null)
+	            .collect(Collectors.groupingBy(order -> cartService.mapStatus(order.getStatus())));
 
 	    model.addAttribute("ordersByStatus", ordersByStatus);
-
+	    model.addAttribute("ordersList", ordersList);
 	    return "front/queenie/memberOrder";
 	}
 
+	@PostMapping("/public/deleteOrder")
+    public String deleteOrder(@RequestParam("orderId") Integer orderId, Model model) {
+        orderService.updateOrderStatusAndPoints(orderId, "Canceled");
+        model.addAttribute("orders", orderService.findAll()); 
+        return "front/queenie/MemberOrder";
+    }
+	
+	 @GetMapping("/public/MemberOrderDetail")
+	    public String getDetailsById(@RequestParam("orderId") Integer orderId, Model model) {
 
+	        List<OrderDetails> orderDetailsList = odService.getOrderDetailsByOrderId(orderId);
+	        model.addAttribute("orderDetailsList", orderDetailsList);
+
+	        return "front/queenie/memberOrderDetail";
+	    }
 }

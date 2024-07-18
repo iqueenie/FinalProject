@@ -182,9 +182,6 @@ public class MembersController {
 		}
 	 }
 	 
-	 
-	 
-	 
 	 @GetMapping("/public/addMemberMain")
 	 public String addMemberMain() {
 		 return "front/hsiao/AddMember";
