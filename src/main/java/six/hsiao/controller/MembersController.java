@@ -152,6 +152,7 @@ public class MembersController {
 		 MembersBean member = membersService.findByMemberAccountAndMemberPassword(memberAccount, memberPassword);
 		 
 		 if(member !=null) {
+	
 			 session.setAttribute("loggedInMember", member);
 			 return "redirect:/public/front";
 //		 }
