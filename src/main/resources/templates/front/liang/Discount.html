@@ -74,6 +74,10 @@
                                 <li class="cat-item"><a th:href="@{/public/front/Discount(category='節日優惠')}" class="nav-link" th:classappend="${category == '節日優惠'} ? 'active' : ''">節日優惠</a></li>
                                 <li class="cat-item"><a th:href="@{/public/front/Discount(category='特定商品優惠')}" class="nav-link" th:classappend="${category == '特定商品優惠'} ? 'active' : ''">特定商品優惠</a></li>
                             </ul>
+                            <h5 class="widget-title">每日抽獎</h5>
+                            <ul class="product-categories sidebar-list list-unstyled">
+                            	<li class="cat-item"><a th:href="@{/public/front/lottery}" class="nav-link" th:classappend="${category == null} ? 'active' : ''">抽獎</a></li>
+                        	</ul>
                         </div>
                     </div>
                 </aside>
@@ -116,7 +120,7 @@
                                     </div>
                                     <h3 class="fs-6 fw-normal" th:text="${discount.discountName}">Discount Name</h3>
                                     <div>
-                                        <span class="text-dark fw-semibold" th:text="${discount.discountDescription}"></span>
+                                        <span class="text-dark fw-semibold" th:text="${discount.discountPercentage} + '%off'"></span>
                                     </div>
                                 </div>
                             </div>
