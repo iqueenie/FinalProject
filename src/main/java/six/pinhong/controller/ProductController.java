@@ -52,8 +52,12 @@ public class ProductController {
 	public String getAllProudcts(Model m) {
 
 		List<Product> products = productService.findAll();
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
 
 		m.addAttribute("products", products);
+		m.addAttribute("averageRatings", averageRatings);
+		m.addAttribute("reviewCounts", reviewCounts);
 
 		return "back/pinhong/GetAllProduct";
 	}
@@ -61,11 +65,31 @@ public class ProductController {
 	// 後台查全部，Ajax的Api
 	@GetMapping("/Product/findAllAjax")
 	@ResponseBody
-	public List<Product> findAllStoresAjax() {
+	public List<Map<String, Object>> findAllStoresAjax() {
 		
-		return productService.findAll();
-		
+		List<Product> products = productService.findAll();
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+
+	    List<Map<String, Object>> response = new ArrayList<>();
+	    for (Product product : products) {
+	        Map<String, Object> productMap = new HashMap<>();
+	        productMap.put("productId", product.getProductId());
+	        productMap.put("productName", product.getProductName());
+	        productMap.put("productType", product.getProductType());
+	        productMap.put("productCost", product.getProductCost());
+	        productMap.put("productPrice", product.getProductPrice());
+	        productMap.put("productExpirydate", product.getProductExpirydate());
+	        productMap.put("productQuantity", product.getProductQuantity());
+	        productMap.put("productPublished", product.getProductPublished());
+	        productMap.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
+	        productMap.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
+
+	        response.add(productMap);
+	    }
+	    return response;
 	}
+		
 	
 	// 新增進入點
 	@GetMapping("/private/Product/AddProductPage")
@@ -194,7 +218,9 @@ public class ProductController {
 	    List<Product> products = productService.findAll();
 
 	    for (Product orgainProduct : products) {
-	        if (product.getProductName().equals(orgainProduct.getProductName())) {
+	        if (!product.getProductId().equals(orgainProduct.getProductId()) &&
+	        	// 如果這次修改產品的ID == 原本集合的ID，名字重複則不列入姓名重複的範圍 ↑
+	        	product.getProductName().equals(orgainProduct.getProductName())) {
 	            m.addAttribute("errors", "已有相同產品，請重新輸入");
 	            return "back/pinhong/FindProduct";
 	        }
