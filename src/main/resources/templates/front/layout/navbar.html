@@ -335,8 +335,24 @@
                         <li class="nav-item"><a th:href=@{/public/GetAllCart} class="nav-link">購物車</a>
                         </li>
                         <li class="nav-item">
-                            <a th:href="@{/public/front/storeSearch}" class="nav-link">店鋪查詢</a>
+                             <div class="dropdown">
+                            <a href="#"
+                                   class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                                   id="dropdownUser1" data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <span style="color:black"><strong>店鋪相關</strong></span>
+                                </a>
+                              
+                                <ul class="dropdown-menu dropdown-menu-dark text-small shadow "
+                                    aria-labelledby="dropdownUser1"
+                                    data-popper-placement="bottom-start">
+                                    <li><a  th:href="@{/public/front/storeSearch}" class="dropdown-item">店鋪查詢</a></li>
+                                    <li><a  th:href="@{/public/front/friendlyProduct}" class="dropdown-item">友善商品</a></li>
+                                </ul>
+                            </div>
+                            
                         </li>
+ 
                         <li class="nav-item">
 
                             <a th:href="@{/public/front/group-buys}" class="nav-link">團購</a>
