@@ -65,7 +65,7 @@ public class ProductController {
 	// 後台查全部，Ajax的Api
 	@GetMapping("/Product/findAllAjax")
 	@ResponseBody
-	public List<Map<String, Object>> findAllStoresAjax() {
+	public List<Map<String, Object>> findAllAjax() {
 		
 		List<Product> products = productService.findAll();
 	    Map<Integer, Double> averageRatings = productService.getAverageRatings();

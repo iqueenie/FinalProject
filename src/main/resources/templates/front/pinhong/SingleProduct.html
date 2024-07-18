@@ -79,7 +79,7 @@
 							        <use xlink:href="#star-half"></use>
 							      	</svg>
 							      </th:block>
-							    <th:block th:if="${averageRating % 1 == 0}">
+							    <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
 							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
 							        <svg width="24" height="24" class="text-warning">
 							          <use xlink:href="#star-empty"></use>
