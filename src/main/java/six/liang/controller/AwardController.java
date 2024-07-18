@@ -62,7 +62,7 @@ public class AwardController {
         } else {
             redirectAttributes.addFlashAttribute("message", "刪除失敗！");
         }
-        return "redirect:/awards";
+        return "redirect:/private/awards";
     }
 
     // 更新獎項表單
