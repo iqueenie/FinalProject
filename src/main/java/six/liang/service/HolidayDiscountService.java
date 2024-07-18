@@ -1,7 +1,9 @@
 package six.liang.service;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import six.liang.model.HolidayDiscount;
 import six.liang.model.HolidayDiscountRepository;
+import six.pinhong.model.Product;
 
 @Service
 @Transactional
@@ -59,4 +62,6 @@ public class HolidayDiscountService {
         return holidayDiscountRepo.findByDiscountName(discountName)
                 .orElseThrow(() -> new RuntimeException("折扣信息不存在"));
     }
+    
+    
 }
