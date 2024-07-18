@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
+import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductReview;
@@ -41,7 +42,7 @@ public class ProductController {
 	@Autowired
 	private ProductReviewService productReviewService;
 	
-	// 查全部
+	// 後台查全部
 	@GetMapping("/private/Product/GetAll")
 	public String getAllProudcts(Model m) {
 
@@ -52,7 +53,7 @@ public class ProductController {
 		return "back/pinhong/GetAllProduct";
 	}
 	
-	// 查全部，Ajax
+	// 後台查全部，Ajax的Api
 	@GetMapping("/Product/findAllAjax")
 	@ResponseBody
 	public List<Product> findAllStoresAjax() {
@@ -68,7 +69,7 @@ public class ProductController {
 		return "back/pinhong/InsertProduct";
 	}
 	
-	// 新增 (傳統方法)
+	// 後台新增商品 (傳統方法)
 	@PostMapping("/private/Product/InsertProduct")
 	public String productInsert(
 			@RequestParam String productName,
@@ -155,7 +156,7 @@ public class ProductController {
 		return "success";
 	}
 	
-	//顯示圖片
+	// 顯示圖片的Api
 	@GetMapping("/ProductPhoto")
 	public ResponseEntity<byte[]> downloadPhotos(@RequestParam Integer productId) {
 		
@@ -245,6 +246,7 @@ public class ProductController {
 		return "front/pinhong/shop";
 	}
 	
+	// shop.html 的 Ajax Api
 	@GetMapping("/public/api/products")
 	@ResponseBody
 	public ResponseEntity<Page<Product>> showAllProductsAjax(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
@@ -266,21 +268,46 @@ public class ProductController {
 	}
 
 	
-	// 新增進入點
+	// 進入單一商品頁
 	@GetMapping("/public/Products/{productId}")
-	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model) {
+	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model, @RequestParam(defaultValue = "0") int page) {
+		
+	 // 取得當前會員ID
+	    Integer memberId = null;
+	    if (session.getAttribute("loggedInMember") != null) {
+	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
+	    }
 	    Map<String, Object> productDetails = productService.getProductDetails(productId);
+	    List<ProductReview> productReviews = productReviewService.findProductReviewsByProductId(productId);
+	    Page<ProductReview> productReviewsForPage = productReviewService.findProductReviewsByProductId(productId, page, 4); 
+
+
+	 // 檢查是否已經評價過
+	    boolean hasReviewed = false;
+	    if (memberId != null) {
+	        for (ProductReview review : productReviews) {
+	            if (review.getMember().getMemberId().equals(memberId)) {
+	                hasReviewed = true;
+	                break;
+	            }
+	        }
+	    }
 
 	    model.addAttribute("product", productDetails.get("product"));
 	    model.addAttribute("recommend5Products", productDetails.get("recommend5Products"));
 	    model.addAttribute("allProductReviews", productDetails.get("allProductReviews"));
-	    model.addAttribute("productReviews", productDetails.get("productReviews"));
+	    model.addAttribute("twoProductReviews", productDetails.get("twoProductReviews"));
+	    model.addAttribute("productReviews", productReviews);
 	    model.addAttribute("averageRatings", productDetails.get("averageRatings"));
 	    model.addAttribute("reviewCounts", productDetails.get("reviewCounts"));
+	    model.addAttribute("hasReviewed", hasReviewed);
+	    model.addAttribute("productReviewsContent", productReviewsForPage.getContent()); // 獲取當前頁的評論
+	    model.addAttribute("totalPages", productReviewsForPage.getContent()); // 總頁數
 
 	    return "front/pinhong/SingleProduct";
 	}
 	
+	// 商品評分、評分數的Api
 	@ResponseBody
     @GetMapping("/productRatings/api")
     public ResponseEntity<Map<String, Object>> getProductRatings() {
@@ -289,5 +316,23 @@ public class ProductController {
         result.put("reviewCounts", productService.getReviewCounts());
         return ResponseEntity.ok(result);
     }
+	
+	// 新增評論
+	@PostMapping("/public/InsertProductReview")
+	public String productReviewInsert(
+			@RequestParam Integer productId,
+			@RequestParam Integer memberId,
+			@RequestParam String reviewContent, 
+			@RequestParam Integer stars, 
+			Model m
+			) throws IOException{
+		
+		// 因為前端已經可以知道是否評價過，不寫IF條件擋有評論過的會員了
+		productReviewService.insertProductReview(productId, memberId, reviewContent, stars);
+
+	    return "redirect:/public/Products/" + productId;
+	};
+	
+	
 }
 	

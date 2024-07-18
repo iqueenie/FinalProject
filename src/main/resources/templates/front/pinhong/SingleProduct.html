@@ -260,7 +260,7 @@
               <div class="tab-pane fade show active " id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab" tabindex="0">
                 <div class="review-box d-flex flex-wrap mb-3">
                 <!-- 評論 -->
-                <th:block th:each="productReview : ${productReviews}">
+                <th:block th:each="productReview : ${twoProductReviews}">
                   <div class="col-lg-6 d-flex flex-wrap gap-3 mb-2">
                     <div class="col-md-2">
                       <div class="image-holder">
@@ -300,55 +300,58 @@
                 </div>
 				<div class="qty-button d-flex flex-wrap pt-3">
                       <button type="button" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">所有評論</button>                      
-                      <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3" id="add-review-btn">新增評論</button>                    
+                   <th:block th:if="${session.loggedInMember != null}">
+				        <th:block th:if="${!hasReviewed}">
+				            <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3" id="add-review-btn">新增評論</button>
+				        </th:block>
+				        <th:block th:if="${hasReviewed}">
+				            <button type="button" class="btn btn-secondary py-3 px-4 text-uppercase me-3 mt-3" disabled>您已評論過此產品</button>
+				        </th:block>                      
+			        </th:block>                  
                 </div>
                 <div class="add-review-form mt-5" style="display:none" >
                   <h3>新增評論</h3>
-                  <p>Your email address will not be published. Required fields are marked *</p>
-                  <form id="form" class="form-group">
-
+                  <form id="form" class="form-group" th:action="@{/public/InsertProductReview}" method="post">
+                    <input type="hidden" name="productId" th:value="${product.productId}">
+				    <input type="hidden" name="memberId" th:if="${session.loggedInMember != null}" th:value="${session.loggedInMember.memberId}">
+                  <div class="row align-items-center mt-3">
+				    <div class="col-auto">
+				        <div class="image-holder" th:if="${session.loggedInMember != null}">
+				            <img th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}" alt="review" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
+				        </div>
+				    </div>
+				    <div class="col" th:if="${session.loggedInMember != null}">
+				        <p th:text="${session.loggedInMember.memberName}" class="mb-0"></p>
+				    </div>
+				</div>
                     <div class="pb-3">
-                      <div class="review-rating">
-                        <span>Your rating *</span>
+                      <div class="review-rating mt-3">
                         <div class="rating-container d-flex align-items-center">
-                          <input type="radio" class="btn-check" name="options-rating" id="rating1" autocomplete="off" checked>
-                          <label class="btn" for="rating1"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating2" autocomplete="off">
-                          <label class="btn" for="rating2"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating3" autocomplete="off">
-                          <label class="btn" for="rating3"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-
-                          <input type="radio" class="btn-check" name="options-rating" id="rating4" autocomplete="off">
-                          <label class="btn" for="rating4"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-                          
-                          <input type="radio" class="btn-check" name="options-rating" id="rating5" autocomplete="off">
-                          <label class="btn" for="rating5"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
-                        </div>
+						    <input type="radio" class="btn-check" name="stars" id="rating1" value="1" autocomplete="off" checked>
+						    <label class="btn" for="rating1"><svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg></label>
+						
+						    <input type="radio" class="btn-check" name="stars" id="rating2" value="2" autocomplete="off">
+						    <label class="btn" for="rating2"><svg width="24" height="24" class="text-muted"><use xlink:href="#star-empty"></use></svg></label>
+						
+						    <input type="radio" class="btn-check" name="stars" id="rating3" value="3" autocomplete="off">
+						    <label class="btn" for="rating3"><svg width="24" height="24" class="text-muted"><use xlink:href="#star-empty"></use></svg></label>
+						
+						    <input type="radio" class="btn-check" name="stars" id="rating4" value="4" autocomplete="off">
+						    <label class="btn" for="rating4"><svg width="24" height="24" class="text-muted"><use xlink:href="#star-empty"></use></svg></label>
+						
+						    <input type="radio" class="btn-check" name="stars" id="rating5" value="5" autocomplete="off">
+						    <label class="btn" for="rating5"><svg width="24" height="24" class="text-muted"><use xlink:href="#star-empty"></use></svg></label>
+						</div>
                       </div>
                     </div>
                     <div class="pb-3">
-                      <label>Your Review *</label>
-                      <textarea class="form-control" placeholder="Write your review here"></textarea>
+                      <textarea class="form-control" name="reviewContent" style="width: 100%; height: 130px;" placeholder="詳細說明您對此產品的評價"></textarea>
                     </div>
                     <div class="pb-3">
-                      <label>Your Name *</label>
-                      <input type="text" name="name" placeholder="Write your name here" class="form-control">
+						<input type="checkbox" id="isAgree" value="" checked><label for="isAgree" class="ms-1">我同意公開此評論</a></label><br>
                     </div>
-                    <div class="pb-3">
-                      <label>Your Email *</label>
-                      <input type="text" name="email" placeholder="Write your email here" class="form-control">
-                    </div>
-                    <div class="pb-3">
-                      <label>
-                        <input type="checkbox" required="">
-                        <span class="label-body">Save my name, email, and website in this browser for the next
-                          time.</span>
-                      </label>
-                    </div>
-                    <button type="submit" name="submit"
-                      class="btn btn-dark btn-large text-uppercase w-100">Submit</button>
+                    <button id="submit" type="submit" name="submit"
+                      class="btn btn-dark btn-large text-uppercase w-100">提交評論</button>
                   </form>
                 </div>
               </div>
@@ -360,20 +363,6 @@
 
     <div th:replace="~{front/layout/footer}"></div>
 
-  <script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var addReviewBtn = document.getElementById('add-review-btn');
-    var addReviewForm = document.querySelector('.add-review-form');
-
-    addReviewBtn.addEventListener('click', function() {
-      if (addReviewForm.style.display === 'none') {
-        addReviewForm.style.display = 'block';
-      } else {
-        addReviewForm.style.display = 'none';
-      }
-    });
-  });
-</script>
   <script>
     function addToCart(button) {
         var productId = button.getAttribute('data-productId');
@@ -458,6 +447,39 @@
         bindCartButtonClick();
       });
 
+	  document.addEventListener('DOMContentLoaded', function() {
+	    var addReviewBtn = document.getElementById('add-review-btn');
+	    var addReviewForm = document.querySelector('.add-review-form');
+	
+	    addReviewBtn.addEventListener('click', function() {
+	      if (addReviewForm.style.display === 'none') {
+	        addReviewForm.style.display = 'block';
+	      } else {
+	        addReviewForm.style.display = 'none';
+	      }
+	    });
+	  });
+	  
+	  document.addEventListener("DOMContentLoaded", function() {
+    const ratings = document.querySelectorAll('input[name="stars"]');
+    const labels = document.querySelectorAll('.rating-container label');
+    const svgEmpty = '<svg width="24" height="24" class="text-muted"><use xlink:href="#star-empty"></use></svg>';
+    const svgFull = '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>';
+
+    ratings.forEach((rating, index) => {
+        rating.addEventListener('change', function() {
+            labels.forEach((label, labelIndex) => {
+                if (labelIndex < index) {
+                    label.innerHTML = svgFull;
+                } else if (labelIndex === index) {
+                    label.innerHTML = svgFull;
+                } else {
+                    label.innerHTML = svgEmpty;
+                }
+            });
+        });
+    });
+});
   </script>
   </body>
 </html>
