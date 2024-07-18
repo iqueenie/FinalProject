@@ -1,5 +1,6 @@
 package six.pinhong.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import six.hsiao.model.MembersBean;
+import six.hsiao.model.MembersRepository;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductImageRepository;
@@ -28,6 +31,9 @@ public class ProductReviewService {
 	@Autowired
 	private ProductReviewRepository productReviewRepo;
 	
+	@Autowired
+	private MembersRepository membersRepo;
+	
 	
 	// 找全部	
 	public List<ProductReview> findAll(){
@@ -43,43 +49,32 @@ public class ProductReviewService {
 	public List<ProductReview> findProductReviewsByProductId(Integer productId){
 		return productReviewRepo.findByProductProductId(productId);
 	}
+	// 找該商品所有的評論+分頁 for 所有評論使用
+	public Page<ProductReview> findProductReviewsByProductId(Integer productId, int page, int size) {
+	    Pageable pageable = PageRequest.of(page, size);
+	    return productReviewRepo.findByProductProductId(productId, pageable);
+	}
 	
 	// 商品頁顯示兩則最新的評論
 	public List<ProductReview> findTop2ByProductIdOrderByReviewTimeDesc(Integer productId){
 		return productReviewRepo.findTop2ByProductIdOrderByReviewTimeDesc(productId);
 	}
 	
-//	// 商品 更新+新增	
-//	public Product insertProduct(Product product) {
-//		return productRepo.save(product);
-//	}
-//
-//	
-//	// shop.html - 前台頁碼、查詢
-//	
-//    public Page<Product> findByPage(String searchTerm, String productType, Integer pageNum, String sortField, String sortDir, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.Direction.fromString(sortDir), sortField);
-//
-//        if ((searchTerm == null || searchTerm.trim().isEmpty()) && (productType == null || productType.trim().isEmpty())) {
-//            return productRepo.findAllPublished(pageable); // 如果搜索词和商品类型都为空，返回所有产品
-//        }
-//
-//        return productRepo.searchProducts(searchTerm.trim(), productType, pageable);
-//    }
-//    
-//	// 隨機五個同類型商品當推薦，且排除目前正在單一商品頁查看的productId
-//	public List<Product> findSametype5Products(String productType, Integer currentProductId){
-//		return productRepo.findSametype5Products(productType, currentProductId);
-//	}
-//
-//	
-//	// 找5個庫存數量最多的產品	 
-//	public List<Product> findTop5ByOrderByProductQuantityDesc() {
-//		return productRepo.findTop5ByOrderByProductQuantityDesc();
-//	}
-//	
-//	// 找10個最新上架的產品
-//	public List<Product> findTop10ByOrderByProductIdDesc(){
-//		return productRepo.findTop10ByOrderByProductIdDesc();
-//	}
+	public void insertProductReview(Integer productId, Integer memberId, String reviewContent, Integer stars) {
+	    ProductReview review = new ProductReview();
+	    // 獲取Product實體
+	    Product product = productRepo.findById(productId).orElse(null);
+	    review.setProduct(product);
+	    
+	    // 獲取MembersBean實體
+	    MembersBean member = membersRepo.findById(memberId).orElse(null);
+	    review.setMember(member);
+	    review.setReviewContent(reviewContent);
+	    review.setStars(stars);
+	    review.setReviewTime(new Date()); // 假設你想記錄評論時間
+
+	    productReviewRepo.save(review);
+	}
+	
+
 }

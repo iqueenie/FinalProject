@@ -113,8 +113,8 @@ public class ProductService {
         List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
         result.put("allProductReviews", allProductReviews);
         
-        List<ProductReview> productReviews = productReviewService.findTop2ByProductIdOrderByReviewTimeDesc(productId);
-        result.put("productReviews", productReviews);
+        List<ProductReview> twoProductReviews = productReviewService.findTop2ByProductIdOrderByReviewTimeDesc(productId);
+        result.put("twoProductReviews", twoProductReviews);
 
         // Calculate average ratings
         Map<Integer, Double> averageRatings = new HashMap<>();
@@ -224,7 +224,8 @@ public class ProductService {
 
         return result;
     }
-
+    
+    // 計算評論數量
     private void calculateProductRating(Product product, List<ProductReview> allReviews, 
                                         Map<Integer, Double> averageRatings, 
                                         Map<Integer, Integer> reviewCounts) {
