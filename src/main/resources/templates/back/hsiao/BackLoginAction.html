@@ -95,8 +95,51 @@ body {
 				required><br>
 			<br> <input type="submit" value="登入">
 		</form>
+		<br>
+		<button onclick="management()">管理員</button>
+		<button onclick="storeManager()">店長</button>
 		<!--   <a href="/FinalProject/addManagementMain" class="add-management-btn">新增管理員</a>-->
 	</div>
+	
+	
+	
+	<script>
+	function management(){
+		let managementAccount = document.getElementById('managementAccount');
+		 let managementPassword = document.getElementById('managementPassword');
+		  
+		  	let Account = 'aaa123';
+			let Password = 'aaa123';
+			
+			
+			managementAccount.value = Account;
+            managementPassword.value = Password;
+	
+	}
+	</script>
+	
+	
+	
+	
+	
+	
+	<script>
+	function storeManager(){
+		let storeManagementAccount = document.getElementById('managementAccount');
+		 let storeManagementPassword = document.getElementById('managementPassword');
+		  
+		  	let storeAccount = 'ccc123';
+			let storePassword = 'ccc123';
+			
+			
+			storeManagementAccount.value = storeAccount;
+            storeManagementPassword.value = storePassword;
+	
+	}
+	</script>
+	
+	
+	
 	
 </body>
 

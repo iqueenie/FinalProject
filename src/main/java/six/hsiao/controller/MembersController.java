@@ -227,7 +227,28 @@ public class MembersController {
 	 
 	 
 
-		
+		 @PostMapping("/front/insertMembers")
+		 public  String frontString (@ModelAttribute MembersBean member,
+					@RequestParam("memberPhotoFile") MultipartFile memberPhotoFile,Model model){
+			
+			 if(!memberPhotoFile.isEmpty()) {
+				 try {
+					byte[] memberPhoto = memberPhotoFile.getBytes();
+					member.setMemberPhoto(memberPhoto);
+					member.setPoints(0);
+				} catch (IOException e) {
+					
+					model.addAttribute("errorByPhoto","上傳圖片失敗,請檢查檔案大小");	
+					e.printStackTrace();
+				}
+				  membersService.insertMembers(member);
+				
+			 }
+			return "redirect:/public/frontLoginMain";
+			 
+			 
+		 }
+		 
 	 
 	 
 	
