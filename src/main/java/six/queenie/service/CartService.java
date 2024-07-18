@@ -13,9 +13,11 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import six.hsiao.model.MembersBean;
 import six.hsiao.model.MembersRepository;
+import six.hsiao.service.EmailService;
 import six.hsiao.service.MembersService;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
@@ -54,6 +56,8 @@ public class CartService {
 	@Autowired
 	private OrderService oService;
    
+
+	
     public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
     	if (amountDiscountId == null) {
 	        return total; 
@@ -345,7 +349,7 @@ public class CartService {
         return ordersByStatus;
     }
 		
-    private String mapStatus(String status) {
+    public String mapStatus(String status) {
         switch (status) {
         case "訂單成立已付款":
             return "待出貨";
@@ -363,8 +367,13 @@ public class CartService {
                 return "訂單已完成";
             case "訂單不成立":
                 return "不成立";
+            case "Canceled":
+            	return "不成立";
             default:
                 return status;
         }
     }
+    
+   
 }
+

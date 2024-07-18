@@ -13,6 +13,10 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import six.hsiao.model.MemberEmailRepository;
 import six.hsiao.model.MembersBean;
+import six.queenie.model.OrderDetails;
+import six.queenie.model.Orders;
+import six.queenie.service.CartService;
+import six.queenie.service.OrderService;
 import six.sunny.model.GroupBuy;
 import six.sunny.model.GroupMember;
 import six.sunny.service.GroupBuyService;
@@ -29,6 +33,9 @@ public class EmailService {
 	
 	@Autowired
 	private GroupBuyService groupBuyService;
+	@Autowired
+	private OrderService oService;
+	
 	
 	
 	 public void sendResetPasswordEmail(String to, String token) {
@@ -77,5 +84,57 @@ public class EmailService {
 		}
 
 	}
+	 //訂單成立信件
+	 public void sendOrderEmail(Integer orderId) {
+	        Orders order = oService.getOrderById(orderId);
+	        if (order == null || order.getMembers() == null) {
+	            throw new RuntimeException("未找到訂單或會員信息");
+	        }
+
+	        MembersBean member = order.getMembers();
+	        String to = member.getMemberEmail();
+	        String subject = "【EZBUY】訂單成立通知: " + order.getOrderId();
+	        String text = buildOrderConfirmationEmail(order);
+
+	        try {
+	            MimeMessage message = mailSender.createMimeMessage();
+	            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+	            helper.setTo(to);
+	            helper.setSubject(subject);
+	            helper.setText(text, true);
+	            mailSender.send(message);
+	        } catch (Exception e) {
+	            throw new RuntimeException("發送郵件失敗", e);
+	        }
+	    }
+
+	    private String buildOrderConfirmationEmail(Orders order) {
+	        StringBuilder sb = new StringBuilder();
+	        sb.append("<html>");
+	        sb.append("<body>");
+	        sb.append("<h1>訂單成立通知</h1>");
+	        sb.append("<p>尊敬的客戶，您的訂單已成功建立。</p>");
+	        sb.append("<p>訂單編號：").append(order.getOrderId()).append("</p>");
+	        sb.append("<p>訂單詳情如下：</p>");
+	        sb.append("<table>");
+	        sb.append("<tr><th>商品名稱</th><th>數量</th><th>價格</th></tr>");
+	        for (OrderDetails detail : order.getDetails()) {
+	            sb.append("<tr>")
+	              .append("<td>").append(detail.getProduct().getProductName()).append("</td>")
+	              .append("<td>").append(detail.getQuantity()).append("</td>")
+	              .append("<td>").append(detail.getProduct().getProductPrice()).append("</td>")
+	              .append("</tr>");
+	        }
+	        sb.append("</table>");
+	        sb.append("<p>總金額：").append(order.getTotal()).append("</p>");
+	        sb.append("<p>取貨店鋪：").append(order.getStoresBean().getStoreName()).append("</p>");
+	        sb.append("<p>感謝您的購買！</p>");
+	        sb.append("</body>");
+	        sb.append("</html>");
+	        return sb.toString();
+	    }
+	 
+	    }
+	 
 	
-}
+
