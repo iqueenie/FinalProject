@@ -1,10 +1,9 @@
 package six.yiting.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.hibernate.boot.jaxb.mapping.marshall.LockModeTypeMarshalling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,6 +105,13 @@ public class StoresController {
 	public String StoreSearch(Model model) {
 		return "front/yiting/StoreSearch";
 	}
+	
+	//前台友善商品
+	@GetMapping("/public/front/friendlyProduct")
+	public String FriendlyProduct() {
+		return "front/yiting/FriendlyProducts";
+	}
+	
 	
 	//用id找店鋪
 	@GetMapping("/public/front/findById")
@@ -265,5 +271,25 @@ public class StoresController {
 		return resultList;
 		
 	 }
+	 
+	//用城市和區域找店鋪找存貨為當日
+	 @PostMapping("public/front/friendlyProduct")
+	 @ResponseBody
+	 public List<String> friendlyProductByStore(@RequestBody StoresBean store){
+		List<Product> byType = storeService.findByOtherType();
+		List<String> resultList = new ArrayList<String>();
+		for(Product product : byType) {
+			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
+			if(inv!=null) {
+				resultList.add(product.getProductType());
+			}
+		}
+		
+		List<String> removeRepeat = resultList.stream().distinct().collect(Collectors.toList());
+		return resultList;
+		
+	 }
+	 
+	 
 
 }

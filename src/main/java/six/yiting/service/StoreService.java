@@ -139,6 +139,17 @@ public class StoreService {
 		}
 		return productType;
 	}
+	
+	public List<Product> findByOtherType(){
+		List<Product> allProduct = productRepo.findAll();
+		List<Product> productType = new ArrayList<Product>();
+		for(Product product: allProduct) {
+			if(!product.getProductType().equals("實體店")) {
+				productType.add(product);
+			}
+		}
+		return productType;
+	}
 }
 
 	
