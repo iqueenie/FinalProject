@@ -371,9 +371,12 @@
                                 <a href="#"
                                    class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                                    id="dropdownUser1" data-bs-toggle="dropdown"
-                                   aria-expanded="false"> <img src="https://github.com/mdo.png"
-                                         alt="" width="32" height="32" class="rounded-circle me-2">
-                                    <span><strong>會員</strong></span>
+                                   aria-expanded="false"> 
+                                   <img th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}" alt="memberPhoto" width="32" height="32" class="rounded-circle me-2">
+                                   <!-- 因為要取照片 根據我的api所以要先找到ID -->
+                                  
+                                         
+                                    <span style="color: black;"><strong>個人中心</strong></span>
 
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow "
