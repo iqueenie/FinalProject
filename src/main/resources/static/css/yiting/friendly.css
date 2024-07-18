@@ -1,0 +1,78 @@
+/* 右邊 */
+.fri_right {
+    width: 683px;
+    padding: 10px 0 0 0px;
+}
+
+.fri_graybox {
+    border: 1px solid #d5d5d5;
+    background-color: #F0F0F0;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+
+.word {
+    font-size: 15px;
+    color: #434343;
+    padding: 6px 0 0 10px;
+    font-weight: normal;
+}
+
+.form-control {
+    width: 200px;
+    margin: 5px 5px 5px 5px
+}
+
+/* 左邊 */
+.friendlyPic {
+    width: 700px;
+    height: auto;
+}
+
+.fri_left {
+    width: 225px;
+    padding: 10px 10px 5px 5px;
+    float: left;
+}
+
+/* 商店列表 */
+
+.graybigbox {
+    border: 1px solid #d5d5d5;
+    margin-bottom: 10px;
+}
+
+.greenbox {
+    background-color: #5ac20f;
+    font-size: 13px;
+    color: #FFFFFF;
+    border-right: 1px solid #FFFFFF;
+    padding-left: 15px;
+}
+
+.graybox {
+    font-size: 13px;
+    color: #666666;
+    border-right: 1px solid #d5d5d5;
+    line-height: 18px;
+    border-bottom: 1px solid #d5d5d5;
+    padding: 10px 0 10px 15px;
+    vertical-align: top;
+}
+
+.storeIcon {
+    display: block;
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-right: 5px;
+    text-indent: -9999px;
+}
+
+.shop_add_map a {
+    width: 77px;
+    height: 24px;
+    display: block;
+    color: #FAD56A;
+    font-weight: bold;
+}
