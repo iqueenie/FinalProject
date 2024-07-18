@@ -7,6 +7,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,6 +118,25 @@ public class GroupMemberService{
 		return update;
 	}
 	
+	public GroupMember updateQuantity(Integer id, Integer quantity) {
+		
+		GroupMember groupMember = groupMemberRepo.findById(id).get();
+
+		groupMember.setQuantity(quantity);
+		
+//		更新GroupMember Total
+		GroupBuy groupBuyBean = groupBuyService.findById(groupMember.getGroupBuyId());	
+		groupMember.setTotal(groupBuyBean.getPrice() * quantity);
+		
+//		更新
+		GroupMember update = groupMemberRepo.save(groupMember);
+		
+//		調整GroupBuy數量
+		groupBuyService.updateNowQuantityById(update.getGroupBuyId());
+		
+		return update;
+	}
+	
 //	處理GroupBuy與GroupMember間的商業邏輯
 	private String adjustByGb(String groupBuyStatus, String pickupStatus, int quantity) {
 		if (groupBuyStatus.equals("未開團") || groupBuyStatus.equals("開團中") || groupBuyStatus.equals("已結單")) {
@@ -169,6 +192,20 @@ public class GroupMemberService{
 		
 		return save;
 		
+	}
+	
+	public Page<GroupMember> findByMemberId(Integer id, Integer page) {
+		
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "groupBuy.orderDate");
+		
+		return groupMemberRepo.findByMemberId(id, pgb);
+	}
+	
+	public Page<GroupMember> findByMemberIdAndPickupStatus(Integer id, String pickupStatus, Integer page) {
+		
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "groupBuy.orderDate");
+		
+		return groupMemberRepo.findByMemberIdAndPickupStatus(id, pickupStatus, pgb);
 	}
 
 }

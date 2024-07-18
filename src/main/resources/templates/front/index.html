@@ -23,7 +23,7 @@
   <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
-	<style>
+  <style>
     .carousel-container {
       width: 100%;
       height: 75vh;
@@ -36,6 +36,7 @@
       max-width: 60%;
       max-height: 100%;
     }
+
     .discount-badge {
       position: absolute;
       top: 10px;
@@ -47,11 +48,12 @@
       font-weight: bold;
       border-radius: 5px;
     }
+
     .product-item {
       position: relative;
     }
   </style>
-	
+
 </head>
 
 <body>
@@ -104,7 +106,7 @@
     </div>
   </section>
 
-  <section class="py-5 overflow-hidden" >
+  <section class="py-5 overflow-hidden">
     <div class="container-lg">
       <div class="row">
         <div class="col-md-12">
@@ -113,10 +115,10 @@
             <h2 class="section-title">分類</h2>
             <div class="d-flex align-items-center">
               <a href="http://localhost:8080/FinalProject/public/Products" class="btn btn-primary me-2">View All</a>
-           		<div class="swiper-buttons">
-                  <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
-                  <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>     
- 	           </div>
+              <div class="swiper-buttons">
+                <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
+                <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
+              </div>
             </div>
           </div>
 
@@ -127,9 +129,9 @@
 
           <div class="category-carousel swiper">
             <div class="swiper-wrapper justify-content-center">
-            
+
               <a th:href="@{/public/Products(productType='飲品')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
-                <img th:src="@{/img/pinhong/index-drink.png}"  class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
+                <img th:src="@{/img/pinhong/index-drink.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">飲品</h4>
               </a>
               <a th:href="@{/public/Products(productType='零食')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
@@ -148,13 +150,13 @@
                 <img th:src="@{/img/pinhong/index-tissue-paper.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">生活用品</h4>
               </a>
-              <a th:href="@{/public/Products(productType='菸酒')}"class="nav-link swiper-slide text-center" style="margin: 20px;">
+              <a th:href="@{/public/Products(productType='菸酒')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-tobacco.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
                 <h4 class="fs-6 mt-3 fw-normal category-title">菸酒</h4>
               </a>
               <a th:href="@{/public/Products(productType='護理用品')}" class="nav-link swiper-slide text-center" style="margin: 20px;">
                 <img th:src="@{/img/pinhong/index-sanitary-pad.png}" class="rounded-circle" alt="Category Thumbnail" style="height:160px; width:160px">
-                <h4 class="fs-6 mt-3 fw-normal category-title" style= "font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500;color: #333;">護理用品</h4>
+                <h4 class="fs-6 mt-3 fw-normal category-title" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500;color: #333;">護理用品</h4>
               </a>
             </div>
           </div>
@@ -195,67 +197,67 @@
                     <h5 th:text="${product.productName}" class="fs-6 fw-normal"></h5>
                     <div>
                       <span class="rating">
-						    <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
-							  <th:block th:if="${averageRating < 1}">
-							    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-empty"></use>
-							      </svg>
-							    </th:block>
-							  </th:block>
-							  <th:block th:if="${averageRating > 0}">
-							    <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-full"></use>
-							      </svg>
-							    </th:block>
-							    <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-half"></use>
-							      </svg>
-							      <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
-							        <svg width="24" height="24" class="text-warning">
-							          <use xlink:href="#star-empty"></use>
-							        </svg>
-							      </th:block>
-							    </th:block>
-							      <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
-							        <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-half"></use>
-							      	</svg>
-							      </th:block>
-							    <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
-							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
-							        <svg width="24" height="24" class="text-warning">
-							          <use xlink:href="#star-empty"></use>
-							        </svg>
-							      </th:block>
-							    </th:block>
-							  </th:block>
-							</th:block>
-						</span>
-						 <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
+                        <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
+                          <th:block th:if="${averageRating < 1}">
+                            <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-empty"></use>
+                              </svg>
+                            </th:block>
+                          </th:block>
+                          <th:block th:if="${averageRating > 0}">
+                            <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-full"></use>
+                              </svg>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-half"></use>
+                              </svg>
+                              <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
+                                <svg width="24" height="24" class="text-warning">
+                                  <use xlink:href="#star-empty"></use>
+                                </svg>
+                              </th:block>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-half"></use>
+                              </svg>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
+                              <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
+                                <svg width="24" height="24" class="text-warning">
+                                  <use xlink:href="#star-empty"></use>
+                                </svg>
+                              </th:block>
+                            </th:block>
+                          </th:block>
+                        </th:block>
+                      </span>
+                      <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
                       <span th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                     </div>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                       <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
                       <span class="text-dark fw-semibold"
-          					th:if="${productDiscountMap[product.productId] != null}"
-          					th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
-    				  <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
-          					th:if="${productDiscountMap[product.productId] != null}"
-          					th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
-					</div>
+                            th:if="${productDiscountMap[product.productId] != null}"
+                            th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+                      <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
+                            th:if="${productDiscountMap[product.productId] != null}"
+                            th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
+                    </div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
                         <div class="col-3"><input type="number" name="quantity"
                                  class="form-control border-dark-subtle input-number quantity" value="1"></div>
-                      <div class="col-7"><button class="btn btn-primary rounded-1 p-2 fs-7 addToCart"
-                          th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
-                          <svg width="18" height="18">
-                            <use xlink:href="#cart"></use>
-                          </svg> 加入購物車
-                        </button></div>
+                        <div class="col-7"><button class="btn btn-primary rounded-1 p-2 fs-7 addToCart"
+                                  th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
+                            <svg width="18" height="18">
+                              <use xlink:href="#cart"></use>
+                            </svg> 加入購物車
+                          </button></div>
                         <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
                                  height="18">
                               <use xlink:href="#heart"></use>
@@ -285,7 +287,7 @@
 
 
             <div class="banner-ad d-flex align-items-center large block-1 bg-info"
-     			th:style="'background: url(' + @{/img/all/banner-ad-1.jpg} + ') no-repeat; background-size: cover;'">
+                 th:style="'background: url(' + @{/img/all/banner-ad-1.jpg} + ') no-repeat; background-size: cover;'">
               <div class="banner-content p-5">
                 <div class="content-wrapper text-light">
                   <h3 class="banner-title text-light">一起購購</h3>
@@ -335,11 +337,11 @@
             <h2 class="section-title">精選商品</h2>
 
 
-              <div class="swiper-buttons">
-                <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
-                <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
-              </div>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
             </div>
+          </div>
 
 
         </div>
@@ -349,79 +351,79 @@
 
           <div class="swiper">
             <div class="swiper-wrapper">
-                   
-                   <th:block th:each="product : ${new10Products}">
-         
-              <div class="product-item swiper-slide">
-                <figure>
-                  <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
-                    <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
-                  </a>
-                </figure>
-                <div class="d-flex flex-column text-center">
-                  <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
-                  <div>
+
+              <th:block th:each="product : ${new10Products}">
+
+                <div class="product-item swiper-slide">
+                  <figure>
+                    <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
+                      <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
+                    </a>
+                  </figure>
+                  <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal" th:text="${product.productName}"></h3>
+                    <div>
                       <span class="rating">
-						  <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
-							  <th:block th:if="${averageRating < 1}">
-							    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-empty"></use>
-							      </svg>
-							    </th:block>
-							  </th:block>
-							  <th:block th:if="${averageRating > 0}">
-							    <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-full"></use>
-							      </svg>
-							    </th:block>
-							    <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
-							      <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-half"></use>
-							      </svg>
-							      <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
-							        <svg width="24" height="24" class="text-warning">
-							          <use xlink:href="#star-empty"></use>
-							        </svg>
-							      </th:block>
-							    </th:block>
-							      <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
-							        <svg width="24" height="24" class="text-warning">
-							        <use xlink:href="#star-half"></use>
-							      	</svg>
-							      </th:block>
-							    <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
-							      <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
-							        <svg width="24" height="24" class="text-warning">
-							          <use xlink:href="#star-empty"></use>
-							        </svg>
-							      </th:block>
-							    </th:block>
-							  </th:block>
-							</th:block>
-						</span>
-						 <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
+                        <th:block th:with="averageRating=${averageRatings[__${product.productId}__]}">
+                          <th:block th:if="${averageRating < 1}">
+                            <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-empty"></use>
+                              </svg>
+                            </th:block>
+                          </th:block>
+                          <th:block th:if="${averageRating > 0}">
+                            <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-full"></use>
+                              </svg>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 != 0} and ${averageRating <4}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-half"></use>
+                              </svg>
+                              <th:block th:each="star : ${#numbers.sequence(averageRating+2, 5)}">
+                                <svg width="24" height="24" class="text-warning">
+                                  <use xlink:href="#star-empty"></use>
+                                </svg>
+                              </th:block>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
+                              <svg width="24" height="24" class="text-warning">
+                                <use xlink:href="#star-half"></use>
+                              </svg>
+                            </th:block>
+                            <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5} ">
+                              <th:block th:each="star : ${#numbers.sequence(averageRating+1, 5)}">
+                                <svg width="24" height="24" class="text-warning">
+                                  <use xlink:href="#star-empty"></use>
+                                </svg>
+                              </th:block>
+                            </th:block>
+                          </th:block>
+                        </th:block>
+                      </span>
+                      <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
                       <span th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                     </div>
-                  <div class="d-flex justify-content-center align-items-center gap-2" >
-                    <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
-                    <span class="text-dark fw-semibold"
-          						th:if="${productDiscountMap[product.productId] != null}"
-          						th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
-                   <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
-          						th:if="${productDiscountMap[product.productId] != null}"
-          						th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
-                  </div>
-                  <div class="button-area p-3 pt-0">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                      <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+                      <span class="text-dark fw-semibold"
+                            th:if="${productDiscountMap[product.productId] != null}"
+                            th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+                      <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
+                            th:if="${productDiscountMap[product.productId] != null}"
+                            th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
+                    </div>
+                    <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
                         <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>
                         <div class="col-7"><button class="btn btn-primary rounded-1 p-2 fs-7 addToCart"
-                          th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
-                          <svg width="18" height="18">
-                            <use xlink:href="#cart"></use>
-                          </svg> 加入購物車
-                        </button></div>
+                                  th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
+                            <svg width="18" height="18">
+                              <use xlink:href="#cart"></use>
+                            </svg> 加入購物車
+                          </button></div>
                         <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18"
                                  height="18">
                               <use xlink:href="#heart"></use>
@@ -430,14 +432,14 @@
                     </div>
                   </div>
                 </div>
-              </div>
+            </div>
             </th:block>
           </div>
-          </div>
-          <!-- / products-carousel -->
-
         </div>
+        <!-- / products-carousel -->
+
       </div>
+    </div>
     </div>
   </section>
 
@@ -496,54 +498,54 @@
   <script>
     var myCarousel = document.querySelector('#carouselExampleIndicators');
     var carousel = new bootstrap.Carousel(myCarousel, {
-      interval: 2000, 
+      interval: 2000,
       wrap: true
     });
   </script>
   <script th:inline="javascript">
-  
-   function addToCart(button) {
-    var productId = button.getAttribute('data-productId');
-    var productName = button.getAttribute('data-productName');
-    var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
 
-    Swal.fire({
+    function addToCart(button) {
+      var productId = button.getAttribute('data-productId');
+      var productName = button.getAttribute('data-productName');
+      var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
+
+      Swal.fire({
         title: '確定加入購物車?',
         html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: '是的',
         cancelButtonText: '取消'
-    }).then((result) => {
+      }).then((result) => {
         if (result.isConfirmed) {
-            var formData = {
-                productId: productId,
-                quantity: quantity 
-            };
+          var formData = {
+            productId: productId,
+            quantity: quantity
+          };
 
-            $.ajax({
-                type: 'POST',
-                url: '/FinalProject/public/addToCart',
-                data: formData,
-                success: function (response) {
-                    Swal.fire({
-                        title: '成功加入購物車',
-                        icon: 'success'
-                    });
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire({
-                        title: '加入購物車失敗',
-                        text: xhr.responseText,
-                        icon: 'error'
-                    });
-                }
-            });
+          $.ajax({
+            type: 'POST',
+            url: '/FinalProject/public/addToCart',
+            data: formData,
+            success: function (response) {
+              Swal.fire({
+                title: '成功加入購物車',
+                icon: 'success'
+              });
+            },
+            error: function (xhr, status, error) {
+              Swal.fire({
+                title: '加入購物車失敗',
+                text: xhr.responseText,
+                icon: 'error'
+              });
+            }
+          });
         }
-    });
-}
+      });
+    }
 
-</script>
+  </script>
 </body>
 
 </html>

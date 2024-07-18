@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
@@ -171,11 +172,66 @@ public class GroupMemberController {
 	    }
 	}
 	
+	@ResponseBody
+	@GetMapping("public/front/group-member-quantity")
+	public ResponseEntity<GroupMember> updateGroupBuyOrder(
+			@RequestParam("id") Integer groupMemberId,
+			@RequestParam("quantity") Integer quantity) {
+		
+		GroupMember updateQuantity = groupMemberService.updateQuantity(groupMemberId, quantity);
+		
+		return ResponseEntity.ok(updateQuantity);
+	}
+	
 	@GetMapping("private/back/ChangePickupStatus")
 	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status) {		
 		
 		groupMemberService.changeGroupMemberStatus(id, status);
 		
 		return "redirect:/private/back/GetGroupMemberByGroupBuy?gbId="+groupMemberService.findById(id).getGroupBuyId();
+	}
+	
+	@GetMapping("public/front/group-member-orders")
+	public String getGroupBuyOrders(HttpSession session, Model m) {
+		if (session.getAttribute("loggedInMember") == null) {
+			return "redirect:/public/frontLoginMain";
+		}
+
+		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		Page<GroupMember> list = groupMemberService.findByMemberId(member.getMemberId(), 1);
+		
+		m.addAttribute("gms",list);
+		
+		return "front/sunny/GroupBuyOrder";
+	}
+	
+	@ResponseBody
+	@GetMapping("public/front/group-member-orders-all")
+	public Page<GroupMember> getGroupBuyOrdersPage(HttpSession session, Model m, @RequestParam("p") Integer page) {
+		if (session.getAttribute("loggedInMember") != null) {
+			MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+			Page<GroupMember> list = groupMemberService.findByMemberId(member.getMemberId(), page);
+			
+			return list;
+		}
+		return null;
+	}
+	
+	@ResponseBody
+	@GetMapping("public/front/group-member-orders-by-status")
+	public Page<GroupMember> getGroupBuyOrdersByStatus(HttpSession session, Model m,
+			@RequestParam("p") Integer page,
+			@RequestParam(value = "status", defaultValue = "all") String status) {
+		if (session.getAttribute("loggedInMember") != null) {
+			MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+			Page<GroupMember> list = null;
+			if (status.equals("all")) {
+				list = groupMemberService.findByMemberId(member.getMemberId(), page);
+			}else {
+				list = groupMemberService.findByMemberIdAndPickupStatus(member.getMemberId(), status, page);
+			}
+			return list;
+		}
+		return null;
 	}
 }

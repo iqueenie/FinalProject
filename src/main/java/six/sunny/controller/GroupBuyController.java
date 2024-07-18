@@ -257,25 +257,7 @@ public class GroupBuyController {
 		m.addAttribute("gb", groupBuy);
 		
 		return "front/sunny/GroupBuyDetail";
-	}
-	
-	
-	
-	@GetMapping("public/front/group-buy-orders")
-	public String getGroupBuyOrders(HttpSession session, Model m) {
-		if (session.getAttribute("loggedInMember") == null) {
-			return "redirect:/public/frontLoginMain";
-		}
-
-		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
-		List<GroupMember> list = groupMemberService.findByMemberId(member.getMemberId());
-		
-		m.addAttribute("gms",list);
-		
-		return "front/sunny/GroupBuyOrder";
-	}
-	
-	
+	}	
 	
 	@ResponseBody
     @GetMapping("public/front/groupbuys/by-city")
