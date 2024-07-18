@@ -3,6 +3,7 @@ package six.liang.service;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
+import six.liang.model.HolidayDiscount;
 
 @Service
 @Transactional
@@ -56,6 +58,11 @@ public class AmountDiscountService {
 
     public List<AmountDiscount> findBySearchTermAndIsActive(String searchTerm) {
         return amountDiscountRepo.findByDiscountDescriptionContainingAndIsActiveTrue(searchTerm);
+    }
+    
+    public AmountDiscount findByDiscountName(String discountName) {
+        return amountDiscountRepo.findByDiscountName(discountName)
+                .orElseThrow(() -> new RuntimeException("折扣信息不存在"));
     }
     
     

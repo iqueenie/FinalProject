@@ -23,8 +23,8 @@
   <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
-	<style>
-    .carousel-container {
+  <style>
+  .carousel-container {
       width: 100%;
       height: 75vh;
       margin: 0 auto;
@@ -51,7 +51,6 @@
       position: relative;
     }
   </style>
-	
 </head>
 
 <body>
@@ -189,6 +188,7 @@
                     <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
                       <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail"
                            class="tab-image">
+                      <span class="discount-badge" th:if="${productDiscountMap[product.productId] != null}" th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
                     </a>
                   </figure>
                   <div class="d-flex flex-column text-center">
@@ -237,15 +237,13 @@
 						 <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
                       <span th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                     </div>
-                    <div class="d-flex justify-content-center align-items-center gap-2">
-                      <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
-                      <span class="text-dark fw-semibold"
-          					th:if="${productDiscountMap[product.productId] != null}"
-          					th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
-    				  <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
-          					th:if="${productDiscountMap[product.productId] != null}"
-          					th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
-					</div>
+                     <div class="d-flex justify-content-center align-items-center gap-2">
+                        <th:block th:if="${productDiscountMap[product.productId] != null}">
+                            <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+                            <span class="text-dark fw-semibold" th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+                        </th:block>
+                        <span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></span>
+                    </div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
                         <div class="col-3"><input type="number" name="quantity"
@@ -274,6 +272,7 @@
       </div>
     </div>
   </section>
+
 
   <section class="py-3">
     <div class="container-lg">
@@ -356,6 +355,7 @@
                 <figure>
                   <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
                     <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="Product Thumbnail" class="tab-image">
+                    <span class="discount-badge" th:if="${productDiscountMap[product.productId] != null}" th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
                   </a>
                 </figure>
                 <div class="d-flex flex-column text-center">
@@ -404,15 +404,13 @@
 						 <span th:text="${(averageRatings[__${product.productId}__] != null ? averageRatings[__${product.productId}__] : 0) +'★'}"></span>
                       <span th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                     </div>
-                  <div class="d-flex justify-content-center align-items-center gap-2" >
-                    <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
-                    <span class="text-dark fw-semibold"
-          						th:if="${productDiscountMap[product.productId] != null}"
-          						th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
-                   <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary"
-          						th:if="${productDiscountMap[product.productId] != null}"
-          						th:text="${productDiscountMap[product.productId].discountPercentage + '% OFF'}"></span>
-                  </div>
+                  <div class="d-flex justify-content-center align-items-center gap-2">
+                        <th:block th:if="${productDiscountMap[product.productId] != null}">
+                            <del th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+                            <span class="text-dark fw-semibold" th:text="${roundedDiscountedPriceMap[product.productId]}"></span>
+                        </th:block>
+                        <span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="${#numbers.formatDecimal(product.productPrice, 1, 2)}"></span>
+                    </div>
                   <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
                         <div class="col-3"><input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1"></div>

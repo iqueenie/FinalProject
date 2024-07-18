@@ -14,6 +14,9 @@ public class DiscountCategoryMapper {
         discountCategoryMap.put("菸酒優惠", "菸酒");
         discountCategoryMap.put("生活用品優惠", "生活用品");
         discountCategoryMap.put("護理用品優惠", "護理用品");
+        discountCategoryMap.put("夏季狂歡", "special");
+        discountCategoryMap.put("週年慶", "special");
+        discountCategoryMap.put("父親節", "special");
     }
 
     public static String getProductType(String discountName) {

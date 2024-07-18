@@ -3,6 +3,7 @@ package six.liang.model;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,7 @@ public interface AmountDiscountRepository extends JpaRepository<AmountDiscount, 
     List<AmountDiscount> findByIsActiveTrue();
     List<AmountDiscount> findByStartDateBeforeAndEndDateAfterAndIsActive(LocalDate currentDateStart, LocalDate currentDateEnd, Integer isActive);
     List<AmountDiscount> findByDiscountDescriptionContainingAndIsActiveTrue(String description);
+    
+    Optional<AmountDiscount> findByDiscountName(String discountName);
 }
 

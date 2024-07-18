@@ -1,6 +1,7 @@
 package six.liang.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -163,25 +164,58 @@ public class HolidayDiscountController {
 
     @GetMapping("/public/front/Discount/{name}")
     public String getDiscountByName(@PathVariable("name") String name, RedirectAttributes redirectAttributes) {
-        Logger logger = LoggerFactory.getLogger(HolidayDiscountController.class);
+        logger.info("Looking for discount with name: {}", name);
 
-        // 根據名稱獲取優惠訊息，並確定商品類別
-        HolidayDiscount discount = holidayDiscountService.findByDiscountName(name);
-        if (discount != null) {
-
-            String productType = DiscountCategoryMapper.getProductType(discount.getDiscountName());
-
-            if (productType != null) {
-                logger.info("Product Type: {}", productType);
-                redirectAttributes.addAttribute("productType", productType);
-                return "redirect:/public/Products";
-            } else {
-                logger.info("No mapping found for Discount Name: {}", discount.getDiscountName());
+        try {
+            HolidayDiscount holidayDiscount = holidayDiscountService.findByDiscountName(name);
+            if (holidayDiscount != null) {
+                String productType = DiscountCategoryMapper.getProductType(holidayDiscount.getDiscountName());
+                if (productType != null) {
+                    logger.info("Product Type: {}", productType);
+                    redirectAttributes.addAttribute("productType", productType);
+                    return "redirect:/public/Products";
+                }
+                redirectAttributes.addFlashAttribute("discountName", holidayDiscount.getDiscountName());
+                return "redirect:/public/front/specialDiscount";
             }
-        } else {
-            logger.info("Discount not found for name: {}", name);
+        } catch (RuntimeException e) {
+            logger.info("HolidayDiscount not found, checking AmountDiscount");
         }
-        // 其他返回活動頁面
+
+        try {
+            AmountDiscount amountDiscount = amountDiscountService.findByDiscountName(name);
+            if (amountDiscount != null) {
+                redirectAttributes.addFlashAttribute("discountName", amountDiscount.getDiscountName());
+                return "redirect:/public/front/specialDiscount";
+            }
+        } catch (RuntimeException e) {
+            logger.info("AmountDiscount not found for name: {}", name);
+        }
+
+        logger.info("Discount not found for name: {}", name);
         return "redirect:/public/front/Discount";
+    }
+
+    @GetMapping("/public/front/specialDiscount")
+    public String specialDiscount(Model model) {
+        Logger logger = LoggerFactory.getLogger(HolidayDiscountController.class);
+        
+        // 獲取當前日期範圍內的所有節日優惠
+        LocalDate currentDate = LocalDate.now();
+        List<AmountDiscount> amountDiscounts = amountDiscountService.findCurrentDiscounts();
+        
+        if (amountDiscounts.isEmpty()) {
+            logger.info("No active amount discounts found.");
+            return "redirect:/public/front/Discount";
+        }
+        
+        List<String> amountDiscountImagesBase64 = amountDiscounts.stream()
+                .map(discount -> amountDiscountService.getDiscountImageBase64(discount.getDiscountImage()))
+                .collect(Collectors.toList());
+
+        model.addAttribute("amountDiscounts", amountDiscounts);
+        model.addAttribute("amountDiscountImagesBase64", amountDiscountImagesBase64);
+
+        return "front/liang/specialDiscount";
     }
 }
