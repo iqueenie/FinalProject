@@ -338,8 +338,10 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
               title: '成功加入購物車',
               icon: 'success'
-            });
-          })
+            }).then(() => {
+          location.reload(); 
+        });
+      })
           .catch(err => {
             console.error('加入購物車失敗:', err);
             Swal.fire({

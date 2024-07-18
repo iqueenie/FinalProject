@@ -528,9 +528,10 @@
                 success: function (response) {
                     Swal.fire({
                         title: '成功加入購物車',
-                        icon: 'success'
-                    });
-                },
+                        }).then(() => {
+           			 location.reload(); 
+                });                
+              },
                 error: function (xhr, status, error) {
                     Swal.fire({
                         title: '加入購物車失敗',

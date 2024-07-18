@@ -130,7 +130,7 @@ public class CartController {
         if (updatedCartItems != null) {
             for (Map<String, Object> item : updatedCartItems) {
                 Integer productId = (Integer) item.get("productId");
-                Integer quantity = (Integer) item.get("quantity");
+                Integer quantity = (Integer) item.get("newQuantity");
                 if (productId != null && quantity != null) {
                     productQuantities.put(productId, quantity);
                 }
@@ -142,7 +142,6 @@ public class CartController {
         session.setAttribute("sumTotal", cartDetails.get("sumTotal"));
         session.setAttribute("discountMoney", cartDetails.get("discountMoney"));
         session.setAttribute("finalAmount", cartDetails.get("finalAmount"));
-        session.setAttribute("quantity", cartDetails.get("quantity"));
 
         Map<String, Object> response = new HashMap<>();
         response.put("cartItems", cartItems);
@@ -150,6 +149,7 @@ public class CartController {
         response.put("sumTotal", cartDetails.get("sumTotal"));
         response.put("discountMoney", cartDetails.get("discountMoney"));
         response.put("finalAmount", cartDetails.get("finalAmount"));
+        response.put("newQuantity", cartDetails.get("newQuantity"));
 
         return ResponseEntity.ok(response);
     }
@@ -220,40 +220,42 @@ public class CartController {
 	}
 
 	@PostMapping("/public/insert")
-	public String insertOrder(Model model, HttpServletRequest request, HttpSession session,
+	public String insertOrder(Model model, HttpSession session,
 	                          @RequestParam(required = false) Integer memberId,
-	                          @RequestParam String paymentMethod) {
+	                          @RequestParam String paymentMethod,
+	                          @RequestParam Integer storeId,
+	                          @RequestParam(required = false) Integer pointUse,
+	                          @RequestParam(required = false, defaultValue = "0") Integer unpaidCount, 
+	                          @RequestParam(required = false) String status) {
 	    List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
 	    Map<Integer, Integer> productQuantities = (Map<Integer, Integer>) session.getAttribute(SESSION_PRODUCT_QUANTITIES);
 	    MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
 
-	    if (loggedInMember != null) {
-	        memberId = loggedInMember.getMemberId();
-	    } else if (memberId == null) {
-	        String memberIdParam = request.getParameter("memberId");
-	        if (memberIdParam != null && !memberIdParam.isEmpty()) {
-	            memberId = Integer.parseInt(memberIdParam);
-	        }
-	    }
+	    memberId = loggedInMember.getMemberId();
 
-	    Orders order = cartService.insertOrderFromCart(cartItems, productQuantities, memberId, request);	
+	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
+	            storeId, paymentMethod, pointUse, status, unpaidCount);
 
-	    //更新訂單狀態
-	    cartService.processCheckout(order.getOrderId(), paymentMethod);
-	    //發送訂單成功信件
-	    emailService.sendOrderEmail(order.getOrderId());
-	   
-	    // 獲取訂單狀態分組
-	    Map<String, List<Orders>> status = cartService.getOrdersGroupedByStatus();
+	    // 更新订单状态
+	    cartService.processCheckout(orders.getOrderId(), paymentMethod);
+	    // 发送订单成功邮件
+	    emailService.sendOrderEmail(orders.getOrderId());
 
-	    model.addAttribute("status", status);
-	    model.addAttribute("order", order);
+	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
+	    System.out.println(ordersList);
+
+	    Map<String, List<Orders>> ordersByStatus = ordersList.stream()
+	            .filter(order -> order.getStatus() != null)
+	            .collect(Collectors.groupingBy(order -> cartService.mapStatus(order.getStatus())));
+
+	    model.addAttribute("ordersByStatus", ordersByStatus);
+	    model.addAttribute("orders", orders);
 	    session.setAttribute(SESSION_CART, new ArrayList<>());
-	    session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>()); 
+	    session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
 
 	    return "front/queenie/memberOrder";
 	}
-	
+
 	@GetMapping("/public/MemberOrder")
 	public String getAllOrders(HttpSession session, Model model) {
 

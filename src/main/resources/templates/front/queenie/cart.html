@@ -87,7 +87,7 @@
                             <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
                           </button>
                       </span>
-                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" min="1" value="1" th:value="${session.productQuantities[product.productId]}" data-productId="${product.productId}"
+                      <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" min="1" value="1" 
                       oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');">
                       <span class="input-group-btn">
                           <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
@@ -113,7 +113,6 @@
         </td>
     </tr>
 </tbody>
-
           </table>
           </form>
         </div>
@@ -130,7 +129,7 @@
                   <td data-title="Total">
                     <span class="price-amount amount text-dark ps-5" >
                       <bdi>
-                        <span class="price-currency-symbol">TWD</span><span id="totalAmount" th:text="${sumTotal}"></span>
+                        <span class="price-currency-symbol">TWD</span><span id="sumTotal" th:text="${sumTotal}"></span>
                       </bdi>
                     </span>
                   </td>
@@ -140,7 +139,7 @@
                   <td data-title="discount">
                     <span class="price-amount amount text-dark ps-5">
                       <bdi>
-                        <span class="price-currency-symbol">TWD</span><span id="discount" th:text="${discountMoney}"></span>
+                        <span class="price-currency-symbol">TWD</span><span id="discountMoney" th:text="${discountMoney}"></span>
 
                       </bdi>
                     </span>
@@ -151,7 +150,7 @@
                   <td data-title="Final" >
                     <span class="price-amount amount text-dark ps-5">
                       <bdi>
-                         <span class="price-currency-symbol">TWD</span><span id="finalAmount" th:text="${finalAmount}"></span>
+                         <span class="price-currency-symbol">TWD</span><span id="finalAmount" th:text="${total}"></span>
                       </bdi>
                     </span>
                   </td>
@@ -178,8 +177,8 @@
     $('.input-number').on('input', function() {
         var quantityInput = $(this);
         var productId = quantityInput.data('productId');
-        var newQuantity = parseInt(quantityInput.val());
-
+        var newQuantity = parseInt(document.querySelector('input[name="quantity"]').value);
+		console.log(newQuantity);
         updateCart(productId, newQuantity);
     });
 
@@ -195,9 +194,9 @@
                 }]
             }),
             success: function(response) {
-                $('#totalAmount').text(response.sumTotal); 
-                $('#discount').text(response.discountMoney);  
-                $('#finalAmount').text(response.finalAmount);  
+                $('#sumTotal').text(response.sumTotal); 
+                $('#discountMoney').text(response.discountMoney);  
+                $('#finalAmount').text(response.total);  
             },
             error: function() {
                 alert('數量更新失敗');
@@ -228,6 +227,7 @@
         success: function() {
             console.log('Product deleted successfully');
             removeProductFromPage(productId);
+            location.reload();
         },
         error: function(error) {
             console.error('Error deleting product:', error);

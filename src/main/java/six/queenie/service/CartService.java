@@ -171,23 +171,12 @@ public class CartService {
         return cartDetails;
     }
     
-    public Orders insertOrderFromCart(List<Product> cartItems, Map<Integer, Integer> productQuantities, Integer memberId, HttpServletRequest request) {
-        Integer storeId = Integer.parseInt(request.getParameter("storeId"));
+    public Orders insertOrderFromCart(List<Product> cartItems, Map<Integer, Integer> productQuantities, 
+    		Integer memberId,Integer storeId,String paymentMethod,Integer pointUse,String status,Integer unpaidCount ) {
+        
         LocalDate currentDate = LocalDate.now();
         Date orderDate = Date.valueOf(currentDate);
-        String paymentMethod = request.getParameter("paymentMethod");
-        Integer usePoints = Integer.parseInt(request.getParameter("pointUse"));
-
-        String unpaidCountParam = request.getParameter("unpaidCount");
-        Integer unpaidCount = unpaidCountParam != null && !unpaidCountParam.isEmpty() ? Integer.parseInt(unpaidCountParam) : 0;
-        if (unpaidCount > 2) {
-            lockAccountForOneMonth(memberId);
-        } else {
-            updateAccountStatus(memberId, "正常");
-        }
-
-        String status = request.getParameter("status");
-
+       
         MembersBean member = mService.findByMemberId(memberId);
         StoresBean store = stService.findByStoreId(storeId);
         List<OrderDetails> orderDetailsList = new LinkedList<>();
@@ -224,9 +213,9 @@ public class CartService {
         Integer discountMoney = sumTotal - amountDiscount;
         Integer points = getMemberPoints(memberId);
         Integer finalAmount;
-        Integer pointUse;
+        
 
-        if (usePoints == 1 && points != null && points <= amountDiscount) {
+        if (pointUse == 1 && points != null && points <= amountDiscount) {
             pointUse = points;
             finalAmount = amountDiscount - pointUse;
         } else {
@@ -278,31 +267,6 @@ public class CartService {
         return ordersRepository.findByMembers(member);
     }
     
-    //設定會員鎖定狀態
-    public void lockAccountForOneMonth(Integer memberId) {
-    	MembersBean member = mService.findByMemberId(memberId);
-     
-    	if (member != null) {           
-
-            member.lock(LocalDate.now());    
-            mRepository.save(member);
-        } else {
-            throw new RuntimeException("會員未找到");
-        }
-    }
-    
-    public void unlockAccountIfNeeded(Integer memberId) {
-    	MembersBean member = mService.findByMemberId(memberId);
-     
-            if (member != null) {
-            	if(member.isLocked() && member.getLockDate().plusMonths(1).isBefore(LocalDate.now())) {
-                member.unlock();
-                mRepository.save(member);
-            }
-        }   else {
-            throw new RuntimeException("會員未找到");
-        }
-    }
     
     public void updateAccountStatus(Integer memberId, String lockStatus) {
     	MembersBean member = mService.findByMemberId(memberId);
