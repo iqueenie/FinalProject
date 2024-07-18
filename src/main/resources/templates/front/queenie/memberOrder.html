@@ -106,6 +106,7 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
+                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -119,9 +120,10 @@
                                         <th>操作</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:if="${not #lists.isEmpty(ordersByStatus['待出貨'])}">
+                                    <tbody>
                                     <tr th:each="order : ${ordersByStatus['待出貨']}">
                                         <td th:text="${order.orderId}"></td>
+                                         <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -150,6 +152,7 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
+                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -164,9 +167,10 @@
                                         <th>操作</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:if="${not #lists.isEmpty(ordersByStatus['待收貨'])}">
+                                    <tbody>
                                     <tr th:each="order : ${ordersByStatus['待收貨']}">
                                         <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -196,6 +200,7 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
+                                         <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -210,9 +215,10 @@
                                         <th>操作</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:if="${not #lists.isEmpty(ordersByStatus['訂單已完成'])}">
+                                    <tbody>
                                     <tr th:each="order : ${ordersByStatus['訂單已完成']}">
                                         <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -240,6 +246,7 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
+                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -253,9 +260,10 @@
                                         <th>操作</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:if="${not #lists.isEmpty(ordersByStatus['不成立'])}">
+                                    <tbody>
                                     <tr th:each="order : ${ordersByStatus['不成立']}">
                                         <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>

@@ -457,7 +457,7 @@
                         </th:block>
                         <li class="list-group-item d-flex justify-content-between">
                             <strong>总金额</strong>
-                            <span th:text="${sumTotal}"></span>
+                            <span th:text="${session.sumTotal}"></span>
                         </li>
                     </ul>
                     <div th:if="${#lists.isEmpty(session.sessionCart)}">

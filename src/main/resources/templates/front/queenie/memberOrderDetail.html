@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="orderDetail, rowStat : ${orderDetailsList}">
+            <tr th:each="orderDetail: ${orderDetailsList}">
                 <td th:text="${orderDetail.orders.orderId}"></td>
                 <td>
                     <img th:src="@{/ProductPhoto(productId=${orderDetail.product.productId})}" 
