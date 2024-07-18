@@ -1,18 +1,8 @@
 package six.liang.model;
 
 import java.time.LocalDate;
-
 import org.springframework.stereotype.Component;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import six.hsiao.model.MembersBean;
 
 @Entity
@@ -32,6 +22,10 @@ public class LotteryRecord {
     private MembersBean memberBean;
 
     private LocalDate drawDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "awardId", nullable = false)
+    private Award award;
 
     // Getters and Setters
     public Long getId() {
@@ -64,5 +58,13 @@ public class LotteryRecord {
 
     public void setDrawDate(LocalDate drawDate) {
         this.drawDate = drawDate;
+    }
+
+    public Award getAward() {
+        return award;
+    }
+
+    public void setAward(Award award) {
+        this.award = award;
     }
 }

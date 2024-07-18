@@ -1,7 +1,6 @@
 package six.liang.model;
 
 import org.springframework.stereotype.Component;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,9 +17,7 @@ public class Award {
     private Long id;
 
     private String name;
-
     private int points;
-
     private double probability;
 
     // Getters and Setters

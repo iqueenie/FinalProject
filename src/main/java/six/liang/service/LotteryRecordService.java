@@ -33,13 +33,13 @@ public class LotteryRecordService {
     }
 
     public Award drawLottery(String memberAccount) throws Exception {
-        // 获取当前会员
+        
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         if (member == null) {
             throw new Exception("Member not found.");
         }
 
-        // 检查今天是否已经抽奖
+        
         LocalDate today = LocalDate.now();
         Optional<LotteryRecord> todayRecords = lotteryRecordRepository.findByMemberBeanAndDrawDate(member, today);
         if (todayRecords.isPresent()) {
@@ -51,16 +51,17 @@ public class LotteryRecordService {
             throw new Exception("No awards available.");
         }
 
-        // 抽奖逻辑
+        
         Award award = getRandomAward(awards);
         member.setPoints(member.getPoints() + award.getPoints());
         membersRepository.save(member);
 
-        // 记录抽奖
+        
         LotteryRecord record = new LotteryRecord();
         record.setMemberBean(member);
         record.setMemberId(member.getMemberId());
         record.setDrawDate(today);
+        record.setAward(award); 
         lotteryRecordRepository.save(record);
 
         return award;
@@ -77,7 +78,7 @@ public class LotteryRecordService {
                 return award;
             }
         }
-        return awards.get(awards.size() - 1); // fallback to the last award
+        return awards.get(awards.size() - 1); 
     }
 
     public List<LotteryRecord> getRecordsByMemberAccount(String memberAccount) {
