@@ -32,6 +32,8 @@ import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductReview;
 import six.pinhong.service.ProductReviewService;
 import six.pinhong.service.ProductService;
+import six.queenie.model.OrderDetailRepository;
+import six.queenie.model.OrderDetails;
 
 @Controller
 public class ProductController {
@@ -41,6 +43,9 @@ public class ProductController {
 	
 	@Autowired
 	private ProductReviewService productReviewService;
+	
+	@Autowired
+	private OrderDetailRepository orderDetailRepo;
 	
 	// 後台查全部
 	@GetMapping("/private/Product/GetAll")
@@ -279,17 +284,26 @@ public class ProductController {
 	    }
 	    Map<String, Object> productDetails = productService.getProductDetails(productId);
 	    List<ProductReview> productReviews = productReviewService.findProductReviewsByProductId(productId);
-	    Page<ProductReview> productReviewsForPage = productReviewService.findProductReviewsByProductId(productId, page, 4); 
-
+	    Page<ProductReview> productReviewsForPage = productReviewService.findProductReviewsByProductId(productId, page, 4);
+	    
 
 	 // 檢查是否已經評價過
 	    boolean hasReviewed = false;
+	    boolean showForUser = false;
+
 	    if (memberId != null) {
+	        // 檢查是否以評論過
 	        for (ProductReview review : productReviews) {
 	            if (review.getMember().getMemberId().equals(memberId)) {
 	                hasReviewed = true;
 	                break;
 	            }
+	        }
+
+	        // 檢查是否購買且訂單狀態為"已送達"
+	        List<OrderDetails> orderDetailsList = orderDetailRepo.findOrderDetailsByProductIdAndMemberId(productId, memberId);
+	        if (!orderDetailsList.isEmpty()) {
+	            showForUser = true;
 	        }
 	    }
 
@@ -301,6 +315,7 @@ public class ProductController {
 	    model.addAttribute("averageRatings", productDetails.get("averageRatings"));
 	    model.addAttribute("reviewCounts", productDetails.get("reviewCounts"));
 	    model.addAttribute("hasReviewed", hasReviewed);
+	    model.addAttribute("showForUser", showForUser);
 	    model.addAttribute("productReviewsContent", productReviewsForPage.getContent()); // 獲取當前頁的評論
 	    model.addAttribute("totalPages", productReviewsForPage.getContent()); // 總頁數
 

@@ -301,11 +301,13 @@
 				<div class="qty-button d-flex flex-wrap pt-3">
                       <button type="button" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">所有評論</button>                      
                    <th:block th:if="${session.loggedInMember != null}">
+                   <th:block th:if="${showForUser}">
 				        <th:block th:if="${!hasReviewed}">
 				            <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3" id="add-review-btn">新增評論</button>
 				        </th:block>
 				        <th:block th:if="${hasReviewed}">
 				            <button type="button" class="btn btn-secondary py-3 px-4 text-uppercase me-3 mt-3" disabled>您已評論過此產品</button>
+				         </th:block>
 				        </th:block>                      
 			        </th:block>                  
                 </div>

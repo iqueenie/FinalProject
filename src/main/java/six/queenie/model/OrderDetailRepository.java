@@ -42,5 +42,10 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetails, Integ
 		       "ORDER BY totalQuantity DESC " +
 		       "LIMIT 5")
     List<Object[]> findTop5BestSellingProducts();
+    
+    
+    @Query("SELECT od FROM OrderDetails od JOIN od.orders o WHERE od.product.productId = :productId AND o.members.memberId = :memberId AND o.status = '已送達'")
+    List<OrderDetails> findOrderDetailsByProductIdAndMemberId(@Param("productId") Integer productId, @Param("memberId") Integer memberId);
+
 
 }

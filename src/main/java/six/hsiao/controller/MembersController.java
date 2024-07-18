@@ -154,7 +154,6 @@ public class MembersController {
 		 if(member !=null) {
 	
 			 session.setAttribute("loggedInMember", member);
-			 session.setAttribute("loggedInMemberName", member.getMemberName());
 			 return "redirect:/public/front";
 //		 }
 		 }
