@@ -73,6 +73,11 @@
     width: 77px;
     height: 24px;
     display: block;
-    color: #FAD56A;
+    color: #5ac20f;
     font-weight: bold;
+}
+
+.prodType i {
+    font-size: 13px;
+    color: #FAD56A;
 }

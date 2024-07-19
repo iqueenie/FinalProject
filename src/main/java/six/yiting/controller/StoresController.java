@@ -1,10 +1,14 @@
 package six.yiting.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -136,6 +140,14 @@ public class StoresController {
 		return storeService.findByCityAndArea(city, area);
 	}
 	
+	//用城市和區域找店鋪分頁版
+	@GetMapping("/public/front/findByAreaPage")
+	@ResponseBody
+	public Page<StoresBean> findByAreaPage(String city,String area){
+		return storeService.findByCityAndAreaPage(city, area);
+	}
+	
+	
 	//用城市和區域和街道找店鋪
 	@GetMapping("/public/front/findByStreet")
 	@ResponseBody
@@ -257,7 +269,7 @@ public class StoresController {
 	    }
 	 
 	 //找出店鋪有哪些特殊商品
-	 @PostMapping("public/front/storeSpecial")
+	 @PostMapping("/public/front/storeSpecial")
 	 @ResponseBody
 	 public List<Integer> getProductByStore(@RequestBody StoresBean store){
 		List<Product> byType = storeService.findByType();
@@ -272,24 +284,38 @@ public class StoresController {
 		
 	 }
 	 
-	//用城市和區域找店鋪找存貨為當日
-	 @PostMapping("public/front/friendlyProduct")
+	//用城市和區域找店鋪找存貨為當日Map<類別,數量>
+	 @PostMapping("/public/front/friendlyProduct")
 	 @ResponseBody
-	 public List<String> friendlyProductByStore(@RequestBody StoresBean store){
+	 public Map<String,Integer> friendlyProductByStore(@RequestBody StoresBean store){
 		List<Product> byType = storeService.findByOtherType();
-		List<String> resultList = new ArrayList<String>();
+
+		Map<String,Integer> inventoryExpDates = new HashMap<>();
+
+		LocalDate today = LocalDate.now().minusDays(1);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
-			if(inv!=null) {
-				resultList.add(product.getProductType());
+			String type = product.getProductType(); 
+			if(inv!=null && inv.getExpDate().equals(today)) {
+				if(inventoryExpDates.containsKey(type)) {
+				Integer count=inventoryExpDates.get(type);
+				inventoryExpDates.put(type, count+inv.getInvNum());
+				}else {
+					inventoryExpDates.put(type,inv.getInvNum());
+				}
 			}
 		}
 		
-		List<String> removeRepeat = resultList.stream().distinct().collect(Collectors.toList());
-		return resultList;
+		return inventoryExpDates;
 		
 	 }
 	 
+	 @ResponseBody
+	 @GetMapping("/front/friByCityAndArea")
+	 public Page<StoresBean> friendlyProductPage(@RequestParam("p") Integer pageNumber,String city,String area){
+		 Page<StoresBean> friProductByAreaAndCity = storeService.findFriProductByAreaAndCity(pageNumber, city, area);	
+		 return friProductByAreaAndCity;
+	 }
 	 
 
 }
