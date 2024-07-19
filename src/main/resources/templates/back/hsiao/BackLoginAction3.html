@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+<title>後台登入</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.login-container {
+	background-color: #ffffff;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	width: 300px;
+	text-align: center;
+}
+
+.login-container h2 {
+	margin-bottom: 20px;
+	color: #333333;
+}
+
+.login-container form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login-container form label {
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+
+.login-container form input[type="text"], .login-container form input[type="password"]
+	{
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 15px;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	box-sizing: border-box;
+	font-size: 14px;
+}
+
+.login-container form input[type="submit"] {
+	width: 100%;
+	padding: 10px;
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+/* 新增按钮样式 */
+.add-management-btn {
+	margin-top: 20px;
+	display: inline-block;
+	padding: 10px;
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+	text-decoration: none;
+	font-size: 14px;
+	text-align: center;
+}
+
+.add-management-btn:hover {
+	background-color: #45a049;
+}
+</style>
+</head>
+
+<body>
+	<div class="login-container">
+		<h2>後台登入</h2>
+
+		<form action="/FinalProject/public/login" method="post">
+			<label for="managementAccount">帳號：</label> <input type="text"
+				id="managementAccount" name="managementAccount" required><br>
+			<br> <label for="managementPassword">密碼：</label> <input
+				type="password" id="managementPassword" name="managementPassword"
+				required><br>
+			<br> <input type="submit" value="登入">
+		</form>
+		<br>
+		<button onclick="management()">管理員</button>
+		<button onclick="storeManager()">店長</button>
+		<!--   <a href="/FinalProject/addManagementMain" class="add-management-btn">新增管理員</a>-->
+	</div>
+	
+	
+	
+	<script>
+	function management(){
+		let managementAccount = document.getElementById('managementAccount');
+		 let managementPassword = document.getElementById('managementPassword');
+		  
+		  	let Account = 'aaa123';
+			let Password = 'aaa123';
+			
+			
+			managementAccount.value = Account;
+            managementPassword.value = Password;
+	
+	}
+	</script>
+	
+	
+	
+	
+	
+	
+	<script>
+	function storeManager(){
+		let storeManagementAccount = document.getElementById('managementAccount');
+		 let storeManagementPassword = document.getElementById('managementPassword');
+		  
+		  	let storeAccount = 'ccc123';
+			let storePassword = 'ccc123';
+			
+			
+			storeManagementAccount.value = storeAccount;
+            storeManagementPassword.value = storePassword;
+	
+	}
+	</script>
+	
+	
+	
+	
+</body>
+
+</html>
