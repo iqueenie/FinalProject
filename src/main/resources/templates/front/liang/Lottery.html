@@ -29,8 +29,22 @@
     <div class="py-4">
         <div class="container-lg">
             <div class="row g-5">
-                <main class="col-md-10 offset-md-1">
-                    <div class="text-center">
+                <aside class="col-md-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>三天內抽獎紀錄</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul id="lotteryRecordsList" class="list-group">
+                                <li class="list-group-item" th:each="record : ${lotteryRecords}">
+                                    <span th:text="${record.drawDate}"></span>: <span th:text="${record.award.name}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+                <main class="col-md-8 d-flex flex-column align-items-center">
+                    <div class="text-center w-100">
                         <h2>立即參與每日抽獎</h2>
                         <p>每位會員每天有一次抽獎機會，試試你的運氣吧！</p>
                         <p>剩餘抽獎次數: <span id="remainingDraws" th:text="${remainingDraws}">1</span> 次</p>
@@ -51,7 +65,12 @@ $(document).ready(function() {
         e.preventDefault();
         let remainingDraws = parseInt($('#remainingDraws').text());
         if (remainingDraws <= 0) {
-            return; // 如果剩餘次數為0，直接返回
+            Swal.fire({
+                title: '已無剩餘抽獎次數',
+                icon: 'warning',
+                confirmButtonText: '確認'
+            });
+            return;
         }
 
         $.ajax({
@@ -85,6 +104,12 @@ $(document).ready(function() {
                             console.log("抽獎成功，響應:", response);
                             $('#result').text('恭喜您獲得 ' + response.awardName + ' 獎項，會員點數增加 ' + response.points + ' 點');
                             $('#remainingDraws').text('0'); // 更新剩余抽獎次數
+
+                            // 更新抽獎紀錄列表
+                            let currentDate = new Date().toISOString().split('T')[0];
+                            let newRecord = $('<li class="list-group-item">' + currentDate + ': ' + response.awardName + '</li>');
+                            $('#lotteryRecordsList').prepend(newRecord);
+
                             Swal.fire({
                                 title: '恭喜您！',
                                 text: '您獲得了 ' + response.awardName + ' 獎項，會員點數增加 ' + response.points + ' 點',
@@ -94,7 +119,11 @@ $(document).ready(function() {
                         },
                         error: function(xhr, status, error) {
                             console.log("抽獎失敗:", error);
-                            $('#remainingDraws').text('0'); // 更新剩余抽獎次數
+                            Swal.fire({
+                                title: '抽獎失敗',
+                                icon: 'error',
+                                confirmButtonText: '確認'
+                            });
                         }
                     });
                 }

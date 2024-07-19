@@ -12,4 +12,6 @@ public interface LotteryRecordRepository extends JpaRepository<LotteryRecord, Lo
     Optional<LotteryRecord> findByMemberBeanAndDrawDate(MembersBean memberBean, LocalDate drawDate);
     List<LotteryRecord> findByMemberBean(MembersBean memberBean);
     List<LotteryRecord> findByDrawDateBefore(LocalDate date);
+    List<LotteryRecord> findByMemberBeanAndDrawDateAfter(MembersBean member, LocalDate date);
+   
 }

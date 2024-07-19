@@ -34,6 +34,10 @@ public class LotteryRecordController {
         int remainingDraws = hasDrawnToday ? 0 : 1;
         model.addAttribute("remainingDraws", remainingDraws);
 
+        String memberAccount = loggedInMember.getMemberAccount();
+        List<LotteryRecord> lotteryRecords = lotteryRecordService.getRecentRecords(memberAccount, 3);
+        model.addAttribute("lotteryRecords", lotteryRecords);
+
         return "front/liang/lottery";
     }
 
@@ -60,16 +64,4 @@ public class LotteryRecordController {
         }
     }
 
-    @GetMapping("/public/front/lottery/records")
-    public String getLotteryRecords(HttpSession session, Model model) {
-        MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
-        if (loggedInMember == null) {
-            return "redirect:/public/frontLoginMain"; // 如果未登錄，重定向到登錄頁面
-        }
-
-        String memberAccount = loggedInMember.getMemberAccount();
-        List<LotteryRecord> records = lotteryRecordService.getRecordsByMemberAccount(memberAccount);
-        model.addAttribute("records", records);
-        return "front/liang/lottery/records";
-    }
 }

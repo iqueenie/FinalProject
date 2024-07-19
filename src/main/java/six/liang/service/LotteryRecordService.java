@@ -33,13 +33,11 @@ public class LotteryRecordService {
     }
 
     public Award drawLottery(String memberAccount) throws Exception {
-        
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         if (member == null) {
             throw new Exception("Member not found.");
         }
 
-        
         LocalDate today = LocalDate.now();
         Optional<LotteryRecord> todayRecords = lotteryRecordRepository.findByMemberBeanAndDrawDate(member, today);
         if (todayRecords.isPresent()) {
@@ -51,12 +49,10 @@ public class LotteryRecordService {
             throw new Exception("No awards available.");
         }
 
-        
         Award award = getRandomAward(awards);
         member.setPoints(member.getPoints() + award.getPoints());
         membersRepository.save(member);
 
-        
         LotteryRecord record = new LotteryRecord();
         record.setMemberBean(member);
         record.setMemberId(member.getMemberId());
@@ -87,5 +83,14 @@ public class LotteryRecordService {
             throw new RuntimeException("Member not found.");
         }
         return lotteryRecordRepository.findByMemberBean(member);
+    }
+
+    public List<LotteryRecord> getRecentRecords(String memberAccount, int days) {
+        MembersBean member = membersRepository.findByMemberAccount(memberAccount);
+        if (member == null) {
+            throw new RuntimeException("Member not found.");
+        }
+        LocalDate startDate = LocalDate.now().minusDays(days);
+        return lotteryRecordRepository.findByMemberBeanAndDrawDateAfter(member, startDate);
     }
 }
