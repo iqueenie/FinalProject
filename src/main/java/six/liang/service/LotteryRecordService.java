@@ -25,13 +25,15 @@ public class LotteryRecordService {
 
     @Autowired
     private MembersRepository membersRepository;
-
+    
+//    檢查會員是否已抽獎
     public boolean hasDrawnToday(String memberAccount) {
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         LocalDate today = LocalDate.now();
         return lotteryRecordRepository.findByMemberBeanAndDrawDate(member, today).isPresent();
     }
 
+//    執行抽獎，並保存紀錄
     public Award drawLottery(String memberAccount) throws Exception {
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         if (member == null) {
@@ -62,7 +64,7 @@ public class LotteryRecordService {
 
         return award;
     }
-
+//		根據awards機率抽獎
     private Award getRandomAward(List<Award> awards) {
         Random random = new Random();
         double totalWeight = awards.stream().mapToDouble(Award::getProbability).sum();
@@ -77,6 +79,7 @@ public class LotteryRecordService {
         return awards.get(awards.size() - 1); 
     }
 
+//    獲取所有會員抽獎紀錄
     public List<LotteryRecord> getRecordsByMemberAccount(String memberAccount) {
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         if (member == null) {
@@ -85,6 +88,7 @@ public class LotteryRecordService {
         return lotteryRecordRepository.findByMemberBean(member);
     }
 
+//    獲取所有會員最近幾天抽獎紀錄
     public List<LotteryRecord> getRecentRecords(String memberAccount, int days) {
         MembersBean member = membersRepository.findByMemberAccount(memberAccount);
         if (member == null) {
