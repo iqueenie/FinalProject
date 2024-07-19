@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.Broadcast;
+import com.linecorp.bot.model.message.TextMessage;
+
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.dto.ManagementDTO;
 import six.hsiao.model.ManagementRoles;
@@ -57,7 +61,8 @@ public class GroupBuyController {
 	@Autowired
 	private EmailService emailService;
 	
-	
+    @Autowired
+    private LineMessagingClient lineMessagingClient;
 	
 	@RequestMapping(path = "private/back/GetAllGroupBuy", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 	public String getAllGroupBuy(Model m, HttpSession session) {
@@ -159,11 +164,35 @@ public class GroupBuyController {
 	
 	@PostMapping("private/back/InsertGroupBuy")
 	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
-		groupBuyService.insert(groupBuy);
+		GroupBuy insert = groupBuyService.insert(groupBuy);
+		broadcastMessage(insert);
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
-	
+    private void broadcastMessage(GroupBuy groupBuy) {
+    	
+        String messageText = formatGroupBuyMessage(groupBuy);
+        TextMessage textMessage = new TextMessage(messageText);
+        Broadcast broadcast = new Broadcast(textMessage);
+    	
+        try {
+            lineMessagingClient.broadcast(broadcast).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private String formatGroupBuyMessage(GroupBuy groupBuy) {
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("EZBUY開團囉！！\n");
+        messageBuilder.append("商品名稱: ").append(groupBuy.getProduct().getProductName()).append("\n");
+        messageBuilder.append("店家名稱: ").append(groupBuy.getStore().getStoreName()).append("\n");
+        messageBuilder.append("優惠價格: ").append(groupBuy.getPrice()).append(" 元\n");
+        messageBuilder.append("目標數量: ").append(groupBuy.getTargetQuantity()).append("\n");
+        messageBuilder.append("預計訂購日期: ").append(groupBuy.getOrderDate()).append("\n");
+        messageBuilder.append("詳情請見 http://localhost:8080/FinalProject/public/front/group-buys ");
+        return messageBuilder.toString();
+    }
 	
 	@ResponseBody
 	@DeleteMapping("private/back/DeleteGroupBuy")
