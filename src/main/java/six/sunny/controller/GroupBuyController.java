@@ -164,8 +164,7 @@ public class GroupBuyController {
 	
 	@PostMapping("private/back/InsertGroupBuy")
 	public String insertGroupBuy(@ModelAttribute GroupBuy groupBuy) {
-		GroupBuy insert = groupBuyService.insert(groupBuy);
-		broadcastMessage(insert);
+		groupBuyService.insert(groupBuy);
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
 	
@@ -238,7 +237,12 @@ public class GroupBuyController {
 	@GetMapping("private/back/ChangeGroupBuyStatus")
 	public String changeGroupBuyStatus(@RequestParam("id") Integer id,@RequestParam("status") String status, Model m) {		
 		
-		groupBuyService.changeGroupBuyStatus(id, status);
+		GroupBuy groupBuy = groupBuyService.changeGroupBuyStatus(id, status);
+		
+		if (status.equals("開團中")) {
+			broadcastMessage(groupBuy);
+		}
+		
 		
 		if (status.equals("已到貨")) {
 			emailService.sendGroupBuyEmail(id);
@@ -253,7 +257,11 @@ public class GroupBuyController {
 	public String updateGroupBuy(@ModelAttribute("GroupBuyBean") GroupBuy groupBuyBean) {
 		
 //		更新
-		groupBuyService.update(groupBuyBean);
+		GroupBuy update = groupBuyService.update(groupBuyBean);
+		
+		if (groupBuyBean.getGroupBuyStatus().equals("開團中")) {
+			broadcastMessage(update);
+		}
 
 		return "redirect:/private/back/GetAllGroupBuy";
 	}
