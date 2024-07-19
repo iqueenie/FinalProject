@@ -51,12 +51,13 @@
             </div>
         </div>
     </section>
-
-    <section class="full-height d-flex justify-content-center align-items-center">
-        <div class="container-sm">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 p-5 bg-white border shadow-sm">
-                    
+	
+	<section>
+		<section class="py-5 my-5">
+				<div class="container-sm">
+					<div class="row justify-content-center justify-content-start">
+						
+                    		<div class="col-lg-6 p-5 bg-white border shadow-sm">
                     <h5 class="text-uppercase mb-5 mt-4">EZBUY會員註冊</h5>
                 
 							<form th:action="@{/front/insertMembers}" method="post" id="form"
@@ -120,15 +121,20 @@
 								</div>
 								
 							</form>
+							
+						</div>
+						<div class="col-lg-6 d-flex align-items-end">
+							<img th:src="@{/img/hsiao/Login.png}" alt="Login" class="img-fluid">
+						</div>
                 </div>
             </div>
-        </div>
+      </section>
+    
     </section>
     
 
     <div th:replace="~{front/layout/footer}"></div>
 
-    <scripe>
     
     
 </body>

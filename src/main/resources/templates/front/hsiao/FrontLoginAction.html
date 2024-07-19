@@ -55,7 +55,7 @@
 	</section>
 
 	<section>
-		<div class="container-lg">
+		
 
 
 
@@ -64,7 +64,7 @@
 				<div class="container-sm">
 					<div class="row justify-content-center">
 						<div class="col-lg-6 d-flex align-items-end">
-							<img src="" alt="Login" class="img-fluid">
+							<img th:src="@{/img/hsiao/Login.png}" alt="Login" class="img-fluid">
 						</div>
 						<div class="col-lg-6 p-5 bg-white border shadow-sm">
 							<h5 class="text-uppercase mb-4">登入</h5>
@@ -80,7 +80,7 @@
 										id="memberPassword" name="memberPassword" placeholder="密碼"
 										class="form-control">
 								</div>
-								
+
 								<div class="col-12 pb-3">
 									<!--   <label>
                                 <input type="checkbox" required="">
@@ -99,20 +99,21 @@
 									</p>
 								</div>
 							</form>
-								<div><a th:href="@{/google-login}">使用 google 登入</a></div>
+							<a th:href="@{/google-login}"> <img
+								th:src="@{/img/hsiao/googleLogin.png}"  style="width: 220px  "/>
+							</a>
 						</div>
 					</div>
 				</div>
 			</section>
+	</section>
 
-</section>
+	<div th:replace="~{front/layout/footer}"></div>
 
-			<div th:replace="~{front/layout/footer}"></div>
-			
-			
-			
 
-			
+
+
+
 </body>
 
 </html>
