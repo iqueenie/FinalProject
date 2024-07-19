@@ -85,6 +85,11 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+<dependency>
+    <groupId>com.linecorp.bot</groupId>
+    <artifactId>line-bot-spring-boot</artifactId>
+    <version>4.3.0</version>
+</dependency>
 	</dependencies>
 
 	<build>
