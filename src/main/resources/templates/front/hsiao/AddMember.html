@@ -121,6 +121,8 @@
 								</div>
 								
 							</form>
+							<br>
+							<button class="btn btn-primary text-uppercase w-10"   onclick= "addmember()">一鍵註冊</button>
 							
 						</div>
 						<div class="col-lg-6 d-flex align-items-end">
@@ -135,7 +137,31 @@
 
     <div th:replace="~{front/layout/footer}"></div>
 
+    <script>
+    function addmember(){
+    let memberName= document.getElementById('memberName');
+	let memberAccount= document.getElementById('memberAccount');
+	let memberPassword= document.getElementById('memberPassword');
+	let memberBirthDate= document.getElementById('memberBirthDate');    
+    let memberEmail= document.getElementById('memberEmail');
+    let memberAddress= document.getElementById('memberAddress');
     
+    let Name ='蕭景鴻';
+    let Account ='jinghnong3514195'
+    let Password = 'jinghong0704';
+    let BirthDate='1998-07-26';
+    let Email = 'jinghong3514195@gmail.com';
+    let Address ='桃園市八德區興豐路283巷20號4樓';
+    
+    memberName.value = Name;
+    memberAccount.value = Account;
+    memberPassword.value= Password;
+    memberBirthDate.value=BirthDate;
+    memberEmail.value=Email;
+    memberAddress.value=Address;
+     }
+     
+    </script>
     
 </body>
 
