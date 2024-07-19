@@ -1,5 +1,7 @@
 package six.yiting.model;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +27,9 @@ public interface StoresRepository extends JpaRepository<StoresBean, Integer>  {
 	long countByCityAndStreet(String city,String street);
 	
 	List<StoresBean> findByCityAndArea(String city, String area);
+	
+	@Query(value="from StoresBean WHERE city= :city AND area= :area")
+	Page<StoresBean> findByCityAndAreaPage(@Param(value = "city") String city, @Param(value = "area") String area,Pageable pgb);
 	
 	List<StoresBean> findByCityAndStreet(String city, String street);
 	

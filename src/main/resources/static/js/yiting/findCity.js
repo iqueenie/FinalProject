@@ -838,7 +838,7 @@ function findByStoreName() {
                 $('#specialList').css("display", "block");
                 $(".map_graybox05").css("display", "block");
                 $("#showShopList").css("display", "block");
-
+                console.log();
                 // 麵包屑調整
                 const breadcrumbDiv = $(".map_graybox03.result");
                 breadcrumbDiv.css("display", "block");
