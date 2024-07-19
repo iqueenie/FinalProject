@@ -301,7 +301,10 @@ public class ProductController {
 	
 	// 進入單一商品頁
 	@GetMapping("/public/Products/{productId}")
-	public String showProductDetails(@PathVariable Integer productId, HttpSession session, Model model, @RequestParam(defaultValue = "0") int page) {
+	public String showProductDetails(
+			@PathVariable Integer productId, 
+			HttpSession session, Model model, 
+			@RequestParam(defaultValue = "0") int page) {
 		
 	 // 取得當前會員ID
 	    Integer memberId = null;
@@ -332,6 +335,20 @@ public class ProductController {
 	            showForUser = true;
 	        }
 	    }
+	    
+	    List<Integer> recentProducts = (List<Integer>)session.getAttribute("recentProducts");
+	    if (recentProducts == null) {
+	        recentProducts = new ArrayList<>();
+	    }
+	    
+	    if (recentProducts.contains(productId)) {
+	        recentProducts.remove(productId);
+	    }
+	    recentProducts.add(0, productId);
+	    if (recentProducts.size() > 5) {
+	        recentProducts.remove(recentProducts.size() - 1); // 只保存5個瀏覽紀錄
+	    }
+	    session.setAttribute("recentProducts", recentProducts);
 
 	    model.addAttribute("product", productDetails.get("product"));
 	    model.addAttribute("recommend5Products", productDetails.get("recommend5Products"));
@@ -374,6 +391,37 @@ public class ProductController {
 	    return "redirect:/public/Products/" + productId;
 	};
 	
+	@GetMapping("/public/recentProducts")
+	public String showRecentProducts(HttpSession session, Model model) {
+		// 從 session 中取得最近查看的ProductId List
+	    List<Integer> recentProductIds = (List<Integer>) session.getAttribute("recentProducts");
+	    List<Product> recentProducts = new ArrayList<>();
+
+	    // 查最近看的商品
+	    if (recentProductIds != null) {
+	        for (Integer productId : recentProductIds) {
+	            Product product = productService.findProductById(productId);
+	            recentProducts.add(product);
+	        }
+	    }
+
+	    // 所有商品的平均評分和評論總數
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+
+	    // 為每個最近查看的商品 add 平均評分和評論總數
+	    List<Map<String, Object>> productsWithRatings = new ArrayList<>();
+	    for (Product product : recentProducts) {
+	        Map<String, Object> productData = new HashMap<>();
+	        productData.put("product", product);
+	        productData.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
+	        productData.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
+	        productsWithRatings.add(productData);
+	    }
+	    
+	    model.addAttribute("recentProducts", productsWithRatings);
+	    return "front/pinhong/recentProducts";
+	}
 	
 }
 	
