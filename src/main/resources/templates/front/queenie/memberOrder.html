@@ -106,7 +106,6 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
-                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -123,7 +122,6 @@
                                     <tbody>
                                     <tr th:each="order : ${ordersByStatus['待出貨']}">
                                         <td th:text="${order.orderId}"></td>
-                                         <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -133,11 +131,11 @@
                                         <td th:text="${order.storesBean.storeName}"></td>
                                         <td th:text="${order.pointGet}"></td>
                                         <td th:text="${order.unpaidCount}"></td>
-                                        <td th:text="${order.status}"></td>
+                                        <td class="status-cell" th:text="${order.status}"></td>
                                         <td>
                                             <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
-                                            <button class="btn btn-outline-danger btn-sm delete-btn" th:attr="data-orderId=${order.orderId}" onclick="deleteOrder(this.dataset.orderId, this)">取消訂單</button>
-                                            <a href="#" class="btn btn-outline-info btn-sm">查看物流</a>
+                                            <button class="btn btn-outline-danger btn-sm delete-btn" th:attr="data-orderid=${order.orderId}" onclick="cancelOrder(this)">取消訂單</button>
+                                            <a href="#" class="btn btn-outline-info btn-sm log-btn">查看物流</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -152,7 +150,6 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
-                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -170,7 +167,6 @@
                                     <tbody>
                                     <tr th:each="order : ${ordersByStatus['待收貨']}">
                                         <td th:text="${order.orderId}"></td>
-                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -184,7 +180,7 @@
                                         <td th:text="${order.status}"></td>
                                         <td>
                                             <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
-                                            <button type="button" class="btn btn-outline-danger btn-sm">完成訂單</button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm status-row" th:attr="data-orderid=${order.orderId}" onclick="completeOrder(this)">完成訂單</button>
                                             <a href="#" class="btn btn-outline-info btn-sm">查看物流</a>
                                         </td>
                                     </tr>
@@ -200,7 +196,6 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
-                                         <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -218,7 +213,6 @@
                                     <tbody>
                                     <tr th:each="order : ${ordersByStatus['訂單已完成']}">
                                         <td th:text="${order.orderId}"></td>
-                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -246,7 +240,6 @@
                                     <thead>
                                     <tr>
                                         <th>訂單編號</th>
-                                        <th>會員編號</th>
                                         <th>訂單日期</th>
                                         <th>使用積分</th>
                                         <th>折扣金額</th>
@@ -263,7 +256,6 @@
                                     <tbody>
                                     <tr th:each="order : ${ordersByStatus['不成立']}">
                                         <td th:text="${order.orderId}"></td>
-                                        <td th:text="${order.members.memberAccount}"></td>
                                         <td th:text="${order.orderDate}"></td>
                                         <td th:text="${order.pointUse}"></td>
                                         <td th:text="${order.discountMoney}"></td>
@@ -276,7 +268,7 @@
                                         <td th:text="${order.status}"></td>
                                         <td>
                                             <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
-                                            <a href="#" class="btn btn-outline-info btn-sm log-btn">查看物流</a>
+                                            <a href="#" class="btn btn-outline-info btn-sm">查看物流</a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -293,7 +285,94 @@
     </div>
 </section>
 <div th:replace="~{front/layout/footer}"></div>
+<script>
+ function cancelOrder(button) {
+    var orderId = button.getAttribute('data-orderid');
 
+    Swal.fire({
+        title: '確定要取消這個訂單嗎？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的，取消訂單',
+        cancelButtonText: '不，保留訂單'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/FinalProject/public/CanceleOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ orderId: orderId }),
+                success: function(response) {
+                    Swal.fire(
+                        '已取消',
+                        '您的訂單已成功取消',
+                        'success'
+                    ).then(() => {
+                        // 成功后重新加载页面
+                        location.reload(); 
+                    });
+
+                    // 更新狀態欄位
+                    var statusCell = button.closest('tr').querySelector('.status-cell');
+                    statusCell.textContent = 'Canceled';
+                    // 禁用取消按鈕
+                    button.disabled = true;
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        '取消失敗',
+                        '取消訂單失敗，請稍後再試。',
+                        'error'
+                    );
+                    console.error('錯誤:', error);
+                }
+            });
+        }
+    });
+}
+function completeOrder(button) {
+    var orderId = button.getAttribute('data-orderid');
+
+    Swal.fire({
+        title: '確定要按下完成訂單嗎？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的，完成訂單',
+        cancelButtonText: '不，再想想'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/FinalProject/public/CompleteOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ orderId: orderId }),
+                success: function(response) {
+                    Swal.fire(
+                        '成功',
+                        '您的訂單已完成，謝謝您的訂購',
+                        'success'
+                    ).then(() => {
+                        location.reload(); 
+                    });
+
+                    var statusRow = button.closest('tr').querySelector('.status-row');
+                    statusRow.textContent = '完成訂單';                   
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        '未成功',
+                        '完成訂單失敗，請稍後再試。',
+                        'error'
+                    );
+                    console.error('錯誤:', error);
+                }
+            });
+        }
+    });
+}
+
+
+</script>
 
 </body>
 </html>
