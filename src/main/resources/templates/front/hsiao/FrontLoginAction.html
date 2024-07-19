@@ -99,9 +99,13 @@
 									</p>
 								</div>
 							</form>
+							
 							<a th:href="@{/google-login}"> <img
 								th:src="@{/img/hsiao/googleLogin.png}"  style="width: 220px  "/>
 							</a>
+							<br>
+							<button class="btn btn-primary text-uppercase w-10"   onclick="loginmember()">一鍵登入</button>
+							<br>
 						</div>
 					</div>
 				</div>
@@ -113,7 +117,23 @@
 
 
 
+<script>
+    function loginmember(){
+    let memberName= document.getElementById('memberName');
+	let memberAccount= document.getElementById('memberAccount');
 
+    
+    
+    let Account ='jinghnong3514195'
+    let Password = 'jinghong0704';
+ 
+    
+    memberAccount.value = Account;
+    memberPassword.value= Password;
+   
+     }
+     
+    </script>
 </body>
 
 </html>
