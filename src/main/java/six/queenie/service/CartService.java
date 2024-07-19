@@ -118,20 +118,17 @@ public class CartService {
     }
 
     public Map<String, Integer> calculateCartDetails(List<Product> cartItems, Map<Integer, Integer> productQuantities) {
-    	
-    	Integer total = 0;
+        Integer total = 0;
         Integer sumTotal = 0;
+        Integer newQuantity = 0;
 
         LocalDate currentDate = LocalDate.now();
         Date orderDate = Date.valueOf(currentDate);
 
-        List<Map<String, Object>> productDetails = new ArrayList<>();
-
-        for (int i = 0; i < cartItems.size(); i++) {
-            Product product = cartItems.get(i);
+        for (Product product : cartItems) {
             Integer productId = product.getProductId();
             Integer productPrice = product.getProductPrice();
-            Integer quantity = productQuantities.getOrDefault(productId, 1); 
+            Integer quantity = productQuantities.getOrDefault(productId, 1);
 
             Integer productDiscountId = pdRepository.findProductDiscountId(productId, orderDate);
             Integer productDiscount = getProductDiscount(productDiscountId, orderDate);
@@ -146,31 +143,22 @@ public class CartService {
 
             total += subTotal;
             sumTotal += productPrice * quantity;
-
-            Map<String, Object> details = new HashMap<>();
-            details.put("productId", productId);
-            details.put("productName", product.getProductName());
-            details.put("productPrice", productPrice);
-            details.put("productDescription", product.getProductDescription());
-            details.put("quantity", productQuantities.get(productId));
-            productDetails.add(details);
+            newQuantity += quantity;
         }
 
         Integer amountDiscountId = atRepository.findAmountDiscountId(total, orderDate);
         Integer amountDiscount = getAmountDiscount(total, amountDiscountId);
         Integer discountMoney = sumTotal - amountDiscount;
-        Integer finalAmount = total - discountMoney;
 
         Map<String, Integer> cartDetails = new HashMap<>();
         cartDetails.put("total", total);
         cartDetails.put("sumTotal", sumTotal);
         cartDetails.put("discountMoney", discountMoney);
-        cartDetails.put("finalAmount", finalAmount);
-        
+        cartDetails.put("newQuantity", newQuantity);
 
         return cartDetails;
     }
-    
+
     public Orders insertOrderFromCart(List<Product> cartItems, Map<Integer, Integer> productQuantities, 
     		Integer memberId,Integer storeId,String paymentMethod,Integer pointUse,String status,Integer unpaidCount ) {
         

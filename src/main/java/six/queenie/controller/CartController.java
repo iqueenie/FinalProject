@@ -116,6 +116,7 @@ public class CartController {
         model.addAttribute("discountMoney", cartDetails.get("discountMoney"));
         model.addAttribute("finalAmount", cartDetails.get("finalAmount"));
         model.addAttribute("subTotal", cartDetails.get("subTotal"));
+        model.addAttribute("quantity", cartDetails.get("quantity"));
 
         return "front/queenie/cart";
     }
@@ -125,43 +126,59 @@ public class CartController {
     public ResponseEntity<Map<String, Object>> updateCart(@RequestBody Map<String, Object> requestData, HttpSession session) {
         List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
         Map<Integer, Integer> productQuantities = (Map<Integer, Integer>) session.getAttribute(SESSION_PRODUCT_QUANTITIES);
-        List<Map<String, Object>> updatedCartItems = (List<Map<String, Object>>) requestData.get("cartItems");
 
+        List<Map<String, Object>> updatedCartItems = (List<Map<String, Object>>) requestData.get("cartItems");
         if (updatedCartItems != null) {
-            for (Map<String, Object> item : updatedCartItems) {
-                Integer productId = (Integer) item.get("productId");
-                Integer quantity = (Integer) item.get("newQuantity");
-                if (productId != null && quantity != null) {
-                    productQuantities.put(productId, quantity);
-                }
-            }
+        	for (Map<String, Object> item : updatedCartItems) {
+        	    Object productIdObj = item.get("productId");
+        	    Object quantityObj = item.get("quantity");
+        	    
+        	    Integer productId = null;
+        	    Integer newQuantity = null;
+        	    
+        	    if (productIdObj instanceof String) {
+        	        try {
+        	            productId = Integer.parseInt((String) productIdObj);
+        	        } catch (Exception e) {
+        	            e.printStackTrace();
+        	        }
+        	    } else if (productIdObj instanceof Integer) {
+        	        productId = (Integer) productIdObj;
+        	    }
+        	    
+        	    if (quantityObj instanceof String) {
+        	        try {
+        	            newQuantity = Integer.parseInt((String) quantityObj);
+        	        } catch (NumberFormatException e) {
+        	            e.printStackTrace();
+        	        }
+        	    } else if (quantityObj instanceof Integer) {
+        	        newQuantity = (Integer) quantityObj;
+        	    }
+        	    
+        	    if (productId != null && newQuantity != null) {
+        	        productQuantities.put(productId, newQuantity);
+        	    }
+        	}
         }
 
-        Map<String, Integer> cartDetails = cartService.calculateCartDetails(cartItems, productQuantities);
-               
-        session.setAttribute("sumTotal", cartDetails.get("sumTotal"));
-        session.setAttribute("discountMoney", cartDetails.get("discountMoney"));
-        session.setAttribute("finalAmount", cartDetails.get("finalAmount"));
+        Integer totalAmount = (Integer) requestData.get("totalAmount");
+        Integer discountAmount = (Integer) requestData.get("discountAmount");
+        Integer finalAmount = (Integer) requestData.get("finalAmount");
+
+        session.setAttribute(SESSION_CART, cartItems);
+        session.setAttribute(SESSION_PRODUCT_QUANTITIES, productQuantities);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("cartItems", cartItems);
+        response.put("totalAmount", totalAmount);
+        response.put("discountAmount", discountAmount);
+        response.put("finalAmount", finalAmount);
         response.put("productQuantities", productQuantities);
-        response.put("sumTotal", cartDetails.get("sumTotal"));
-        response.put("discountMoney", cartDetails.get("discountMoney"));
-        response.put("finalAmount", cartDetails.get("finalAmount"));
-        response.put("newQuantity", cartDetails.get("newQuantity"));
+        response.put("updatedCartItems", updatedCartItems);
 
         return ResponseEntity.ok(response);
     }
 
-
-
-	@GetMapping("/public/product/{productId}")
-    public String getProductPage(@PathVariable("productId") Integer productId, Model model) {
-        Product product = productService.findProductById(productId);
-        model.addAttribute("product", product);
-        return "/front/index";
-    }
 
 
 	@DeleteMapping("/public/delete-product/{productId}")
@@ -236,9 +253,9 @@ public class CartController {
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
 	            storeId, paymentMethod, pointUse, status, unpaidCount);
 
-	    // 更新订单状态
+	    // 更新訂單狀態
 	    cartService.processCheckout(orders.getOrderId(), paymentMethod);
-	    // 发送订单成功邮件
+	    // 發送訂單成功信件
 	    emailService.sendOrderEmail(orders.getOrderId());
 
 	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
@@ -277,13 +294,21 @@ public class CartController {
 	    return "front/queenie/memberOrder";
 	}
 
-	@PostMapping("/public/deleteOrder")
-    public String deleteOrder(@RequestParam("orderId") Integer orderId, Model model) {
-        orderService.updateOrderStatusAndPoints(orderId, "Canceled");
-        model.addAttribute("orders", orderService.findAll()); 
-        return "front/queenie/MemberOrder";
-    }
-	
+	@PostMapping("/public/CanceleOrder")
+	public ResponseEntity<String> deleteOrder(@RequestBody Map<String, Integer> request, HttpSession session) {
+	    Integer orderId = request.get("orderId");
+	    orderService.updateOrderStatusAndPoints(orderId, "Canceled");
+	    
+	    return ResponseEntity.ok("Order canceled successfully");
+	}
+
+	@PostMapping("/public/CompleteOrder")
+	public ResponseEntity<String> completeOrder(@RequestBody Map<String, Integer> request, HttpSession session) {
+	    Integer orderId = request.get("orderId");
+	    orderService.updateOrderStatus(orderId, "完成訂單");
+	    
+	    return ResponseEntity.ok("Order Complete successfully");
+	}
 	 @GetMapping("/public/MemberOrderDetail")
 	    public String getDetailsById(@RequestParam("orderId") Integer orderId, Model model) {
 

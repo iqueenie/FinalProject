@@ -90,7 +90,14 @@ public class OrderService {
 		        ordersRepository.save(order);
 		    }
 		}
-
+	 
+	 public void updateOrderStatus(Integer orderId, String newStatus) {
+		    Orders order = ordersRepository.findByOrderId(orderId);
+		    if (order != null) {
+		        order.setStatus(newStatus);
+		        ordersRepository.save(order);
+		    }
+		}
 	 
 	 
 	 public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
