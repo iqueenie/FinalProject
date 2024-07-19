@@ -152,7 +152,7 @@ public class GroupMemberController {
 		
 	    URI location = null;
 	    try {
-	    	location = new URI("http://localhost:8080/FinalProject/public/front/group-buy-orders");
+	    	location = new URI("http://localhost:8080/FinalProject/public/front/group-member-orders");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
