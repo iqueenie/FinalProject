@@ -26,8 +26,12 @@ public class ProductFavoriteService {
 	@Autowired
 	private MembersRepository membersRepo;
 
-    public List<ProductFavorite> getFavoritesByMemberId(Integer memberId) {
-        return productFavoriteRepo.findByMemberMemberId(memberId);
+    public ProductFavorite getFavoritesByMemberIdAndProductProductId(Integer memberId, Integer productId) {
+        return productFavoriteRepo.findByMemberMemberIdAndProductProductId(memberId,productId);
+    }
+    
+    public List<ProductFavorite> getFavoritesByMemberId(Integer memberId){
+    	return productFavoriteRepo.findByMemberMemberId(memberId);
     }
     
     public void insertProductFavorite(Integer productId, Integer memberId) {

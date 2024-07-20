@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties.Error;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
+import six.pinhong.model.ProductFavorite;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductReview;
 import six.pinhong.service.ProductFavoriteService;
@@ -50,15 +53,25 @@ public class ProductFavoriteController {
 	public String productReviewInsert(
 			@RequestParam Integer productId,
 			@RequestParam Integer memberId,
-			Model m
+			RedirectAttributes redirectAttributes // 使用 RedirectAttributes
 			) throws IOException{
 		
-		// 因為前端已經可以知道是否評價過，不寫IF條件擋有評論過的會員了
-		productFavoriteService.insertProductFavorite(productId, memberId);
+		String error="最多收藏三個追蹤商品，請刪除後再嘗試";
+		
+		if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 3 &&
+				productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
+			
+	        redirectAttributes.addFlashAttribute("errors", error); // 使用 addFlashAttribute
+			return "redirect:/public/Products/"+ productId;
+		}
+		
+		if (productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
+			productFavoriteService.insertProductFavorite(productId, memberId);
+			return "front/pinhong/ProductFavorite";
+		}
 
 	    return "front/pinhong/ProductFavorite";
 	};
-	
 	
 }
 	
