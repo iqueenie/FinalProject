@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import six.yiting.model.BuyBean;
@@ -72,6 +76,24 @@ public class InventoryService {
 		}
 		
 		return inv;
+	}
+	
+	public Page<InventoryBean> friendlyDetail(Integer pageNumber,StoresBean store,LocalDate expdDate){
+		Pageable pgb = PageRequest.of(pageNumber-1, 4, Sort.Direction.ASC, "inventoryId");
+		Page<InventoryBean> invResult = invRepo.findByCityAndAreaPage(store, expdDate,pgb);
+		return invResult;
+		
+	}
+	
+	public Page<InventoryBean> findByType(Integer pageNumber,StoresBean store,LocalDate expdDate,String productType){
+		Pageable pgb = PageRequest.of(pageNumber-1, 4, Sort.Direction.ASC, "inventoryId");
+		Page<InventoryBean> invResult = invRepo.findByTypePage(store, expdDate, productType, pgb);
+		return invResult;
+		
+	}
+	
+	public List<String> findProductType(StoresBean store, LocalDate expDate){
+		return invRepo.findProductType(store, expDate);
 	}
 	
 	

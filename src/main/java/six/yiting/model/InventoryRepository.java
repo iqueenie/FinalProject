@@ -1,13 +1,27 @@
 package six.yiting.model;
 
 import java.time.LocalDate;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
-import six.yiting.model.StoresBean;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 
 
 public interface InventoryRepository extends JpaRepository<InventoryBean, Integer>  {
 	InventoryBean findByProductIdAndDeliveryDateAndStore(int productId,LocalDate deliveryDate,StoresBean store);
 	InventoryBean findByStoreAndProductId(StoresBean store, int productId);
+	
+	@Query(value="from InventoryBean WHERE store= :store AND expDate= :expDate")
+	Page<InventoryBean> findByCityAndAreaPage(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate,Pageable pgb);
+
+	@Query(value="from InventoryBean WHERE store= :store AND expDate= :expDate AND product.productType=:productType")
+	Page<InventoryBean> findByTypePage(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate,@Param(value = "productType") String productType,Pageable pgb);
+	
+	@Query(value="SELECT DISTINCT product.productType from InventoryBean WHERE store= :store AND expDate= :expDate")
+	List<String> findProductType(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate);
+	
 }

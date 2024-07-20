@@ -1,9 +1,7 @@
 package six.yiting.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
-import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

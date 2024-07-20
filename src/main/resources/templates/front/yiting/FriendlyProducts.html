@@ -59,6 +59,21 @@
                                 <td valign="top">
                                     <!----------------------左menu------------------------>
                                     <div id="fri_left" class="fri_left">
+                                        <div id="chgSearchList" style="display: none">
+                                            <div class="fri_graybox" style="cursor: pointer"
+                                                onclick="showDefaultContent()">
+                                                <h2 class="search_home">回友善商品查詢首頁<span>
+                                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                                    </span> </h2>
+                                            </div>
+                                        </div>
+                                        <div id="storeResultList" style="display: none">
+                                            <div class="fri_graybox" style="cursor: pointer">
+                                                <h2 class="search_home">回縣市區域查詢結果<span>
+                                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                                    </span> </h2>
+                                            </div>
+                                        </div>
                                         <div id="searchList">
                                             <div class="fri_graybox">
                                                 <h2 class="word">選擇欲查詢縣市區域</h2>
@@ -67,15 +82,20 @@
 
                                                 </div>
                                             </div>
-
                                         </div>
 
+                                    </div>
                                 </td>
                                 <td valign="top">
                                     <div id="fri_right" class="fri_right">
                                         <div class="fri_content" style="display: block;">
                                             <img th:src="@{/img/yiting/friendly.png}" class="friendlyPic">
                                         </div>
+                                        <!--產品細項種類-->
+                                        <div class="map_graybox05" id="areaResult" style="display: none;">
+
+                                        </div>
+
                                         <!--店鋪列表-->
                                         <div id="showShopList" style="overflow: hidden;display: none;">
                                             <table width="683" border="0" cellspacing="0" cellpadding="0"
@@ -84,7 +104,8 @@
                                                     <tr>
                                                         <td class="greenbox">店舖名</td>
                                                         <td class="greenbox">店舖情報</td>
-                                                        <td class="greenbox">友善商品種類
+                                                        <td class="greenbox">點選商品類別 <i
+                                                                class="fa-solid fa-circle-info"></i>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -94,12 +115,13 @@
                                             </table>
                                         </div>
 
-                                        <div class="text-center py-4\" aria-label="Page navigation" id="pageArea"
+                                        <div class="text-center py-4" aria-label="Page navigation" id="pageArea"
                                             style="display:none;">
                                             <ul class="pagination d-flex justify-content-center pageul">
 
                                             </ul>
                                         </div>
+
                                     </div>
                                 </td>
                             </tr>
@@ -126,8 +148,10 @@
             $("#pageArea").css("display", "none");
             $(".pageul").html("");
             $("#showShopList").css("display", "none");
+            $("#storeResultList").css("display", "none");
             $('.city').prop('selectedIndex', 0);
             $('.town').html('<option>鄉鎮縣市</option>');
+            $("#chgSearchList").css("display", "none");
             requestAnimationFrame(function () {
                 window.scrollTo(0, scrollPosition);
             });

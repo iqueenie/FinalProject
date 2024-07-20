@@ -292,7 +292,7 @@ public class StoresController {
 
 		Map<String,Integer> inventoryExpDates = new HashMap<>();
 
-		LocalDate today = LocalDate.now().minusDays(1);
+		LocalDate today = LocalDate.now().minusDays(3);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
 			String type = product.getProductType(); 
@@ -310,12 +310,71 @@ public class StoresController {
 		
 	 }
 	 
+	 //友善時光分頁
 	 @ResponseBody
 	 @GetMapping("/front/friByCityAndArea")
-	 public Page<StoresBean> friendlyProductPage(@RequestParam("p") Integer pageNumber,String city,String area){
+	 public Page<StoresBean> friendlyProductPage(@RequestParam(value = "p", defaultValue = "1") Integer pageNumber,String city,String area){
 		 Page<StoresBean> friProductByAreaAndCity = storeService.findFriProductByAreaAndCity(pageNumber, city, area);	
 		 return friProductByAreaAndCity;
 	 }
+	 
+	 //找出店鋪有哪些友善時光商品
+	 @PostMapping("/public/front/storeFriendly")
+	 @ResponseBody
+	 public List<InventoryBean> getFriInvByStore(@RequestBody StoresBean store){
+		List<Product> byType = storeService.findByOtherType();
+		List<InventoryBean> resultList = new ArrayList<>();
+		LocalDate today = LocalDate.now().minusDays(3);
+		for(Product product : byType) {
+			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
+			if(inv!=null && inv.getExpDate().equals(today) ) {
+				resultList.add(inv);
+			}
+		}
+		return resultList;
+		
+	 }
+	 
+	 //友善時光查詢單店結果頁面
+	 @GetMapping("/public/front/friendlyResult")
+	 public String FriendlyResult(@RequestParam(value = "p", defaultValue = "1") Integer pageNumber,
+								 @RequestParam("storeId") Integer storeId,
+								 @RequestParam(value ="productType", defaultValue = "全部") String productType,
+								 Model model) {
+
+		 //商品部分
+		 LocalDate today = LocalDate.now().minusDays(3);
+		 StoresBean store = storeService.findStoreById(storeId);
+		 
+		 List<String> productTypes = inventoryService.findProductType(store, today);
+		 
+		 if(productType.equals("全部")) {
+			 Page<InventoryBean> invPage = inventoryService.friendlyDetail(pageNumber,store,today);
+			 model.addAttribute("invPage",invPage);
+		 }else {
+			 Page<InventoryBean> invType = inventoryService.findByType(pageNumber, store, today, productType);
+			 model.addAttribute("invPage",invType);
+		 }
+		 
+		 //地圖部分
+		 String address = geocodingService.getAddressFromDatabase(storeId);
+	        LatLng latLng= geocodingService.geocodeAddress(address);
+	        if (latLng != null) {
+	            model.addAttribute("latitude", latLng.lat);
+	            model.addAttribute("longitude", latLng.lng);
+	        }
+		 
+		 
+		 
+		 model.addAttribute("storeId",storeId);
+		 model.addAttribute("store",store);
+		 model.addAttribute("productTypes", productTypes);
+		 model.addAttribute("productType", productType);
+		 
+		 
+		return "front/yiting/FriendlyProductDetail";
+	}
+		
 	 
 
 }
