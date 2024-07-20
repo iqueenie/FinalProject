@@ -53,12 +53,15 @@ public class ProductFavoriteController {
 	public String productReviewInsert(
 			@RequestParam Integer productId,
 			@RequestParam Integer memberId,
-			RedirectAttributes redirectAttributes // 使用 RedirectAttributes
+			RedirectAttributes redirectAttributes, // 使用 RedirectAttributes
+			Model m
 			) throws IOException{
 		
-		String error="最多收藏三個追蹤商品，請刪除後再嘗試";
+		String error="您已收藏5個商品，請刪除後再嘗試";
+		String success="恭喜您，收藏商品成功!";
+		String alreadyHaveData="很抱歉，您已收藏過此商品!";
 		
-		if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 3 &&
+		if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 5 &&
 				productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
 			
 	        redirectAttributes.addFlashAttribute("errors", error); // 使用 addFlashAttribute
@@ -67,11 +70,59 @@ public class ProductFavoriteController {
 		
 		if (productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
 			productFavoriteService.insertProductFavorite(productId, memberId);
-			return "front/pinhong/ProductFavorite";
+			redirectAttributes.addFlashAttribute("success", success); // 使用 addFlashAttribute
+			return "redirect:/public/Products/"+ productId;
 		}
-
-	    return "front/pinhong/ProductFavorite";
+		
+		redirectAttributes.addFlashAttribute("alreadyHaveData", alreadyHaveData); // 使用 addFlashAttribute
+	    return "redirect:/public/Products/"+ productId;
 	};
 	
+	// 查看總收藏
+	@GetMapping("/public/allFavoriteProducts")
+	public String showRecentProducts(HttpSession session, Model model) {
+	    Integer memberId = null;
+	    if (session.getAttribute("loggedInMember") != null) {
+	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
+	    } else {
+			return "redirect:/public/frontLoginMain";
+		}
+	    
+		List<ProductFavorite> favoriteProducts = productFavoriteService.getFavoritesByMemberId(memberId);
+	    List<Product> products = new ArrayList<>();
+	    for (ProductFavorite favorite : favoriteProducts) {
+	        Product product = productService.findProductById(favorite.getProduct().getProductId());
+	        products.add(product);
+	    }
+	    // 所有商品的平均評分和評論總數
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+
+	    // 為每個最近查看的商品 add 平均評分和評論總數
+	    List<Map<String, Object>> allFavoriteProducts = new ArrayList<>();
+	    for (Product product : products) {
+	        Map<String, Object> productData = new HashMap<>();
+	        productData.put("product", product);
+	        productData.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
+	        productData.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
+	        allFavoriteProducts.add(productData);
+	    }
+	    
+	    if (allFavoriteProducts.isEmpty()) {
+	        model.addAttribute("message", "您目前沒有任何的收藏商品，點擊按鈕可跳至商品頁");
+	    } else {
+	        model.addAttribute("allFavoriteProducts", allFavoriteProducts);
+	    }
+	    
+	    return "front/pinhong/ProductFavorite";
+	}
+	
+	//刪除該收藏商品
+	@DeleteMapping("/public/allFavoriteProducts/delete")
+	public String productDelete(@RequestParam("productId") Integer productId) {
+		productFavoriteService.deleteProductFavoriteByProductId(productId);
+		
+		 return "redirect:/public/allFavoriteProducts";
+	}
 }
 	

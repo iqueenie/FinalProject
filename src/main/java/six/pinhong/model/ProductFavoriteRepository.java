@@ -11,6 +11,7 @@ public interface ProductFavoriteRepository extends JpaRepository<ProductFavorite
     
 	// memberId 查 所有收藏商品
     List<ProductFavorite> findByMemberMemberId(Integer memberId);
-
+    
+    void deleteByProductProductId(Integer productId);
 }
 

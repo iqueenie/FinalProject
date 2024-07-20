@@ -21,6 +21,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
+<style>
+    .custom-link {
+        text-decoration: none;
+        font-size: inherit; /* 確保字體大小繼承自父元素 */
+        color: inherit; /* 繼承父元素的顏色 */
+    }
+
+    .custom-link:hover {
+        text-decoration: underline; /* 添加 hover 效果 */
+    }
+</style>
 </head>
 
 <body>
@@ -140,10 +151,12 @@
                         <th:block th:if="${session.loggedInMember != null}">
                     <input type="hidden" name="productId" th:value="${product.productId}">
 				    <input type="hidden" name="memberId" th:value="${session.loggedInMember.memberId}">
-                      <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入追蹤</button>                      
+                      <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入收藏</button>                      
                     	</form>
                     	<th:block>
-							<div th:if="${errors}" th:text="${errors}" class="text-danger mt-2 fs-2"></div>
+							<div th:if="${errors}"> <a th:text="${errors}" class="btn btn-warning text-danger mt-2 fs-2" th:href="@{/public/allFavoriteProducts}"></a></div>
+							<div th:if="${success}"> <a th:text="${success}" class="btn btn-warning text-danger mt-2 fs-2" th:href="@{/public/allFavoriteProducts}"></a></div>
+							<div th:if="${alreadyHaveData}"> <a th:text="${alreadyHaveData}" class="btn btn-warning text-danger mt-2 fs-2" th:href="@{/public/allFavoriteProducts}"></a></div>
                     </div>
                   </div>
                 </div>

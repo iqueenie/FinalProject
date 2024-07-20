@@ -46,5 +46,9 @@ public class ProductFavoriteService {
 	    
     	productFavoriteRepo.save(productFavorite);
     }
+    
+    public void deleteProductFavoriteByProductId(Integer productId) {
+    	productFavoriteRepo.deleteByProductProductId(productId);
+    }
 
 }

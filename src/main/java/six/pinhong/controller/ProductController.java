@@ -393,6 +393,12 @@ public class ProductController {
 	
 	@GetMapping("/public/recentProducts")
 	public String showRecentProducts(HttpSession session, Model model) {
+		
+		// 沒登入退回登入頁
+	    if (session.getAttribute("loggedInMember") == null) {
+	        return "redirect:/public/frontLoginMain";
+	    }
+		
 		// 從 session 中取得最近查看的ProductId List
 	    List<Integer> recentProductIds = (List<Integer>) session.getAttribute("recentProducts");
 	    List<Product> recentProducts = new ArrayList<>();
@@ -417,6 +423,13 @@ public class ProductController {
 	        productData.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
 	        productData.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
 	        productsWithRatings.add(productData);
+	    }
+	    
+	    // 如果没有最近查看的商品，傳到前端
+	    if (productsWithRatings.isEmpty()) {
+	        model.addAttribute("message", "您目前沒有查看過任何商品，點擊按鈕可跳至商品頁");
+	    } else {
+	        model.addAttribute("recentProducts", productsWithRatings);
 	    }
 	    
 	    model.addAttribute("recentProducts", productsWithRatings);
