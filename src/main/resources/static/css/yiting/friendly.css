@@ -1,3 +1,6 @@
+a {
+    text-decoration: none;
+}
 /* 右邊 */
 .fri_right {
     width: 683px;
@@ -35,12 +38,25 @@
     float: left;
 }
 
+/* 地圖 */
+.map_container {
+    border: 1px solid #5cc209;
+    margin-bottom: 10px;
+    background-color: #f6f6f6;
+    padding: 8px 0 12px 0px;
+    font-size: 15px;
+    color: #444444;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
 /* 商店列表 */
 
 .graybigbox {
     border: 1px solid #d5d5d5;
     margin-bottom: 10px;
 }
+
 
 .greenbox {
     background-color: #5ac20f;
@@ -69,10 +85,9 @@
     text-indent: -9999px;
 }
 
-.shop_add_map a {
-    width: 77px;
+#friendlyText {
+    width: 110px;
     height: 24px;
-    display: block;
     color: #5ac20f;
     font-weight: bold;
 }
@@ -80,4 +95,21 @@
 .prodType i {
     font-size: 13px;
     color: #FAD56A;
+}
+
+
+.storeIcon {
+    display: block;
+    width: 35px;
+    height: 35px;
+    float: left;
+    margin-right: 5px;
+    text-indent: -9999px;
+}
+
+.search_home {
+    font-size: 15px;
+    color: #434343;
+    padding: 18px 0 0 24px;
+    font-weight: normal;
 }

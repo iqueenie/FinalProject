@@ -13,16 +13,15 @@ $(document).ready(function () {
 
         if (city.length >= 1) {
             var $townSelect = $(this).closest(".twzipcode").find(".town");
-
             // 停留在初始鎮區選項，直到手動選擇鎮區或城市發生變化
             $townSelect.prepend('<option selected value="">鄉鎮縣市</option>');
         } else {
-            showDefaultContent();
             alert('查無該區域相關店鋪');
+            showDefaultContent();
         }
+
+
     });
-
-
 
     $('.town').change(function () {
         var selectedCity = $('.city').val();
@@ -33,7 +32,6 @@ $(document).ready(function () {
 
         axios.get('http://localhost:8080/FinalProject/front/friByCityAndArea', {
             params: {
-                p: 1,
                 city: selectedCity,
                 area: selectedTown
             }
@@ -46,14 +44,13 @@ $(document).ready(function () {
                 if (data.content.length >= 1) {
                     storeListCity(res.data)
                 } else {
-                    showDefaultContent();
                     alert('查無該區域相關店鋪');
+                    showDefaultContent();
                 }
             })
             .catch(err => {
                 console.log(err);
             })
-
     });
 });
 
@@ -64,12 +61,14 @@ function storeListCity(data) {
     let storeCities = [];
     let requests = [];
     data.content.forEach(function (store, index) {
-        let storeCity = '<tr onclick="showMap(' + store.storeId + ')" style="cursor:pointer"><td class="graybox">EZBUY' + store.storeName + '</td>';
+        let storeCity = '<tr><td class="graybox">EZBUY' + store.storeName + '</td>';
         storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>';
-        storeCity += '<td align="right"><div class="shop_add_map"><a href="#" onclick="showMap(' + store.storeId + ')"><i class="fa-solid fa-utensils"></i>';
-        storeCity += '<span class="add_map_word">友善商品</span></a></div></td></tr></tbody></table>';
+        storeCity += '<td align="right" id="friendlyText">';
+        storeCity += '<a href="/FinalProject/public/front/friendlyResult?storeId=' + store.storeId + '" style="text-decoration: none; color: inherit;">'
+        storeCity += '<i class="fa-solid fa-utensils"></i>'
+        storeCity += '<span class="add_map_word">點我看友善商品</span></a></div></td></tr></tbody></table>';
         storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>';
-        storeCity += '電話：' + store.tel + '</td><td class="graybox prodType">';
+        storeCity += '電話：' + store.tel + '</td><td class="graybox prodType" style="width:165px;line-height: 1.5;">';
 
         // 在陣列中保留每個 store 的 HTML，等待完成請求後再合併
         storeCities[index] = storeCity;
@@ -83,17 +82,24 @@ function storeListCity(data) {
                 $("#showShopList").css("display", "block");
 
                 for (let [key, value] of Object.entries(res.data)) {
-                    keyType = `${key}`;
+                    let keyType = `${key}`;
+                    let encodedKey = encodeURIComponent(keyType);
                     if (keyType === "飲品") {
-                        productsHtml += `<span> <i class="fa-solid fa-mug-saucer"></i>(${key}): ${value}</span>`
+                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                                    <i class="fa-solid fa-mug-saucer"></i> (${keyType}): ${value}
+                                  </a><br>`;
                     } else if (keyType === "零食") {
-                        productsHtml += `<span> <i class="fa-solid fa-cookie-bite"></i>(${key}): ${value}</span>`
+                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                        <i class="fa-solid fa-cookie-bite"></i> (${key}): ${value}</a><br>`
                     } else if (keyType === "泡麵") {
-                        productsHtml += `<span> <i class="fa-solid fa-bacon"></i>(${key}): ${value}</span>`
+                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                         <i class="fa-solid fa-bacon"></i> (${key}): ${value}</a><br>`
                     } else if (keyType === "熟食") {
-                        productsHtml += `<span> <i class="fa-solid fa-bowl-food"></i>(${key}): ${value}</span>`
+                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                         <i class="fa-solid fa-bowl-food"></i> (${key}): ${value}</a><br>`
                     } else {
-                        productsHtml += `<span> <i class="fa-solid fa-circle-question"></i>(其他): ${value}</span>`
+                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                         <i class="fa-solid fa-circle-question"></i> (其他): ${value}</a><br>`
                     }
                 }
                 storeCities[index] += productsHtml + '</td></tr>';
@@ -113,12 +119,30 @@ function storeListCity(data) {
         let storeCityHtml = storeCities.join('');
         $('.searchResult').html(storeCityHtml);
         let totalPages = data.totalPages
+        let currentPage = data.number + 1
         let msg_data = "";
-        msg_data += '<li class="page-item disabled"><a class="page-link bg-none border-0" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
-        for (var i = 1; i <= totalPages; i++) {
-            msg_data += '<li class="page-item" data-pageid="' + i + '">' + '<a class="page-link border-0 pageBtn" href = "#" > ' + i + '</a ></li > '
+        // msg_data += '<li class="page-item disabled"><a class="page-link bg-none border-0" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+        if (currentPage === 1) {
+            msg_data += '<li class="page-item disabled"><a class="page-link bg-none border-0" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+        } else {
+            msg_data += '<li class="page-item"><a class="page-link bg-none border-0" href="#" aria-label="Previous" onclick="loadThatPage(' + (currentPage - 1) + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')"><span aria-hidden="true">&laquo;</span></a></li>';
+            console.log(msg_data);
         }
-        msg_data += '<li class="page-item" ><a class="page-link border-0" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li >'
+
+        for (var i = 1; i <= totalPages; i++) {
+            if (currentPage === i) {
+                msg_data += '<li class="page-item active" data-pageid="' + i + '"><a class="page-link border-0 pageBtn" href="#">' + i + '</a></li>';
+            } else {
+                msg_data += '<li class="page-item" data-pageid="' + i + '"><a class="page-link border-0 pageBtn" href="#" onclick="loadThatPage(' + i + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')">' + i + '</a></li>';
+            }
+        }
+
+        if (currentPage === totalPages) {
+            msg_data += '<li class="page-item disabled"><a class="page-link border-0" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+        } else {
+            msg_data += '<li class="page-item"><a class="page-link border-0" href="#" aria-label="Next" onclick="loadThatPage(' + (currentPage + 1) + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')"><span aria-hidden="true">&raquo;</span></a></li>';
+        }
+
         $(".pageul").html(msg_data);
 
         let pageBtns = $('.pageBtn');
@@ -128,6 +152,8 @@ function storeListCity(data) {
         });
     });
 
+    $("#storeResultList").css("display", "none");
+    $("#chgSearchList").css("display", "block");
     console.log("button" + scrollPosition);
     window.scrollTo(0, scrollPosition);
     $("#pageArea").css("display", "block");
@@ -155,3 +181,4 @@ function loadThatPage(pageId, city, area) {
     window.scrollTo(0, scrollPosition);
 
 }
+

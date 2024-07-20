@@ -184,7 +184,7 @@ public class StoreService {
 
         List<StoresBean> resultPage = new ArrayList<>();
         List<Product> byOtherType = findByOtherType(); // 獲取符合條件的產品列表
-        LocalDate today = LocalDate.now().minusDays(1);
+        LocalDate today = LocalDate.now().minusDays(3);
 
         for (StoresBean store : storesList) {
             for (Product product : byOtherType) {
