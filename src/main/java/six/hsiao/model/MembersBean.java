@@ -21,6 +21,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import six.pinhong.model.ProductFavorite;
 import six.pinhong.model.ProductReview;
 
 @Entity
@@ -77,6 +78,21 @@ public class MembersBean {
 	
 	// -----
 	
+	// 品宏的收藏
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+	private Set<ProductFavorite> favorites = new HashSet<>();
+	
+	public Set<ProductFavorite> getFavorites() {
+		return favorites;
+	}
+
+	public void setFavorites(Set<ProductFavorite> favorites) {
+		this.favorites = favorites;
+	}
+
+	//---------------
+
 	public MembersBean() {
 	        
 	    }

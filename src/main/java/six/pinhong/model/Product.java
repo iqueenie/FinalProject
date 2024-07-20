@@ -47,6 +47,7 @@ public class Product implements Serializable {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
 	private Set<ProductReview> reviews  = new HashSet<>(); 
+	
 
 	public Set<ProductReview> getReviews() {
 		return reviews;
@@ -56,6 +57,18 @@ public class Product implements Serializable {
 		this.reviews = reviews;
 	}
 	// -- 
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+	private Set<ProductFavorite> favorites  = new HashSet<>(); 
+	
+	public Set<ProductFavorite> getFavorites() {
+		return favorites;
+	}
+
+	public void setFavorites(Set<ProductFavorite> favorites) {
+		this.favorites = favorites;
+	}
+
 	public Product(String productName, String productType, Integer productCost, Integer productPrice,
 			Integer productExpirydate, String productDescription, Integer productPublished, Integer productQuantity) {
 		super();

@@ -136,7 +136,11 @@
                       <button type="submit" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3"
                         th:attr="data-productId=${product.productId}, data-productName=${product.productName}"
                         onclick="addToCart(this)">加入購物車</button>
+                        <form id="form" class="form-group" th:action="@{/public/InsertProductFavorite" method="post">
+                    <input type="hidden" name="productId" th:value="${product.productId}">
+				    <input type="hidden" name="memberId" th:if="${session.loggedInMember != null}" th:value="${session.loggedInMember.memberId}">
                       <button type="submit" name="add-to-like" value="1269" class="btn btn-outline-danger py-3 px-4 text-uppercase mt-3">加入追蹤</button>                      
+                    	</form>
                     </div>
                   </div>
                 </div>
