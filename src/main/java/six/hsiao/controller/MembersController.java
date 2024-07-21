@@ -2,7 +2,6 @@ package six.hsiao.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -148,16 +147,23 @@ public class MembersController {
 	 
 	 
 	 @PostMapping("/front/login")
-	 public String loginMember(@RequestParam("memberAccount")String memberAccount ,@RequestParam("memberPassword")String memberPassword,HttpSession session) {
+	 public String loginMember(@RequestParam("memberAccount")String memberAccount ,@RequestParam("memberPassword")String memberPassword,HttpSession session,RedirectAttributes redirectAttributes) {
 		 MembersBean member = membersService.findByMemberAccountAndMemberPassword(memberAccount, memberPassword);
 		 
+		 
+		 
 		 if(member !=null) {
-	
+			 if ("封鎖".equals(member.getLockStatus())) {
+				 redirectAttributes.addAttribute("error","你的帳戶已被封鎖，無法登入");
+				 return "redirect:/public/frontLoginMain";
+			 }
 			 session.setAttribute("loggedInMember", member);
 			 return "redirect:/public/front";
-//		 }
+			 
 		 }
+		 redirectAttributes.addAttribute("error","帳號密碼錯誤請重新登入");
 		 return "redirect:/public/frontLoginMain";
+		
 	 }
 	 
 	 
@@ -251,8 +257,37 @@ public class MembersController {
 		 }
 		 
 	 
-	 
+		 @PostMapping("/private/updateLockStatus")
+		 public String toggleLockStatus(@RequestParam Integer memberId, RedirectAttributes redirectAttributes) {
+		     try {
+		         MembersBean member = membersService.findByMemberId(memberId);
+		         if (member != null) {
+		             String Status = member.getLockStatus().equals("正常") ? "封鎖" : "正常";
+		             member.setLockStatus(Status);
+		             membersService.insertMembers(member);
+		             redirectAttributes.addFlashAttribute("message", "會員狀態已更新");
+		         } else {
+		             redirectAttributes.addFlashAttribute("error", "找不到該會員");
+		         }
+		     } catch (Exception e) {
+		         redirectAttributes.addFlashAttribute("error", "無法更新狀態");
+		     }
+		     return "redirect:/private/GetAllMembers"; 
+		 }
+		 
+		 
+		 
+		 @GetMapping("/public/memberMessage")
+		 public String memberMessage() {
+			 return "front/hsiao/testMember";
+		 }
+		 
+		 
+		 
+		}
 	
-	 }
+
+	 
+	 
 	
 
