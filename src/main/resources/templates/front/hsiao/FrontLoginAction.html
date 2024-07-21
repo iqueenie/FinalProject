@@ -55,61 +55,71 @@
 	</section>
 
 	<section>
-		
 
 
 
 
-			<section class="py-5 my-5">
-				<div class="container-sm">
-					<div class="row justify-content-center">
-						<div class="col-lg-6 d-flex align-items-end">
-							<img th:src="@{/img/hsiao/Login.png}" alt="Login" class="img-fluid">
-						</div>
-						<div class="col-lg-6 p-5 bg-white border shadow-sm">
-							<h5 class="text-uppercase mb-4">登入</h5>
-							<form action="/FinalProject/front/login" method="post" id="form"
-								class="form-group flex-wrap">
-								<div class="col-12 pb-3">
-									<label class="d-none">Username or email address *</label> <input
-										type="text" name="memberAccount" id="memberAccount"
-										placeholder="帳號" class="form-control">
-								</div>
-								<div class="col-12 pb-3">
-									<label class="d-none">Password *</label> <input type="password"
-										id="memberPassword" name="memberPassword" placeholder="密碼"
-										class="form-control">
-								</div>
 
-								<div class="col-12 pb-3">
-									<!--   <label>
+		<section class="py-5 my-5">
+			<div class="container-sm">
+				<div class="row justify-content-center">
+					<div class="col-lg-6 d-flex align-items-end">
+						<img th:src="@{/img/hsiao/Login.png}" alt="Login"
+							class="img-fluid">
+					</div>
+					<div class="col-lg-6 p-5 bg-white border shadow-sm">
+						<h5 class="text-uppercase mb-4">登入</h5>
+						
+						
+
+						<form action="/FinalProject/front/login" method="post" id="form"
+							class="form-group flex-wrap">
+							<div class="col-12 pb-3">
+								<label class="d-none">Username or email address *</label> <input
+									type="text" name="memberAccount" id="memberAccount"
+									placeholder="帳號" class="form-control">
+							</div>
+							<div class="col-12 pb-3">
+								<label class="d-none">Password *</label> <input type="password"
+									id="memberPassword" name="memberPassword" placeholder="密碼"
+									class="form-control">
+							</div>
+
+							<div class="col-12 pb-3">
+								<!--   <label>
                                 <input type="checkbox" required="">
                                 <span class="label-body">記住我</span>
                             </label> -->
-								</div>
-								<div class="col-12">
-									<button type="submit" name="submit"
-										class="btn btn-primary text-uppercase w-100">送出</button>
-									<div th:if="${param.error}" class="alert alert-danger"
-										th:text="${param.error}"></div>
-									<div th:if="${param.success}" class="alert alert-success"
-										th:text="${param.success}"></div>
-									<p>
-										<a th:href="@{/public/ForgetThePasswordMain}">忘記密碼了嗎?</a>
-									</p>
-								</div>
-							</form>
-							
-							<a th:href="@{/google-login}"> <img
-								th:src="@{/img/hsiao/googleLogin.png}"  style="width: 220px  "/>
-							</a>
-							<br>
-							<button class="btn btn-primary text-uppercase w-10"   onclick="loginmember()">一鍵登入</button>
-							<br>
+							</div>
+							<div class="col-12">
+								<button type="submit" name="submit"
+									class="btn btn-primary text-uppercase w-100">送出</button>
+								<div th:if="${param.error}" class="alert alert-danger"
+									th:text="${param.error}"></div>
+								<div th:if="${param.success}" class="alert alert-success"
+									th:text="${param.success}"></div>
+								<p>
+									<a th:href="@{/public/ForgetThePasswordMain}">忘記密碼了嗎?</a>
+								</p>
+							</div>
+						</form>
+
+						<a th:href="@{/google-login}"> <img
+							th:src="@{/img/hsiao/googleLogin.png}" style="width: 220px" />
+						</a> <br>
+						<button class="btn btn-primary text-uppercase w-10"
+							onclick="loginmember()">一鍵登入</button>
+						
+						<br>
+						
+						<div th:if="${error}" class="alert alert-danger">
+							<p th:text="${error}"></p>
 						</div>
+							
 					</div>
 				</div>
-			</section>
+			</div>
+		</section>
 	</section>
 
 	<div th:replace="~{front/layout/footer}"></div>
@@ -117,7 +127,7 @@
 
 
 
-<script>
+	<script>
     function loginmember(){
     let memberName= document.getElementById('memberName');
 	let memberAccount= document.getElementById('memberAccount');
