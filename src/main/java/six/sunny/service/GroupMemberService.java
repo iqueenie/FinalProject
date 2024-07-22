@@ -207,5 +207,11 @@ public class GroupMemberService{
 		
 		return groupMemberRepo.findByMemberIdAndPickupStatus(id, pickupStatus, pgb);
 	}
+	
+	public void changePaymentStatus(Integer id) {
+		GroupMember groupMember = groupMemberRepo.findById(id).get();
+		groupMember.setPaymentStatus("已付款");
+		groupMemberRepo.save(groupMember);
+	}
 
 }
