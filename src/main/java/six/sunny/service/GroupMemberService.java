@@ -43,6 +43,7 @@ public class GroupMemberService{
 		groupMember.setMember(membersService.findByMemberId(groupMember.getMemberId()));
 		groupMember.setGroupBuy(groupBuyService.findById(groupMember.getGroupBuyId()));
 		groupMember.setPickupStatus("已訂購");
+		groupMember.setPaymentStatus("未付款");
 		
 //		更新GroupMember Total
 		GroupBuy groupBuyBean = groupBuyService.findById(groupMember.getGroupBuyId());	
@@ -108,6 +109,11 @@ public class GroupMemberService{
 		int quantity = groupMember.getQuantity();
 		String groupBuyStatus = groupBuyBean.getGroupBuyStatus();
 		groupMember2.setPickupStatus(adjustByGb(groupBuyStatus, pickupStatus, quantity));
+		if (groupMember2.getPickupStatus().equals("已取貨") && groupMember2.getPaymentStatus().equals("未付款")) {
+			groupMember2.setPaymentStatus("已到店付款");
+		}else {
+			groupMember2.setPaymentStatus(groupMember.getPaymentStatus());
+		}
 		
 //		更新
 		GroupMember update = groupMemberRepo.save(groupMember2);
@@ -188,6 +194,9 @@ public class GroupMemberService{
 	public GroupMember changeGroupMemberStatus(Integer id, String status) {
 		GroupMember gm = groupMemberRepo.findById(id).get();
 		gm.setPickupStatus(status);
+		if ("已取貨".equals(status) && "未付款".equals(gm.getPaymentStatus())) {
+			gm.setPaymentStatus("已到店付款");
+		}
 		GroupMember save = groupMemberRepo.save(gm);
 		
 		return save;
@@ -210,7 +219,7 @@ public class GroupMemberService{
 	
 	public void changePaymentStatus(Integer id) {
 		GroupMember groupMember = groupMemberRepo.findById(id).get();
-		groupMember.setPaymentStatus("已付款");
+		groupMember.setPaymentStatus("已線上付款");
 		groupMemberRepo.save(groupMember);
 	}
 

@@ -136,8 +136,9 @@
                         </span>
                         <span th:case="待取貨" class="text-danger status">已到貨，請於 [[${gm.groupBuy.endDate}]] 前取貨</span>
                         <span th:case="已取貨" class="text-dark status">已取貨</span>
-                        <span th:case="未取貨" class="text-danger status">未取貨</span>
+                        <span th:case="未取貨" class="text-dark status">未取貨</span>
                       </th:block>
+                      <br><span class="text-dark payment">[[${gm.paymentStatus}]]</span>
                     </div>
                   </td>
                   <td th:if="${gm.groupBuy.groupBuyStatus=='開團中' && gm.pickupStatus=='已訂購'}" class="py-4 d-flex" width="10%">
@@ -146,6 +147,14 @@
                     </a>
                     <a href="#" class="cart-remove" th:data-id="${gm.groupMemberId}">
                       <i class="fa-solid fa-trash fa-2xl" style="color: #F95F09;"></i>
+                    </a>
+                  </td>
+                  <td th:if="${(gm.groupBuy.groupBuyStatus=='已結單' || gm.groupBuy.groupBuyStatus=='已到貨') && gm.paymentStatus=='未付款'}" class="py-4 d-flex" width="10%">
+                    <a class="check-payment me-3" th:href="@{/group-buy-checkout(id=${gm.groupMemberId})}">
+                      <i class="fa-regular fa-credit-card fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                    <a class="check-payment me-3" th:href="@{/group-buy-line-pay(id=${gm.groupMemberId})}">
+                      <i class="fa-brands fa-line fa-2xl" style="color: #6bb252;"></i>
                     </a>
                   </td>
                 </tr>
@@ -373,6 +382,7 @@
       }
 
       template += `
+      <br><span class="text-dark payment">${gm.paymentStatus}</span>
           </div>
         </td>
       `;
@@ -388,6 +398,18 @@
             </a>
           </td>
         `;
+      }
+      if ((gm.groupBuy.groupBuyStatus == '已結單' || gm.groupBuy.groupBuyStatus == '已到貨') && gm.paymentStatus == '未付款') {
+        template += `
+                  <td class="py-4 d-flex" width="10%">
+                    <a class="check-payment me-3" href="http://localhost:8080/FinalProject/group-buy-checkout?id=${gm.groupMemberId}">
+                      <i class="fa-regular fa-credit-card fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                    <a class="check-payment me-3" href="http://localhost:8080/FinalProject/group-buy-line-pay?id=${gm.groupMemberId}">
+                      <i class="fa-brands fa-line fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                  </td>
+                  `;
       }
 
       template += `
