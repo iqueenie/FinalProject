@@ -52,6 +52,22 @@ $(document).ready(function () {
                 console.log(err);
             })
     });
+
+    let personalLikeHtml = ""
+    axios.get('http://localhost:8080/FinalProject/public/front/memberName')
+        .then(res => {
+            if (res.data) {
+                personalLikeHtml += '<a  href="/FinalProject/public/front/personalLike"><h2 style="color: #6BB252; font-weight: bold" class="search_home">' + res.data + '<span style="color: #FAD56A; font-weight: bold">收藏的店鋪<i class="fa-solid fa-heart"></i></span> </h2></a>'
+                $("#personalLike").html(personalLikeHtml);
+            } else {
+                personalLikeHtml += '<a style="color: #6BB252; font-weight: bold" href="/FinalProject/public/frontLoginMain"><h2 style="color: #6BB252; font-weight: bold" class="search_home">立即登入收藏喜愛店鋪 <i class="fa-regular fa-heart"></i></h2></a>';
+                $("#personalLike").html(personalLikeHtml);
+            }
+        }).catch(err => {
+            console.error(err);
+        });
+
+
 });
 
 //商店列表**************************
@@ -60,93 +76,135 @@ function storeListCity(data) {
     console.log("top" + scrollPosition);
     let storeCities = [];
     let requests = [];
+
     data.content.forEach(function (store, index) {
-        let storeCity = '<tr><td class="graybox">EZBUY' + store.storeName + '</td>';
-        storeCity += '<td class="graybox"><table width="100%"><tbody><tr><td> 店舖號：' + store.storeId + '</td>';
-        storeCity += '<td align="right" id="friendlyText">';
-        storeCity += '<a href="/FinalProject/public/front/friendlyResult?storeId=' + store.storeId + '" style="text-decoration: none; color: inherit;">'
-        storeCity += '<i class="fa-solid fa-utensils"></i>'
-        storeCity += '<span class="add_map_word">點我看友善商品</span></a></div></td></tr></tbody></table>';
-        storeCity += '地址：' + store.city + store.area + store.street + store.detail + '<br>';
-        storeCity += '電話：' + store.tel + '</td><td class="graybox prodType" style="width:165px;line-height: 1.5;">';
+        // 使用對象存儲每個店鋪的不同部分的 HTML
+        storeCities[index] = {
+            baseInfo: `<tr><td class="graybox">EZBUY${store.storeName}<br>`,
+            likeInfo: '',
+            storeInfo: '',
+            productsInfo: ''
+        };
 
-        // 在陣列中保留每個 store 的 HTML，等待完成請求後再合併
-        storeCities[index] = storeCity;
+        let request1 = axios.get('http://localhost:8080/FinalProject/public/front/findLikeByStoreMember', {
+            params: {
+                storeId: store.storeId
+            }
+        })
+            .then(res => {
+                let likeHtml = res.data ?
+                    `<a  class="like${store.storeId}" style="color: #FAD56A; font-weight: bold" href="#" onclick="likeChange(this,${store.storeId})" likeAttr="yes"><i class="fa-solid fa-heart"></i>已收藏</a></td>` :
+                    `<a class="like${store.storeId}" style="color: #FAD56A; font-weight: bold" href="#" onclick="likeChange(this,${store.storeId})" likeAttr="no"><i class="fa-regular fa-heart"></i>加入收藏</a></td>`;
 
+                // 將結果存儲到對應的 likeInfo 屬性
+                storeCities[index].likeInfo = likeHtml;
+            })
+            .catch(err => {
+                console.error(err);
+            });
 
-        //回傳該店有的Map{商品類別,數量}
-        let request = axios.post('http://localhost:8080/FinalProject/public/front/friendlyProduct', store)
+        requests.push(request1);
+
+        let request2 = axios.post('http://localhost:8080/FinalProject/public/front/friendlyProduct', store)
             .then(res => {
                 let productsHtml = "";
                 $(".fri_content").css("display", "none");
                 $("#showShopList").css("display", "block");
 
                 for (let [key, value] of Object.entries(res.data)) {
-                    let keyType = `${key}`;
-                    let encodedKey = encodeURIComponent(keyType);
-                    if (keyType === "飲品") {
-                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
-                                    <i class="fa-solid fa-mug-saucer"></i> (${keyType}): ${value}
-                                  </a><br>`;
-                    } else if (keyType === "零食") {
-                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
-                        <i class="fa-solid fa-cookie-bite"></i> (${key}): ${value}</a><br>`
-                    } else if (keyType === "泡麵") {
-                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
-                         <i class="fa-solid fa-bacon"></i> (${key}): ${value}</a><br>`
-                    } else if (keyType === "熟食") {
-                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
-                         <i class="fa-solid fa-bowl-food"></i> (${key}): ${value}</a><br>`
-                    } else {
-                        productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
-                         <i class="fa-solid fa-circle-question"></i> (其他): ${value}</a><br>`
+                    let encodedKey = encodeURIComponent(key);
+                    let productTypeIcon;
+
+                    switch (key) {
+                        case "飲品":
+                            productTypeIcon = '<i class="fa-solid fa-mug-saucer"></i>';
+                            break;
+                        case "零食":
+                            productTypeIcon = '<i class="fa-solid fa-cookie-bite"></i>';
+                            break;
+                        case "泡麵":
+                            productTypeIcon = '<i class="fa-solid fa-bacon"></i>';
+                            break;
+                        case "熟食":
+                            productTypeIcon = '<i class="fa-solid fa-bowl-food"></i>';
+                            break;
+                        default:
+                            productTypeIcon = '<i class="fa-solid fa-circle-question"></i>';
                     }
+
+                    productsHtml += `<a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}&productType=${encodedKey}">
+                                    ${productTypeIcon} (${key}): ${value}
+                                 </a><br>`;
                 }
-                storeCities[index] += productsHtml + '</td></tr>';
+
+                // 將結果存儲到對應的 productsInfo 屬性
+                storeCities[index].productsInfo = productsHtml + '</td></tr>';
             })
             .catch(err => {
                 console.error(err);
-                storeCities[index] += '</td></tr>';
+                storeCities[index].productsInfo = '</td></tr>';
             });
 
-        requests.push(request);
+        requests.push(request2);
+
+        // 將基本信息存儲到對應的 storeInfo 屬性
+        storeCities[index].storeInfo = `
+            <td class="graybox">
+                <table width="100%">
+                    <tbody>
+                        <tr>
+                            <td> 店舖號：${store.storeId}</td>
+                            <td align="right" id="friendlyText">
+                                <a href="/FinalProject/public/front/friendlyResult?storeId=${store.storeId}" style="text-decoration: none; color: inherit;">
+                                    <i class="fa-solid fa-utensils"></i>
+                                    <span class="add_map_word">查看友善商品</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                地址：${store.city}${store.area}${store.street}${store.detail}<br>
+                電話：${store.tel}
+            </td>
+            <td class="graybox prodType" style="width:165px;line-height: 1.5;">
+        `;
     });
 
-
-
+    // 在所有請求完成後一次性拼接 HTML
     Promise.all(requests).then(() => {
-        // 將所有 storeCities 合併成一個字串
-        let storeCityHtml = storeCities.join('');
+        let storeCityHtml = storeCities.map(store =>
+            store.baseInfo + store.likeInfo + store.storeInfo + store.productsInfo
+        ).join('');
+
         $('.searchResult').html(storeCityHtml);
-        let totalPages = data.totalPages
-        let currentPage = data.number + 1
+
+        let totalPages = data.totalPages;
+        let currentPage = data.number + 1;
         let msg_data = "";
-        // msg_data += '<li class="page-item disabled"><a class="page-link bg-none border-0" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+
         if (currentPage === 1) {
             msg_data += '<li class="page-item disabled"><a class="page-link bg-none border-0" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
         } else {
-            msg_data += '<li class="page-item"><a class="page-link bg-none border-0" href="#" aria-label="Previous" onclick="loadThatPage(' + (currentPage - 1) + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')"><span aria-hidden="true">&laquo;</span></a></li>';
-            console.log(msg_data);
+            msg_data += `<li class="page-item"><a class="page-link bg-none border-0" href="#" aria-label="Previous" onclick="loadThatPage(${currentPage - 1}, '${cityGlobal}', '${areaGlobal}')"><span aria-hidden="true">&laquo;</span></a></li>`;
         }
 
-        for (var i = 1; i <= totalPages; i++) {
+        for (let i = 1; i <= totalPages; i++) {
             if (currentPage === i) {
-                msg_data += '<li class="page-item active" data-pageid="' + i + '"><a class="page-link border-0 pageBtn" href="#">' + i + '</a></li>';
+                msg_data += `<li class="page-item active" data-pageid="${i}"><a class="page-link border-0 pageBtn" href="#">${i}</a></li>`;
             } else {
-                msg_data += '<li class="page-item" data-pageid="' + i + '"><a class="page-link border-0 pageBtn" href="#" onclick="loadThatPage(' + i + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')">' + i + '</a></li>';
+                msg_data += `<li class="page-item" data-pageid="${i}"><a class="page-link border-0 pageBtn" href="#" onclick="loadThatPage(${i}, '${cityGlobal}', '${areaGlobal}')">${i}</a></li>`;
             }
         }
 
         if (currentPage === totalPages) {
             msg_data += '<li class="page-item disabled"><a class="page-link border-0" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
         } else {
-            msg_data += '<li class="page-item"><a class="page-link border-0" href="#" aria-label="Next" onclick="loadThatPage(' + (currentPage + 1) + ', \'' + cityGlobal + '\', \'' + areaGlobal + '\')"><span aria-hidden="true">&raquo;</span></a></li>';
+            msg_data += `<li class="page-item"><a class="page-link border-0" href="#" aria-label="Next" onclick="loadThatPage(${currentPage + 1}, '${cityGlobal}', '${areaGlobal}')"><span aria-hidden="true">&raquo;</span></a></li>`;
         }
 
         $(".pageul").html(msg_data);
 
         let pageBtns = $('.pageBtn');
-
         pageBtns.each(function (index) {
             $(this).attr("onclick", `loadThatPage(${index + 1},"${cityGlobal}","${areaGlobal}")`);
         });
@@ -158,7 +216,6 @@ function storeListCity(data) {
     window.scrollTo(0, scrollPosition);
     $("#pageArea").css("display", "block");
 }
-
 function loadThatPage(pageId, city, area) {
     var scrollPosition = window.scrollY;
     console.log('有按到' + pageId);
@@ -182,3 +239,62 @@ function loadThatPage(pageId, city, area) {
 
 }
 
+function likeChange(element, storeId) {
+    let like = $(element).attr('likeAttr');
+    var scrollPosition = window.scrollY;
+    console.log(like);
+    axios.get('http://localhost:8080/FinalProject/front/checkLogging')
+        .then(res => {
+            if (res.data) {
+                if (like === "no") {
+                    console.log(like === "no");
+                    let likeStatus = $(`.like${storeId}`);
+                    likeStatus.html('<i class="fa-solid fa-heart"></i>已收藏');
+                    likeStatus.attr('likeAttr', 'yes');
+                    window.scrollTo(0, scrollPosition);
+                    axios.post('http://localhost:8080/FinalProject/public/front/insertLike', {
+                        storeId: storeId
+                    })
+                        .then(function (response) {
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                } else {
+                    console.log(like === "yes");
+                    let likeStatus = $(`.like${storeId}`);
+                    likeStatus.html('<i class="fa-regular fa-heart"></i>加入收藏');
+                    likeStatus.attr('likeAttr', 'no');
+                    window.scrollTo(0, scrollPosition);
+                    axios.delete('http://localhost:8080/FinalProject/public/front/like/delete', {
+                        params: {
+                            storeId: storeId
+                        }
+                    })
+                        .then(function (response) {
+                        })
+                        .catch(function (error) {
+                        })
+                }
+            } else {
+                Swal.fire({
+                    title: "請先登入",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "green",
+                    cancelButtonColor: "gray",
+                    confirmButtonText: "登入",
+                    cancelButtonText: "取消",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/FinalProject/public/frontLoginMain";
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        })
+}

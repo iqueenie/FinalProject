@@ -1,7 +1,12 @@
 package six.yiting.controller;
 
+import java.awt.Dialog.ModalExclusionType;
+import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,16 +16,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
 import six.pinhong.model.Product;
+import six.yiting.dto.InventoryCheckDto;
+import six.yiting.dto.ProductTypeNumberDto;
 import six.yiting.model.BuyBean;
 import six.yiting.model.DetailBean;
+import six.yiting.model.InventoryBean;
 import six.yiting.model.StoreLikeBean;
 import six.yiting.model.StoresBean;
+import six.yiting.service.InventoryService;
 import six.yiting.service.StoreLikeService;
 import six.yiting.service.StoreService;
 
@@ -36,6 +47,8 @@ public class StoreLikeController {
 	@Autowired
 	private MembersService membersService;
 	
+	@Autowired
+	private InventoryService inventoryService;
 	
 	@GetMapping("/private/like/findAll")
 	public String findAllLikes(Model model) {
@@ -95,6 +108,23 @@ public class StoreLikeController {
 		
 	}
 	
+	@PostMapping("/public/front/insertLike")
+	@ResponseBody
+	public String insertLike(HttpSession session, @RequestBody Map<String, Integer> requestBody) {
+	    Integer storeId = requestBody.get("storeId");
+	    if (session.getAttribute("loggedInMember") == null) {
+	        return null;
+	    } else {
+	        MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+	        StoresBean store = storeService.findStoreById(storeId);
+	        StoreLikeBean like = new StoreLikeBean();
+	        like.setMember(member);
+	        like.setStore(store);
+	        likeService.saveLike(like);
+	        return "success";
+	    }
+	}
+	
 	
 	@DeleteMapping("/private/like/delete")
 	@ResponseBody
@@ -102,6 +132,8 @@ public class StoreLikeController {
 	    likeService.deleteStoreLike(id);
 	    return "success"; 
 	}
+	
+
 	
 	@GetMapping("/private/like/edit")
 	public String editLike(@RequestParam Integer id, Model model) {
@@ -163,5 +195,98 @@ public class StoreLikeController {
 		
 		return "back/yiting/countStoreLike";
 	}
+	
+	@GetMapping("/public/front/findLikeByStoreMember")
+	@ResponseBody
+	public StoreLikeBean findByStoreMember(HttpSession session, @RequestParam("storeId") Integer storeId) {
+
+	    if (session.getAttribute("loggedInMember") == null) {
+	        return null;
+	    } else {
+	        MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+	        StoresBean store = storeService.findStoreById(storeId);
+	        StoreLikeBean byStoreMember = likeService.findByStoreMember(store, member);
+
+	        if (byStoreMember == null) {
+	            return null;
+	        } else {
+	            return byStoreMember;
+	        }
+	    }
+	}
+	
+	@DeleteMapping("/public/front/like/delete")
+	@ResponseBody
+	public String deleteLikeByStoreAndMember(HttpSession session, @RequestParam("storeId") Integer storeId) {
+		 if (session.getAttribute("loggedInMember") == null) {
+		        return null;
+		    } else {
+		        MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		        StoresBean store = storeService.findStoreById(storeId);
+		        likeService.deleteLikeByMemberAndStore(store, member);
+		        return "success";
+		    }
+	}
+	
+	@GetMapping("/public/front/memberName")
+	@ResponseBody
+	public String insertLike(HttpSession session) {
+	    if (session.getAttribute("loggedInMember") == null) {
+	        return null;
+	    } else {
+	        MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+	        return member.getMemberName();
+	    }
+	}
+	
+	@GetMapping("/public/front/personalLike")
+	public String personalLike (HttpSession session, Model model) {
+		
+		List<ProductTypeNumberDto> countType= new ArrayList<>();
+		
+		LocalDate today = LocalDate.of(2024, 7, 18);
+		
+		List<StoresBean> checkInv = new ArrayList<>();  
+		
+		if (session.getAttribute("loggedInMember") == null) {
+	        return null;
+	    } else {
+	        MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+	        List<StoreLikeBean> personalLike = likeService.findByMember(member);
+	        
+	        for(StoreLikeBean like:personalLike) {
+	        	List<String> types  = inventoryService.findProductType(like.getStore(), today);
+	        	if(types.size() >= 1) {
+	        		checkInv.add(like.getStore());
+		        	for(String type:types) {
+		        		ProductTypeNumberDto dto = new ProductTypeNumberDto();
+		        		dto.setStoreId(like.getStore().getStoreId());
+		        		dto.setType(type);
+			        	List<InventoryBean> byTypeNoPage = inventoryService.findByTypeNoPage(like.getStore(), today,type);
+			        	int count= 0;
+			        	for(InventoryBean inv: byTypeNoPage) {
+			        		count = count+inv.getInvNum();
+			        	}
+			        	dto.setNumber(count);
+			        	countType.add(dto);
+		        	}
+	        	}
+	        }
+	       
+	        model.addAttribute("checkInv", checkInv);
+	        model.addAttribute("countType",countType);
+	        model.addAttribute("personalLike",personalLike);
+	        model.addAttribute("member", member);
+	        return "/front/yiting/PersonalLike";
+	    }
+	}
+	
+	@GetMapping("/public/front/personalDelete")
+	public String personalDelete(Integer likeId) {
+		likeService.deleteStoreLike(likeId);
+		return "redirect:/public/front/personalLike";
+	}
+	
+	
 
 }

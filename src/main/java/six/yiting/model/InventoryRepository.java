@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import six.yiting.dto.ProductTypeNumberDto;
+import six.yiting.model.StoresBean;
+
+
 
 
 public interface InventoryRepository extends JpaRepository<InventoryBean, Integer>  {
@@ -23,5 +27,10 @@ public interface InventoryRepository extends JpaRepository<InventoryBean, Intege
 	
 	@Query(value="SELECT DISTINCT product.productType from InventoryBean WHERE store= :store AND expDate= :expDate")
 	List<String> findProductType(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate);
+	
+	@Query(value="from InventoryBean WHERE store= :store AND expDate= :expDate AND product.productType=:productType")
+	List<InventoryBean> findByType(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate,@Param(value = "productType") String productType);
+	
+	List<InventoryBean> findByStoreAndExpDate(StoresBean store, LocalDate expDate);
 	
 }

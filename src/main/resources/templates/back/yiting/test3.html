@@ -1,61 +1,58 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Checkbox Selection</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        #test {
-            display: none;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Example</title>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
         }
-    </style>
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            // 发送位置到 Spring Boot 后端
+            fetch('http://localhost:8080/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Distance: ', data.distance);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
 </head>
 <body>
-<ul id="selectList">
-    <li>
-        <input type="checkbox" name="specialItem" value="Smart">智能咖啡機
-        <img src="/FinalProject/ProductPhoto?productId=11" class="store11">
-    </li>
-    <li>
-        <input type="checkbox" name="specialItem" value="Donut">甜甜圈
-        <img src="/FinalProject/ProductPhoto?productId=12" class="store12">
-    </li>
-    <li>
-        <input type="checkbox" name="specialItem" value="IceCream">霜淇淋
-        <img src="/FinalProject/ProductPhoto?productId=13" class="store13">
-    </li>
-</ul>
-
-<div id="test">
-    這是默認內容。
-</div>
-
-<script>
-    $(document).ready(function() {
-        $('input[name="specialItem"]').on('change', function() {
-            // 檢查被選中的復選框
-            var selectedItems = [];
-            $('input[name="specialItem"]:checked').each(function() {
-                selectedItems.push($(this).val());
-            });
-
-            // 根據選中的復選框數量顯示不同的內容
-            if (selectedItems.length > 0) {
-                // 如果有選中的復選框，顯示 div
-                $('#test').show();
-
-                // 檢查是否特定兩個條件都被滿足
-                if (selectedItems.includes("Smart") && selectedItems.includes("Donut")) {
-                    $('#test').html("智能咖啡機和甜甜圈都被勾選！");
-                } else {
-                    $('#test').html("選中了: " + selectedItems.join(", "));
-                }
-            } else {
-                // 如果沒有選中的復選框，隱藏 div
-                $('#test').hide();
-            }
-        });
-    });
-</script>
+    <button onclick="getLocation()">Get Location</button>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package six.yiting.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import six.hsiao.model.MembersBean;
+import six.yiting.dto.ProductTypeNumberDto;
 import six.yiting.model.InventoryBean;
 import six.yiting.model.StoreLikeBean;
 import six.yiting.model.StoreLikeRepository;
@@ -58,6 +60,27 @@ public class StoreLikeService {
 	public long countLikes(StoresBean store) {
 		return likeRepo.countByStore(store);
 	}
+	
+	public StoreLikeBean findByStoreMember(StoresBean store, MembersBean member) {
+		
+		StoreLikeBean like = likeRepo.findByStoreAndMember(store, member);
+		
+		if(like == null) {
+			return null;
+		}
+		
+		return like;
+	}
+	
+	public void deleteLikeByMemberAndStore(StoresBean store, MembersBean member) {
+		likeRepo.deleteLikByStoreAndMember(store, member);
+	}
 
+	public List<StoreLikeBean> findByMember(MembersBean member){
+		return likeRepo.findByMember(member);
+	}
+	
+
+	
 }
 
