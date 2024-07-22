@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.maps.model.LatLng;
 
+import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRepository;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.pinhong.model.Product;
 import six.yiting.dto.SelectProductDto;
 import six.yiting.model.InventoryBean;
@@ -41,11 +46,22 @@ public class StoresController {
 	@Autowired
 	private InventoryService inventoryService;
 	
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
+	
 	
 	@GetMapping("/private/stores/findAll")
-	public String findAllStores(Model model) {
+	public String findAllStores(Model model,HttpSession session) {
 		
 		List<StoresBean> listStores = storeService.findAllStores();
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			model.addAttribute("role", "店長");
+		}else {
+			model.addAttribute("role", "管理員");
+		}
 		
 		model.addAttribute("listStores",listStores);
 		

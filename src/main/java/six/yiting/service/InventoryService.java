@@ -28,6 +28,10 @@ public class InventoryService {
 		return invRepo.findAll();
 	}
 	
+	public List<InventoryBean> findByStore(StoresBean store){
+		return invRepo.findByStore(store);
+	}
+	
 	
 	public InventoryBean saveInventory(InventoryBean inv) {
 		return invRepo.save(inv);

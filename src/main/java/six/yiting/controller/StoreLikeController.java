@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
 import six.pinhong.model.Product;
@@ -50,14 +53,24 @@ public class StoreLikeController {
 	@Autowired
 	private InventoryService inventoryService;
 	
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
+	
 	@GetMapping("/private/like/findAll")
-	public String findAllLikes(Model model) {
+	public String findAllLikes(HttpSession session,Model model) {
+	
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			model.addAttribute("role", "店長");
+		}else {
+			model.addAttribute("role", "管理員");
+		}
 		
 		List<StoreLikeBean> listLikes = likeService.findAllLikes();
 		
 		model.addAttribute("listLikes",listLikes);
-		
-		
 		return "back/yiting/GetAllStoreLikes";
 	}
 	

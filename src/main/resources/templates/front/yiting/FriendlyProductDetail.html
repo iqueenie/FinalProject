@@ -76,12 +76,16 @@
       padding: 10px 0 10px 15px;
       vertical-align: top;
     }
+
     .modal-body {
-  display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-  height: 100%; /* 使 modal-body 填满模态框 */
-}
+      display: flex;
+      justify-content: center;
+      /* 水平居中 */
+      align-items: center;
+      /* 垂直居中 */
+      height: 100%;
+      /* 使 modal-body 填满模态框 */
+    }
   </style>
 </head>
 
@@ -133,24 +137,26 @@
         </aside>
 
         <main class="col-md-10">
-      
+
           <div
             class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
             <th:block th:each="inv : ${invPage.content}">
-  <div class="col">
-    <div class="product-item">
-      <figure>
-        <a href="#" title="Product Title" data-bs-toggle="modal" data-bs-target="#imageModal" th:attr="modalImg=@{/ProductPhoto(productId=${inv.productId})},pName=${inv.product.productName}">
-          <img th:src="@{/ProductPhoto(productId=${inv.productId})}" alt="Product Thumbnail" class="tab-image">
-        </a>
-      </figure>
-      <div class="d-flex flex-column text-center">
-        <h3 class="fs-6 fw-normal" th:text="${inv.product.productName}"></h3>
-        <span class="text-dark fw-semibold" th:text="'數量: ' + ${inv.invNum}"></span>
-      </div>
-    </div>
-  </div>
-</th:block>
+              <div class="col">
+                <div class="product-item">
+                  <figure>
+                    <a href="#" title="Product Title" data-bs-toggle="modal" data-bs-target="#imageModal"
+                      th:attr="modalImg=@{/ProductPhoto(productId=${inv.productId})},pName=${inv.product.productName}">
+                      <img th:src="@{/ProductPhoto(productId=${inv.productId})}" alt="Product Thumbnail"
+                        class="tab-image">
+                    </a>
+                  </figure>
+                  <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal" th:text="${inv.product.productName}"></h3>
+                    <span class="text-dark fw-semibold" th:text="'數量: ' + ${inv.invNum}"></span>
+                  </div>
+                </div>
+              </div>
+            </th:block>
 
 
 
@@ -246,29 +252,29 @@
       </div>
     </div>
   </div>
-  
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-  <div class="modal-dialog" style="max-width: 40%; height: 80%;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="imageModalLabel"></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <img id="modalImage" style="width:350px;" src="" alt="Large Product Image" class="img-fluid">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 40%; height: 80%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImage" style="width:350px;" src="" alt="Large Product Image" class="img-fluid">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-  
+
   <div th:replace="~{front/layout/footer}"></div>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
   <script>
-  
-   document.addEventListener('DOMContentLoaded', function () {
+
+    document.addEventListener('DOMContentLoaded', function () {
       var imageModal = document.getElementById('imageModal');
       var modalImage = document.getElementById('modalImage');
       var modalLabel = document.getElementById('imageModalLabel');
