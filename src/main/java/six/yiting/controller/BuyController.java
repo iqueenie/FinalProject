@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.yiting.model.BuyBean;
@@ -47,32 +51,58 @@ public class BuyController {
 	@Autowired
 	private InventoryService invService;
 	
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
+	
 	
 	@GetMapping("/private/buy/findAll")
-	public String findAllBuys(Model model) {
+	public String findAllBuys(HttpSession session, Model model) {
 		
-		List<BuyBean> listBuys = buyService.findAllBuys();
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
 		
-		model.addAttribute("listBuys",listBuys);
+		if (managementRole.getStore()!=null) {
+			List<BuyBean> listByStore = buyService.findByStore(managementRole.getStore());
+			model.addAttribute("listBuys",listByStore);
+		}else {
+			List<BuyBean> listBuys = buyService.findAllBuys();
+			model.addAttribute("listBuys",listBuys);
+		}
 		
 		return "back/yiting/GetAllBuys";
 	}
 	
 	@GetMapping("/private/buy/findAllAjax")
 	@ResponseBody
-	public List<BuyBean> findAllStoresAjax() {
+	public List<BuyBean> findAllStoresAjax(HttpSession session) {
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		if (managementRole.getStore()!=null) {
+			return buyService.findByStore(managementRole.getStore());
+		}else {
+			return buyService.findAllBuys();
+		}
 		
-		return buyService.findAllBuys();
+		
 		
 	}
 	
 	@GetMapping("/private/buy/addBuyPage")
-    public String buyInsertPage(Model m) {
+    public String buyInsertPage(HttpSession session,Model m) {
 		List<Product> products = productService.findAll();
-		List<StoresBean> stores = storeService.findAllStores();
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			m.addAttribute("stores",managementRole.getStore());
+		}else {
+			List<StoresBean> stores = storeService.findAllStores();
+			m.addAttribute("stores",stores);
+		}
+		
 		
 		m.addAttribute("products", products);
-		m.addAttribute("stores", stores);
 		m.addAttribute("buy", new BuyBean());
 		
 		return "back/yiting/insertBuy";

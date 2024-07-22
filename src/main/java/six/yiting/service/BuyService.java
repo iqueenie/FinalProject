@@ -23,6 +23,10 @@ public class BuyService {
 		return buyRepo.findAll();
 	}
 	
+	public List<BuyBean> findByStore(StoresBean store){
+		return buyRepo.findByStore(store);
+	}
+	
 	
 	public BuyBean saveBuy(BuyBean store) {
 		return buyRepo.save(store);
