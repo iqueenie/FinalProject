@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -292,7 +291,7 @@ public class StoresController {
 
 		Map<String,Integer> inventoryExpDates = new HashMap<>();
 
-		LocalDate today = LocalDate.now().minusDays(3);
+		LocalDate today = LocalDate.of(2024, 7, 18);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
 			String type = product.getProductType(); 
@@ -324,7 +323,7 @@ public class StoresController {
 	 public List<InventoryBean> getFriInvByStore(@RequestBody StoresBean store){
 		List<Product> byType = storeService.findByOtherType();
 		List<InventoryBean> resultList = new ArrayList<>();
-		LocalDate today = LocalDate.now().minusDays(3);
+		LocalDate today = LocalDate.of(2024, 7, 18);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
 			if(inv!=null && inv.getExpDate().equals(today) ) {
@@ -343,7 +342,8 @@ public class StoresController {
 								 Model model) {
 
 		 //商品部分
-		 LocalDate today = LocalDate.now().minusDays(3);
+//		 LocalDate today = LocalDate.now().minusDays(3);
+		 LocalDate today = LocalDate.of(2024, 7, 18);
 		 StoresBean store = storeService.findStoreById(storeId);
 		 
 		 List<String> productTypes = inventoryService.findProductType(store, today);

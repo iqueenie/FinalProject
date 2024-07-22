@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import six.yiting.dto.ProductTypeNumberDto;
 import six.yiting.model.BuyBean;
 import six.yiting.model.InventoryBean;
 import six.yiting.model.InventoryRepository;
@@ -96,6 +97,20 @@ public class InventoryService {
 		return invRepo.findProductType(store, expDate);
 	}
 	
+	public List<InventoryBean> findByTypeNoPage(StoresBean store,LocalDate expdDate,String productType){
+		List<InventoryBean> invResult = invRepo.findByType(store, expdDate, productType);
+		return invResult;
+		
+	}
+	
+	public boolean inventoryCheck(StoresBean store, LocalDate expDate) {
+		List<InventoryBean> byStoreAndExpDate = invRepo.findByStoreAndExpDate(store, expDate);
+		if(byStoreAndExpDate==null) {
+			return false;
+		}else {
+			return true;
+		}
+	}
 	
 
 }
