@@ -36,6 +36,7 @@ private MembersBean member;
 private Integer quantity;
 private Integer total;
 private String pickupStatus = "已訂購";
+private String paymentStatus = "未付款";
 
 public Integer getGroupMemberId() {
 	return groupMemberId;
@@ -87,5 +88,11 @@ public void setGroupBuyId(int groupBuyId) {
 }
 public void setMemberId(int memberId) {
 	this.memberId = memberId;
+}
+public String getPaymentStatus() {
+	return paymentStatus;
+}
+public void setPaymentStatus(String paymentStatus) {
+	this.paymentStatus = paymentStatus;
 }
 }
