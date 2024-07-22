@@ -16,7 +16,7 @@ $(document).ready(function () {
             // 停留在初始鎮區選項，直到手動選擇鎮區或城市發生變化
             $townSelect.prepend('<option selected value="">鄉鎮縣市</option>');
         } else {
-            alert('查無該區域相關店鋪');
+            alert('該區域店鋪今日無友善商品');
             showDefaultContent();
         }
 
@@ -44,7 +44,7 @@ $(document).ready(function () {
                 if (data.content.length >= 1) {
                     storeListCity(res.data)
                 } else {
-                    alert('查無該區域相關店鋪');
+                    alert('該區域店鋪今日無友善商品');
                     showDefaultContent();
                 }
             })
