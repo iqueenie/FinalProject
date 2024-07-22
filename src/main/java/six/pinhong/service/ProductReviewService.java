@@ -76,5 +76,9 @@ public class ProductReviewService {
 	    productReviewRepo.save(review);
 	}
 	
+	// 刪除 by ReviewId
+	public void deleteProductReviewByReviewId(Integer reviewId) {
+		productReviewRepo.deleteById(reviewId);
+	}
 
 }

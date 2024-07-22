@@ -391,6 +391,7 @@ public class ProductController {
 	    return "redirect:/public/Products/" + productId;
 	};
 	
+	// 最近瀏覽的商品
 	@GetMapping("/public/recentProducts")
 	public String showRecentProducts(HttpSession session, Model model) {
 		// 從 session 中取得最近查看的ProductId List
@@ -423,5 +424,21 @@ public class ProductController {
 	    return "front/pinhong/recentProducts";
 	}
 	
+	// 找該商品所有的評論 for 後台getAll
+	@GetMapping("/private/Product/Reviews")
+	public String findProductReviewsByProductId(@RequestParam Integer productId, Model m){
+		
+		List<ProductReview> reviews = productReviewService.findProductReviewsByProductId(productId);
+		m.addAttribute("reviews", reviews);
+		
+	    return "back/pinhong/FindProductReviews";
+	}
+	
+	@DeleteMapping("/private/Product/Review/delete")
+	@ResponseBody
+	public String deleteProductReviewByReviewId(@RequestParam Integer reviewId) {
+	    productReviewService.deleteProductReviewByReviewId(reviewId);
+	    return "success";
+	}
 }
 	

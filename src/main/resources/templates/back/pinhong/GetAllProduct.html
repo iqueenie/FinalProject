@@ -17,7 +17,17 @@
     .col-product-name {
             width: 20%;
         }
-        /* 其他列的寬度可以根據需要設置 */
+     table td, table th {
+    text-align: left !important;
+	}
+	.btn-disabled {
+    background-color: #6c757d; /* 灰色背景 */
+    border-color: #6c757d; /* 灰色边框 */
+    cursor: not-allowed; /* 禁止光标 */
+	}
+	.btn-disabled:hover {
+	    background-color: #6c757d; /* 确保 hover 时颜色不变 */
+	}
     </style>
 </head>
 <body>
@@ -40,8 +50,7 @@
                         <th>售價</th>
                         <th>效期</th>
                         <th>數量</th>
-                        <th>平均評分</th>
-                        <th>評論數量</th>
+                        <th>評分/評分數</th>
                         <th>上架</th>
                         <th>詳情</th>
                         <th>操作</th>
@@ -145,18 +154,19 @@
                         data.forEach(product => {
                             var publishedStatus = product.productPublished == 1 ? '是' : '否';
                             table.row.add([
-                                product.productId,
-                                product.productName,
-                                product.productType,
-                                product.productCost,
-                                product.productPrice,
-                                product.productExpirydate,
-                                product.productQuantity,
-                                product.averageRating,
-                                product.reviewCount,
-                                publishedStatus,
-                                `<a href="/FinalProject/private/Product/UpdatePage?productId=${product.productId}" class="btn btn-outline-warning btn-sm detail-btn">詳情</a>`,
-                                `<a href="#" class="btn btn-outline-danger btn-sm delete-btn" data-product-id="${product.productId}">刪除</a>`
+                                 product.productId,
+							    product.productName,
+							    product.productType,
+							    product.productCost,
+							    product.productPrice,
+							    product.productExpirydate,
+							    product.productQuantity,
+							    product.averageRating === 0 && product.reviewCount === 0 ?
+							        `<button class="btn btn-disabled" disabled>該商品無評分</button>` :
+							        `<a href="/FinalProject/private/Product/Reviews?productId=${product.productId}" class="btn btn-warning btn detail-btn">${product.averageRating} / ${product.reviewCount}</a>`,
+							    publishedStatus,
+							    `<a href="/FinalProject/private/Product/UpdatePage?productId=${product.productId}" class="btn btn-outline-warning btn-sm detail-btn">詳情</a>`,
+							    `<a href="#" class="btn btn-outline-danger btn-sm delete-btn" data-product-id="${product.productId}">刪除</a>`
                             ]);
                         });
 
