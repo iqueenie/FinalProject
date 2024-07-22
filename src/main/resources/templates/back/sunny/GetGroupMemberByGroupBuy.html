@@ -27,6 +27,7 @@
                     <td>購買數量</td>
                     <td>總金額</td>
                     <td>狀態</td>
+                    <td>付款狀態</td>
                     <td>更新</td>
                     <td th:if="${role!='店長'}">刪除</td>
                 </tr>
@@ -40,6 +41,7 @@
                         <td>[[${gm.quantity}]]</td>
                         <td>[[${gm.total}]]</td>
                         <td>[[${gm.pickupStatus}]]</td>
+                        <td>[[${gm.paymentStatus}]]</td>
                         <td>
                             <a th:if="${role=='店長' && gm.pickupStatus=='待取貨'}" class="btn btn-outline-warning btn-sm" th:href="@{/private/back/ChangePickupStatus(id=${gm.groupMemberId},status='已取貨')}">確認取貨</a>
                             <a th:if="${role=='店長' && gm.pickupStatus!='待取貨'}" class="btn btn-outline-warning btn-sm disabled" href="#">[[${gm.pickupStatus}]]</a>

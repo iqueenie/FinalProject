@@ -35,7 +35,7 @@ public class ECPayController {
 
 		GroupMember groupMember = groupMemberService.findById(id);
 
-		String merchantTradeNo = "TESTgroupbuyc" + id;
+		String merchantTradeNo = "TESTgroupbuyd" + id;
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String currentTime = sdf.format(new Date());
@@ -49,7 +49,7 @@ public class ECPayController {
 		obj.setTradeDesc("團購商品付款");
 		obj.setItemName(groupMember.getGroupBuy().getProductName());
 		obj.setReturnURL("https://f124-61-222-34-1.ngrok-free.app/FinalProject/group-buy-checkout-return");
-		obj.setClientBackURL("http://localhost:8080/FinalProject/public/front");
+		obj.setClientBackURL("http://localhost:8080/FinalProject/public/front/group-member-orders");
 		obj.setNeedExtraPaidInfo("N");
 
 		String form = all.aioCheckOut(obj, null);
@@ -66,7 +66,7 @@ public class ECPayController {
 			String merchantTradeNo = allParams.get("MerchantTradeNo");
 			String rtnCode = allParams.get("RtnCode");
 
-			String idString = merchantTradeNo.replace("TESTgroupbuyc", "");
+			String idString = merchantTradeNo.replace("TESTgroupbuyd", "");
 			Integer id = Integer.parseInt(idString);
 
 			System.out.println("驗證成功");
