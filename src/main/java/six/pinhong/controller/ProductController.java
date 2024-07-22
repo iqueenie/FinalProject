@@ -453,5 +453,21 @@ public class ProductController {
 	    productReviewService.deleteProductReviewByReviewId(reviewId);
 	    return "success";
 	}
+	
+	//  找該商品所有的評論 for 前台
+	@GetMapping("/public/Products/{productId}/Reviews")
+	public String findProductReviewsByProductIdForFront(@PathVariable Integer productId, Model model) {
+	    List<ProductReview> reviews = productReviewService.findProductReviewsByProductId(productId);
+	    model.addAttribute("reviews", reviews);
+	    Product product = productService.findProductById(productId);
+	    model.addAttribute("product", product);
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+	    
+	    model.addAttribute("averageRatings", averageRatings.get(productId));
+	    model.addAttribute("reviewCounts", reviewCounts.get(productId));
+	    
+	    return "front/pinhong/productReviews"; 
+	} 
 }
 	

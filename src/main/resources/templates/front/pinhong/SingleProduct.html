@@ -319,7 +319,7 @@
 					<!-- 評論 -->
                 </div>
 				<div class="qty-button d-flex flex-wrap pt-3">
-                      <button type="button" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3 btn-cart">所有評論</button>                      
+					<a th:href="@{/public/Products/{productId}/Reviews(productId=${productId})}" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3">所有評論</a>
                    <th:block th:if="${session.loggedInMember != null}">
                    <th:block th:if="${showForUser}">
 				        <th:block th:if="${!hasReviewed}">
