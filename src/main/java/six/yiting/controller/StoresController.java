@@ -270,8 +270,8 @@ public class StoresController {
 	        	boolean check = true;
 	        	for(String prdId:selectedItems) {
 	        		int pid = Integer.parseInt(prdId);
-	        		 InventoryBean invResult= inventoryService.findByStoreAndProduct(store, pid);
-	        		 if(invResult == null) {
+	        		List<InventoryBean> invResult= inventoryService.findByStoreAndProduct(store, pid);
+	        		 if(invResult.size()==0) {
 	        			 check = false;
 	        			 break;
 	        		 }
@@ -290,8 +290,8 @@ public class StoresController {
 		List<Product> byType = storeService.findByType();
 		List<Integer> resultList = new ArrayList<Integer>();
 		for(Product product : byType) {
-			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
-			if(inv!=null) {
+			List<InventoryBean> inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
+			if(inv.size()>=1) {
 				resultList.add(product.getProductId());
 			}
 		}
@@ -309,9 +309,9 @@ public class StoresController {
 
 		LocalDate today = LocalDate.of(2024, 7, 18);
 		for(Product product : byType) {
-			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
+			InventoryBean inv = inventoryService.findByStoreProductExp(store, product, today);
 			String type = product.getProductType(); 
-			if(inv!=null && inv.getExpDate().equals(today)) {
+			if(inv!=null) {
 				if(inventoryExpDates.containsKey(type)) {
 				Integer count=inventoryExpDates.get(type);
 				inventoryExpDates.put(type, count+inv.getInvNum());
@@ -341,8 +341,8 @@ public class StoresController {
 		List<InventoryBean> resultList = new ArrayList<>();
 		LocalDate today = LocalDate.of(2024, 7, 18);
 		for(Product product : byType) {
-			InventoryBean inv = inventoryService.findByStoreAndProduct(store, product.getProductId());
-			if(inv!=null && inv.getExpDate().equals(today) ) {
+			InventoryBean inv = inventoryService.findByStoreProductExp(store, product, today);
+			if(inv!=null ) {
 				resultList.add(inv);
 			}
 		}

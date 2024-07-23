@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import six.pinhong.model.Product;
 import six.yiting.dto.ProductTypeNumberDto;
 import six.yiting.model.BuyBean;
 import six.yiting.model.InventoryBean;
@@ -74,8 +75,8 @@ public class InventoryService {
 	} 
 	
 	
-	public InventoryBean findByStoreAndProduct(StoresBean store,Integer pid) {
-		InventoryBean inv = invRepo.findByStoreAndProductId(store, pid);
+	public List<InventoryBean> findByStoreAndProduct(StoresBean store,Integer pid) {
+		List<InventoryBean> inv = invRepo.findByStoreAndProductId(store, pid);
 		if(inv == null) {
 			return null;
 		}
@@ -114,6 +115,15 @@ public class InventoryService {
 		}else {
 			return true;
 		}
+	}
+	
+	public InventoryBean findByStoreProductExp(StoresBean store,Product product,LocalDate expDate) {
+		InventoryBean inv = invRepo.findByStoreAndProductAndExpDate(store, product, expDate);
+		if(inv == null) {
+			return null;
+		}
+		
+		return inv;
 	}
 	
 

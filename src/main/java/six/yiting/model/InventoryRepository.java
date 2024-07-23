@@ -11,13 +11,15 @@ import org.springframework.data.repository.query.Param;
 
 import six.yiting.dto.ProductTypeNumberDto;
 import six.yiting.model.StoresBean;
+import six.pinhong.model.Product;
+
 
 
 
 
 public interface InventoryRepository extends JpaRepository<InventoryBean, Integer>  {
 	InventoryBean findByProductIdAndDeliveryDateAndStore(int productId,LocalDate deliveryDate,StoresBean store);
-	InventoryBean findByStoreAndProductId(StoresBean store, int productId);
+	List<InventoryBean> findByStoreAndProductId(StoresBean store, int productId);
 	
 	@Query(value="from InventoryBean WHERE store= :store AND expDate= :expDate")
 	Page<InventoryBean> findByCityAndAreaPage(@Param(value = "store") StoresBean store, @Param(value = "expDate") LocalDate expDate,Pageable pgb);
@@ -34,4 +36,13 @@ public interface InventoryRepository extends JpaRepository<InventoryBean, Intege
 	List<InventoryBean> findByStoreAndExpDate(StoresBean store, LocalDate expDate);
 	
 	List<InventoryBean> findByStore(StoresBean store);
+	
+	InventoryBean findByStoreAndProductAndExpDate(StoresBean store, Product product, LocalDate expDate);
+
+
+
+	
+	
 }
+
+

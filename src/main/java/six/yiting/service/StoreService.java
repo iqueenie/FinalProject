@@ -190,8 +190,8 @@ public class StoreService {
 
         for (StoresBean store : storesList) {
             for (Product product : byOtherType) {
-                InventoryBean inv = invRepo.findByStoreAndProductId(store, product.getProductId());
-                if (inv != null && inv.getExpDate().equals(today)) {
+                InventoryBean inv = invRepo.findByStoreAndProductAndExpDate(store, product, today);
+                if (inv != null) {
                     resultPage.add(store);
                     break; 
                 }
@@ -201,4 +201,7 @@ public class StoreService {
         Page<StoresBean> storesPage = new PageImpl<>(resultPage, pgb, byCityAndArea.getTotalElements());
         return storesPage;
     }
+	
+	
+
 }
