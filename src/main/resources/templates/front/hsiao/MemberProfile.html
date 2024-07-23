@@ -1,125 +1,141 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
-  <head>
-    <title>Organic - Grocery Store HTML Website Template</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="author" content="">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
+<head>
+<title>Organic - Grocery Store HTML Website Template</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="author" content="">
+<meta name="keywords" content="">
+<meta name="description" content="">
 
-	<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
-	<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
-	      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+<link rel="stylesheet"
+	href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+<link
+	href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+	crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+	rel="stylesheet">
 	
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link
-	      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-	      rel="stylesheet">
-  </head>
 
-    <div th:replace="~{front/layout/navbar}"></div>
-    
-   <section class="jarallax py-5">
-    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
-    <div class="hero-content py-0 py-md-5">
-      <div class="container-lg d-flex flex-column d-md-block align-items-center">
-        <nav class="breadcrumb">
-          <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
-          <span class="breadcrumb-item active" aria-current="page">會員個人資料</span>
-        </nav>
-        <h1>會員個人資料</h1>
-      </div>
-    </div>
-  </section>
-    
+     
+</head>
+
+<div th:replace="~{front/layout/navbar}"></div>
+
+<section class="jarallax py-5">
+	<img th:src="@{/img/all/banner.png}" class="jarallax-img">
+	<div class="hero-content py-0 py-md-5">
+		<div
+			class="container-lg d-flex flex-column d-md-block align-items-center">
+			<nav class="breadcrumb">
+				<a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+				<span class="breadcrumb-item active" aria-current="page">會員個人資料</span>
+			</nav>
+			<h1>會員個人資料</h1>
+		</div>
+	</div>
+</section>
 
 
-    <div class="py-4">
-      <div class="container-lg">
-        <div class="row g-5">
-          <aside class="col-md-2">
-            <div class="sidebar">
-              <div class="widget-menu">
-              
-              </div>
-              <div class="widget-product-categories pt-5">
-                <h5 class="widget-title">會員資料</h5>
+
+<div class="py-4">
+	<div class="container-lg">
+		<div class="row g-5">
+			<aside class="col-md-2">
+				<div class="sidebar">
+					<div class="widget-menu"></div>
+					<div class="widget-product-categories pt-5">
+						<h2 class="widget-title" >會員資料</h2>
+
+					</div>
+
+				</div>
+			</aside>
+
+
+	<main class="container" 	style="padding:0px ; margin-left:200px">
+        <div class="col-md-10" style="border: 10px solid #ccc ;margin-left:10px ">
+            
+            <form id="updateForm" method="post" action="/updateMember"  style=padding-left:500px;>
+            	<br>
+            	<br>
+            	<div>
+                    <label for="memberPhoto" ></label>
+                     <img th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}"
+                     alt="memberPhoto"  class="rounded-circle me-2"  style="width: 180px; height: 160px; object-fit: cover; border-radius: 0;">
+                    
+                </div>
+                <br>
+                <div class="form-group" >
+                    <label for="memberName" >會員名稱</label>
+                    <input type="text" class="form-control" id="memberName" name="memberName"
+                        th:value="${session.loggedInMember.memberName}" style="border-color: black ;width:250px"  required >
+                </div>
+                <br>
                
-              </div>
-              
-            </div>
-          </aside>
-          
-         
-          <main class="col-md-10">
-            <div class="filter-shop d-flex justify-content-between">
-              <div class="showing-product">
-  				       
-              </div>
-              <div class="sort-by">
-				
-              </div>
-            </div>
-         	<table id="myTable" class="w-100 display">
-			<thead>
-				<tr>
-					<td>會員ID
-					<td>會員照片
-					<td>會員名稱
-					<td>會員帳號
-					<td>會員密碼
-					<td>會員地址
-					<td>會員生日
-					<td>會員信箱
-					<td>會員點數
-					<td>會員狀態
-					<td>更新
-				
-				</tr>
-			</thead>
-			<tbody>
-				<th:block th:each=" members: ${members}">
-					<tr class="data">
-						<td></td>
-						<td><img
-							th:src="@{/private/MemberPhoto(memberId=${members.memberId})}"
-							alt="Member Photo" style="max-width: 160px; max-height: 120px" /></td>
-						<td th:text="session.loggedInMember.memberName"></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td><a
-							th:href="@{/private/updateMembersMain/{memberId}(memberId=${members.memberId})}"
-							class="btn btn-outline-warning btn-sm">更新</a></td>
-						
-					</tr>
-				</th:block>
-			</tbody>
-		</table>
-
-		    
-	
-          </main>
-          
+                <div class="form-group">
+                    <label for="memberAccount">會員帳號</label>
+                    <input type="text" class="form-control" id="memberAccount" name="memberAccount"
+                        th:value="${session.loggedInMember.memberAccount}"  style="border-color: black ;width:250px" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="memberPassword">會員密碼</label>
+                    <input type="password" class="form-control" id="memberPassword" name="memberPassword"
+                        th:value="${session.loggedInMember.memberPassword}"  style="border-color: black ;width:250px" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="memberAddress">會員地址</label>
+                    <input type="text" class="form-control" id="memberAddress" name="memberAddress"
+                        th:value="${session.loggedInMember.memberAddress}" style="border-color: black ;width:250px">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="memberBirthDate">會員生日</label>
+                    <input type="date" class="form-control" id="memberBirthDate" name="memberBirthDate"
+                        th:value="${session.loggedInMember.memberBirthDate}" style="border-color: black ;width:250px">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="memberEmail">會員信箱</label>
+                    <input type="email" class="form-control" id="memberEmail" name="memberEmail"
+                        th:value="${session.loggedInMember.memberEmail}"  style="border-color: black ;width:250px" required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="points">會員點數</label>
+                    <input type="number" class="form-control" id="points" name="points"
+                        th:value="${session.loggedInMember.points}" style="border-color: black ;width:250px" readonly>
+                </div>
+                
+                <br>
+                <button type="submit" class="btn btn-primary" style="  margin-bottom: 10px;">更新資料</button>
+            </form>
         </div>
-      </div>
-    </div>
+    </main>
 
-  <div th:replace="~{front/layout/footer}"></div>
-  
+		</div>
+	</div>
+</div>
+
+<div th:replace="~{front/layout/footer}"></div>
 
 
-  </body>
+
+
+
+</body>
 </html>

@@ -46,6 +46,8 @@ public class MembersController {
 	}
 	
 	
+	
+	
 	@GetMapping("/private/MemberPhoto")
 	public ResponseEntity<byte[]> getMemberPhoto(@RequestParam Integer memberId) {
 	   
@@ -278,11 +280,16 @@ public class MembersController {
 		 
 		 
 		 @GetMapping("/public/MemberProfileMain")
-		 public String memberMessage(@PathVariable Integer memberId, Model model) {
-			MembersBean members = membersService.findByMemberId(memberId);
-			model.addAttribute("members", members);
+		 public String memberProfileMain( HttpSession httpSession,Model model) {
+	
+			Object members = httpSession.getAttribute("loggedInMember");
+			
+			
+			model.addAttribute("loggedInMember", members);
 			 return "front/hsiao/MemberProfile";
 		 }
+		 
+		 
 		 
 		 
 		 
