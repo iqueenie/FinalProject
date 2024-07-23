@@ -75,15 +75,21 @@ public class ProductService {
 	
 	// shop.html - 前台頁碼、查詢
 	
-    public Page<Product> findByPage(String searchTerm, String productType, Integer pageNum, String sortField, String sortDir, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.Direction.fromString(sortDir), sortField);
+	public Page<Product> findByPage(String searchTerm, String productType, int pageNum, int pageSize) {
+	    Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+	    
+	    if (!searchTerm.isEmpty() && !productType.isEmpty()) {
+	        return productRepo.findByProductNameContainingAndProductTypeContaining(searchTerm, productType, pageable);
+	    } else if (!searchTerm.isEmpty()) {
+	        return productRepo.findByProductNameContaining(searchTerm, pageable);
+	    } else if (!productType.isEmpty()) {
+	        return productRepo.findByProductTypeContaining(productType, pageable);
+	    } else {
+	        return productRepo.findByProductPublished(1, pageable);
+	    }
+	}
 
-        if ((searchTerm == null || searchTerm.trim().isEmpty()) && (productType == null || productType.trim().isEmpty())) {
-            return productRepo.findAllPublished(pageable); // 如果搜索词和商品类型都为空，返回所有产品
-        }
 
-        return productRepo.searchProducts(searchTerm.trim(), productType, pageable);
-    }
     
 	// 隨機五個同類型商品當推薦，且排除目前正在單一商品頁查看的productId
 	public List<Product> findSametype5Products(String productType, Integer currentProductId){

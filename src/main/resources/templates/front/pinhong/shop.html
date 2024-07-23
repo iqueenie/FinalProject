@@ -1,8 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
-
-  <head>
+<head>
     <title>Organic - Grocery Store HTML Website Template</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,8 +22,28 @@
 	<link
 	      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
 	      rel="stylesheet">
-  </head>
+  <style>
+  .discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: red;
+    color: white;
+    padding: 5px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  .product-item {
+    position: relative;
+  }
+  .rating svg {
+    fill: currentColor;
+  }
+  </style>
+</head>
 
+<body>
     <div th:replace="~{front/layout/navbar}"></div>
     
    <section class="jarallax py-5">
@@ -40,314 +58,345 @@
       </div>
     </div>
   </section>
-    
 
-
-    <div class="py-4">
-      <div class="container-lg">
-        <div class="row g-5">
-          <aside class="col-md-2">
-            <div class="sidebar">
-              <div class="widget-menu">
-                <div class="widget-search-bar">
-					<form role="search" method="get" class="d-flex position-relative" th:action="@{/public/Products}">
-                      <input class="form-control form-control-lg rounded-2 bg-light" name="searchTerm" type="text" placeholder="查詢商品" aria-label="查詢商品">
-                      <button class="btn bg-transparent position-absolute end-0" type="submit"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg></button>
-                    </form>
-                </div>
-              </div>
-              <div class="widget-product-categories pt-5">
-                <h5 class="widget-title">商品類別</h5>
-                <ul class="product-categories sidebar-list list-unstyled">
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products}" class="nav-link">全部</a>
-                  </li>
-			      <li class="cat-item">
-			         <a th:href="@{/public/Products(productType='飲品')}" th:classappend="${productType == '飲品'} ? 'active' : ''" class="nav-link">飲品</a>
-			      </li>
-			      <li class="cat-item">
-			         <a th:href="@{/public/Products(productType='零食')}" th:classappend="${productType == '零食'} ? 'active' : ''" class="nav-link">零食</a>
-			      </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='泡麵')}"  th:classappend="${productType == '泡麵'} ? 'active' : ''" class="nav-link">泡麵</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='熟食')}"  th:classappend="${productType == '熟食'} ? 'active' : ''"class="nav-link">熟食</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='生活用品')}" th:classappend="${productType == '生活用品'} ? 'active' : ''" class="nav-link">生活用品</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='菸酒')}" th:classappend="${productType == '菸酒'} ? 'active' : ''" class="nav-link">菸酒</a>
-                  </li>
-                  <li class="cat-item">
-                    <a th:href="@{/public/Products(productType='護理用品')}" th:classappend="${productType == '護理用品'} ? 'active' : ''" class="nav-link">護理用品</a>
-                  </li>
-                </ul>
-              </div>
-              
-            </div>
-          </aside>
-          
-          <!-- 右上角搜尋 -->
-          <main class="col-md-10">
-            <div class="filter-shop d-flex justify-content-between">
-              <div class="showing-product">
-  				 <p th:text="'Showing ' + ${currentRange} + ' of ' + ${page.totalElements} + ' results'"></p>                
-              </div>
-              <div class="sort-by">
-				<select id="input-sort" class="form-control" name="sortField">
-				<option value="default" th:selected="${param.sortField == 'default'}">預設排序</option>
-				<option value="productId" th:selected="${param.sortField == 'productId'}">最新上市</option>
-				<option value="productPrice" th:selected="${param.sortField == 'productPrice'}">價格由低至高</option>
-				</select>
+  <div class="py-4">
+    <div class="container-lg">
+      <div class="row g-5">
+        <aside class="col-md-2">
+          <div class="sidebar">
+            <div class="widget-menu">
+              <div class="widget-search-bar">
+                <form id="search-form" role="search" method="get" class="d-flex position-relative">
+                  <input id="search-term" class="form-control form-control-lg rounded-2 bg-light" name="searchTerm" type="text" placeholder="查詢商品" aria-label="查詢商品">
+                  <button class="btn bg-transparent position-absolute end-0" type="submit"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg></button>
+                </form>
               </div>
             </div>
-            <!-- //右上角搜尋 -->
-            
-            
-            <!-- 商品 -->
-            <!-- 骨架 -->
+            <div class="widget-product-categories pt-5">
+              <h5 class="widget-title">商品類別</h5>
+              <ul class="product-categories sidebar-list list-unstyled">
+                <li class="cat-item">
+                  <a th:href="@{/public/Products}" class="nav-link">全部</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='飲品')}" th:classappend="${productType == '飲品'} ? 'active' : ''" class="nav-link product-type-link" data-type="飲品">飲品</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='零食')}" th:classappend="${productType == '零食'} ? 'active' : ''" class="nav-link product-type-link" data-type="零食">零食</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='泡麵')}" th:classappend="${productType == '泡麵'} ? 'active' : ''" class="nav-link product-type-link" data-type="泡麵">泡麵</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='熟食')}" th:classappend="${productType == '熟食'} ? 'active' : ''" class="nav-link product-type-link" data-type="熟食">熟食</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='生活用品')}" th:classappend="${productType == '生活用品'} ? 'active' : ''" class="nav-link product-type-link" data-type="生活用品">生活用品</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='菸酒')}" th:classappend="${productType == '菸酒'} ? 'active' : ''" class="nav-link product-type-link" data-type="菸酒">菸酒</a>
+                </li>
+                <li class="cat-item">
+                  <a th:href="@{/public/Products(productType='護理用品')}" th:classappend="${productType == '護理用品'} ? 'active' : ''" class="nav-link product-type-link" data-type="護理用品">護理用品</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+        
+        <main class="col-md-10">
+          <div class="filter-shop d-flex justify-content-between">
+            <div class="showing-product">
+              <p id="showing-product-text">顯示 1-10 結果</p>
+            </div>
+            <div class="sort-by">
+              <select id="input-sort" class="form-control" name="sortField">
+                <option value="default">預設排序</option>
+                <option value="productId">最新上市</option>
+                <option value="productPrice">價格由低至高</option>
+              </select>
+            </div>
+          </div>
 
-            <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
-                
-     		</div>
-            <!-- /商品 -->
-
-			<!-- 頁碼 -->
-			<!-- 骨架 -->
-		<nav class="text-center py-4" aria-label="Page navigation">
-		  <ul class="pagination d-flex justify-content-center">
-		    
-		  </ul>
-		</nav>
-			<!-- /頁碼 -->
-
-          </main>
+          <div id="product-list" class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+            <!-- Products will be injected here by JavaScript -->
+          </div>
           
-        </div>
+          <nav id="pagination" class="text-center py-4" aria-label="Page navigation">
+            <!-- Pagination will be injected here by JavaScript -->
+          </nav>
+        </main>
       </div>
     </div>
+  </div>
 
   <div th:replace="~{front/layout/footer}"></div>
+
   
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const productGrid = document.querySelector('.product-grid');
-    const pagination = document.querySelector('.pagination');
-    const sortSelect = document.getElementById('input-sort');
-    const searchForm = document.querySelector('form[role="search"]');
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+  fetchProducts(1);
 
-    // 第一次進來時跳到第一頁
-    loadProducts(1);
+  document.getElementById('search-form').onsubmit = function(e) {
+      e.preventDefault();
+      fetchProducts(1);
+  };
 
-    // 頁碼的點擊事件
-    pagination.addEventListener('click', function(e) {
-        if (e.target.classList.contains('page-link')) {
-            e.preventDefault();
-            const page = e.target.getAttribute('data-page');
-            if (page) {
-                loadProducts(parseInt(page));
-            }
+  document.querySelectorAll('.product-type-link').forEach(link => {
+      link.onclick = function(e) {
+          e.preventDefault();
+          document.querySelectorAll('.product-type-link').forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+          fetchProducts(1);
+      };
+  });
+});
+
+function fetchProducts(pageNum = 1) {
+    const searchTerm = document.getElementById('search-term').value;
+    const productType = document.querySelector('.product-type-link.active')?.dataset.type || '';
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasDiscount = urlParams.get('hasDiscount') === 'true';
+    const fromActivity = urlParams.get('fromActivity') === 'true';
+
+    axios.get('/FinalProject/public/api/products', {
+        params: {
+            searchTerm,
+            productType,
+            p: pageNum,
+            hasDiscount,
+            fromActivity
         }
+    }).then(response => {
+        const { page, productDiscountMap, roundedDiscountedPriceMap, averageRatings, reviewCounts } = response.data;
+        updateProductList(page.content, productDiscountMap, roundedDiscountedPriceMap, averageRatings, reviewCounts);
+        updatePagination(page);
+    }).catch(error => {
+        console.error('Error fetching products:', error);
     });
-	
-	// 選擇排序，自動重新loading第一頁的產品數據
-    sortSelect.addEventListener('change', function() {
-        loadProducts(1);
-    });
-	
-	// 搜尋時，自動重新loading第一頁的產品數據
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        loadProducts(1);
-    });
-	
-	// 每次載入時呼叫所有產品的方法, (page)則是第幾頁
-    function loadProducts(page) {
-        const searchTerm = document.querySelector('input[name="searchTerm"]').value;
-        const sortField = sortSelect.value === 'default' ? 'productId' : sortSelect.value;
-        const sortDir = sortSelect.value === 'productId' ? 'desc' : 'asc';
-        const productType = document.querySelector('.product-categories .nav-link.active')?.textContent || '';
+}
 
-        axios.get('/FinalProject/public/api/products', {
-            params: {
-                p: page,
-                searchTerm: searchTerm,
-                sortField: sortField,
-                sortDir: sortDir,
-                productType: productType
-            }
-        })
-        .then(response => {
-            const products = response.data.content;
-            productGrid.innerHTML = '';
-            
-             axios.get('/FinalProject/productRatings/api')
-                .then(ratingsResponse => {
-                    const { averageRatings, reviewCounts } = ratingsResponse.data;
 
-             products.forEach(product => {
-                        const productRating = averageRatings[product.productId] || 0;
-                        const reviewCount = reviewCounts[product.productId] || 0;
-
-                        const productElement = `
-                            <div class="col">
-                                <div class="product-item">
-                                    <figure>
-                                        <a href="http://localhost:8080/FinalProject/public/Products/${product.productId}" title="${product.productName}">
-                                            <img src="/FinalProject/ProductPhoto?productId=${product.productId}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
-                                        </a>
-                                    </figure>
-                                    <div class="d-flex flex-column text-center">
-                                        <h3 class="fs-6 fw-normal">${product.productName}</h3>
-                                        <div>
-                                            <span class="rating">
-                                                ${generateStars(productRating)}
-                                            </span>
-                                            <span>${productRating}★(${reviewCount})</span>
-                                        </div>
-                                        <div class="d-flex justify-content-center align-items-center gap-2">
-                                            <del>${product.productPrice}</del>
-                                            <span class="text-dark fw-semibold">$${Math.round(product.productPrice * 0.8)}</span>
-                                            <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
-                                        </div>
-                                        <div class="button-area p-3 pt-0">
-                                            <div class="row g-1 mt-2">
-                                                <div class="col-4">
-                                                    <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1">
-                                                </div>
-                                                 <div class="col-8"><a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"
-                                                         data-productId="${product.productId}" data-productName="${product.productName}">
-                                        <svg width="18" height="18"><use xlink:href="#cart"></use></svg> 加入購物車
-                                                </a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        productGrid.insertAdjacentHTML('beforeend', productElement);
-                    });
-
-                    // 更新分页
-                    updatePagination(response.data);
-                    bindCartButtonClick();
-                })
-                .catch(error => {
-                    console.error('Error fetching product ratings:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Error fetching products:', error);
+    function updateProductList(products, discountMap, discountedPriceMap, averageRatings, reviewCounts) {
+        const productList = document.getElementById('product-list');
+        productList.innerHTML = '';
+        products.forEach(product => {
+            const productElement = createProductElement(product, discountMap[product.productId], discountedPriceMap[product.productId], averageRatings[product.productId], reviewCounts[product.productId]);
+            productList.appendChild(productElement);
         });
     }
 
     function generateStars(rating) {
-        let fullStars = Math.floor(rating);
- 		const halfStars = rating % 1 > 0 ? 1 : 0;
-        const emptyStars = 5 - fullStars - halfStars;
-        let stars = '';
-
-        for (let i = 0; i < fullStars; i++) {
-            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>';
-        }
-        for (let i = 0; i < halfStars; i++) {
-            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>';
-        }
-        for (let i = 0; i < emptyStars; i++) {
-            stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-empty"></use></svg>';
-        }
-
-        return stars;
-    }
-
-    function updatePagination(data) {
-        pagination.innerHTML = '';
-		const currentPage = data.number + 1;
-		const totalPages = data.totalPages;
-		
-        if (data.totalPages > 1) {
-        
-        // 第一頁
-        const firstPageItem = `
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="1">＜</a>
-            </li>
-        `; 
-        pagination.insertAdjacentHTML('beforeend', firstPageItem);
-        
-        // 頁碼
-            for (let i = 1; i <= data.totalPages; i++) {
-                const pageItem = `
-                    <li class="page-item ${i === data.number + 1 ? 'active' : ''}">
-                        <a class="page-link" href="#" data-page="${i}">${i}</a>
-                    </li>
-                `;
-                pagination.insertAdjacentHTML('beforeend', pageItem);
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starsHtml += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>';
+            } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+                starsHtml += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>';
+            } else {
+                starsHtml += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-empty"></use></svg>';
             }
-            
-        // 最後一頁
-        const lastPageItem = `
-            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${totalPages}">＞</a>
-            </li>
-        `;
-        pagination.insertAdjacentHTML('beforeend', lastPageItem);
         }
+        return starsHtml;
     }
-});
-  function bindCartButtonClick() {
-    const cartButtons = document.querySelectorAll('.btn-cart');
-    cartButtons.forEach(button => {
-      button.addEventListener('click', function (e) {
-        e.preventDefault();
-        addToCart(this);
-      });
-    });
-  }
 
+    function createProductElement(product, discount, discountedPrice, averageRating = 0, reviewCount = 0) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col';
 
-  function addToCart(button) {
-    var productId = button.getAttribute('data-productId');
-    var productName = button.getAttribute('data-productName');
-    var quantity = parseInt(button.closest('.product-item').querySelector('.quantity').value);
+        const productItemDiv = document.createElement('div');
+        productItemDiv.className = 'product-item';
 
-    Swal.fire({
-      title: '確定加入購物車?',
-      html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: '是的',
-      cancelButtonText: '取消'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        var params = new URLSearchParams();
-        params.append('productId', productId);
-        params.append('quantity', quantity);
+        const figure = document.createElement('figure');
+        const a = document.createElement('a');
+        a.href = `/FinalProject/public/Products/${product.productId}`;
+        a.title = product.productName;
 
-        axios.post(`/FinalProject/public/addToCart?${params.toString()}`)
-          .then(res => {
-            Swal.fire({
-              title: '成功加入購物車',
-              icon: 'success'
-            }).then(() => {
-          location.reload(); 
+        const img = document.createElement('img');
+        img.src = `/FinalProject/ProductPhoto?productId=${product.productId}`;
+        img.alt = product.productName;
+        img.className = 'tab-image';
+
+        a.appendChild(img);
+
+        if (discount) {
+            const discountBadge = document.createElement('span');
+            discountBadge.className = 'discount-badge';
+            discountBadge.textContent = `${discount.discountPercentage}% OFF`;
+            a.appendChild(discountBadge);
+        }
+
+        figure.appendChild(a);
+        productItemDiv.appendChild(figure);
+
+        const productDetailsDiv = document.createElement('div');
+        productDetailsDiv.className = 'd-flex flex-column text-center';
+
+        const nameH5 = document.createElement('h5');
+        nameH5.className = 'fs-6 fw-normal';
+        nameH5.textContent = product.productName;
+        productDetailsDiv.appendChild(nameH5);
+
+        const ratingDiv = document.createElement('div');
+        ratingDiv.className = 'd-flex justify-content-center align-items-center';
+
+        ratingDiv.innerHTML = generateStars(averageRating);
+
+        const ratingText = document.createElement('span');
+        ratingText.textContent = `${averageRating.toFixed(1)}★ (${reviewCount})`;
+        ratingDiv.appendChild(ratingText);
+
+        productDetailsDiv.appendChild(ratingDiv);
+
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'd-flex justify-content-center align-items-center gap-2';
+
+        if (discountedPrice) {
+            const del = document.createElement('del');
+            del.textContent = `$${product.productPrice.toFixed(2)}`;
+            priceDiv.appendChild(del);
+
+            const span = document.createElement('span');
+            span.className = 'text-dark fw-semibold';
+            span.textContent = `$${discountedPrice.toFixed(2)}`;
+            priceDiv.appendChild(span);
+        } else {
+            const span = document.createElement('span');
+            span.className = 'text-dark fw-semibold';
+            span.textContent = `$${product.productPrice.toFixed(2)}`;
+            priceDiv.appendChild(span);
+        }
+
+        productDetailsDiv.appendChild(priceDiv);
+
+        const buttonAreaDiv = document.createElement('div');
+        buttonAreaDiv.className = 'button-area p-3 pt-0';
+
+        const buttonRowDiv = document.createElement('div');
+        buttonRowDiv.className = 'row g-1 mt-2';
+
+        const quantityColDiv = document.createElement('div');
+        quantityColDiv.className = 'col-4';
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.name = 'quantity';
+        quantityInput.className = 'form-control border-dark-subtle input-number quantity';
+        quantityInput.value = 1;
+        quantityColDiv.appendChild(quantityInput);
+        buttonRowDiv.appendChild(quantityColDiv);
+
+        const addToCartColDiv = document.createElement('div');
+        addToCartColDiv.className = 'col-8';
+        const addToCartButton = document.createElement('button');
+        addToCartButton.className = 'btn btn-primary rounded-1 p-2 fs-7 addToCart';
+        addToCartButton.setAttribute('data-productId', product.productId);
+        addToCartButton.setAttribute('data-productName', product.productName);
+        addToCartButton.onclick = function() {
+            addToCart(this);
+        };
+        addToCartButton.innerHTML = '<svg width="18" height="18"><use xlink:href="#cart"></use></svg> 加入購物車';
+        addToCartColDiv.appendChild(addToCartButton);
+        buttonRowDiv.appendChild(addToCartColDiv);
+
+        buttonAreaDiv.appendChild(buttonRowDiv);
+        productDetailsDiv.appendChild(buttonAreaDiv);
+
+        productItemDiv.appendChild(productDetailsDiv);
+        colDiv.appendChild(productItemDiv);
+
+        return colDiv;
+    }
+
+    function updatePagination(page) {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+        const ul = document.createElement('ul');
+        ul.className = 'pagination d-flex justify-content-center';
+
+        const prevLi = document.createElement('li');
+        prevLi.className = 'page-item' + (page.number === 0 ? ' disabled' : '');
+        const prevA = document.createElement('a');
+        prevA.className = 'page-link';
+        prevA.href = '#';
+        prevA.textContent = '<<';
+        prevA.onclick = function(e) {
+            e.preventDefault();
+            if (page.number > 0) {
+                fetchProducts(page.number);
+            }
+        };
+        prevLi.appendChild(prevA);
+        ul.appendChild(prevLi);
+
+        for (let i = 1; i <= page.totalPages; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item' + (i === page.number + 1 ? ' active' : '');
+            const a = document.createElement('a');
+            a.className = 'page-link';
+            a.href = '#';
+            a.textContent = i;
+            a.onclick = function(e) {
+                e.preventDefault();
+                fetchProducts(i);
+            };
+            li.appendChild(a);
+            ul.appendChild(li);
+        }
+
+        const nextLi = document.createElement('li');
+        nextLi.className = 'page-item' + (page.number + 1 === page.totalPages ? ' disabled' : '');
+        const nextA = document.createElement('a');
+        nextA.className = 'page-link';
+        nextA.href = '#';
+        nextA.textContent = '>>';
+        nextA.onclick = function(e) {
+            e.preventDefault();
+            if (page.number + 1 < page.totalPages) {
+                fetchProducts(page.number + 2);
+            }
+        };
+        nextLi.appendChild(nextA);
+        ul.appendChild(nextLi);
+
+        pagination.appendChild(ul);
+    }
+
+    function addToCart(button) {
+        const productId = button.getAttribute('data-productId');
+        const productName = button.getAttribute('data-productName');
+        const quantity = parseInt(button.closest('.product-item').querySelector('.quantity').value);
+
+        Swal.fire({
+            title: '確定加入購物車?',
+            html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '是的',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const params = new URLSearchParams();
+                params.append('productId', productId);
+                params.append('quantity', quantity);
+
+                axios.post(`/FinalProject/public/addToCart?${params.toString()}`)
+                .then(res => {
+                    Swal.fire({
+                        title: '成功加入購物車',
+                        icon: 'success'
+                    });
+                })
+                .catch(err => {
+                    console.error('加入購物車失敗:', err);
+                    Swal.fire({
+                        title: '加入購物車失敗',
+                        text: err.message || '加入購物車時發生錯誤',
+                        icon: 'error'
+                    });
+                });
+            }
         });
-      })
-          .catch(err => {
-            console.error('加入購物車失敗:', err);
-            Swal.fire({
-              title: '加入購物車失敗',
-              text: err.message || '加入購物車時發生錯誤',
-              icon: 'error'
-            });
-          });
-      }
-    });
-  }
-
-</script>
-
-  </body>
+    }
+  </script>
+</body>
 </html>

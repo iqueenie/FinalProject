@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
+import six.liang.model.ProductDiscount;
+import six.liang.service.ProductDiscountService;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductReview;
@@ -46,6 +50,9 @@ public class ProductController {
 	
 	@Autowired
 	private OrderDetailRepository orderDetailRepo;
+	
+	@Autowired
+	private ProductDiscountService productDiscountService;
 	
 	// 後台查全部
 	@GetMapping("/private/Product/GetAll")
@@ -248,65 +255,121 @@ public class ProductController {
 	// shop.html - 前台頁碼、查詢
 	@GetMapping("/public/Products")
 	public String showAllProducts(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-							  	  @RequestParam(value = "productType", defaultValue = "") String productType,
-							  	  @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-							  	  @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-							  	  @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-							  	  Model model) {
-		int pageSize=10;
-		Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
-		//findByPage 的 Service內有處理查詢(searchProducts)、或沒有查詢時(findAllPublished)的方法
-		//findAllPublished = 只秀出已上架的商品
-		/*
-		但是理想一點，這邊可以用ProductRepository的findAllPublished
-		讓showAllProductsAjax處理查詢或沒有查詢的狀況(findByPage)，不過我目前懶得改.
-		*/
-		
-		model.addAttribute("page", page); // 處理頁數
-		model.addAttribute("searchTerm", searchTerm); // 查啥產品
-		model.addAttribute("productType", productType); // 商品種類
-		model.addAttribute("sortField", sortField); // 哪個欄位排序
-		model.addAttribute("sortDir", sortDir); // ASC或DESC
-		
-		int start = pageNum * pageSize - (pageSize - 1);
-		int end = Math.min(start + page.getNumberOfElements() - 1, (int)page.getTotalElements());
-		
-		model.addAttribute("currentRange", start + "–" + end);
-		
-		
-		return "front/pinhong/shop";
+	                              @RequestParam(value = "productType", defaultValue = "") String productType,
+	                              @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+	                              @RequestParam(value = "hasDiscount", defaultValue = "false") Boolean hasDiscount,
+	                              @RequestParam(value = "fromActivity", defaultValue = "false") Boolean fromActivity,
+	                              Model model) {
+	    int pageSize = 10;
+	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize);
+
+	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
+	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+
+	    List<Product> filteredProducts = new ArrayList<>();
+
+	    for (Product product : page.getContent()) {
+	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
+	        if (!productDiscounts.isEmpty()) {
+	            ProductDiscount discount = productDiscounts.get(0);
+	            productDiscountMap.put(product.getProductId(), discount);
+	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	            roundedDiscountedPriceMap.put(product.getProductId(), (int) Math.round(discountedPrice));
+	            if (hasDiscount || fromActivity) {
+	                filteredProducts.add(product);
+	            }
+	        } else {
+	            productDiscountMap.put(product.getProductId(), null);
+	            if (!hasDiscount || !fromActivity) {
+	                filteredProducts.add(product);
+	            }
+	        }
+	    }
+
+	    if (hasDiscount || fromActivity) {
+	        page = new PageImpl<>(filteredProducts, PageRequest.of(pageNum - 1, pageSize), filteredProducts.size());
+	    }
+
+	    model.addAttribute("page", page);// 處理頁數
+	    model.addAttribute("searchTerm", searchTerm);// 查啥產品
+	    model.addAttribute("productType", productType); // 商品種類
+	    model.addAttribute("productDiscountMap", productDiscountMap);
+	    model.addAttribute("roundedDiscountedPriceMap", roundedDiscountedPriceMap);
+	    model.addAttribute("averageRatings", averageRatings);
+	    model.addAttribute("reviewCounts", reviewCounts);
+
+	    int start = pageNum * pageSize - (pageSize - 1);
+	    int end = Math.min(start + page.getNumberOfElements() - 1, (int) page.getTotalElements());
+
+	    model.addAttribute("currentRange", start + "–" + end);
+
+	    return "front/pinhong/shop";
 	}
-	
+
+
+
 	// shop.html 的 Ajax Api
 	@GetMapping("/public/api/products")
 	@ResponseBody
-	public ResponseEntity<Page<Product>> showAllProductsAjax(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
-	                                      @RequestParam(value = "productType", defaultValue = "") String productType,
-	                                      @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-	                                      @RequestParam(value = "sortField", defaultValue = "productId") String sortField,
-	                                      @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+	public ResponseEntity<Map<String, Object>> showAllProductsAjax(
+	        @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
+	        @RequestParam(value = "productType", defaultValue = "") String productType,
+	        @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
+	        @RequestParam(value = "hasDiscount", defaultValue = "false") Boolean hasDiscount) {
 	    int pageSize = 10;
-		Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize);
+	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize);
 
-		// 檢查頁碼是否超過總頁數
-	    if (pageNum > page.getTotalPages() && page.getTotalPages() > 0) {
-	        pageNum = page.getTotalPages(); // 將頁碼設置為最後一頁
-	        page = productService.findByPage(searchTerm, productType, pageNum, sortField, sortDir, pageSize); // 重新查詢
+	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
+	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
+	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
+	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+
+	    List<Product> filteredProducts = new ArrayList<>();
+
+	    for (Product product : page.getContent()) {
+	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
+	        if (!productDiscounts.isEmpty()) {
+	            ProductDiscount discount = productDiscounts.get(0);
+	            productDiscountMap.put(product.getProductId(), discount);
+	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	            roundedDiscountedPriceMap.put(product.getProductId(), (int) Math.round(discountedPrice));
+	            if (hasDiscount) {
+	                filteredProducts.add(product);
+	            }
+	        } else {
+	            productDiscountMap.put(product.getProductId(), null);
+	            if (!hasDiscount) {
+	                filteredProducts.add(product);
+	            }
+	        }
 	    }
 
-	    return ResponseEntity.ok(page);
-	    // 這個會比單純 return page 更好	    
+	    if (hasDiscount) {
+	        page = new PageImpl<>(filteredProducts, PageRequest.of(pageNum - 1, pageSize), filteredProducts.size());
+	    }
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("page", page);
+	    response.put("productDiscountMap", productDiscountMap);
+	    response.put("roundedDiscountedPriceMap", roundedDiscountedPriceMap);
+	    response.put("averageRatings", averageRatings);
+	    response.put("reviewCounts", reviewCounts);
+
+	    return ResponseEntity.ok(response);
 	}
+
 
 	
 	// 進入單一商品頁
-	@GetMapping("/public/Products/{productId}")
+    @GetMapping("/public/Products/{productId}")
 	public String showProductDetails(
-			@PathVariable Integer productId, 
-			HttpSession session, Model model, 
-			@RequestParam(defaultValue = "0") int page) {
-		
-	 // 取得當前會員ID
+	        @PathVariable Integer productId, 
+	        HttpSession session, Model model, 
+	        @RequestParam(defaultValue = "0") int page) {
+	    
+	    // 取得當前會員ID
 	    Integer memberId = null;
 	    if (session.getAttribute("loggedInMember") != null) {
 	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
@@ -315,21 +378,20 @@ public class ProductController {
 	    List<ProductReview> productReviews = productReviewService.findProductReviewsByProductId(productId);
 	    Page<ProductReview> productReviewsForPage = productReviewService.findProductReviewsByProductId(productId, page, 4);
 	    
-
 	 // 檢查是否已經評價過
 	    boolean hasReviewed = false;
 	    boolean showForUser = false;
 
 	    if (memberId != null) {
-	        // 檢查是否以評論過
+	    	// 檢查是否以評價過
 	        for (ProductReview review : productReviews) {
 	            if (review.getMember().getMemberId().equals(memberId)) {
 	                hasReviewed = true;
 	                break;
 	            }
 	        }
-
-	        // 檢查是否購買且訂單狀態為"已送達"
+	        
+	     // 檢查是否購買且訂單狀態為"已送達"
 	        List<OrderDetails> orderDetailsList = orderDetailRepo.findOrderDetailsByProductIdAndMemberId(productId, memberId);
 	        if (!orderDetailsList.isEmpty()) {
 	            showForUser = true;
@@ -350,7 +412,17 @@ public class ProductController {
 	    }
 	    session.setAttribute("recentProducts", recentProducts);
 
-	    model.addAttribute("product", productDetails.get("product"));
+	    Product product = (Product) productDetails.get("product");
+	    List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(productId);
+	    Map<String, Object> discountInfo = new HashMap<>();
+	    if (!productDiscounts.isEmpty()) {
+	        ProductDiscount discount = productDiscounts.get(0);
+	        double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	        discountInfo.put("discountPercentage", discount.getDiscountPercentage());
+	        discountInfo.put("discountedPrice", Math.round(discountedPrice));
+	    }
+
+	    model.addAttribute("product", product);
 	    model.addAttribute("recommend5Products", productDetails.get("recommend5Products"));
 	    model.addAttribute("allProductReviews", productDetails.get("allProductReviews"));
 	    model.addAttribute("twoProductReviews", productDetails.get("twoProductReviews"));
@@ -360,10 +432,12 @@ public class ProductController {
 	    model.addAttribute("hasReviewed", hasReviewed);
 	    model.addAttribute("showForUser", showForUser);
 	    model.addAttribute("productReviewsContent", productReviewsForPage.getContent()); // 獲取當前頁的評論
-	    model.addAttribute("totalPages", productReviewsForPage.getContent()); // 總頁數
+	    model.addAttribute("totalPages", productReviewsForPage.getTotalPages()); // 總頁數
+	    model.addAttribute("discountInfo", discountInfo);
 
 	    return "front/pinhong/SingleProduct";
 	}
+
 	
 	// 商品評分、評分數的Api
 	@ResponseBody

@@ -173,6 +173,8 @@ public class HolidayDiscountController {
                 if (productType != null) {
                     logger.info("Product Type: {}", productType);
                     redirectAttributes.addAttribute("productType", productType);
+                    redirectAttributes.addAttribute("hasDiscount", true);
+                    redirectAttributes.addAttribute("fromActivity", true); //分辨是否從活動頁面點擊分類
                     return "redirect:/public/Products";
                 }
                 redirectAttributes.addFlashAttribute("discountName", holidayDiscount.getDiscountName());
@@ -195,6 +197,7 @@ public class HolidayDiscountController {
         logger.info("Discount not found for name: {}", name);
         return "redirect:/public/front/Discount";
     }
+
 
     @GetMapping("/public/front/specialDiscount")
     public String specialDiscount(Model model) {
