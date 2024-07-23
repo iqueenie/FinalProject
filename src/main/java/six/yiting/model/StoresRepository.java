@@ -46,5 +46,7 @@ public interface StoresRepository extends JpaRepository<StoresBean, Integer>  {
 
     @Query("SELECT DISTINCT s.city FROM StoresBean s")
     List<String> findDistinctCities();
+    
+    
 	
 }

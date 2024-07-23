@@ -29,7 +29,8 @@
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control arrivedDate" name="arrivedDate" placeholder="arrivedDate" required>
+                        <input type="date" class="form-control arrivedDate" name="arrivedDate" placeholder="arrivedDate"
+                            required>
                         <label for="arrivedDate">到貨日</label>
                     </div>
                 </div>
@@ -43,7 +44,8 @@
                                     <select class="form-select productName" name="productId[]" required>
                                         <option selected value="">選擇產品</option>
                                         <option th:each="product : ${products}" th:value="${product.productId}"
-                                            th:text="${product.productName}">
+                                            th:text="${product.productName}"
+                                            th:data-product-type="${product.productType}">
                                         </option>
                                     </select>
                                     <label for="productName">產品名稱</label>
@@ -52,9 +54,9 @@
                             <div class="col-md-5">
                                 <div class="form-floating">
 
-                                    <input type="number" class="form-control" name="purchaseNum[]" id="purchaseNum"
-                                        min="1" required>
-                                    <label for="purchaseNum">數量</label>
+                                    <input type="number" class="form-control purchaseNum" name="purchaseNum[]"
+                                        id="purchaseNum" min="1" required>
+                                    <label for="purchaseNum" class="purchaseNumLabel">數量</label>
 
                                 </div>
                             </div>
@@ -83,16 +85,48 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
         $(function () {
-        
-        	
-        	// 设置最小可选日期为今天的两天后
-            var today = new Date();
-            var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() +3);
-            var formattedMinDate = minDate.toISOString().split('T')[0];
-            $('.arrivedDate').attr('min', formattedMinDate);
-        	
-        
-        
+
+
+            //實體店商品
+            $(document).on('change', '.productName', function () {
+                var selectedOption = $(this).find('option:selected');
+                var productType = selectedOption.data('productType');
+                var purchaseNumInput = $(this).closest('.row').find('.purchaseNum');
+                var purchaseNumLabel = $(this).closest('.row').find('.purchaseNumLabel');
+                var selectedText = selectedOption.text();
+
+                if (productType === "實體店") {
+                    if (selectedText === "霜淇淋") {
+                        purchaseNumLabel.text("原料:單位/包，製作20支");
+                    }
+                    if (selectedText === "甜甜圈") {
+                        purchaseNumLabel.text("原料:單位/袋，20個");
+                    }
+                    if (selectedText === "茶葉蛋") {
+                        purchaseNumLabel.text("原料:單位/盒，10顆");
+                    }
+                    if (selectedText === "烤番薯") {
+                        purchaseNumLabel.text("原料:單位/袋，20個");
+                    }
+                    if (selectedText === "珍珠奶茶") {
+                        purchaseNumLabel.text("原料:單位/袋，每袋10包1包製作1杯");
+                    }
+
+                    purchaseNumInput.attr('min', 1);
+                } else {
+                    purchaseNumLabel.text("數量");
+                    purchaseNumInput.attr('min', 1);
+                }
+            });
+
+            // 设置最小可选日期为今天的两天后
+            // var today = new Date();
+            // var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3);
+            // var formattedMinDate = minDate.toISOString().split('T')[0];
+            // $('.arrivedDate').attr('min', formattedMinDate);
+
+
+
             var initialProductOptions = []; // 初始化空数组来存储所有的产品选项值
 
             // 页面加载完成后获取所有产品选项的值
@@ -144,6 +178,35 @@
                     'width': '37.14px',
                     'height': '37.33px'
                 });
+                newItem.find('.productName').on('change', function () {
+                    var selectedOption = $(this).find('option:selected');
+                    var productType = selectedOption.data('productType');
+                    var purchaseNumInput = $(this).closest('.row').find('.purchaseNum');
+                    var purchaseNumLabel = $(this).closest('.row').find('.purchaseNumLabel');
+
+                    if (productType === "實體店") {
+                        if (selectedText === "霜淇淋") {
+                            purchaseNumLabel.text("原料:單位/包，製作20支");
+                        }
+                        if (selectedText === "甜甜圈") {
+                            purchaseNumLabel.text("原料:單位/袋，20個");
+                        }
+                        if (selectedText === "茶葉蛋") {
+                            purchaseNumLabel.text("原料:單位/盒，10顆");
+                        }
+                        if (selectedText === "烤番薯") {
+                            purchaseNumLabel.text("原料:單位/袋，20個");
+                        }
+                        if (selectedText === "珍珠奶茶") {
+                            purchaseNumLabel.text("原料:單位/袋，每袋10包1包製作1杯");
+                        }
+
+                        purchaseNumInput.attr('min', 1);
+                    } else {
+                        purchaseNumLabel.text("數量");
+                        purchaseNumInput.attr('min', 1);
+                    }
+                });
 
             });
 
@@ -157,6 +220,7 @@
 
 
             $('form').submit(function (event) {
+
                 event.preventDefault();
                 var form = event.currentTarget;
                 Swal.fire({

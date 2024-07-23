@@ -131,15 +131,34 @@ public class BuyController {
 			buybean.setArrivedDate(arrivedDate);
 			buybean.setStore(storeService.findStoreById(storeId));
 			
-			BuyBean buy=buyService.saveBuy(buybean); // 假设这里是调用业务逻辑来保存数据的方法
+			BuyBean buy=buyService.saveBuy(buybean);
 			
 			System.out.println("ProductIdLength: "+productId.length);
 			for(int i=0;i<productId.length;i++) {
 	 			DetailBean detail = new DetailBean();
 	 			detail.setBuy(buy);
 	 			detail.setPurchaseId(buy.getPurchaseId());
-	 			detail.setProduct(productService.findProductById(productId[i]));
-	 			detail.setPurchaseNum(Integer.valueOf(purchaseNum[i]));
+	 			Product product = productService.findProductById(productId[i]);
+	 			detail.setProduct(product);
+	 			 if (product.getProductName().equals("霜淇淋")) {
+	 				detail.setPurchaseNum(Integer.valueOf(purchaseNum[i])*20);
+                 }
+	 			 else if (product.getProductName().equals("甜甜圈")) {
+                	 detail.setPurchaseNum(Integer.valueOf(purchaseNum[i])*20);
+                 }
+	 			 else if (product.getProductName().equals("茶葉蛋")) {
+                	 detail.setPurchaseNum(Integer.valueOf(purchaseNum[i])*10);
+                 }
+	 			 else if (product.getProductName().equals("烤番薯")) {
+                	 detail.setPurchaseNum(Integer.valueOf(purchaseNum[i])*20);
+                 }
+	 			 else if (product.getProductName().equals("珍珠奶茶")) {
+                	 detail.setPurchaseNum(Integer.valueOf(purchaseNum[i])*10);
+                 }else {
+                	 detail.setPurchaseNum(Integer.valueOf(purchaseNum[i]));
+                 }
+	 			
+	 			
 	 			detailService.saveDetail(detail);
 			}
 		
