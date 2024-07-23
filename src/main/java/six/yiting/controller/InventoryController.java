@@ -137,8 +137,27 @@ public class InventoryController {
 				invbean.setStore(storeService.findStoreById(storeId));
 				invbean.setProductId(productId[i]);
 				invbean.setProduct(productService.findProductById(productId[i]));
-				invbean.setInvNum(invNum[i]);
 				
+				Product product = productService.findProductById(productId[i]);
+				
+				 if (product.getProductName().equals("霜淇淋")) {
+					 	invbean.setInvNum(Integer.valueOf(invNum[i])*20);
+	                 }
+		 			 else if (product.getProductName().equals("甜甜圈")) {
+		 				invbean.setInvNum(Integer.valueOf(invNum[i])*20);
+	                 }
+		 			 else if (product.getProductName().equals("茶葉蛋")) {
+		 				invbean.setInvNum(Integer.valueOf(invNum[i])*10);
+	                 }
+		 			 else if (product.getProductName().equals("烤番薯")) {
+		 				invbean.setInvNum(Integer.valueOf(invNum[i])*20);
+	                 }
+		 			 else if (product.getProductName().equals("珍珠奶茶")) {
+		 				invbean.setInvNum(Integer.valueOf(invNum[i])*10);
+	                 }else {
+	                	 invbean.setInvNum(Integer.valueOf(invNum[i]));
+	                 }
+
 	 			
 	 			int days = productService.findProductById(productId[i]).getProductExpirydate();
 	 			LocalDate expDate = deliveryDate.plusDays(days);
