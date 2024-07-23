@@ -8,5 +8,5 @@ import java.time.LocalDate;
 public interface BuyRepository extends JpaRepository<BuyBean, Integer>  {
 	
 	BuyBean findByArrivedDateAndStore(LocalDate arrivedDate,StoresBean store);
-
+	List<BuyBean> findByStore(StoresBean store);
 }

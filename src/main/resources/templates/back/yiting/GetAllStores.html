@@ -14,7 +14,7 @@
     <div th:replace="~{back/layout/navbar}"></div>
     <div class="container mt-3">
         <div class="d-flex justify-content-center align-items-center">
-            <a th:href="@{/private/store/addStorePage}" class="btn btn-outline-success">新增</a>
+            <a th:if="${role=='管理員'}" th:href="@{/private/store/addStorePage}" class="btn btn-outline-success">新增</a>
             <h1 class="m-auto">店鋪列表</h1>
         </div>
         <table id="myTable" class="w-100 display">
@@ -27,8 +27,8 @@
                     <td>區域</td>
                     <td>街道</td>
                     <td>電話</td>
-                    <td>更新</td>
-                    <td>刪除</td>
+                    <td th:if="${role=='管理員'}">更新</td>
+                    <td th:if="${role=='管理員'}">刪除</td>
                 </tr>
             </thead>
             <tbody>
@@ -42,8 +42,8 @@
                         <td th:text="${store.street + ' ' + store.detail}"></td>
                         <td th:text="${store.tel}"></td>
 
-                        <td><a class="btn btn-outline-warning btn-sm" th:href="@{/private/store/edit(id=${store.storeId})}">更新</a></td>
-                        <td>
+                        <td th:if="${role=='管理員'}"><a class="btn btn-outline-warning btn-sm" th:href="@{/private/store/edit(id=${store.storeId})}">更新</a></td>
+                        <td th:if="${role=='管理員'}">
                             <button id="myBtn" th:onclick="'confirmDelete(\'' + ${store.storeId} + '\')'"
                                 class="btn btn-outline-danger btn-sm">刪除</button>
 

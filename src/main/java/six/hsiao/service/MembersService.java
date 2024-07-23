@@ -96,12 +96,15 @@ public class MembersService {
 	return	membersRepo.findByMemberAccount(memberAccount);
 	}
 	
+	
 	public MembersBean addMemberByGoogleLogin(String memberEmail) {
 		MembersBean membersBean = new MembersBean();
 		membersBean.setMemberAccount(memberEmail);
 		membersBean.setMemberEmail(memberEmail);
 		membersBean.setGoogleLogin(Boolean.TRUE);
 		membersBean.setPoints(0);
+		
+		
 		return membersRepo.save(membersBean);
 		
 	}

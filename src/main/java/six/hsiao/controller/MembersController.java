@@ -277,9 +277,11 @@ public class MembersController {
 		 
 		 
 		 
-		 @GetMapping("/public/memberMessage")
-		 public String memberMessage() {
-			 return "front/hsiao/testMember";
+		 @GetMapping("/public/MemberProfileMain")
+		 public String memberMessage(@PathVariable Integer memberId, Model model) {
+			MembersBean members = membersService.findByMemberId(memberId);
+			model.addAttribute("members", members);
+			 return "front/hsiao/MemberProfile";
 		 }
 		 
 		 

@@ -34,6 +34,9 @@ public class ProductReviewService {
 	@Autowired
 	private MembersRepository membersRepo;
 	
+	@Autowired
+    private ForbiddenWordService forbiddenWordService;
+	
 	
 	// 找全部	
 	public List<ProductReview> findAll(){
@@ -69,6 +72,9 @@ public class ProductReviewService {
 	    // 獲取MembersBean實體
 	    MembersBean member = membersRepo.findById(memberId).orElse(null);
 	    review.setMember(member);
+	    
+        // 替換敏感詞彙
+        reviewContent = forbiddenWordService.replaceForbiddenWords(reviewContent);
 	    review.setReviewContent(reviewContent);
 	    review.setStars(stars);
 	    review.setReviewTime(new Date()); // 假設你想記錄評論時間

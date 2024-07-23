@@ -293,23 +293,23 @@
             </div>
 
             <div class="banner-ad bg-success-subtle block-2"
-                 style="background:url('images/banner-ad-2.jpg') no-repeat;background-size: cover">
+     			th:style="'background: url(' + @{/img/all/banner-ad-2.png} + ') no-repeat;background-size: cover'">
               <div class="banner-content align-items-center p-5">
                 <div class="content-wrapper text-light">
-                  <h3 class="banner-title text-light">Combo offers</h3>
-                  <p>Discounts up to 50%</p>
-                  <a href="#" class="btn-link text-white">Shop Now</a>
+                  <h3 class="banner-title text-light" style="background-color: rgba(40, 70, 83, 0.5);width:210px;">EZBUY在哪裡?</h3>
+                  <p style="background-color: rgba(40, 70, 83, 0.5);width:150px;">美好時光，就此開始</p>
+                  <a th:href="@{/public/front/storeSearch}" class="btn-link text-white" style="background-color: rgba(40, 70, 83, 0.7);">立即探索店鋪</a>
                 </div>
               </div>
             </div>
 
             <div class="banner-ad bg-danger block-3"
-                 style="background:url('images/banner-ad-3.jpg') no-repeat;background-size: cover">
+                 th:style="'background: url(' + @{/img/all/banner-ad-3.png} + ') no-repeat;background-size: cover'">
               <div class="banner-content align-items-center p-5">
                 <div class="content-wrapper text-light">
-                  <h3 class="banner-title text-light">Discount Coupons</h3>
-                  <p>Discounts up to 40%</p>
-                  <a href="#" class="btn-link text-white">Shop Now</a>
+                  <h3 class="banner-title text-light">友善商品就是現在</h3>
+                  <p>珍惜食物不浪費</p>
+                  <a th:href="@{/public/front/friendlyProduct}" class="btn-link text-white">Search Now</a>
                 </div>
               </div>
             </div>

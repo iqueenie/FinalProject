@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
+import six.hsiao.dto.ManagementDTO;
+import six.hsiao.model.ManagementRoles;
+import six.hsiao.model.ManagementRolesRepository;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.yiting.model.BuyBean;
@@ -39,34 +43,60 @@ public class InventoryController {
 	private BuyService buyService;
 	@Autowired
 	private DetailService detailService;
+	@Autowired
+	private ManagementRolesRepository managementRolesRepo;
 	
 	
 	@GetMapping("/private/inventory/findAll")
-	public String findAllInventory(Model model) {
-		
-		List<InventoryBean> listInvs = invService.findAllInventory();
-		
-		model.addAttribute("listInvs",listInvs);
+	public String findAllInventory(HttpSession session,Model model) {
 		
 		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			List<InventoryBean> findbyStore = invService.findByStore(managementRole.getStore());
+			model.addAttribute("listInvs",findbyStore);
+		}else {
+			List<InventoryBean> listInvs = invService.findAllInventory();
+			model.addAttribute("listInvs",listInvs);
+		}
+
 		return "back/yiting/GetAllInventory";
 	}
 	
 	@GetMapping("/private/inventory/findAllAjax")
 	@ResponseBody
-	public List<InventoryBean> findAllInvAjax() {
+	public List<InventoryBean> findAllInvAjax(HttpSession session) {
 		
-		return invService.findAllInventory();
+		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			return invService.findByStore(managementRole.getStore());
+		}else {
+			return invService.findAllInventory();
+			
+		}
 		
 	}
 	
 	@GetMapping("/private/inventory/addInvPage")
-    public String invInsertPage(Model m) {
+    public String invInsertPage(HttpSession session,Model m) {
 		List<Product> products = productService.findAll();
 		List<StoresBean> stores = storeService.findAllStores();
 		
+		ManagementDTO managementDTO = (ManagementDTO)session.getAttribute("logInManagement");
+		ManagementRoles managementRole = managementRolesRepo.findById(managementDTO.getManagementId()).get();
+		
+		if (managementRole.getStore()!=null) {
+			m.addAttribute("stores", managementRole.getStore());
+		}else {
+			m.addAttribute("stores", stores);
+		}
+		
 		m.addAttribute("products", products);
-		m.addAttribute("stores", stores);
 		m.addAttribute("inventory", new InventoryBean());
 		return "back/yiting/insertInv";
 		

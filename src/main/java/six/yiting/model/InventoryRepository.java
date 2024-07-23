@@ -33,4 +33,5 @@ public interface InventoryRepository extends JpaRepository<InventoryBean, Intege
 	
 	List<InventoryBean> findByStoreAndExpDate(StoresBean store, LocalDate expDate);
 	
+	List<InventoryBean> findByStore(StoresBean store);
 }
