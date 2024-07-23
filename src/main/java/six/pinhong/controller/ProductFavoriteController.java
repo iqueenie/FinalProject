@@ -1,46 +1,35 @@
 package six.pinhong.controller;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties.Error;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductFavorite;
-import six.pinhong.model.ProductImage;
-import six.pinhong.model.ProductReview;
+import six.pinhong.service.MemberActionLogService;
 import six.pinhong.service.ProductFavoriteService;
-import six.pinhong.service.ProductReviewService;
 import six.pinhong.service.ProductService;
-import six.queenie.model.OrderDetailRepository;
-import six.queenie.model.OrderDetails;
 
 @Controller
 public class ProductFavoriteController {
+	
+    private static final Logger logger = LoggerFactory.getLogger(ProductFavoriteController.class);
+
 
 	@Autowired
 	private ProductService productService;
@@ -48,35 +37,43 @@ public class ProductFavoriteController {
 	@Autowired
 	private ProductFavoriteService productFavoriteService;
 	
+	@Autowired
+    private MemberActionLogService memberActionLogService;
+
+	
 	// 新增評論
 	@PostMapping("/public/InsertProductFavorite")
-	public String productReviewInsert(
-			@RequestParam Integer productId,
-			@RequestParam Integer memberId,
-			RedirectAttributes redirectAttributes, // 使用 RedirectAttributes
-			Model m
-			) throws IOException{
-		
-		String error="您已收藏5個商品，請刪除後再嘗試";
-		String success="恭喜您，收藏商品成功!";
-		String alreadyHaveData="很抱歉，您已收藏過此商品!";
-		
-		if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 5 &&
-				productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
-			
-	        redirectAttributes.addFlashAttribute("errors", error); // 使用 addFlashAttribute
-			return "redirect:/public/Products/"+ productId;
-		}
-		
-		if (productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
-			productFavoriteService.insertProductFavorite(productId, memberId);
-			redirectAttributes.addFlashAttribute("success", success); // 使用 addFlashAttribute
-			return "redirect:/public/Products/"+ productId;
-		}
-		
-		redirectAttributes.addFlashAttribute("alreadyHaveData", alreadyHaveData); // 使用 addFlashAttribute
-	    return "redirect:/public/Products/"+ productId;
-	};
+    public String productReviewInsert(
+            @RequestParam Integer productId,
+            @RequestParam Integer memberId,
+            RedirectAttributes redirectAttributes,
+            Model m
+            ) throws IOException {
+
+        String error = "您的收藏已達上限，請點擊鏈結刪除後再嘗試";
+        String success = "收藏商品成功!";
+        String alreadyHaveData = "收藏失敗，您已收藏過此商品!";
+
+        if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 5 &&
+                productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
+        	// 會員點收藏時，如果滿了，會留下這筆紀錄及時間點        	
+            memberActionLogService.logAction(memberId, "點擊收藏，但已達到上限5次", productId);
+            redirectAttributes.addFlashAttribute("errors", error);
+            return "redirect:/public/Products/" + productId;
+        }
+
+        if (productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
+            productFavoriteService.insertProductFavorite(productId, memberId);
+            
+            memberActionLogService.logAction(memberId, "收藏成功", productId);
+            redirectAttributes.addFlashAttribute("success", success);
+            return "redirect:/public/Products/" + productId;
+        }
+        
+        memberActionLogService.logAction(memberId, "點擊收藏，但已收藏過此商品", productId);
+        redirectAttributes.addFlashAttribute("alreadyHaveData", alreadyHaveData);
+        return "redirect:/public/Products/" + productId;
+    }
 	
 	// 查看總收藏
 	@GetMapping("/public/allFavoriteProducts")

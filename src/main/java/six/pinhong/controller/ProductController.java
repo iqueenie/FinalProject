@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,6 +36,7 @@ import six.liang.service.ProductDiscountService;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductReview;
+import six.pinhong.service.MemberActionLogService;
 import six.pinhong.service.ProductReviewService;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetailRepository;
@@ -53,6 +56,9 @@ public class ProductController {
 	
 	@Autowired
 	private ProductDiscountService productDiscountService;
+	
+	@Autowired
+	private MemberActionLogService memberActionLogService;
 	
 	// 後台查全部
 	@GetMapping("/private/Product/GetAll")
@@ -368,11 +374,13 @@ public class ProductController {
 	        @PathVariable Integer productId, 
 	        HttpSession session, Model model, 
 	        @RequestParam(defaultValue = "0") int page) {
+    	
 	    
 	    // 取得當前會員ID
 	    Integer memberId = null;
 	    if (session.getAttribute("loggedInMember") != null) {
 	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
+	        memberActionLogService.logAction(memberId, "查看商品頁", productId);
 	    }
 	    Map<String, Object> productDetails = productService.getProductDetails(productId);
 	    List<ProductReview> productReviews = productReviewService.findProductReviewsByProductId(productId);
