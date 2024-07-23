@@ -59,10 +59,15 @@
                             <i class="fa-solid fa-user col-1" style="color: #ffffff;"></i>
                             <span class="col">會員</span>
                         </a>
-                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/Product/GetAll}">
-                            <i class="fa-solid fa-cookie-bite col-1" style="color: #ffffff;"></i>
-                            <span class="col">商品</span>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" data-bs-toggle="collapse" href="#product" role="button" aria-expanded="false" aria-controls="product">
+                            <i class="fa-solid fa-store col-1" style="color: #ffffff;"></i>
+                            <span class="col-10">商品</span>
+                            <i class="fa-solid fa-angle-down col-1 ms-auto" style="color: #ffffff;"></i>
                         </a>
+                        <div class="collapse ms-3 border-start border-3 mb-2" id="product">
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/Product/GetAll}">商品管理</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/Product/ForbiddenWords}">敏感字管理</a>
+                        </div>
                         <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" data-bs-toggle="collapse" href="#store" role="button" aria-expanded="false" aria-controls="store">
                             <i class="fa-solid fa-store col-1" style="color: #ffffff;"></i>
                             <span class="col-10">店鋪</span>

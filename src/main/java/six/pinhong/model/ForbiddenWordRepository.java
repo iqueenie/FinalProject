@@ -10,5 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface ForbiddenWordRepository extends JpaRepository<ForbiddenWord, Integer> {
 	
     List<ForbiddenWord> findAll();
+    
+    @Query("SELECT fw FROM ForbiddenWord fw WHERE fw.word = ?1")
+    ForbiddenWord findByWord(String word);
 }
 
