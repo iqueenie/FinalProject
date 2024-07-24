@@ -48,17 +48,17 @@
             </h4>
             <form class="needs-validation" id="orderForm" th:action="@{/public/insert}" method="post" novalidate>
                 <div class="list-group mb-3" th:each="product : ${session.sessionCart}" data-productId="${product.productId}">
-                    <div class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 class="my-0" th:href="@{/product/{productId}(productId=${product.productId})}"
-                                th:text="${product.productName}"></h6>
-                            <small class="text-body-secondary" th:text="${product.productDescription}"></small>
-                        </div>
-                        <span class="text-body-secondary"
-                              th:text="'TWD ' + ${product.productPrice * session.productQuantities[product.productId]}"></span>
-                    </div>
-                </div>
-                
+				    <div class="list-group-item d-flex justify-content-between lh-sm">
+				        <div style="flex: 1; margin-right: 10px;">
+				            <h6 class="my-0" th:href="@{/product/{productId}(productId=${product.productId})}"
+				                th:text="${product.productName}"></h6>
+				            <small class="text-body-secondary" style="display: block; width: 800px;" th:text="${product.productDescription}"></small>
+				        </div>
+				        <span class="text-body-secondary"
+				              th:text="'TWD ' + ${product.productPrice * session.productQuantities[product.productId]}"></span>
+				    </div>
+				</div>
+
                 <div class="list-group mb-3">
                     <div class="list-group-item d-flex justify-content-between">
                         <span>總金額</span>

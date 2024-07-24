@@ -173,6 +173,8 @@
   <div th:replace="~{front/layout/footer}"></div>
  
 <script> 
+
+
 $(document).ready(function() {
     $(document).off('click', '.quantity-right-plus').on('click', '.quantity-right-plus', function (e) {
         e.preventDefault();
@@ -237,8 +239,6 @@ $(document).ready(function() {
         $('#discountMoney').text('TWD ' + discountMoney);
         $('#total').text('TWD ' + (sumTotal - discountMoney));
 
-        console.log("總計:", sumTotal);
-        console.log("購物車項目:", cartItems);
 
         $.ajax({
             url: '/FinalProject/public/update-cart',
