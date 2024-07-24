@@ -75,9 +75,25 @@ public class ProductService {
 	
 	// shop.html - 前台頁碼、查詢
 	
-	public Page<Product> findByPage(String searchTerm, String productType, int pageNum, int pageSize) {
-	    Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
-	    
+	public Page<Product> findByPage(String searchTerm, String productType, int pageNum, int pageSize, String sortField) {
+	    Sort sort;
+	    if (sortField != null && !sortField.equals("default")) {
+	        switch (sortField) {
+	            case "productId":
+	                sort = Sort.by(Sort.Direction.DESC, "productId");
+	                break;
+	            case "productPrice":
+	                sort = Sort.by(Sort.Direction.ASC, "productPrice");
+	                break;
+	            default:
+	                sort = Sort.unsorted();
+	        }
+	    } else {
+	        sort = Sort.unsorted();
+	    }
+
+	    Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
+
 	    if (!searchTerm.isEmpty() && !productType.isEmpty()) {
 	        return productRepo.findByProductNameContainingAndProductTypeContaining(searchTerm, productType, pageable);
 	    } else if (!searchTerm.isEmpty()) {

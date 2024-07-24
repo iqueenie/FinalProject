@@ -135,21 +135,26 @@
   
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-  fetchProducts(1);
+    fetchProducts(1);
 
-  document.getElementById('search-form').onsubmit = function(e) {
-      e.preventDefault();
-      fetchProducts(1);
-  };
+    document.getElementById('search-form').onsubmit = function(e) {
+        e.preventDefault();
+        fetchProducts(1);
+    };
 
-  document.querySelectorAll('.product-type-link').forEach(link => {
-      link.onclick = function(e) {
-          e.preventDefault();
-          document.querySelectorAll('.product-type-link').forEach(l => l.classList.remove('active'));
-          this.classList.add('active');
-          fetchProducts(1);
-      };
-  });
+    document.querySelectorAll('.product-type-link').forEach(link => {
+        link.onclick = function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.product-type-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            fetchProducts(1);
+        };
+    });
+
+    // 添加这个事件监听器
+    document.getElementById('input-sort').addEventListener('change', function() {
+        fetchProducts(1);
+    });
 });
 
 function fetchProducts(pageNum = 1) {
@@ -158,6 +163,7 @@ function fetchProducts(pageNum = 1) {
     const urlParams = new URLSearchParams(window.location.search);
     const hasDiscount = urlParams.get('hasDiscount') === 'true';
     const fromActivity = urlParams.get('fromActivity') === 'true';
+    const sortField = document.getElementById('input-sort').value;
 
     axios.get('/FinalProject/public/api/products', {
         params: {
@@ -165,7 +171,8 @@ function fetchProducts(pageNum = 1) {
             productType,
             p: pageNum,
             hasDiscount,
-            fromActivity
+            fromActivity,
+            sortField
         }
     }).then(response => {
         const { page, productDiscountMap, roundedDiscountedPriceMap, averageRatings, reviewCounts } = response.data;

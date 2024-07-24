@@ -265,9 +265,10 @@ public class ProductController {
 	                              @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
 	                              @RequestParam(value = "hasDiscount", defaultValue = "false") Boolean hasDiscount,
 	                              @RequestParam(value = "fromActivity", defaultValue = "false") Boolean fromActivity,
-	                              Model model) {
+	                              Model model,
+	                              @RequestParam(value = "sortField", required = false) String sortField) {
 	    int pageSize = 10;
-	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize);
+	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize, sortField);
 
 	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
 	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
@@ -323,9 +324,10 @@ public class ProductController {
 	        @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm,
 	        @RequestParam(value = "productType", defaultValue = "") String productType,
 	        @RequestParam(value = "p", defaultValue = "1") Integer pageNum,
-	        @RequestParam(value = "hasDiscount", defaultValue = "false") Boolean hasDiscount) {
+	        @RequestParam(value = "hasDiscount", defaultValue = "false") Boolean hasDiscount,
+	        @RequestParam(value = "sortField", required = false) String sortField) {
 	    int pageSize = 10;
-	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize);
+	    Page<Product> page = productService.findByPage(searchTerm, productType, pageNum, pageSize, sortField);
 
 	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
 	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
