@@ -247,7 +247,7 @@
                             <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1">
                           </div>
                           <div class="col-9">
-                            <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
+                            <a href="#" class="btn btn-primary rounded-1 p-2 fs-7" th:attr="data-productId=${product.productId}, data-productName=${product.productName}" onclick="addToCart(this)">
                               <svg width="18" height="18">
                                 <use xlink:href="#cart"></use>
                               </svg> 加入購物車
@@ -376,61 +376,93 @@
     <div th:replace="~{front/layout/footer}"></div>
 
     <script>
-      function addToCart(button) {
-        var productId = button.getAttribute('data-productId');
-        var productName = button.getAttribute('data-productName');
-        var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
+     function addToCart(button) {
+    var productId = button.getAttribute('data-productId');
+    var productName = button.getAttribute('data-productName');
+    var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
 
-        Swal.fire({
-          title: '確定加入購物車?',
-          html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: '是的',
-          cancelButtonText: '取消'
-        }).then((result) => {
-          if (result.isConfirmed) {
+    Swal.fire({
+        title: '確定加入購物車?',
+        html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
             var formData = {
-              productId: productId,
-              quantity: quantity
+                productId: productId,
+                quantity: quantity
             };
 
             $.ajax({
-              type: 'POST',
-              url: '/FinalProject/public/addToCart',
-              data: formData,
-              success: function(response) {
-                Swal.fire({
-                  title: '成功加入購物車',
-                  icon: 'success'
-                }).then(() => {
-                  location.reload(); 
-                });                
-              },
-              error: function(xhr, status, error) {
-                Swal.fire({
-                  title: '加入購物車失敗',
-                  text: xhr.responseText,
-                  icon: 'error'
-                });
-              }
+                type: 'POST',
+                url: '/FinalProject/public/addToCart',
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        title: '成功加入購物車',
+                        icon: 'success'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: '加入購物車失敗',
+                        text: xhr.responseText,
+                        icon: 'error'
+                    });
+                }
             });
-          }
-        });
-      }
+        }
+    });
+}
 
-      function bindCartButtonClick() {
-        document.querySelectorAll(".btn-cart").forEach(button => {
-          button.addEventListener("click", function (e) {
+     function bindCartButtonClick() {
+    document.querySelectorAll(".btn-cart").forEach(button => {
+        button.addEventListener("click", function (e) {
             e.preventDefault();
-            addToCart(button);
-          });
+
+            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+                .then(res => {
+                    let isLoggedIn = res.data;
+                    if (!isLoggedIn) {
+                        sessionStorage.setItem("checkoutIntention", "true");
+                        Swal.fire({
+                            title: "請先登入或註冊",
+                            icon: "warning",
+                            text: "您即將前往登入或註冊頁",
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: "#6BB252",
+                            confirmButtonText: "登入",
+                            denyButtonColor: "#f7a422",
+                            denyButtonText: "註冊",
+                            cancelButtonText: "取消"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+                            } else if (result.isDenied) {
+                                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+                            }
+                        });
+                    } else {
+                        window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
         });
-      }
+    });
+}
+
 
       document.addEventListener('DOMContentLoaded', function () {
         bindCartButtonClick();
       });
+
 
       document.addEventListener('DOMContentLoaded', function() {
   		var addReviewBtn = document.getElementById('add-review-btn');

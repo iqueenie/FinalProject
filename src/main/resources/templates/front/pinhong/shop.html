@@ -384,42 +384,44 @@ function updatePagination(page) {
     pagination.appendChild(ul);
 }
 
-    function addToCart(button) {
-        const productId = button.getAttribute('data-productId');
-        const productName = button.getAttribute('data-productName');
-        const quantity = parseInt(button.closest('.product-item').querySelector('.quantity').value);
+   function addToCart(button) {
+    var productId = button.getAttribute('data-productId');
+    var productName = button.getAttribute('data-productName');
+    var quantity = parseInt(button.closest('.product-item').querySelector('.quantity').value);
 
-        Swal.fire({
-            title: '確定加入購物車?',
-            html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '是的',
-            cancelButtonText: '取消'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const params = new URLSearchParams();
-                params.append('productId', productId);
-                params.append('quantity', quantity);
+    Swal.fire({
+      title: '確定加入購物車?',
+      html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 加入購物車嗎?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '是的',
+      cancelButtonText: '取消'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var params = new URLSearchParams();
+        params.append('productId', productId);
+        params.append('quantity', quantity);
 
-                axios.post(`/FinalProject/public/addToCart?${params.toString()}`)
-                .then(res => {
-                    Swal.fire({
-                        title: '成功加入購物車',
-                        icon: 'success'
-                    });
-                })
-                .catch(err => {
-                    console.error('加入購物車失敗:', err);
-                    Swal.fire({
-                        title: '加入購物車失敗',
-                        text: err.message || '加入購物車時發生錯誤',
-                        icon: 'error'
-                    });
-                });
-            }
+        axios.post(`/FinalProject/public/addToCart?${params.toString()}`)
+          .then(res => {
+            Swal.fire({
+              title: '成功加入購物車',
+              icon: 'success'
+            }).then(() => {
+          location.reload(); 
         });
-    }
+      })
+          .catch(err => {
+            console.error('加入購物車失敗:', err);
+            Swal.fire({
+              title: '加入購物車失敗',
+              text: err.message || '加入購物車時發生錯誤',
+              icon: 'error'
+            });
+          });
+      }
+    });
+  }
     
     function updateShowingProductText(page) {
     const showingProductText = document.getElementById('showing-product-text');

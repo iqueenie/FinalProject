@@ -121,6 +121,7 @@ public class CartController {
 
         return "front/queenie/cart";
     }
+   
 
     @PostMapping("/public/update-cart")
     @ResponseBody
