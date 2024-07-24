@@ -178,20 +178,34 @@ function fetchProducts(pageNum = 1) {
         const { page, productDiscountMap, roundedDiscountedPriceMap, averageRatings, reviewCounts } = response.data;
         updateProductList(page.content, productDiscountMap, roundedDiscountedPriceMap, averageRatings, reviewCounts);
         updatePagination(page);
+        updateShowingProductText(page);
     }).catch(error => {
         console.error('Error fetching products:', error);
     });
 }
 
 
-    function updateProductList(products, discountMap, discountedPriceMap, averageRatings, reviewCounts) {
-        const productList = document.getElementById('product-list');
-        productList.innerHTML = '';
-        products.forEach(product => {
-            const productElement = createProductElement(product, discountMap[product.productId], discountedPriceMap[product.productId], averageRatings[product.productId], reviewCounts[product.productId]);
-            productList.appendChild(productElement);
-        });
-    }
+ function updateProductList(products, discountMap, discountedPriceMap, averageRatings, reviewCounts, totalItems) {
+    const productList = document.getElementById('product-list');
+    productList.innerHTML = '';
+    products.forEach(product => {
+        const productElement = createProductElement(product, discountMap[product.productId], discountedPriceMap[product.productId], averageRatings[product.productId], reviewCounts[product.productId]);
+        productList.appendChild(productElement);
+    });
+
+    // Update showing text
+    updateShowingText(totalItems);
+}
+
+function updateShowingText(totalItems) {
+    const pageNum = parseInt(new URLSearchParams(window.location.search).get('p')) || 1;
+    const pageSize = 10; // Assuming 10 items per page
+    const start = (pageNum - 1) * pageSize + 1;
+    const end = Math.min(pageNum * pageSize, totalItems);
+    document.getElementById('showing-product-text').textContent = `顯示 ${start}-${end} 結果 共 ${totalItems} 筆商品`;
+}
+    
+    
 
     function generateStars(rating) {
         let starsHtml = '';
@@ -316,59 +330,59 @@ function fetchProducts(pageNum = 1) {
         return colDiv;
     }
 
-    function updatePagination(page) {
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
-        const ul = document.createElement('ul');
-        ul.className = 'pagination d-flex justify-content-center';
+function updatePagination(page) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    const ul = document.createElement('ul');
+    ul.className = 'pagination d-flex justify-content-center';
 
-        const prevLi = document.createElement('li');
-        prevLi.className = 'page-item' + (page.number === 0 ? ' disabled' : '');
-        const prevA = document.createElement('a');
-        prevA.className = 'page-link';
-        prevA.href = '#';
-        prevA.textContent = '<<';
-        prevA.onclick = function(e) {
-            e.preventDefault();
-            if (page.number > 0) {
-                fetchProducts(page.number);
-            }
-        };
-        prevLi.appendChild(prevA);
-        ul.appendChild(prevLi);
-
-        for (let i = 1; i <= page.totalPages; i++) {
-            const li = document.createElement('li');
-            li.className = 'page-item' + (i === page.number + 1 ? ' active' : '');
-            const a = document.createElement('a');
-            a.className = 'page-link';
-            a.href = '#';
-            a.textContent = i;
-            a.onclick = function(e) {
-                e.preventDefault();
-                fetchProducts(i);
-            };
-            li.appendChild(a);
-            ul.appendChild(li);
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (page.number === 0 ? ' disabled' : '');
+    const prevA = document.createElement('a');
+    prevA.className = 'page-link';
+    prevA.href = '#';
+    prevA.textContent = '<<';
+    prevA.onclick = function(e) {
+        e.preventDefault();
+        if (page.number > 0) {
+            fetchProducts(1);
         }
+    };
+    prevLi.appendChild(prevA);
+    ul.appendChild(prevLi);
 
-        const nextLi = document.createElement('li');
-        nextLi.className = 'page-item' + (page.number + 1 === page.totalPages ? ' disabled' : '');
-        const nextA = document.createElement('a');
-        nextA.className = 'page-link';
-        nextA.href = '#';
-        nextA.textContent = '>>';
-        nextA.onclick = function(e) {
+    for (let i = 1; i <= page.totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item' + (i === page.number + 1 ? ' active' : '');
+        const a = document.createElement('a');
+        a.className = 'page-link';
+        a.href = '#';
+        a.textContent = i;
+        a.onclick = function(e) {
             e.preventDefault();
-            if (page.number + 1 < page.totalPages) {
-                fetchProducts(page.number + 2);
-            }
+            fetchProducts(i);
         };
-        nextLi.appendChild(nextA);
-        ul.appendChild(nextLi);
-
-        pagination.appendChild(ul);
+        li.appendChild(a);
+        ul.appendChild(li);
     }
+
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (page.number + 1 === page.totalPages ? ' disabled' : '');
+    const nextA = document.createElement('a');
+    nextA.className = 'page-link';
+    nextA.href = '#';
+    nextA.textContent = '>>';
+    nextA.onclick = function(e) {
+        e.preventDefault();
+        if (page.number + 1 < page.totalPages) {
+            fetchProducts(page.totalPages);
+        }
+    };
+    nextLi.appendChild(nextA);
+    ul.appendChild(nextLi);
+
+    pagination.appendChild(ul);
+}
 
     function addToCart(button) {
         const productId = button.getAttribute('data-productId');
@@ -406,6 +420,13 @@ function fetchProducts(pageNum = 1) {
             }
         });
     }
+    
+    function updateShowingProductText(page) {
+    const showingProductText = document.getElementById('showing-product-text');
+    const start = page.number * page.size + 1;
+    const end = Math.min(start + page.size - 1, page.totalElements);
+    showingProductText.textContent = ` Showing ${start}-${end} of ${page.totalElements} results`;
+}
   </script>
 </body>
 </html>
