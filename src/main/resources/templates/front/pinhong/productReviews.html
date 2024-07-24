@@ -68,10 +68,11 @@
               <div>
                 <div class="rating mb-1">
                   <th:block th:each="star : ${#numbers.sequence(1, 5)}">
-                    <svg width="20" height="20" class="text-warning">
-                      <use th:xlink:href="${star <= averageRatings ? '#star-full' : (star <= averageRatings + 0.5 ? '#star-half' : '#star-empty')}"></use>
-                    </svg>
-                  </th:block>
+  <svg width="20" height="20" class="text-warning">
+    <use th:xlink:href="${star <= averageRatings ? '#star-full' : 
+                        (star <= averageRatings + 0.9 ? '#star-half' : '#star-empty')}"></use>
+  </svg>
+</th:block>
                 </div>
                 <span class="text-muted" th:text="'共 '+${reviewCounts} + ' 則評論'"></span>
               </div>
