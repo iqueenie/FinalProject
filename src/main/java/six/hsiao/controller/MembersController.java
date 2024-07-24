@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.EmailService;
@@ -31,7 +32,8 @@ import six.hsiao.service.MembersService;
 @Controller
 public class MembersController {
 	
-	
+	@Autowired
+    private HttpServletRequest request;
 	
 	
 	@Autowired
@@ -292,8 +294,48 @@ public class MembersController {
 		 
 		 
 		 
-		 
+		 @PostMapping("/front/UpdeMember")
+		    public String frontUpdeMember(@ModelAttribute MembersBean member,
+		                                  @RequestParam(value = "memberPhotoFile", required = false) MultipartFile memberPhotoFile,
+		                                  Model model) {
+
+		      
+		        HttpSession session = request.getSession();
+		        MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
+
+		       
+		        if (loggedInMember != null) {
+		           
+		            loggedInMember.setMemberName(member.getMemberName());
+		            loggedInMember.setMemberAccount(member.getMemberAccount());
+		            loggedInMember.setMemberPassword(member.getMemberPassword());
+		            loggedInMember.setMemberAddress(member.getMemberAddress());
+		            loggedInMember.setMemberBirthDate(member.getMemberBirthDate());
+		            loggedInMember.setMemberEmail(member.getMemberEmail());
+
+		          
+		            if (memberPhotoFile != null && !memberPhotoFile.isEmpty()) {
+		                try {
+		                    byte[] newMemberPhoto = memberPhotoFile.getBytes();
+		                    loggedInMember.setMemberPhoto(newMemberPhoto);
+		                } catch (Exception e) {
+		                    model.addAttribute("errorByPhoto", "上傳圖片失敗,請檢查檔案大小");
+		                    e.printStackTrace();
+		                }
+		            }
+
+		            membersService.updateMembers(loggedInMember);
+
+		            return "redirect:/public/MemberProfileMain";
+		        } else {
+		            
+		            return "redirect:public/front";
+		        }
+		    }
 		}
+		 
+		 
+		
 	
 
 	 

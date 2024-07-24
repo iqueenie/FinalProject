@@ -27,9 +27,9 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
 	rel="stylesheet">
-	
 
-     
+
+
 </head>
 
 <div th:replace="~{front/layout/navbar}"></div>
@@ -57,7 +57,7 @@
 				<div class="sidebar">
 					<div class="widget-menu"></div>
 					<div class="widget-product-categories pt-5">
-						<h2 class="widget-title" >會員資料</h2>
+						<h2 class="widget-title">會員資料</h2>
 
 					</div>
 
@@ -65,67 +65,92 @@
 			</aside>
 
 
-	<main class="container" 	style="padding:0px ; margin-left:200px">
-        <div class="col-md-10" style="border: 10px solid #ccc ;margin-left:10px ">
-            
-            <form id="updateForm" method="post" action="/updateMember"  style=padding-left:500px;>
-            	<br>
-            	<br>
-            	<div>
-                    <label for="memberPhoto" ></label>
-                     <img th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}"
-                     alt="memberPhoto"  class="rounded-circle me-2"  style="width: 180px; height: 160px; object-fit: cover; border-radius: 0;">
-                    
-                </div>
-                <br>
-                <div class="form-group" >
-                    <label for="memberName" >會員名稱</label>
-                    <input type="text" class="form-control" id="memberName" name="memberName"
-                        th:value="${session.loggedInMember.memberName}" style="border-color: black ;width:250px"  required >
-                </div>
-                <br>
-               
-                <div class="form-group">
-                    <label for="memberAccount">會員帳號</label>
-                    <input type="text" class="form-control" id="memberAccount" name="memberAccount"
-                        th:value="${session.loggedInMember.memberAccount}"  style="border-color: black ;width:250px" required>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="memberPassword">會員密碼</label>
-                    <input type="password" class="form-control" id="memberPassword" name="memberPassword"
-                        th:value="${session.loggedInMember.memberPassword}"  style="border-color: black ;width:250px" required>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="memberAddress">會員地址</label>
-                    <input type="text" class="form-control" id="memberAddress" name="memberAddress"
-                        th:value="${session.loggedInMember.memberAddress}" style="border-color: black ;width:250px">
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="memberBirthDate">會員生日</label>
-                    <input type="date" class="form-control" id="memberBirthDate" name="memberBirthDate"
-                        th:value="${session.loggedInMember.memberBirthDate}" style="border-color: black ;width:250px">
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="memberEmail">會員信箱</label>
-                    <input type="email" class="form-control" id="memberEmail" name="memberEmail"
-                        th:value="${session.loggedInMember.memberEmail}"  style="border-color: black ;width:250px" required>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="points">會員點數</label>
-                    <input type="number" class="form-control" id="points" name="points"
-                        th:value="${session.loggedInMember.points}" style="border-color: black ;width:250px" readonly>
-                </div>
-                
-                <br>
-                <button type="submit" class="btn btn-primary" style="  margin-bottom: 10px;">更新資料</button>
-            </form>
-        </div>
-    </main>
+			<main class="container" style="padding: 0px;">
+				<div class="col-md-6"
+					style="border: 10px solid #ccc; margin-left: 10px">
+
+					<form id="updateForm" method="post"
+						th:action="@{/front/UpdeMember}" enctype="multipart/form-data"
+						style="padding-left: 20px;">
+						<br> <br>
+						<div>
+							<label for="memberPhotoFile"></label> <img
+								th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}"
+								alt="memberPhotoFile" class="rounded-circle me-2"
+								style="width: 180px; height: 160px; object-fit: cover; border-radius: 0;">
+
+							<!-- 文件上传的控件 -->
+							<input type="file" id="fileInput" name="memberPhotoFile"
+								accept="image/*" style="display: none;" onchange="previewFile()">
+							<button type="button" class="btn btn-primary mt-2"
+								onclick="openFileInput()">更改照片</button>
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberName">會員名稱</label> <input type="text"
+								class="form-control" id="memberName" name="memberName"
+								th:value="${session.loggedInMember.memberName}"
+								style="border-color: black; width: 250px" required>
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberAccount">會員帳號</label> <input type="text"
+								class="form-control" id="memberAccount" name="memberAccount"
+								th:value="${session.loggedInMember.memberAccount}"
+								style="border-color: black; width: 250px" required>
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberPassword">會員密碼</label> <input type="password"
+								class="form-control" id="memberPassword" name="memberPassword"
+								th:value="${session.loggedInMember.memberPassword}"
+								style="border-color: black; width: 250px" required>
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberAddress">會員地址</label> <input type="text"
+								class="form-control" id="memberAddress" name="memberAddress"
+								th:value="${session.loggedInMember.memberAddress}"
+								style="border-color: black; width: 250px">
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberBirthDate">會員生日</label> <input type="date"
+								class="form-control" id="memberBirthDate" name="memberBirthDate"
+								th:value="${session.loggedInMember.memberBirthDate}"
+								style="border-color: black; width: 250px">
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="memberEmail">會員信箱</label> <input type="email"
+								class="form-control" id="memberEmail" name="memberEmail"
+								th:value="${session.loggedInMember.memberEmail}"
+								style="border-color: black; width: 250px" required>
+						</div>
+						<br>
+
+						<div class="form-group">
+							<label for="points">會員點數</label> <input type="number"
+								class="form-control" id="points" name="points"
+								th:value="${session.loggedInMember.points}"
+								style="border-color: black; width: 250px" readonly>
+						</div>
+
+						<br>
+						<button type="submit" class="btn btn-primary"
+							style="margin-bottom: 10px;">保存資料</button>
+					</form>
+				</div>
+
+			</main>
+
+
 
 		</div>
 	</div>
@@ -135,7 +160,26 @@
 
 
 
+<script>
+    
+    function openFileInput() {
+        document.getElementById('fileInput').click();
+    }
 
+  
+    function previewFile() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('currentMemberPhoto').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 
 </body>
 </html>
