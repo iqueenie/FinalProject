@@ -380,7 +380,15 @@ public class ProductController {
 	    Integer memberId = null;
 	    if (session.getAttribute("loggedInMember") != null) {
 	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
-	        memberActionLogService.logAction(memberId, "查看商品頁", productId);
+	        
+	        // 點集收藏時會新增這個session標記，防止連續出現2次進入商品頁的log
+	        Boolean skipLogAction = (Boolean) session.getAttribute("skipLogAction");
+	        if (skipLogAction == null || !skipLogAction) {
+	            memberActionLogService.logAction(memberId, "查看商品頁", productId);
+	        } else {
+	            // 移除標記，以便下次正常記錄
+	            session.removeAttribute("skipLogAction");
+	        }
 	    }
 	    Map<String, Object> productDetails = productService.getProductDetails(productId);
 	    List<ProductReview> productReviews = productReviewService.findProductReviewsByProductId(productId);

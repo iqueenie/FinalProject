@@ -1,4 +1,7 @@
 package six.pinhong.service;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +55,25 @@ public class MemberActionLogService {
     
     public List<MemberActionLog> getAllLogs() {
         return memberActionLogRepo.findAll();
+    }
+    
+    public List<MemberActionLog> findByAction(String action) {
+        return memberActionLogRepo.findByAction(action);
+    }
+    
+    public List<MemberActionLog> findByActionAndDateRange(String action, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime start = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+
+        if (action != null && !action.isEmpty() && start != null && end != null) {
+            return memberActionLogRepo.findByActionAndTimestampBetween(action, start, end);
+        } else if (action != null && !action.isEmpty()) {
+            return memberActionLogRepo.findByAction(action);
+        } else if (start != null && end != null) {
+            return memberActionLogRepo.findByTimestampBetween(start, end);
+        } else {
+            return memberActionLogRepo.findAll();
+        }
     }
     
 }

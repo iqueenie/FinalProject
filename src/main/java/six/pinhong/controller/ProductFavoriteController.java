@@ -41,14 +41,18 @@ public class ProductFavoriteController {
     private MemberActionLogService memberActionLogService;
 
 	
-	// 新增評論
+	// 新增收藏
 	@PostMapping("/public/InsertProductFavorite")
     public String productReviewInsert(
             @RequestParam Integer productId,
             @RequestParam Integer memberId,
             RedirectAttributes redirectAttributes,
-            Model m
+            Model m,
+            HttpSession session
             ) throws IOException {
+		
+	    // 在重定向之前，設置一個標記
+	    session.setAttribute("skipLogAction", true);
 
         String error = "您的收藏已達上限，請點擊鏈結刪除後再嘗試";
         String success = "收藏商品成功!";
@@ -57,7 +61,7 @@ public class ProductFavoriteController {
         if (productFavoriteService.getFavoritesByMemberId(memberId).size() >= 5 &&
                 productFavoriteService.getFavoritesByMemberIdAndProductProductId(memberId, productId) == null) {
         	// 會員點收藏時，如果滿了，會留下這筆紀錄及時間點        	
-            memberActionLogService.logAction(memberId, "點擊收藏，但已達到上限5次", productId);
+            memberActionLogService.logAction(memberId, "收藏已達到上限", productId);
             redirectAttributes.addFlashAttribute("errors", error);
             return "redirect:/public/Products/" + productId;
         }
@@ -70,7 +74,7 @@ public class ProductFavoriteController {
             return "redirect:/public/Products/" + productId;
         }
         
-        memberActionLogService.logAction(memberId, "點擊收藏，但已收藏過此商品", productId);
+        memberActionLogService.logAction(memberId, "已收藏過此商品", productId);
         redirectAttributes.addFlashAttribute("alreadyHaveData", alreadyHaveData);
         return "redirect:/public/Products/" + productId;
     }
