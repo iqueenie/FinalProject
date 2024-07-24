@@ -213,9 +213,11 @@ function fetchProducts(pageNum = 1) {
         a.title = product.productName;
 
         const img = document.createElement('img');
-        img.src = `/FinalProject/ProductPhoto?productId=${product.productId}`;
-        img.alt = product.productName;
-        img.className = 'tab-image';
+	    img.src = `/FinalProject/ProductPhoto?productId=${product.productId}`;
+	    img.alt = product.productName;
+	    img.className = 'tab-image';
+	    img.style.width = '210px';
+	    img.style.height = '210px';
 
         a.appendChild(img);
 
