@@ -38,6 +38,14 @@ public class InventoryService {
 		return invRepo.save(inv);
 	}
 	
+	public InventoryBean updateInv(InventoryBean inv) {
+		return invRepo.save(inv);
+	}
+	
+	public InventoryBean buyInsertInv(InventoryBean inv) {
+		return invRepo.save(inv);
+	}
+	
 	public void deleteInventory(Integer id) {
 		invRepo.deleteById(id);
 	}

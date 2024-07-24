@@ -299,7 +299,7 @@ public class InventoryController {
 			}
 			invbean.setBuyCode(buycode);
 			
-			invService.saveInventory(invbean);
+			invService.updateInv(invbean);
 			
 			return "redirect:/private/inventory/findAll";
 		}
