@@ -234,7 +234,7 @@ public class BuyController {
 			buy.setCheckToInv(true);
 			buyService.saveBuy(buy);
  			
- 			invService.saveInventory(invbean);
+ 			invService.buyInsertInv(invbean);
 		}
 		
 		
