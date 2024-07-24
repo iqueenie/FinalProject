@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
+import six.liang.model.ProductDiscount;
+import six.liang.service.ProductDiscountService;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductFavorite;
 import six.pinhong.service.MemberActionLogService;
@@ -39,6 +41,9 @@ public class ProductFavoriteController {
 	
 	@Autowired
     private MemberActionLogService memberActionLogService;
+
+	@Autowired
+	private ProductDiscountService productDiscountService;
 
 	
 	// 新增收藏
@@ -81,42 +86,58 @@ public class ProductFavoriteController {
 	
 	// 查看總收藏
 	@GetMapping("/public/allFavoriteProducts")
-	public String showRecentProducts(HttpSession session, Model model) {
+	public String showFavoriteProducts(HttpSession session, Model model) {
 	    Integer memberId = null;
 	    if (session.getAttribute("loggedInMember") != null) {
 	        memberId = ((MembersBean) session.getAttribute("loggedInMember")).getMemberId();
 	    } else {
-			return "redirect:/public/frontLoginMain";
-		}
-	    
-		List<ProductFavorite> favoriteProducts = productFavoriteService.getFavoritesByMemberId(memberId);
+	        return "redirect:/public/frontLoginMain";
+	    }
+
+	    List<ProductFavorite> favoriteProducts = productFavoriteService.getFavoritesByMemberId(memberId);
 	    List<Product> products = new ArrayList<>();
+	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
+	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
+	    
 	    for (ProductFavorite favorite : favoriteProducts) {
 	        Product product = productService.findProductById(favorite.getProduct().getProductId());
 	        products.add(product);
+	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
+	        if (!productDiscounts.isEmpty()) {
+	            ProductDiscount discount = productDiscounts.get(0);
+	            productDiscountMap.put(product.getProductId(), discount);
+	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	            roundedDiscountedPriceMap.put(product.getProductId(), (int) Math.round(discountedPrice));
+	        } else {
+	            productDiscountMap.put(product.getProductId(), null); // 如果没有折扣，映射到null
+	        }
 	    }
+
 	    // 所有商品的平均評分和評論總數
 	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
 	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
 
-	    // 為每個最近查看的商品 add 平均評分和評論總數
+	    // 為每個收藏的商品添加平均評分和評論總數
 	    List<Map<String, Object>> allFavoriteProducts = new ArrayList<>();
 	    for (Product product : products) {
 	        Map<String, Object> productData = new HashMap<>();
 	        productData.put("product", product);
 	        productData.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
 	        productData.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
+	        productData.put("productDiscount", productDiscountMap.get(product.getProductId()));
+	        productData.put("discountedPrice", roundedDiscountedPriceMap.get(product.getProductId()));
 	        allFavoriteProducts.add(productData);
 	    }
-	    
+
 	    if (allFavoriteProducts.isEmpty()) {
 	        model.addAttribute("message", "您目前沒有任何的收藏商品，點擊按鈕可跳至商品頁");
 	    } else {
 	        model.addAttribute("allFavoriteProducts", allFavoriteProducts);
 	    }
-	    
+
 	    return "front/pinhong/ProductFavorite";
 	}
+
 	
 	//刪除該收藏商品
 	@DeleteMapping("/public/allFavoriteProducts/delete")

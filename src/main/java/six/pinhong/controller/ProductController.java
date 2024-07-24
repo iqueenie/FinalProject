@@ -484,13 +484,12 @@ public class ProductController {
 	// 最近瀏覽的商品
 	@GetMapping("/public/recentProducts")
 	public String showRecentProducts(HttpSession session, Model model) {
-		
-		// 沒登入退回登入頁
+	    // 沒登入退回登入頁
 	    if (session.getAttribute("loggedInMember") == null) {
 	        return "redirect:/public/frontLoginMain";
 	    }
-		
-		// 從 session 中取得最近查看的ProductId List
+
+	    // 從 session 中取得最近查看的ProductId List
 	    List<Integer> recentProductIds = (List<Integer>) session.getAttribute("recentProducts");
 	    List<Product> recentProducts = new ArrayList<>();
 
@@ -505,6 +504,20 @@ public class ProductController {
 	    // 所有商品的平均評分和評論總數
 	    Map<Integer, Double> averageRatings = productService.getAverageRatings();
 	    Map<Integer, Integer> reviewCounts = productService.getReviewCounts();
+	    Map<Integer, ProductDiscount> productDiscountMap = new HashMap<>();
+	    Map<Integer, Integer> roundedDiscountedPriceMap = new HashMap<>();
+	    
+	    for (Product product : recentProducts) {
+	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
+	        if (!productDiscounts.isEmpty()) {
+	            ProductDiscount discount = productDiscounts.get(0);
+	            productDiscountMap.put(product.getProductId(), discount);
+	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	            roundedDiscountedPriceMap.put(product.getProductId(), (int) Math.round(discountedPrice));
+	        } else {
+	            productDiscountMap.put(product.getProductId(), null); // 如果没有折扣，映射到null
+	        }
+	    }
 
 	    // 為每個最近查看的商品 add 平均評分和評論總數
 	    List<Map<String, Object>> productsWithRatings = new ArrayList<>();
@@ -513,9 +526,11 @@ public class ProductController {
 	        productData.put("product", product);
 	        productData.put("averageRating", averageRatings.getOrDefault(product.getProductId(), 0.0));
 	        productData.put("reviewCount", reviewCounts.getOrDefault(product.getProductId(), 0));
+	        productData.put("productDiscount", productDiscountMap.get(product.getProductId()));
+	        productData.put("discountedPrice", roundedDiscountedPriceMap.get(product.getProductId()));
 	        productsWithRatings.add(productData);
 	    }
-	    
+
 	    // 如果没有最近查看的商品，傳到前端
 	    if (productsWithRatings.isEmpty()) {
 	        model.addAttribute("message", "您目前沒有查看過任何商品，點擊按鈕可跳至商品頁");
@@ -526,6 +541,7 @@ public class ProductController {
 	    model.addAttribute("recentProducts", productsWithRatings);
 	    return "front/pinhong/recentProducts";
 	}
+
 	
 	// 找該商品所有的評論 for 後台getAll
 	@GetMapping("/private/Product/Reviews")
