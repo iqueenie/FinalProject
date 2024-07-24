@@ -8,6 +8,11 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
     <title>會員操作日誌</title>
+<style>
+	.text-left {
+            text-align: left !important;
+        }
+</style>
 </head>
 <body>
     <div th:replace="~{back/layout/navbar}"></div>
@@ -27,13 +32,13 @@
 			    <button class="btn btn-outline-dark mx-1 filter-button" data-action="已收藏過此商品">已收藏過此商品</button>
 			</div>
 			<div class="row mb-3 mt-3">
-			    <div class="col-md-3">
+			    <div class="col-md-2">
 			        <div class="input-group">
 			            <span class="input-group-text">開始日期</span>
 			            <input type="date" id="startDate" class="form-control">
 			        </div>
 			    </div>
-			    <div class="col-md-3">
+			    <div class="col-md-2">
 			        <div class="input-group">
 			            <span class="input-group-text">結束日期</span>
 			            <input type="date" id="endDate" class="form-control">
@@ -47,22 +52,22 @@
             <table id="myTable" class="w-100 display">
                 <thead>
                     <tr>
-                        <th>會員ID</th>
-                        <th>會員帳號</th>
-                        <th>商品ID</th>
-                        <th>商品名稱</th>
-                        <th>操作</th>
-                        <th>時間</th>
+                        <th class="text-left">會員ID</th>
+                        <th class="text-left">會員帳號</th>
+                        <th class="text-left">商品ID</th>
+                        <th class="text-left">商品名稱</th>
+                        <th class="text-left">操作</th>
+                        <th class="text-left">時間</th>
                     </tr>
                 </thead>
                 <tbody id="logTableBody">
                     <tr th:each="log : ${logs}">
-                        <td th:text="${log.memberId}"></td>
-                        <td th:text="${log.memberAccount}"></td>
-                        <td th:text="${log.productId}"></td>
-                        <td th:text="${log.productName}"></td>
-                        <td th:text="${log.action}"></td>
-                        <td th:text="${#temporals.format(log.timestamp, 'yyyy年MM月dd日 HH:mm:ss')}"></td>
+                        <td class="text-left" th:text="${log.memberId}"></td>
+                        <td class="text-left" th:text="${log.memberAccount}"></td>
+                        <td class="text-left" th:text="${log.productId}"></td>
+                        <td class="text-left" th:text="${log.productName}"></td>
+                        <td class="text-left" th:text="${log.action}"></td>
+                        <td class="text-left" th:text="${#temporals.format(log.timestamp, 'yyyy年MM月dd日 HH:mm:ss')}"></td>
                     </tr>
                 </tbody>
             </table>
@@ -102,6 +107,26 @@
 
     var currentAction = '全部';
 
+    function formatDateWithSpace(date) {
+        // 獲取格式化日期時間字串
+        var formattedDate = date.toLocaleString('zh-TW', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true // 使用 12 小時制
+        });
+
+        // 在 "上午" 或 "下午" 後添加空格
+        formattedDate = formattedDate.replace(/上午|下午/g, function(match) {
+            return match + ' ';
+        });
+
+        return formattedDate;
+    }
+
     function updateTable() {
         var startDate = $('#startDate').val();
         var endDate = $('#endDate').val();
@@ -122,14 +147,7 @@
                         log.productId,
                         log.productName,
                         log.action,
-                        new Date(log.timestamp).toLocaleString('zh-TW', { 
-                            year: 'numeric', 
-                            month: '2-digit', 
-                            day: '2-digit', 
-                            hour: '2-digit', 
-                            minute: '2-digit', 
-                            second: '2-digit' 
-                        })
+                        formatDateWithSpace(new Date(log.timestamp))
                     ]).draw(false);
                 });
             })
@@ -168,6 +186,7 @@
         updateTable(); // 重新載入資料以應用預設日期
     });
 });
+
 
     </script>
 </body>
