@@ -5,31 +5,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import ecpay.logistics.integration.domain.CreateCVSObj;
+import ecpay.logistics.integration.exception.EcpayException;
+import ecpay.logistics.integration.AllInOne;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.EmailService;
-import six.liang.model.AmountDiscount;
-import six.liang.model.AmountDiscountRepository;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
-import six.queenie.model.ProductDiscountRepository;
+import six.queenie.service.CacheService;
 import six.queenie.service.CartService;
 import six.queenie.service.OrderDetailService;
 import six.queenie.service.OrderService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -52,14 +53,14 @@ public class CartController {
     private OrderService orderService;
     @Autowired
     private StoreService storeService;
-    @Autowired
-	private AmountDiscountRepository atRepository;
-	@Autowired
-	private ProductDiscountRepository pdRepository;
+    
 	@Autowired
 	private EmailService emailService;
 	@Autowired
 	private OrderDetailService odService;
+	
+	@Autowired
+	private CacheService cacheService;
 	
 	@PostMapping("/public/addToCart")
 	@ResponseBody
@@ -252,15 +253,32 @@ public class CartController {
 
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
 	            storeId, paymentMethod, pointUse, status, unpaidCount);
-
+	    
+	    try {
+            String logisticsID = cartService.createLogisticsOrder(orders, loggedInMember);
+            cacheService.put(orders.getOrderId(), logisticsID); 
+            System.out.println("logisticsID :" +logisticsID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "創建物流單號失敗: " + e.getMessage());
+            return "errorPage";
+        }
+	    
+	    
 	    // 更新訂單狀態
 	    cartService.processCheckout(orders.getOrderId(), paymentMethod);
 	    // 發送訂單成功信件
 	    emailService.sendOrderEmail(orders.getOrderId());
+	    
+	    if ("信用卡".equals(paymentMethod)) {
+	    	session.setAttribute(SESSION_CART, new ArrayList<>());
+	    	session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
+	        return "redirect:/MemberOrdercheckout?id=" + orders.getOrderId();
+	    }
 
 	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
-	    System.out.println(ordersList);
-
+	   
+	   
 	    Map<String, List<Orders>> ordersByStatus = ordersList.stream()
 	            .filter(order -> order.getStatus() != null)
 	            .collect(Collectors.groupingBy(order -> cartService.mapStatus(order.getStatus())));
@@ -270,8 +288,10 @@ public class CartController {
 	    session.setAttribute(SESSION_CART, new ArrayList<>());
 	    session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
 
-	    return "front/queenie/memberOrder";
+	    return "/front/queenie/memberOrder";
 	}
+
+	
 
 	@GetMapping("/public/MemberOrder")
 	public String getAllOrders(HttpSession session, Model model) {
@@ -309,6 +329,8 @@ public class CartController {
 	    
 	    return ResponseEntity.ok("Order Complete successfully");
 	}
+	
+	
 	 @GetMapping("/public/MemberOrderDetail")
 	    public String getDetailsById(@RequestParam("orderId") Integer orderId, Model model) {
 
@@ -318,3 +340,4 @@ public class CartController {
 	        return "front/queenie/memberOrderDetail";
 	    }
 }
+	

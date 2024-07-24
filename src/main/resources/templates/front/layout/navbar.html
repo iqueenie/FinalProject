@@ -411,13 +411,10 @@
                                 </ul>
                             </div>
                             <use xlink:href="#user"></use> </svg> </a>
-                        </li>
-                        <li><a href="#" class="p-2 mx-1"> <svg width="24" height="24">
-                                    <use xlink:href="#wishlist"></use>
-                                </svg>
-                            </a></li>
-                        <li><a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                                aria-controls="offcanvasCart">
+                        </li>                        
+                        <li><a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas"
+                               data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+
                                 <svg width="24" height="24">
                                     <use xlink:href="#shopping-bag"></use>
                                 </svg>
@@ -458,7 +455,7 @@
                             </li>
                         </th:block>
                         <li class="list-group-item d-flex justify-content-between">
-                            <strong>总金额</strong>
+                            <strong id="cartTotal">總金额</strong>
                             <span th:text="${session.sumTotal}"></span>
                         </li>
                     </ul>
@@ -470,6 +467,7 @@
             </div>
         </div>
     </div>
+
     <script>
         document.querySelector(".btn-cart").addEventListener("click", function (e) {
             e.preventDefault();

@@ -1,23 +1,27 @@
 package six.queenie.service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.HttpServletRequest;
+import ecpay.logistics.integration.AllInOne;
+import ecpay.logistics.integration.domain.CreateCVSObj;
 import six.hsiao.model.MembersBean;
 import six.hsiao.model.MembersRepository;
-import six.hsiao.service.EmailService;
 import six.hsiao.service.MembersService;
 import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
@@ -32,7 +36,13 @@ import six.yiting.model.StoresBean;
 
 @Service
 public class CartService {
+	
+	 private final AllInOne all;
 
+	    @Autowired
+	    public CartService() {
+	        all = new AllInOne(""); 
+	    }
     @Autowired
     private AmountDiscountRepository atRepository;
 
@@ -56,7 +66,9 @@ public class CartService {
 	@Autowired
 	private OrderService oService;
    
-
+	@Autowired
+	private CacheService cacheService;
+	
 	
     public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
     	if (amountDiscountId == null) {
@@ -240,7 +252,7 @@ public class CartService {
         insertBean.setPickupDate(pickupDate);
 
         Orders insertedOrder = ordersRepository.save(insertBean);
-
+        
         for (OrderDetails orderDetails : orderDetailsList) {
             orderDetails.setOrders(insertedOrder);
         }
@@ -327,5 +339,43 @@ public class CartService {
     }
     
    
+    public String createLogisticsOrder(Orders order, MembersBean loggedInMember) {
+        Set<OrderDetails> itemDetails = order.getDetails();
+        String itemNames = itemDetails.stream()
+                .map(orderDetail -> orderDetail.getProduct().getProductName())
+                .collect(Collectors.joining(", "));
+        String merchantTradeNo = "202407" + order.getOrderId();
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        String currentTime = now.format(formatter);
+        
+        Integer storeId = order.getStoresBean().getStoreId();
+        String formattedStoreId = String.format("%06d", storeId);
+        AllInOne all = new AllInOne("");
+
+        CreateCVSObj obj = new CreateCVSObj();
+        obj.setMerchantID("2000132");
+        obj.setMerchantTradeNo(merchantTradeNo); 
+        obj.setMerchantTradeDate(currentTime); 
+        obj.setLogisticsSubType("FAMI");
+        obj.setGoodsAmount(order.getFinalAmount().toString());
+        obj.setGoodsName(itemNames); 
+        obj.setSenderName("EZBuy購物");
+        obj.setSenderPhone("0912345678");
+        obj.setReceiverName(loggedInMember.getMemberName());
+        obj.setReceiverPhone("0912345678");
+        obj.setReceiverCellPhone("0912345678");
+        obj.setReceiverEmail(loggedInMember.getMemberEmail());
+        obj.setReceiverStoreID("006598");
+        obj.setServerReplyURL("https://f124-61-222-34-1.ngrok-free.app/FinalProject/public/logistics-status"); // 你的服务器接收物流信息的URL
+        obj.setClientReplyURL("http://localhost:8080/FinalProject/public/MemberOrder");
+
+        String logisticsID = all.create(obj);
+        cacheService.put(order.getOrderId(), logisticsID); 
+        return logisticsID;
+    }
 }
+   
+
 
