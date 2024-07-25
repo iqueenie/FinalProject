@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import six.liang.model.ProductDiscount;
+import six.liang.service.ProductDiscountService;
 import six.pinhong.model.Product;
 import six.pinhong.model.ProductImage;
 import six.pinhong.model.ProductImageRepository;
@@ -32,6 +34,9 @@ public class ProductService {
 	private ProductImageRepository productImageRepo;
 	
 	@Autowired ProductReviewService productReviewService;
+	
+	@Autowired
+	private ProductDiscountService productDiscountService;
 	
 	// 找全部	
 	public List<Product> findAll(){
@@ -123,56 +128,77 @@ public class ProductService {
 		return productRepo.findTop10ByOrderByProductIdDesc();
 	}
 	
-    public Map<String, Object> getProductDetails(Integer productId) {
-        Map<String, Object> result = new HashMap<>();
+	public Map<String, Object> getProductDetails(Integer productId) {
+	    Map<String, Object> result = new HashMap<>();
 
-        Product product = findProductById(productId);
-        result.put("product", product);
-        
-        List<Product> recommend5Products = findSametype5Products(product.getProductType(), productId);
-        result.put("recommend5Products", recommend5Products);
-        
-        List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
-        result.put("allProductReviews", allProductReviews);
-        
-        List<ProductReview> twoProductReviews = productReviewService.findTop2ByProductIdOrderByReviewTimeDesc(productId);
-        result.put("twoProductReviews", twoProductReviews);
+	    Product product = findProductById(productId);
+	    result.put("product", product);
 
-        // Calculate average ratings
-        Map<Integer, Double> averageRatings = new HashMap<>();
-        List<ProductReview> allReviews = productReviewService.findAll();
-        Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
-        for (ProductReview review : allReviews) {
-            int productIdKey = review.getProduct().getProductId();
-            
-            if (!reviewsByProductId.containsKey(productIdKey)) {
-                reviewsByProductId.put(productIdKey, new ArrayList<>());
-            }
-            reviewsByProductId.get(productIdKey).add(review);
-        }
-        
-        for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
-            int pid = entry.getKey();
-            List<ProductReview> reviews = entry.getValue();
-            double totalStars = reviews.stream().mapToDouble(ProductReview::getStars).sum();
-            double averageRating = totalStars / reviews.size();
-            DecimalFormat df = new DecimalFormat("#.#");
-            averageRating = Double.parseDouble(df.format(averageRating));
-            averageRatings.put(pid, averageRating);
-        }
-        result.put("averageRatings", averageRatings);
+	    List<Product> recommend5Products = findSametype5Products(product.getProductType(), productId);
 
-        // Create a map for review counts
-        Map<Integer, Integer> reviewCounts = new HashMap<>();
-        for (Product recommendedProduct : recommend5Products) {
-            int recommendedProductId = recommendedProduct.getProductId();
-            int reviewCount = productReviewService.findProductReviewsByProductId(recommendedProductId).size();
-            reviewCounts.put(recommendedProductId, reviewCount);
-        }
-        result.put("reviewCounts", reviewCounts);
+	    // 创建一个包含折扣信息的推荐商品列表
+	    List<Map<String, Object>> recommendProductsWithDiscounts = new ArrayList<>();
+	    for (Product recommendProduct : recommend5Products) {
+	        Map<String, Object> productMap = new HashMap<>();
+	        productMap.put("product", recommendProduct);
 
-        return result;
-    }
+	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(recommendProduct.getProductId());
+	        if (!productDiscounts.isEmpty() && productDiscounts.get(0).getIsActive() == 1) {
+	            ProductDiscount discount = productDiscounts.get(0);
+	            double discountedPrice = recommendProduct.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
+	            productMap.put("discountPercentage", discount.getDiscountPercentage());
+	            productMap.put("discountedPrice", Math.round(discountedPrice));
+	        } else {
+	            productMap.put("discountPercentage", null);
+	            productMap.put("discountedPrice", recommendProduct.getProductPrice());
+	        }
+
+	        recommendProductsWithDiscounts.add(productMap);
+	    }
+
+	    result.put("recommend5Products", recommendProductsWithDiscounts);
+
+	    List<ProductReview> allProductReviews = productReviewService.findProductReviewsByProductId(productId);
+	    result.put("allProductReviews", allProductReviews);
+
+	    List<ProductReview> twoProductReviews = productReviewService.findTop2ByProductIdOrderByReviewTimeDesc(productId);
+	    result.put("twoProductReviews", twoProductReviews);
+
+	    // Calculate average ratings
+	    Map<Integer, Double> averageRatings = new HashMap<>();
+	    List<ProductReview> allReviews = productReviewService.findAll();
+	    Map<Integer, List<ProductReview>> reviewsByProductId = new HashMap<>();
+	    for (ProductReview review : allReviews) {
+	        int productIdKey = review.getProduct().getProductId();
+
+	        if (!reviewsByProductId.containsKey(productIdKey)) {
+	            reviewsByProductId.put(productIdKey, new ArrayList<>());
+	        }
+	        reviewsByProductId.get(productIdKey).add(review);
+	    }
+
+	    for (Map.Entry<Integer, List<ProductReview>> entry : reviewsByProductId.entrySet()) {
+	        int pid = entry.getKey();
+	        List<ProductReview> reviews = entry.getValue();
+	        double totalStars = reviews.stream().mapToDouble(ProductReview::getStars).sum();
+	        double averageRating = totalStars / reviews.size();
+	        DecimalFormat df = new DecimalFormat("#.#");
+	        averageRating = Double.parseDouble(df.format(averageRating));
+	        averageRatings.put(pid, averageRating);
+	    }
+	    result.put("averageRatings", averageRatings);
+
+	    // Create a map for review counts
+	    Map<Integer, Integer> reviewCounts = new HashMap<>();
+	    for (Product recommendedProduct : recommend5Products) {
+	        int recommendedProductId = recommendedProduct.getProductId();
+	        int reviewCount = productReviewService.findProductReviewsByProductId(recommendedProductId).size();
+	        reviewCounts.put(recommendedProductId, reviewCount);
+	    }
+	    result.put("reviewCounts", reviewCounts);
+
+	    return result;
+	}
     
     // shop.html所有商品的平均評分 key = productId, value = 平均評分
     public Map<Integer, Double> getAverageRatings() {

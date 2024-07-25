@@ -53,7 +53,7 @@ public class PageController {
 	    
 	    for (Product product : products) {
 	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
-	        if (!productDiscounts.isEmpty()) {
+	        if (!productDiscounts.isEmpty() && productDiscounts.get(0).getIsActive() == 1) { // 確認折扣是否上架
 	            ProductDiscount discount = productDiscounts.get(0);
 	            productDiscountMap.put(product.getProductId(), discount);
 	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);

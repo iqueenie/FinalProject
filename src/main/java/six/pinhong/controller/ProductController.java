@@ -279,7 +279,7 @@ public class ProductController {
 
 	    for (Product product : page.getContent()) {
 	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
-	        if (!productDiscounts.isEmpty()) {
+	        if (!productDiscounts.isEmpty() && productDiscounts.get(0).getIsActive() == 1) { // 確認折扣是否上架
 	            ProductDiscount discount = productDiscounts.get(0);
 	            productDiscountMap.put(product.getProductId(), discount);
 	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
@@ -338,7 +338,7 @@ public class ProductController {
 
 	    for (Product product : page.getContent()) {
 	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
-	        if (!productDiscounts.isEmpty()) {
+	        if (!productDiscounts.isEmpty() && productDiscounts.get(0).getIsActive() == 1) { // 確認折扣是否上架
 	            ProductDiscount discount = productDiscounts.get(0);
 	            productDiscountMap.put(product.getProductId(), discount);
 	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
@@ -433,7 +433,7 @@ public class ProductController {
 	    Product product = (Product) productDetails.get("product");
 	    List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(productId);
 	    Map<String, Object> discountInfo = new HashMap<>();
-	    if (!productDiscounts.isEmpty()) {
+	    if (!productDiscounts.isEmpty() && productDiscounts.get(0).getIsActive() == 1) { // 確認折扣是否上架
 	        ProductDiscount discount = productDiscounts.get(0);
 	        double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);
 	        discountInfo.put("discountPercentage", discount.getDiscountPercentage());
@@ -511,7 +511,7 @@ public class ProductController {
 	    
 	    for (Product product : recentProducts) {
 	        List<ProductDiscount> productDiscounts = productDiscountService.findByProductId(product.getProductId());
-	        if (!productDiscounts.isEmpty()) {
+	        if (!productDiscounts.isEmpty()&& productDiscounts.get(0).getIsActive() == 1) { // 確認折扣是否上架
 	            ProductDiscount discount = productDiscounts.get(0);
 	            productDiscountMap.put(product.getProductId(), discount);
 	            double discountedPrice = product.getProductPrice() * (1 - discount.getDiscountPercentage() / 100.0);

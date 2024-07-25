@@ -186,7 +186,8 @@
             <div class="swiper">
               <div class="swiper-wrapper">
                 <!-- for each -->
-                <th:block th:each="product : ${recommend5Products}">
+                <th:block th:each="recommendProductMap : ${recommend5Products}">
+                 <th:block th:with="product=${recommendProductMap.get('product')}">
                   <div class="product-item swiper-slide">
                     <figure>
                       <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="Product Title">
@@ -238,8 +239,8 @@
                         <span class="rating-count" th:text="${'(' + reviewCounts[__${product.productId}__] + ')'}"></span>
                       </div>
                       <div class="d-flex justify-content-center align-items-center gap-2">
-                        <del th:text="'$' + ${product.productPrice}"></del>
-                        <span class="text-dark fw-semibold" th:text="'$' + ${product.productPrice * 0.8}"></span>
+                        <del th:if="${recommendProductMap.get('discountedPrice') != null}" th:text="'$' + ${product.productPrice}"></del>
+      					<span class="text-dark fw-semibold" th:text="'$' + ${recommendProductMap.get('discountedPrice') != null ? recommendProductMap.get('discountedPrice') : product.productPrice}"></span>
                       </div>
                       <div class="button-area p-3 pt-0">
                         <div class="row g-1 mt-2">
@@ -257,6 +258,7 @@
                       </div>
                     </div>
                   </div>
+                </th:block>
                 </th:block>
                 <!-- /for each -->
               </div>
