@@ -33,6 +33,7 @@
                     <th>折扣圖片</th>
                     <th>更新</th>
                     <th>刪除</th>
+                    <th>寄送優惠郵件</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,6 +57,12 @@
                             <form th:action="@{/FinalProject/private/amountDiscount/delete}" method="post">
                                 <input type="hidden" name="id" th:value="${discount.discountId}" />
                                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete(this.form)">刪除</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="@{/FinalProject/admin/sendPromotionEmailForDiscount}" method="post">
+                                <input type="hidden" name="discountId" th:value="${discount.discountId}" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm">寄送優惠郵件</button>
                             </form>
                         </td>
                     </tr>

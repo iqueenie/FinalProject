@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,8 @@ public class AmountDiscount {
     private Date startDate;
     private Date endDate;
     private Integer isActive;
+    
+    @Column(length = 1000)
     private String discountDescription;
 
     @Lob
