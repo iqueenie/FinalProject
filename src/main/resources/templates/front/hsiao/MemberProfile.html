@@ -79,7 +79,7 @@
 								alt="memberPhotoFile" class="rounded-circle me-2"
 								style="width: 180px; height: 160px; object-fit: cover; border-radius: 0;">
 
-							<!-- 文件上传的控件 -->
+						
 							<input type="file" id="fileInput" name="memberPhotoFile"
 								accept="image/*" style="display: none;" onchange="previewFile()">
 							<button type="button" class="btn btn-primary mt-2"
@@ -131,7 +131,7 @@
 							<label for="memberEmail">會員信箱</label> <input type="email"
 								class="form-control" id="memberEmail" name="memberEmail"
 								th:value="${session.loggedInMember.memberEmail}"
-								style="border-color: black; width: 250px" required>
+								style="border-color: black; width: 250px" readonly>
 						</div>
 						<br>
 

@@ -99,6 +99,7 @@ public class MembersService {
 	
 	public MembersBean addMemberByGoogleLogin(String memberEmail) {
 		MembersBean membersBean = new MembersBean();
+		membersBean.setMemberName(memberEmail);
 		membersBean.setMemberAccount(memberEmail);
 		membersBean.setMemberEmail(memberEmail);
 		membersBean.setGoogleLogin(Boolean.TRUE);
