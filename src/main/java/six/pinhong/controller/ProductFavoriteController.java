@@ -30,9 +30,6 @@ import six.pinhong.service.ProductService;
 @Controller
 public class ProductFavoriteController {
 	
-    private static final Logger logger = LoggerFactory.getLogger(ProductFavoriteController.class);
-
-
 	@Autowired
 	private ProductService productService;
 	

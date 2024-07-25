@@ -28,9 +28,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     		 "AND p.productId <> :currentProductId ORDER BY NEWID()", nativeQuery = true)
     List<Product> findSametype5Products(String productType, Integer currentProductId);
 	
+    @Query(value = "SELECT TOP 5 * FROM Product p WHERE p.productPublished = 1 " +
+            "ORDER BY p.productQuantity DESC", nativeQuery = true)
 	List<Product> findTop5ByOrderByProductQuantityDesc();
 	
+	@Query("SELECT p FROM Product p WHERE p.productPublished = 1 AND p.productId BETWEEN 11 AND 25 ORDER BY p.productId DESC")
 	List<Product> findTop10ByOrderByProductIdDesc();
+	
 	Page<Product> findByProductNameContainingAndProductTypeContaining(String productName, String productType, Pageable pageable);
 	Page<Product> findByProductNameContaining(String productName, Pageable pageable);
 	Page<Product> findByProductTypeContaining(String productType, Pageable pageable);
