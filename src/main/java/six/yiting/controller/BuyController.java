@@ -201,7 +201,7 @@ public class BuyController {
 		
 		if(finalResult) {
 			m.addAttribute("hasError", true);
-			m.addAttribute("errorBuy","商品: "+productSelect+"，已存在存貨中，將覆蓋原有存貨紀錄");
+			m.addAttribute("errorBuy","商品: "+productSelect+"，已存在存貨中，數量將加進原有存貨紀錄");
 			List<BuyBean> listBuys = buyService.findAllBuys();
 			m.addAttribute("listBuys",listBuys);
 			m.addAttribute("id",id);
