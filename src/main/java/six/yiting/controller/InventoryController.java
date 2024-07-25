@@ -192,12 +192,13 @@ public class InventoryController {
 			if(result) {
 				LocalDate deliveryDate = detail.getBuy().getArrivedDate();
 				InventoryBean invbean = invService.findInvCondition(deliveryDate,detail.getProduct().getProductId(), detail.getBuy().getStore());
+				int invNum = invbean.getInvNum();
 				invbean.setDeliveryDate(deliveryDate);
 				int storeId = detail.getBuy().getStore().getStoreId();
 				invbean.setStore(storeService.findStoreById(storeId));
 				invbean.setProductId(detail.getProduct().getProductId());
 				invbean.setProduct(detail.getProduct());
-				invbean.setInvNum(detail.getPurchaseNum());
+				invbean.setInvNum(detail.getPurchaseNum()+invNum);
 				
 	 			
 	 			int days =detail.getProduct().getProductExpirydate();
