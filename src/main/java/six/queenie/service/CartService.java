@@ -27,6 +27,7 @@ import six.liang.model.AmountDiscount;
 import six.liang.model.AmountDiscountRepository;
 import six.liang.model.ProductDiscount;
 import six.pinhong.model.Product;
+import six.pinhong.model.ProductRepository;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
@@ -52,7 +53,7 @@ public class CartService {
     @Autowired
 	private OrdersRepository ordersRepository;
 	@Autowired
-	private ProductService pService;
+	private ProductRepository pRepository;
 	
 	@Autowired
 	private OrderDetailService odservice;
@@ -67,7 +68,7 @@ public class CartService {
 	private OrderService oService;
    
 	@Autowired
-	private CacheService cacheService;
+	private OrdersRepository oRepository;
 	
 	
     public Integer getAmountDiscount(Integer total, Integer amountDiscountId) {
@@ -255,6 +256,9 @@ public class CartService {
         
         for (OrderDetails orderDetails : orderDetailsList) {
             orderDetails.setOrders(insertedOrder);
+            Product product = orderDetails.getProduct();
+            product.setProductQuantity(product.getProductQuantity() - orderDetails.getQuantity());
+            pRepository.save(product);
         }
         odservice.insertOrderDetails(orderDetailsList, insertedOrder);
 
@@ -337,21 +341,21 @@ public class CartService {
                 return status;
         }
     }
-    
+  
    
     public String createLogisticsOrder(Orders order, MembersBean loggedInMember) {
         Set<OrderDetails> itemDetails = order.getDetails();
         String itemNames = itemDetails.stream()
                 .map(orderDetail -> orderDetail.getProduct().getProductName())
                 .collect(Collectors.joining(", "));
-        String merchantTradeNo = "202407" + order.getOrderId();
+        String merchantTradeNo = "20240700" + order.getOrderId();
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String currentTime = now.format(formatter);
         
-        Integer storeId = order.getStoresBean().getStoreId();
-        String formattedStoreId = String.format("%06d", storeId);
+//        Integer storeId = order.getStoresBean().getStoreId();
+//        String formattedStoreId = String.format("%06d", storeId);
         AllInOne all = new AllInOne("");
 
         CreateCVSObj obj = new CreateCVSObj();
@@ -368,13 +372,42 @@ public class CartService {
         obj.setReceiverCellPhone("0912345678");
         obj.setReceiverEmail(loggedInMember.getMemberEmail());
         obj.setReceiverStoreID("006598");
-        obj.setServerReplyURL("https://f124-61-222-34-1.ngrok-free.app/FinalProject/public/logistics-status"); // 你的服务器接收物流信息的URL
-        obj.setClientReplyURL("http://localhost:8080/FinalProject/public/MemberOrder");
+        obj.setServerReplyURL("https://1e67-61-222-34-1.ngrok-free.app/FinalProject/return-logistics-status");
 
-        String logisticsID = all.create(obj);
-        cacheService.put(order.getOrderId(), logisticsID); 
-        return logisticsID;
+        String response = all.create(obj);
+        String logisticsId = extractAllPayLogisticsID(response);
+        String rtnMsg = extractRtnMsg(response);
+        order.setLogisticsId(logisticsId);
+        order.setLogisticStatus(rtnMsg);
+        oRepository.save(order); 
+        return logisticsId;
     }
+    private String extractAllPayLogisticsID(String response) {
+        String prefix = "AllPayLogisticsID=";
+        int startIndex = response.indexOf(prefix);
+        if (startIndex != -1) {
+            int endIndex = response.indexOf('&', startIndex);
+            if (endIndex == -1) {
+                endIndex = response.length();
+            }
+            return response.substring(startIndex + prefix.length(), endIndex);
+        }
+        return null;
+    }
+
+    public String extractRtnMsg(String response) {
+        String prefix = "RtnMsg=";
+        int startIndex = response.indexOf(prefix);
+        if (startIndex != -1) {
+            int endIndex = response.indexOf('&', startIndex);
+            if (endIndex == -1) {
+                endIndex = response.length();
+            }
+            return response.substring(startIndex + prefix.length(), endIndex);
+        }
+        return null;
+    }
+
 }
    
 

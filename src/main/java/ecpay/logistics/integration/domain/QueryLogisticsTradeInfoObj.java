@@ -52,22 +52,7 @@ public class QueryLogisticsTradeInfoObj {
 	 */
 	public void setMerchantID(String merchantID) {
 		MerchantID = merchantID;
-	}
-	
-	/**
-	 * 取得MerchantTradeNo 廠商交易編號 1.廠商交易編號均為唯一值，不可重複使用(英數字大小寫混和) 2.廠商交易編號可為空，系統會自動產生一組廠商訂單編號。 
-	 * @return MerchantTradeNo
-	 */
-	public String getMerchantTradeNo() {
-		return MerchantTradeNo;
-	}
-	/**
-	 * 設定MerchantTradeNo 廠商交易編號 1.廠商交易編號均為唯一值，不可重複使用(英數字大小寫混和) 2.廠商交易編號可為空，系統會自動產生一組廠商訂單編號。 
-	 * @param merchantTradeNo
-	 */
-	public void setMerchantTradeNo(String merchantTradeNo) {
-		MerchantTradeNo = merchantTradeNo;
-	}
+	}	
 	/**
 	 * 取得AllPayLogisticsID 綠界科技的物流交易編號
 	 * @return AllPayLogisticsID
@@ -113,6 +98,6 @@ public class QueryLogisticsTradeInfoObj {
 	@Override
 	public String toString() {
 		return "QueryLogisticsTradeInfoObj [MerchantID=" + MerchantID + ", AllPayLogisticsID=" + AllPayLogisticsID
-				+ ", MerchantTradeNo=" + MerchantTradeNo + ", TimeStamp=" + TimeStamp + ", PlatformID=" + PlatformID + "]";
+				+ ", TimeStamp=" + TimeStamp + ", PlatformID=" + PlatformID + "]";
 	}
 }
