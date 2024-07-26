@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
+import six.hsiao.service.MembersService;
 import six.liang.model.Award;
 import six.liang.model.LotteryRecord;
 import six.liang.service.LotteryRecordService;
@@ -22,6 +23,9 @@ public class LotteryRecordController {
 
     @Autowired
     private LotteryRecordService lotteryRecordService;
+    
+    @Autowired
+	private MembersService membersService;
 
     @GetMapping("/public/front/lottery")
     public String showLotteryPage(HttpSession session, Model model) {
@@ -55,6 +59,10 @@ public class LotteryRecordController {
             System.out.println("會員帳號: " + memberAccount); // 調試訊息
             Award award = lotteryRecordService.drawLottery(memberAccount);
             System.out.println("抽獎成功，獲得獎項: " + award.getName() + ", 點數: " + award.getPoints()); // 調試訊息
+            
+            MembersBean updatedMember = membersService.findByMemberAccount(memberAccount);
+            session.setAttribute("loggedInMember", updatedMember);
+            
             return ResponseEntity.ok(Map.of("awardName", award.getName(), "points", award.getPoints()));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(403).body(Map.of("message", e.getMessage())); // 返回403狀態碼，表示一天只能抽一次獎
