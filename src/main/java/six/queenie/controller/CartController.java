@@ -251,7 +251,7 @@ public class CartController {
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
 	            storeId, paymentMethod, pointUse, status, unpaidCount);
 	    
-	    try { 
+	    try {	    	
 	        cartService.createLogisticsOrder(orders, loggedInMember);
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -265,7 +265,6 @@ public class CartController {
 	    emailService.sendOrderEmail(orders.getOrderId());
 	    
 	    if ("信用卡".equals(paymentMethod)) {
-	        
 	        session.setAttribute(SESSION_CART, new ArrayList<>());
 	        session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
 	        return "redirect:/MemberOrdercheckout?id=" + orders.getOrderId();
@@ -285,8 +284,6 @@ public class CartController {
 	    return "/front/queenie/memberOrder";
 	}
 
-
-	
 
 	@GetMapping("/public/MemberOrder")
 	public String getAllOrders(HttpSession session, Model model) {
@@ -314,7 +311,7 @@ public class CartController {
 	    Integer orderId = request.get("orderId");
 	    orderService.updateOrderStatusAndPoints(orderId, "Canceled");
 	    
-	    return ResponseEntity.ok("Order canceled successfully");
+	    return ResponseEntity.ok("成功取消訂單");
 	}
 
 	@PostMapping("/public/CompleteOrder")

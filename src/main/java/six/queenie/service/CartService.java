@@ -354,8 +354,6 @@ public class CartService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         String currentTime = now.format(formatter);
         
-//        Integer storeId = order.getStoresBean().getStoreId();
-//        String formattedStoreId = String.format("%06d", storeId);
         AllInOne all = new AllInOne("");
 
         CreateCVSObj obj = new CreateCVSObj();
