@@ -302,29 +302,34 @@ public class MembersController {
 		      
 		        HttpSession session = request.getSession();
 		        MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
-
-		       
-		        if (loggedInMember != null) {
+		        Integer members = loggedInMember.getMemberId();
+		        MembersBean byMember = membersService.findByMemberId(members);
+		      
+		        if (byMember !=null) {
 		           
-		            loggedInMember.setMemberName(member.getMemberName());
-		            loggedInMember.setMemberAccount(member.getMemberAccount());
-		            loggedInMember.setMemberPassword(member.getMemberPassword());
-		            loggedInMember.setMemberAddress(member.getMemberAddress());
-		            loggedInMember.setMemberBirthDate(member.getMemberBirthDate());
-		            loggedInMember.setMemberEmail(member.getMemberEmail());
+		        	byMember.setMemberName(member.getMemberName());
+		        	byMember.setMemberAccount(member.getMemberAccount());
+		        	byMember.setMemberPassword(member.getMemberPassword());
+		        	byMember.setMemberAddress(member.getMemberAddress());
+		        	byMember.setMemberBirthDate(member.getMemberBirthDate());
+		        	byMember.setMemberEmail(member.getMemberEmail());
+		        	
+		        	session.setAttribute("loggedInMember", byMember);
+		        	
+		        
 
 		          
 		            if (memberPhotoFile != null && !memberPhotoFile.isEmpty()) {
 		                try {
 		                    byte[] newMemberPhoto = memberPhotoFile.getBytes();
-		                    loggedInMember.setMemberPhoto(newMemberPhoto);
+		                    byMember.setMemberPhoto(newMemberPhoto);
 		                } catch (Exception e) {
 		                    model.addAttribute("errorByPhoto", "上傳圖片失敗,請檢查檔案大小");
 		                    e.printStackTrace();
 		                }
 		            }
 
-		            membersService.updateMembers(loggedInMember);
+		            membersService.updateMembers(byMember);
 
 		            return "redirect:/public/MemberProfileMain";
 		        } else {
