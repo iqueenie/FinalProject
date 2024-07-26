@@ -140,9 +140,7 @@ public class ECPayController {
 	            System.out.println("驗證成功");
 
 	            if ("1".equals(rtnCode)) {
-	                cartService.processCheckout(id, "信用卡");
-
-	              
+	                cartService.processCheckout(id, "信用卡");	                	               
 
 	                return "redirect:/front/queenie/memberOrder";
 	            }

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
 import six.hsiao.service.EmailService;
+import six.hsiao.service.MembersService;
 import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetails;
@@ -57,6 +58,8 @@ public class CartController {
 	private EmailService emailService;
 	@Autowired
 	private OrderDetailService odService;
+	@Autowired
+	private MembersService mService;
 	
 	@PostMapping("/public/addToCart")
 	@ResponseBody
@@ -251,25 +254,23 @@ public class CartController {
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
 	            storeId, paymentMethod, pointUse, status, unpaidCount);
 	    
-	    try {	    	
-	        cartService.createLogisticsOrder(orders, loggedInMember);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        model.addAttribute("error", "創建物流單號失敗: " + e.getMessage());
-	        return "errorPage";
-	    }
-	  
+	    if ("現金支付".equals(paymentMethod)) {
+	    	 cartService.createLogisticsOrder(orders, loggedInMember);
+	    }	
+	    
+	    MembersBean updatedMember = mService.findByMemberId(loggedInMember.getMemberId());
+	    session.setAttribute("loggedInMember", updatedMember);
 	    // 更新訂單狀態
 	    cartService.processCheckout(orders.getOrderId(), paymentMethod);
 	    // 發送訂單成功信件
 	    emailService.sendOrderEmail(orders.getOrderId());
 	    
 	    if ("信用卡".equals(paymentMethod)) {
+	    	cartService.createLogisticsOrder(orders, loggedInMember);
 	        session.setAttribute(SESSION_CART, new ArrayList<>());
 	        session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
 	        return "redirect:/MemberOrdercheckout?id=" + orders.getOrderId();
-	    }
-
+	    }	  
 	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
 	   
 	    Map<String, List<Orders>> ordersByStatus = ordersList.stream()
@@ -309,8 +310,10 @@ public class CartController {
 	@PostMapping("/public/CanceleOrder")
 	public ResponseEntity<String> deleteOrder(@RequestBody Map<String, Integer> request, HttpSession session) {
 	    Integer orderId = request.get("orderId");
+	    MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
 	    orderService.updateOrderStatusAndPoints(orderId, "Canceled");
-	    
+	    MembersBean updatedMember = mService.findByMemberId(loggedInMember.getMemberId());
+	    session.setAttribute("loggedInMember", updatedMember);
 	    return ResponseEntity.ok("成功取消訂單");
 	}
 
