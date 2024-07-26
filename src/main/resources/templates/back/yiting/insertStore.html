@@ -66,6 +66,7 @@
                 </div>
                 
                 <div class="mt-3 col-12 d-flex justify-content-center mb-3">
+                <a class="btn btn-primary me-2"   onclick= "addstore()">一鍵新增</a>
                     <a class="btn btn-secondary me-2" th:href="@{/private/stores/findAll}">返回</a>
                     <button type="submit" class="btn btn-success">新增</button>
                 </div>
@@ -80,6 +81,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
+    
+	    function addstore(){
+			    $("#storeName").val("聖德店");
+			    $("#street").val("新生路二段");
+			    $("#detail").val("421號");
+			    $("#tel").val("03-4532632");
+	     }
+    
         $('form').submit(function (event) {
             event.preventDefault();
             var form = event.currentTarget;
