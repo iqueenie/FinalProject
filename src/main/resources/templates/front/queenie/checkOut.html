@@ -65,12 +65,7 @@
                         <strong class="text-body-secondary" th:text="'TWD ' + ${sumTotal}"></strong>
                     </div>
                 </div>
-                <div class="card p-2">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Promo code">
-                        <button type="submit" class="btn btn-secondary">Redeem</button>
-                    </div>
-                </div>
+                
             </form>
         </div>
         <div class="col-md-5 col-lg-4 order-md-last" th:if="${orders != null && !orders.isEmpty()}">
@@ -81,7 +76,9 @@
                     <div class="list-group-item d-flex justify-content-between bg-body-tertiary">
                         <div class="text-success">
                             <h6 class="my-0">折扣</h6>
-                            <small>EXAMPLECODE</small>
+                            
+                           <small th:if="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}" th:text="${order.amountDiscount.discountName}"></small>
+            				<small th:unless="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}"></small>
                         </div>
                         <span class="text-success" th:text="'TWD ' + ${discountMoney}"></span>
                     </div>

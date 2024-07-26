@@ -1,28 +1,21 @@
 package six.all;
 
 import org.springframework.web.bind.annotation.*;
+
 import ecpay.logistics.integration.AllInOne;
-import ecpay.logistics.integration.domain.CreateCVSObj;
 import ecpay.logistics.integration.domain.QueryLogisticsTradeInfoObj;
-import ecpay.logistics.integration.domain.UpdateStoreInfoObj;
 import ecpay.logistics.integration.exception.EcpayException;
-import jakarta.servlet.http.HttpSession;
-import six.hsiao.model.MembersBean;
 import six.hsiao.service.MembersService;
-import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
-import six.queenie.service.CacheService;
+import six.queenie.model.OrdersRepository;
+import six.queenie.service.CartService;
 import six.queenie.service.OrderService;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 @Controller
 public class LogisticsController {
@@ -34,76 +27,89 @@ public class LogisticsController {
     }
 
     @Autowired
-    private CacheService cacheService;
-    @Autowired
     private OrderService oService;
     @Autowired
     private MembersService mService;
     
-    @PostMapping("/selectStore")
-    public ResponseEntity<String> selectStore(
-            @RequestParam String storeId,
-            @RequestParam String allPayLogisticsID,
-            @RequestParam String cvsPaymentNo,
-            @RequestParam String cvsValidationNo,
-            @RequestParam Integer orderId) {
-
-        if (storeId == null || storeId.isEmpty()) {
-            return ResponseEntity.badRequest().body("店铺ID不能為空");
-        }
-
-        UpdateStoreInfoObj updateStoreInfoObj = new UpdateStoreInfoObj();
-        updateStoreInfoObj.setAllPayLogisticsID(allPayLogisticsID);
-        updateStoreInfoObj.setCVSPaymentNo(cvsPaymentNo);
-        updateStoreInfoObj.setCVSValidationNo(cvsValidationNo);
-        updateStoreInfoObj.setReceiverStoreID(storeId);
-        updateStoreInfoObj.setStoreType("01");
-
-        String result;
-        try {
-            result = all.updateStoreInfo(updateStoreInfoObj);          
-           
-        } catch (EcpayException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("更新店铺信息失败: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("更新店铺信息失败: " + e.getMessage());
-        }
-
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/public/logistics-status")
-    public ResponseEntity<String> getLogisticsStatus(@RequestParam Integer orderId) {
-        String allPayLogisticsID = cacheService.get(orderId);
-        if (allPayLogisticsID == null) {
-            return ResponseEntity.badRequest().body("物流单号不存在");
-        }
-
-        QueryLogisticsTradeInfoObj queryObj = new QueryLogisticsTradeInfoObj();
-        queryObj.setAllPayLogisticsID("2837061");
-        queryObj.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
-        queryObj.setPlatformID("");
-
-        String logisticsStatus;
-        try {
-            logisticsStatus = all.queryLogisticsTradeInfo(queryObj);
-        } catch (EcpayException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("查询物流状态失败: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("查询物流状态失败: " + e.getMessage());
-        }
-
-        return ResponseEntity.ok(logisticsStatus);
-    }
-
-
-
-
-
+    @Autowired
+    private CartService cartService;
     
+    @Autowired
+    private OrdersRepository oRepository;
+    
+    @GetMapping("/public/logistics-status")
+    public String getLogisticsStatus(@RequestParam Integer orderId, @RequestParam Map<String, String> params, Model model) {
+        Orders order = oService.getOrderById(orderId);
+        if (order == null) {
+            model.addAttribute("message", "訂單不存在");
+            return "front/queenie/checkLogisticsStatus";
+        }
 
+        String allPayLogisticsID = order.getLogisticsId();
+        String logisticStatus = order.getLogisticStatus();
+
+        if (params.containsKey("CheckMacValue")) {
+            long currentTime = System.currentTimeMillis() / 1000;
+            String requestTimestampStr = params.get("TimeStamp");
+            long requestTimestamp = Long.parseLong(requestTimestampStr);
+
+            long timeInterval = 3 * 60; 
+            if (Math.abs(currentTime - requestTimestamp) <= timeInterval) {
+                boolean checkStatus = all.compareCheckMacValue(new Hashtable<>(params));
+                
+                if (checkStatus) {
+                    QueryLogisticsTradeInfoObj queryObj = new QueryLogisticsTradeInfoObj();
+                    queryObj.setMerchantID("2000132");
+                    queryObj.setAllPayLogisticsID(allPayLogisticsID);
+                    queryObj.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
+                    queryObj.setPlatformID("");
+
+                    String response = all.queryLogisticsTradeInfo(queryObj);
+                    logisticStatus = cartService.extractRtnMsg(response);
+
+                    order.setLogisticStatus(logisticStatus);
+                    oRepository.save(order);
+                }
+            }
+        }
+
+        model.addAttribute("orderID", orderId);
+        model.addAttribute("logisticsID", allPayLogisticsID);
+        model.addAttribute("logisticStatus", logisticStatus);
+
+        return "front/queenie/checkLogisticsStatus";
+    }
+   
+    @GetMapping("/return-logistics-status")
+    public String handleLogisticsStatus(@RequestParam Map<String, String> params) {
+        
+
+            boolean checkStatus = all.compareCheckMacValue(new Hashtable<>(params));
+            if (checkStatus) {
+            
+            String merchantTradeNo = params.get("MerchantTradeNo");
+            String rtnCode = params.get("RtnCode");
+
+            String idString = merchantTradeNo.replace("20240700", "");
+            Integer id = Integer.parseInt(idString);
+
+            System.out.println("驗證成功");
+
+            if ("300".equals(rtnCode)) {
+                cartService.processCheckout(id, "綠界接收訂單");
+
+              
+
+                return "redirect:/front/queenie/memberOrder";
+            }
+
+            return "1|OK";
+        } else {
+            return "0|FAIL";
+        }
+    }
+
+        
 }
+
+

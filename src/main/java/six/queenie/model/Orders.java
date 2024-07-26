@@ -14,8 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 import six.hsiao.model.*;
 import six.liang.model.AmountDiscount;
 import six.liang.model.ProductDiscount;
@@ -58,6 +56,8 @@ public class Orders {
     private Integer unpaidCount;
     private Integer pointGet;
     private Integer  finalAmount;
+    private String logisticsId;
+    private String logisticStatus;
    
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders", cascade = CascadeType.ALL)
     private Set<OrderDetails> details = new LinkedHashSet<>();
@@ -195,13 +195,30 @@ public class Orders {
 	public void setFinalAmount(Integer finalAmount) {
 		this.finalAmount = finalAmount;
 	}
-
+	
+	
 	public Set<OrderDetails> getDetails() {
 		return details;
 	}
 
+
 	public void setDetails(Set<OrderDetails> details) {
 		this.details = details;
+	}
+	public String getLogisticsId() {
+		return logisticsId;
+	}
+	
+	public void setLogisticsId(String logisticsId) {
+		this.logisticsId = logisticsId;
+	}
+
+	public String getLogisticStatus() {
+		return logisticStatus;
+	}
+
+	public void setLogisticStatus(String logisticStatus) {
+		this.logisticStatus = logisticStatus;
 	}
 
 }

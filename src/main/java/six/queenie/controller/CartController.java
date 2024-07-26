@@ -16,7 +16,6 @@ import six.pinhong.model.Product;
 import six.pinhong.service.ProductService;
 import six.queenie.model.OrderDetails;
 import six.queenie.model.Orders;
-import six.queenie.service.CacheService;
 import six.queenie.service.CartService;
 import six.queenie.service.OrderDetailService;
 import six.queenie.service.OrderService;
@@ -58,9 +57,6 @@ public class CartController {
 	private EmailService emailService;
 	@Autowired
 	private OrderDetailService odService;
-	
-	@Autowired
-	private CacheService cacheService;
 	
 	@PostMapping("/public/addToCart")
 	@ResponseBody
@@ -255,30 +251,27 @@ public class CartController {
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
 	            storeId, paymentMethod, pointUse, status, unpaidCount);
 	    
-	    try {
-            String logisticsID = cartService.createLogisticsOrder(orders, loggedInMember);
-            cacheService.put(orders.getOrderId(), logisticsID); 
-            System.out.println("logisticsID :" +logisticsID);
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "創建物流單號失敗: " + e.getMessage());
-            return "errorPage";
-        }
-	    
-	    
+	    try { 
+	        cartService.createLogisticsOrder(orders, loggedInMember);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("error", "創建物流單號失敗: " + e.getMessage());
+	        return "errorPage";
+	    }
+	  
 	    // 更新訂單狀態
 	    cartService.processCheckout(orders.getOrderId(), paymentMethod);
 	    // 發送訂單成功信件
 	    emailService.sendOrderEmail(orders.getOrderId());
 	    
 	    if ("信用卡".equals(paymentMethod)) {
-	    	session.setAttribute(SESSION_CART, new ArrayList<>());
-	    	session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
+	        
+	        session.setAttribute(SESSION_CART, new ArrayList<>());
+	        session.setAttribute(SESSION_PRODUCT_QUANTITIES, new HashMap<>());
 	        return "redirect:/MemberOrdercheckout?id=" + orders.getOrderId();
 	    }
 
 	    List<Orders> ordersList = cartService.getOrdersByMember(loggedInMember);
-	   
 	   
 	    Map<String, List<Orders>> ordersByStatus = ordersList.stream()
 	            .filter(order -> order.getStatus() != null)
@@ -291,6 +284,7 @@ public class CartController {
 
 	    return "/front/queenie/memberOrder";
 	}
+
 
 	
 
