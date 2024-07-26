@@ -28,7 +28,7 @@ public class ScheduleTask {
 
 	//@Scheduled(cron="*/5 * * * * ?")
 	//	@Scheduled(initialDelay = 2000)
-	@Scheduled(cron="0 45 17 * * ?")
+	@Scheduled(cron="0 35 10 * * ?")
 	public List<Integer> buyAutoInsert() {
 		List<BuyBean> notCheckList = buyService.findByArriveDateAndCheckToInv();
 		List<Integer> resultList = new ArrayList<>();

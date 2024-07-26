@@ -16,7 +16,7 @@
         <div class="d-flex justify-content-center align-items-center">
             <h1 class="m-auto">店鋪收藏彙總</h1>
         </div>
-        <table id="myTable" class="w-100 display">
+        <table id="myTable" class="w-100 display" style="display:none">
             <thead>
                 <tr>
                     <td>店鋪編號</td>
@@ -26,12 +26,15 @@
             </thead>
             <tbody>
                 <tr th:each="store, index : ${storeCount}">
-                <td th:text="${store.storeId}"></td>
-                <td th:text="${store.storeName}"></td>
-                <td th:text="${likeCount[__${index.index}__]}"></td>
-            </tr>
+                    <td th:text="${store.storeId}"></td>
+                    <td th:text="${store.storeName}"></td>
+                    <td th:text="${likeCount[__${index.index}__]}"></td>
+                </tr>
             </tbody>
         </table>
+        <div class="mt-5">
+            <canvas id="myChart" width="400" height="200"></canvas> <!-- 添加 canvas 元素 -->
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -41,9 +44,64 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- 引入 Chart.js -->
     <script>
-        $('#myTable').DataTable({});
+        //$('#myTable').DataTable({});
 
+        // 从表格中提取数据
+        const labels = [];
+        const data = [];
+
+        $('#myTable tbody tr').each(function() {
+            const storeName= $(this).find('td').eq(1).text();
+            const likeCount = parseInt($(this).find('td').eq(2).text());
+            labels.push(storeName);
+            data.push(likeCount);
+        });
+
+        // 绘制 Chart.js 图表
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '收藏數',
+                    data: data,
+                    backgroundColor: 'rgba(250,213,106,0.3)',
+                    borderColor: 'rgba(107,178,82,1)',
+                    borderWidth: 1, // 边框宽度
+                    barThickness: 'flex', // 条形宽度, 使用 'flex' 来自动调整条形宽度
+                    categoryPercentage: 0.3, // 调整类别宽度比例
+                    barPercentage: 0.8 // 调整条形在类别宽度中的比例
+                   
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '店鋪名稱'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '收藏數'
+                        },
+                        ticks: {
+                            stepSize: 1, // 确保 Y 轴刻度为整数
+                            callback: function(value) {
+                                return Number.isInteger(value) ? value : ''; // 仅显示整数
+                            }
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 

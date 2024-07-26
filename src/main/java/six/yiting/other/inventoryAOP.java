@@ -128,14 +128,13 @@ public class inventoryAOP {
 
     	        // 确保列表中每个元素都是 Integer 类型
     	        for (Object item : resultList) {
-    	        	i=i++;
-    	            if (item instanceof Integer && i != resultList.size()) {
-    	                Integer id = (Integer) item;
-    	                logToFile(String.format("%d,", id), false);
-    	    	    	
-    	            }else {
+    	        	i=i+1;
+    	            if (item instanceof Integer && i == resultList.size()) {
     	            	Integer id = (Integer) item;
-    	                logToFile(String.format("%d",id), true);
+    	            	logToFile(String.format("%d",id), true);
+    	            }else {
+    	                Integer id = (Integer) item;
+    	                logToFile(String.format("%d, ", id), false);
     	            }
     	        }
 	    	 }
