@@ -140,7 +140,9 @@
                     </span>
                   </div>
                   <div class="qty-button d-flex flex-wrap pt-3">
-                    <button type="submit" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3 btn-cart">直接購買</button>
+                    <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3 btn-buy-now"
+                      th:attr="data-productId=${product.productId}, data-productName=${product.productName}"
+                      onclick="buyNow(this)">直接購買</button>
                     <button type="submit" value="1269" class="btn btn-dark py-3 px-4 text-uppercase me-3 mt-3"
                       th:attr="data-productId=${product.productId}, data-productName=${product.productName}"
                       onclick="addToCart(this)">加入購物車</button>
@@ -424,45 +426,73 @@
     });
 }
 
-     function bindCartButtonClick() {
-    document.querySelectorAll(".btn-cart").forEach(button => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
+    function buyNow(button) {
+        var productId = button.getAttribute('data-productId');
+        var productName = button.getAttribute('data-productName');
+        var quantity = parseInt(document.querySelector('input[name="quantity"]').value);
 
-            axios.get("http://localhost:8080/FinalProject/front/checkLogging")
-                .then(res => {
-                    let isLoggedIn = res.data;
-                    if (!isLoggedIn) {
-                        sessionStorage.setItem("checkoutIntention", "true");
-                        Swal.fire({
-                            title: "請先登入或註冊",
-                            icon: "warning",
-                            text: "您即將前往登入或註冊頁",
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonColor: "#6BB252",
-                            confirmButtonText: "登入",
-                            denyButtonColor: "#f7a422",
-                            denyButtonText: "註冊",
-                            cancelButtonText: "取消"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
-                            } else if (result.isDenied) {
-                                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
-                            }
-                        });
-                    } else {
-                        window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                });
+        Swal.fire({
+            title: '確定直接購買?',
+            html: `您確定要將 <span class="text-light bg-danger">${productName}</span> 直接購買嗎?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '是的',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+                    .then(res => {
+                        let isLoggedIn = res.data;
+                        if (!isLoggedIn) {
+                            var formData = {
+                                productId: productId,
+                                quantity: quantity
+                            };
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/FinalProject/public/addToCart',
+                                data: formData,
+                                success: function (response) {
+                                    window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                                },
+                                error: function (xhr, status, error) {
+                                    Swal.fire({
+                                        title: '加入購物車失敗',
+                                        text: xhr.responseText,
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        } else {
+                            var formData = {
+                                productId: productId,
+                                quantity: quantity
+                            };
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/FinalProject/public/addToCart',
+                                data: formData,
+                                success: function (response) {
+                                    window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                                },
+                                error: function (xhr, status, error) {
+                                    Swal.fire({
+                                        title: '加入購物車失敗',
+                                        text: xhr.responseText,
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }
         });
-    });
-}
-
+    }
 
       document.addEventListener('DOMContentLoaded', function () {
         bindCartButtonClick();
