@@ -1,6 +1,5 @@
-Auto insert Purchase to Inventory end time: 2024-07-26 10:30:00 purchaseId: 47 48
-Auto insert Purchase to Inventory end time: 2024-07-26 10:33:00 purchaseId: 49
-Auto insert Purchase to Inventory end time: 2024-07-26 10:35:00 purchaseId: 50, 51
-Auto insert Purchase to Inventory end time: 2024-07-26 11:00:00 purchaseId: 52
-Method insert start time: 2024-07-26 13:49:55, user: aaa123, inventoryId: 114
-Method update start time: 2024-07-26 13:52:54, user: aaa123, inventoryId: 114,original delivery date: 2024-07-23,original number: 1,new delivery date: 2024-07-15,new number: 1
+Method insert start time: 2024-07-27 00:35:45, user: aaa123, inventoryId: 73
+Method insert start time: 2024-07-27 01:04:47, user: aaa123, inventoryId: 73
+Method delete start time: 2024-07-27 01:05:04, user: aaa123, inventoryId: 73
+Auto insert Purchase to Inventory end time: 2024-07-27 13:45:51 purchaseId: 28, 29
+Auto insert Purchase to Inventory end time: 2024-07-28 22:25:03 purchaseId: 30

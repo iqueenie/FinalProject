@@ -176,6 +176,15 @@ public class InventoryController {
 	}
 	
 	
+	@GetMapping("/private/inventory/minusOne")
+	public String minusOneInventory(@RequestParam("storeId") Integer storeId,
+			@RequestParam("buyCode") String buyCode) {
+		
+		invService.minusOneInventory(storeId, buyCode);
+		return "redirect:/private/inventory/findAll";
+	}
+	
+	
 	@GetMapping("/private/inventory/addByBuy")
 	@ResponseBody
     public String invBuyCheck(@RequestParam("id") Integer id,Model m) {

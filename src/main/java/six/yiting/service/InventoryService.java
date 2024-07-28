@@ -24,6 +24,9 @@ public class InventoryService {
 	
 	@Autowired
 	private InventoryRepository invRepo;
+	
+	@Autowired
+	private StoresRepository storeRepo;
 
 	public List<InventoryBean> findAllInventory(){
 		return invRepo.findAll();
@@ -132,6 +135,16 @@ public class InventoryService {
 		}
 		
 		return inv;
+	}
+	
+	public void minusOneInventory(Integer storeId,String buyCode) {
+		Optional<StoresBean> optional = storeRepo.findById(storeId);
+		StoresBean store = optional.get();
+		InventoryBean inv = invRepo.findByStoreAndBuyCode(store, buyCode);
+		int invNum = inv.getInvNum();
+		invNum = invNum-1;
+		inv.setInvNum(invNum);
+		invRepo.save(inv);
 	}
 	
 
