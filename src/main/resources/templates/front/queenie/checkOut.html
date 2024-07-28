@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
+
 <body>
 
 <div th:replace="~{front/layout/navbar}"></div>
@@ -46,7 +47,7 @@
                 <span class="text-primary">您的商品內容</span>
                 <span class="badge bg-primary rounded-pill"></span>
             </h4>
-            <form class="needs-validation" id="orderForm" th:action="@{/public/insert}" method="post" novalidate>
+            <form class="needs-validation" th:action="@{/public/insert}" method="post" novalidate>
                 <div class="list-group mb-3" th:each="product : ${session.sessionCart}" data-productId="${product.productId}">
 				    <div class="list-group-item d-flex justify-content-between lh-sm">
 				        <div style="flex: 1; margin-right: 10px;">
@@ -68,10 +69,9 @@
                 
             </form>
         </div>
-        <div class="col-md-5 col-lg-4 order-md-last" th:if="${orders != null && !orders.isEmpty()}">
+        <div class="col-md-5 col-lg-4 order-md-last" >
             <h4 class="mb-3">結帳資訊</h4>
-            <form class="needs-validation" th:action="@{/public/insert}" method="post" novalidate>
-            <!-- 折扣信息 -->
+            <form class="needs-validation" id="orderForm" th:action="@{/public/insert}" method="post" novalidate>
                 <div class="list-group mb-3">
                     <div class="list-group-item d-flex justify-content-between bg-body-tertiary">
                         <div class="text-success">
@@ -80,7 +80,7 @@
                            <small th:if="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}" th:text="${order.amountDiscount.discountName}"></small>
             				<small th:unless="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}"></small>
                         </div>
-                        <span class="text-success" th:text="'TWD ' + ${discountMoney}"></span>
+                        <span  class="text-success" th:text="'TWD ' + (${discountMoney} ?: '0')"></span>
                     </div>
                 </div>           
                 <div class="list-group mb-3">
@@ -102,11 +102,12 @@
                 <div class="my-3">
                     <div class="form-floating">
                         <select class="form-select" id="storeId" name="storeId" required>
-                            <option selected disabled>取貨店鋪</option>
+                            <option value="" disabled selected>取貨店鋪</option>
                             <option th:each="store : ${storeList}" th:value="${store.storeId}"
                                     th:text="${store.storeName}" th:selected="${store.storeId == orders[0].storesBean.storeId}">
                             </option>
                         </select>
+                        
                     </div>
                 </div>
                 <h4 class="mb-3">付款方式</h4>
@@ -128,7 +129,7 @@
                 </div>
                 </div>
                 <hr class="my-4">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
+                <button  class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
             </form>
         </div>
     </div>
@@ -139,6 +140,16 @@
 
 
 <script type="text/javascript">
+
+		 document.getElementById('orderForm').addEventListener('submit', function(event) {
+		    var storeSelect = document.getElementById('storeId');
+		    if (storeSelect.value === "") {
+		        event.preventDefault(); 
+		        document.getElementById('error-message').innerText = '請選擇取貨店鋪！'; 
+		        document.getElementById('error-message').style.display = 'block'; 
+		    }
+		});
+ 
     function togglePoints() {
     var checkBox = document.getElementById("pointSwitch");
     var pointUseHidden = document.getElementById("pointUseHidden");
@@ -149,6 +160,7 @@
         pointUseHidden.value = "0"; 
     }
 }
+
 
 </script>
 
