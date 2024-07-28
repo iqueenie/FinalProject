@@ -307,7 +307,7 @@ public class StoresController {
 
 		Map<String,Integer> inventoryExpDates = new HashMap<>();
 
-		LocalDate today = LocalDate.of(2024, 7, 18);
+		LocalDate today = LocalDate.of(2024, 8, 2);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreProductExp(store, product, today);
 			String type = product.getProductType(); 
@@ -339,7 +339,7 @@ public class StoresController {
 	 public List<InventoryBean> getFriInvByStore(@RequestBody StoresBean store){
 		List<Product> byType = storeService.findByOtherType();
 		List<InventoryBean> resultList = new ArrayList<>();
-		LocalDate today = LocalDate.of(2024, 7, 18);
+		LocalDate today = LocalDate.of(2024, 8, 2);
 		for(Product product : byType) {
 			InventoryBean inv = inventoryService.findByStoreProductExp(store, product, today);
 			if(inv!=null ) {
@@ -359,7 +359,7 @@ public class StoresController {
 
 		 //商品部分
 //		 LocalDate today = LocalDate.now().minusDays(3);
-		 LocalDate today = LocalDate.of(2024, 7, 18);
+		 LocalDate today = LocalDate.of(2024, 8, 2);
 		 StoresBean store = storeService.findStoreById(storeId);
 		 
 		 List<String> productTypes = inventoryService.findProductType(store, today);

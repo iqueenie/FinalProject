@@ -189,25 +189,34 @@ public class StoreLikeController {
 	}
 	
 	@GetMapping("/private/like/count")
-	public String countLike(Model m) {
-		
-		List<StoresBean> listStores = storeService.findAllStores();
-		List<StoresBean> storeCount = new ArrayList<StoresBean>();
-		List<Long> likeCount = new ArrayList<Long>();
-		
-		for(StoresBean store: listStores) {
-			long likeNum = likeService.countLikes(store);
-			if (likeNum>0) {
-				storeCount.add(store);
-				likeCount.add(likeNum);
-			}
-		}
-		m.addAttribute("storeCount", storeCount);
-		m.addAttribute("likeCount", likeCount);
-		
-		
-		return "back/yiting/countStoreLike";
+	@ResponseBody
+	public Map<String, Object> countLike() {
+	    List<StoresBean> listStores = storeService.findAllStores();
+	    List<String> storeNames = new ArrayList<>();
+	    List<Long> likeCounts = new ArrayList<>();
+	    
+	    for (StoresBean store : listStores) {
+	        long likeNum = likeService.countLikes(store);
+	        if (likeNum > 0) {
+	            storeNames.add(store.getStoreName());
+	            likeCounts.add(likeNum);
+	        }
+	    }
+	    
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("storeNames", storeNames);
+	    response.put("likeCounts", likeCounts);
+	    
+	    return response;
 	}
+	
+	 @GetMapping("/private/like/summary")
+	    public String likeSummary() {
+	        return "back/yiting/countStoreLike"; 
+	 }
+	
+	
+	
 	
 	@GetMapping("/public/front/findLikeByStoreMember")
 	@ResponseBody
@@ -257,7 +266,7 @@ public class StoreLikeController {
 		
 		List<ProductTypeNumberDto> countType= new ArrayList<>();
 		
-		LocalDate today = LocalDate.of(2024, 7, 18);
+		LocalDate today = LocalDate.of(2024, 8, 2);
 		
 		List<StoresBean> checkInv = new ArrayList<>();  
 		
