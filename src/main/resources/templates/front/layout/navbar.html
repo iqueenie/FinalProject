@@ -368,12 +368,11 @@
                                 th:href="@{/public/addMemberMain}" class="nav-link text-primary">會員註冊</a>
                         </li>
 
-                        <li
-                            th:text="${session.loggedInMember != null ? '歡迎!! ' + session.loggedInMember.memberName : ''}">
+                        <li class="nav-link text-primary"
+                            th:text="${session.loggedInMember != null ? '歡迎!! ' + session.loggedInMember.memberName : ''}" >
                         </li>
 
-                        <li th:if="${session.loggedInMember != null} " class="nav-item"><a th:href="@{/front/logout}"
-                                class="nav-link text-primary">登出</a></li>
+                        
 
                     </ul>
                 </div>
@@ -386,6 +385,8 @@
                                 <a href="#"
                                     class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                                     id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    
+                                    
                                     <img th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}"
                                         alt="memberPhoto" width="32" height="32" class="rounded-circle me-2">
                                     <!-- 因為要取照片 根據我的api所以要先找到ID -->
@@ -397,6 +398,7 @@
                                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow "
                                     aria-labelledby="dropdownUser1" data-popper-placement="bottom-start">
                                     <li><a class="dropdown-item" th:href="@{/public/MemberProfileMain}">個人資料</a></li>
+                                     <li><a class="dropdown-item" th:href="@{/public/MemberInbox}">會員通知與公告</a></li>
                                     <li><a class="dropdown-item" th:href="@{/public/MemberOrder}">會員訂單</a></li>
                                     <li><a class="dropdown-item" th:href="@{/public/front/group-member-orders}">團購訂單</a>
                                     </li>
