@@ -294,8 +294,8 @@ public class MembersController {
 		 
 		 
 		 
-		 @PostMapping("/front/UpdeMember")
-		    public String frontUpdeMember(@ModelAttribute MembersBean member,
+		 		@PostMapping("/front/UpdeMember")
+		 		public String frontUpdeMember(@ModelAttribute MembersBean member,
 		                                  @RequestParam(value = "memberPhotoFile", required = false) MultipartFile memberPhotoFile,
 		                                  Model model) {
 
@@ -337,7 +337,11 @@ public class MembersController {
 		            return "redirect:public/front";
 		        }
 		    }
-		}
+		
+
+
+
+}
 		 
 		 
 		
