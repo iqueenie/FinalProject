@@ -5,9 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ecpay.logistics.integration.domain.CreateCVSObj;
-import ecpay.logistics.integration.exception.EcpayException;
-import ecpay.logistics.integration.AllInOne;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import six.hsiao.model.MembersBean;
@@ -23,9 +20,7 @@ import six.queenie.service.OrderService;
 import six.yiting.model.StoresBean;
 import six.yiting.service.StoreService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +55,7 @@ public class CartController {
 	private OrderDetailService odService;
 	@Autowired
 	private MembersService mService;
+
 	
 	@PostMapping("/public/addToCart")
 	@ResponseBody
@@ -212,19 +208,22 @@ public class CartController {
 	public String checkOut(Model model, HttpSession session, HttpServletRequest request) {
 	    List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
 	    Map<Integer, Integer> productQuantities = (Map<Integer, Integer>) session.getAttribute(SESSION_PRODUCT_QUANTITIES);
-	    MembersBean member = (MembersBean) session.getAttribute("loggedInMember"); 
+	    MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
 
-	    Integer memberId = null;
-	    if (member != null) {
-	        memberId = member.getMemberId();
-	    } else {
-	    	return "redirect:/public/frontLoginMain";
+	    if (member == null) {
+	        return "redirect:/public/frontLoginMain";
 	    }
-	    List<Orders> orders = cartService.getOrdersByMember(member);
-		
-	    List<StoresBean> storeList = storeService.findAllStores();
-	   
 
+	    List<Orders> orders = cartService.getOrdersByMember(member);
+	    if (orders == null || orders.isEmpty()) {
+	        orders = new ArrayList<>();
+	        Orders placeholderOrder = new Orders();
+	        placeholderOrder.setMembers(member);
+	        placeholderOrder.setStoresBean(new StoresBean()); 
+	        orders.add(placeholderOrder);
+	    }
+
+	    List<StoresBean> storeList = storeService.findAllStores();
 	    Map<String, Integer> cartDetails = cartService.calculateCartDetails(cartItems, productQuantities);
 
 	    model.addAttribute("total", cartDetails.get("total"));
@@ -233,22 +232,29 @@ public class CartController {
 	    model.addAttribute("finalAmount", cartDetails.get("finalAmount"));
 	    model.addAttribute("storeList", storeList);
 	    model.addAttribute("orders", orders);
-	    
+
 	    return "front/queenie/checkOut";
 	}
+
+
 
 	@PostMapping("/public/insert")
 	public String insertOrder(Model model, HttpSession session,
 	                          @RequestParam(required = false) Integer memberId,
 	                          @RequestParam String paymentMethod,
 	                          @RequestParam Integer storeId,
-	                          @RequestParam(required = false) Integer pointUse,
+	                          @RequestParam(required = false,defaultValue = "0") Integer pointUse,
 	                          @RequestParam(required = false, defaultValue = "0") Integer unpaidCount, 
 	                          @RequestParam(required = false) String status) {
 	    List<Product> cartItems = (List<Product>) session.getAttribute(SESSION_CART);
 	    Map<Integer, Integer> productQuantities = (Map<Integer, Integer>) session.getAttribute(SESSION_PRODUCT_QUANTITIES);
 	    MembersBean loggedInMember = (MembersBean) session.getAttribute("loggedInMember");
 
+	    
+	    if (storeId == null) {	      
+	    	model.addAttribute("errorMessage", "請選擇取貨店鋪!");
+	    	 return "front/queenie/checkOut";
+	    }
 	    memberId = loggedInMember.getMemberId();
 
 	    Orders orders = cartService.insertOrderFromCart(cartItems, productQuantities, memberId,
