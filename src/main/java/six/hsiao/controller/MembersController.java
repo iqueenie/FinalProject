@@ -1,6 +1,7 @@
 package six.hsiao.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,7 +236,8 @@ public class MembersController {
 		    
 		    return ResponseEntity.ok().headers(headers).body(memberPhoto);
 		}
-	 
+		
+		
 	 
 
 		 @PostMapping("/front/insertMembers")
