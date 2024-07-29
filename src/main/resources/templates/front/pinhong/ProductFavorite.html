@@ -121,10 +121,10 @@
                                     </div>
                                     <div class="d-flex justify-content-center align-items-center gap-2">
                                         <th:block th:if="${product.productDiscount != null}">
-                                            <del th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 2)}"></del>
+                                            <del th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 0)}"></del>
                                             <span class="text-dark fw-semibold" th:text="'$' + ${product.discountedPrice}"></span>
                                         </th:block>
-                                        <span class="text-dark fw-semibold" th:if="${product.productDiscount == null}" th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 2)}"></span>
+                                        <span class="text-dark fw-semibold" th:if="${product.productDiscount == null}" th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 0)}"></span>
                                     </div>
                                     <div class="d-flex justify-content-center mt-2">
                                         <form id="delete-form" th:action="@{/public/allFavoriteProducts/delete}" method="post">

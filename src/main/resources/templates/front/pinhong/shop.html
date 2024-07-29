@@ -273,17 +273,17 @@ function updateShowingText(totalItems) {
 
         if (discountedPrice) {
             const del = document.createElement('del');
-            del.textContent = `$${product.productPrice.toFixed(2)}`;
+            del.textContent = `$${product.productPrice.toFixed(0)}`;
             priceDiv.appendChild(del);
 
             const span = document.createElement('span');
             span.className = 'text-dark fw-semibold';
-            span.textContent = `$${discountedPrice.toFixed(2)}`;
+            span.textContent = `$${discountedPrice.toFixed(0)}`;
             priceDiv.appendChild(span);
         } else {
             const span = document.createElement('span');
             span.className = 'text-dark fw-semibold';
-            span.textContent = `$${product.productPrice.toFixed(2)}`;
+            span.textContent = `$${product.productPrice.toFixed(0)}`;
             priceDiv.appendChild(span);
         }
 

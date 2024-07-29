@@ -242,10 +242,10 @@
                     </div>
                     <div class="d-flex justify-content-center align-items-center gap-2">
     					<th:block th:if="${productDiscountMap[product.productId] != null}">
-        					<del th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+        					<del th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 0)}"></del>
         					<span class="text-dark fw-semibold" th:text="'$' + ${roundedDiscountedPriceMap[product.productId]}"></span>
     					</th:block>
-    						<span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 2)}"></span>
+    						<span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 0)}"></span>
 					</div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
@@ -404,10 +404,10 @@
                     </div>
                     <div class="d-flex justify-content-center align-items-center gap-2">
     					<th:block th:if="${productDiscountMap[product.productId] != null}">
-        					<del th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 2)}"></del>
+        					<del th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 0)}"></del>
         					<span class="text-dark fw-semibold" th:text="'$' + ${roundedDiscountedPriceMap[product.productId]}"></span>
     					</th:block>
-    						<span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 2)}"></span>
+    						<span class="text-dark fw-semibold" th:if="${productDiscountMap[product.productId] == null}" th:text="'$' + ${#numbers.formatDecimal(product.productPrice, 1, 0)}"></span>
 					</div>
                     <div class="button-area p-3 pt-0">
                       <div class="row g-1 mt-2">
