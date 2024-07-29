@@ -348,7 +348,7 @@ public class CartService {
         String itemNames = itemDetails.stream()
                 .map(orderDetail -> orderDetail.getProduct().getProductName())
                 .collect(Collectors.joining(", "));
-        String merchantTradeNo = "20240700" + order.getOrderId();
+        String merchantTradeNo = "20240800" + order.getOrderId();
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");

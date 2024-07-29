@@ -90,7 +90,7 @@ public class LogisticsController {
             String merchantTradeNo = params.get("MerchantTradeNo");
             String rtnCode = params.get("RtnCode");
 
-            String idString = merchantTradeNo.replace("20240700", "");
+            String idString = merchantTradeNo.replace("20240800", "");
             Integer id = Integer.parseInt(idString);
 
             System.out.println("驗證成功");
