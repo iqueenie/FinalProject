@@ -102,7 +102,7 @@ public class ECPayController {
 		String itemNames = itemDetails.stream()
 		        .map(orderDetail -> orderDetail.getProduct().getProductName())
 		        .collect(Collectors.joining(", "));
-		String merchantTradeNo = "202407000" + id;
+		String merchantTradeNo = "20240800" + id;
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String currentTime = sdf.format(new Date());
@@ -133,7 +133,7 @@ public class ECPayController {
 	            String rtnCode = allParams.get("RtnCode");
 	           
 
-	            String idString = merchantTradeNo.replace("202407000", "");
+	            String idString = merchantTradeNo.replace("20240800", "");
 	            Integer id = Integer.parseInt(idString);
 	          
 
