@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head>
-    <title>Organic - Grocery Store HTML Website Template</title>
+    <title>商品總覽</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,9 +95,6 @@
                 </li>
                 <li class="cat-item">
                   <a th:href="@{/public/Products(productType='菸酒')}" th:classappend="${productType == '菸酒'} ? 'active' : ''" class="nav-link product-type-link" data-type="菸酒">菸酒</a>
-                </li>
-                <li class="cat-item">
-                  <a th:href="@{/public/Products(productType='護理用品')}" th:classappend="${productType == '護理用品'} ? 'active' : ''" class="nav-link product-type-link" data-type="護理用品">護理用品</a>
                 </li>
               </ul>
             </div>

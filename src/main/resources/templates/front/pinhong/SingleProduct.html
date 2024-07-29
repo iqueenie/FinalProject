@@ -326,6 +326,7 @@
                     <th:block th:if="${showForUser}">
                       <th:block th:if="${!hasReviewed}">
                         <button type="button" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3" id="add-review-btn">新增評論</button>
+						<br>
                       </th:block>
                       <th:block th:if="${hasReviewed}">
                         <button type="button" class="btn btn-secondary py-3 px-4 text-uppercase me-3 mt-3" disabled>您已評論過此產品</button>
@@ -365,13 +366,14 @@
                       </div>
                     </div>
                     <div class="pb-3">
-                      <textarea class="form-control" name="reviewContent" style="width: 100%; height: 130px;" placeholder="詳細說明您對此產品的評價"></textarea>
+                      <textarea class="form-control" id="addComment" name="reviewContent" style="width: 100%; height: 130px;" placeholder="詳細說明您對此產品的評價"></textarea>
                     </div>
                     <div class="pb-3">
                       <input type="checkbox" id="isAgree" value="" checked><label for="isAgree" class="ms-1">我同意公開此評論</a></label><br>
                     </div>
-                    <button id="submit" type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-100">提交評論</button>
+                    <button id="submit" type="submit" name="submit" class="btn btn-dark btn-largetext-uppercase me-3 mt-3 py-3 px-4">提交評論</button>                        
                   </form>
+                    <button class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3 text-uppercase" onclick="addComment()">一鍵輸入</button>
                 </div>
               </div>
             </div>
@@ -537,6 +539,12 @@
       function submitForm() {
         document.getElementById('form').submit();
       }
+      
+    function addComment(){
+    let addComment= document.getElementById('addComment');
+    addComment.value = "金三胖覺得麥香奶茶真的有夠好喝";
+   
+     }
     </script>
   </body>
 </html>

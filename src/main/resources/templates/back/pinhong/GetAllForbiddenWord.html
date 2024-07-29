@@ -37,9 +37,10 @@
                     <div class="row">
                         <div class="col-sm-6 col-md-4 col-lg-2">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="請輸入您想新增的敏感字" name="word" required>
+                                <input type="text" id="newForbiddenWord" class="form-control" placeholder="請輸入您想新增的敏感字" name="word" required>
                                 <button class="btn btn-outline-success" type="submit">新增</button>
                             </div>
+                                <button class="btn btn-outline-danger mt-2" type="button" onclick="insertNewForbiddenWord()">一鍵輸入</button>
                         </div>
                     </div>
                 </form>
@@ -148,6 +149,11 @@
                 });
             }
         });
+	    function insertNewForbiddenWord(){
+	    let newForbiddenWord= document.getElementById('newForbiddenWord');
+	    newForbiddenWord.value = "金三胖";
+	   
+	    }
     </script>
 </body>
 </html>

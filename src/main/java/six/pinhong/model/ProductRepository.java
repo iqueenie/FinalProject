@@ -35,8 +35,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p WHERE p.productPublished = 1 AND p.productId BETWEEN 11 AND 25 ORDER BY p.productId DESC")
 	List<Product> findTop10ByOrderByProductIdDesc();
 	
-	Page<Product> findByProductNameContainingAndProductTypeContaining(String productName, String productType, Pageable pageable);
-	Page<Product> findByProductNameContaining(String productName, Pageable pageable);
-	Page<Product> findByProductTypeContaining(String productType, Pageable pageable);
+    Page<Product> findByProductNameContainingAndProductTypeContainingAndProductPublished(String name, String type, int published, Pageable pageable);
+    Page<Product> findByProductNameContainingAndProductPublished(String name, int published, Pageable pageable);
+    Page<Product> findByProductTypeContainingAndProductPublished(String type, int published, Pageable pageable);
 	Page<Product> findByProductPublished(int published, Pageable pageable);
 }

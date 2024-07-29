@@ -109,7 +109,8 @@
 						</a> <br>
 						<button class="btn btn-primary text-uppercase w-10"
 							onclick="loginmember()">一鍵登入</button>
-						
+						<button class="btn btn-primary text-uppercase w-10"
+							onclick="loginmemberForProduct()">商品用</button>
 						<br>
 						
 						<div th:if="${error}" class="alert alert-danger">
@@ -136,6 +137,21 @@
     
     let Account ='jinghnong3514195'
     let Password = 'jinghong0704';
+ 
+    
+    memberAccount.value = Account;
+    memberPassword.value= Password;
+   
+     }
+     
+         function loginmemberForProduct(){
+    let memberName= document.getElementById('memberName');
+	let memberAccount= document.getElementById('memberAccount');
+
+    
+    
+    let Account ='chenxiaoming'
+    let Password = 'mypassword';
  
     
     memberAccount.value = Account;

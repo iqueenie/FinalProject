@@ -100,11 +100,11 @@ public class ProductService {
 	    Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
 
 	    if (!searchTerm.isEmpty() && !productType.isEmpty()) {
-	        return productRepo.findByProductNameContainingAndProductTypeContaining(searchTerm, productType, pageable);
+	        return productRepo.findByProductNameContainingAndProductTypeContainingAndProductPublished(searchTerm, productType, 1, pageable);
 	    } else if (!searchTerm.isEmpty()) {
-	        return productRepo.findByProductNameContaining(searchTerm, pageable);
+	        return productRepo.findByProductNameContainingAndProductPublished(searchTerm, 1, pageable);
 	    } else if (!productType.isEmpty()) {
-	        return productRepo.findByProductTypeContaining(productType, pageable);
+	        return productRepo.findByProductTypeContainingAndProductPublished(productType, 1, pageable);
 	    } else {
 	        return productRepo.findByProductPublished(1, pageable);
 	    }
