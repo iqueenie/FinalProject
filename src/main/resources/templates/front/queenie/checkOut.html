@@ -87,7 +87,7 @@
                     <div class="list-group-item d-flex justify-content-between bg-body-tertiary">
                         <div class="text-success">
                             <h6 class="my-0">是否使用點數</h6>
-                            <small>剩餘點數: <span th:text="${orders[0].members.Points}"></span></small>
+                            <small>剩餘點數: <span id="remainingPoints" th:text="${orders[0].members.Points}"></span></small>
                         </div>
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="pointSwitch" name="pointSwitch"
@@ -124,7 +124,7 @@
                     <div class="list-group mb-3">
                     <div class="list-group-item d-flex justify-content-between">
                         <span>最終付款金額</span>
-                        <strong class="text-body-secondary" th:text="'TWD ' + ${total}"></strong>
+                        <strong id="finalAmount" class="text-body-secondary" th:text="'TWD ' + ${total}"></strong>
                     </div>
                 </div>
                 </div>
@@ -141,6 +141,26 @@
 
 <script type="text/javascript">
 
+		var initialTotalAmount = parseInt(document.getElementById('finalAmount').textContent.replace('TWD ', ''), 10);
+    var remainingPoints = parseInt(document.getElementById('remainingPoints').textContent, 10);
+
+    function togglePoints() {
+        var checkBox = document.getElementById("pointSwitch");
+        var pointUseHidden = document.getElementById("pointUseHidden");
+        var totalAmountElement = document.getElementById("finalAmount");
+
+        var currentTotalAmount = parseInt(totalAmountElement.textContent.replace('TWD ', ''), 10);
+
+        if (checkBox.checked) {
+            pointUseHidden.value = "1";
+            var newTotal = initialTotalAmount - remainingPoints;
+            totalAmountElement.textContent = 'TWD ' + (newTotal > 0 ? newTotal : 0);
+        } else {
+            pointUseHidden.value = "0";
+            totalAmountElement.textContent = 'TWD ' + initialTotalAmount;
+        }
+    }
+		
 		 document.getElementById('orderForm').addEventListener('submit', function(event) {
 		    var storeSelect = document.getElementById('storeId');
 		    if (storeSelect.value === "") {
@@ -149,17 +169,9 @@
 		        document.getElementById('error-message').style.display = 'block'; 
 		    }
 		});
+		
  
-    function togglePoints() {
-    var checkBox = document.getElementById("pointSwitch");
-    var pointUseHidden = document.getElementById("pointUseHidden");
-    
-    if (checkBox.checked) {
-        pointUseHidden.value = "1"; 
-    } else {
-        pointUseHidden.value = "0"; 
-    }
-}
+   
 
 
 </script>
