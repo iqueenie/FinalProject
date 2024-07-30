@@ -215,11 +215,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
         function writeProductDetails() {
+        var productNameInput = document.getElementById('productName');
+        var productTypeInput = document.getElementById('productType');
         var productCostInput = document.getElementById('productCost');
         var productPriceInput = document.getElementById('productPrice');
+        var productExpirydateInput = document.getElementById('productExpirydate');
+        var productDescriptionInput = document.getElementById('productDescription');
+        var productQuantityInput = document.getElementById('productQuantity');
         var productPublishedInput = document.getElementById('productPublished');
-        productCostInput.value = "12"
-        productPriceInput.value = "24"
+ 		productNameInput.value = "奇多-家常起司55g";
+        productTypeInput.value = "零食";
+        productCostInput.value = "7"
+        productPriceInput.value = "16"
+        productExpirydateInput.value = "180"
+        productDescriptionInput.value = "香濃起司結合口感酥脆紮實奇多家常起司，一咬下， 金黃色的狂野香氣瞬間來襲， 徹底征服你的味蕾。"
+        productQuantityInput.value = "50"
         productPublishedInput.value = "1"
     }
 </script>

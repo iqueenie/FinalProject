@@ -108,25 +108,21 @@
 
     var currentAction = '全部';
 
-    function formatDateWithSpace(date) {
-        // 獲取格式化日期時間字串
-        var formattedDate = date.toLocaleString('zh-TW', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true // 使用 12 小時制
-        });
+	function formatDateWithSpace(date) {
+	    // 獲取格式化日期時間字串
+	    var formattedDate = date.toLocaleString('zh-TW', {
+	        year: 'numeric',
+	        month: '2-digit',
+	        day: '2-digit',
+	        hour: '2-digit',
+	        minute: '2-digit',
+	        second: '2-digit',
+	        hour12: false // 使用 24 小時制
+	    });
+	
+	    return formattedDate;
+	}
 
-        // 在 "上午" 或 "下午" 後添加空格
-        formattedDate = formattedDate.replace(/上午|下午/g, function(match) {
-            return match + ' ';
-        });
-
-        return formattedDate;
-    }
 
     function updateTable() {
         var startDate = $('#startDate').val();
