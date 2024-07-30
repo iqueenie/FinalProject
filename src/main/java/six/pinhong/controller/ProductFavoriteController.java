@@ -138,7 +138,9 @@ public class ProductFavoriteController {
 	
 	//刪除該收藏商品
 	@DeleteMapping("/public/allFavoriteProducts/delete")
-	public String productDelete(@RequestParam("productId") Integer productId) {
+	public String productDelete(@RequestParam("productId") Integer productId, HttpSession session) {
+		MembersBean member = (MembersBean) session.getAttribute("loggedInMember");
+		memberActionLogService.logAction(member.getMemberId(), "刪除收藏商品", productId);
 		productFavoriteService.deleteProductFavoriteByProductId(productId);
 		
 		 return "redirect:/public/allFavoriteProducts";
