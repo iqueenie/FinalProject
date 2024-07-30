@@ -174,7 +174,7 @@ public class GroupBuyService{
 	
 	public Page<GroupBuy> findByGroupBuyStatus(String status, Integer page) {
 		
-		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "orderDate");
 		
 		return groupBuyRepo.findByGroupBuyStatus(status,pgb);
 	}
@@ -186,28 +186,28 @@ public class GroupBuyService{
 	
 	public Page<GroupBuy> findByGroupBuyStatusAndStoreId(String status, Integer storeId, Integer page) {
 		
-    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "orderDate");
 		
 		return groupBuyRepo.findByGroupBuyStatusAndStoreId(status, storeId, pgb);
 	}
 	
     public Page<GroupBuy> findByCityAndStatus(String city, String status, Integer page) {
     	
-    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "orderDate");
     	
         return groupBuyRepo.findByCityAndStatus(city, status, pgb);
     }
 
     public Page<GroupBuy> findByCityAndAreaAndStatus(String city, String area, String status, Integer page) {
     	
-    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "orderDate");
     	
         return groupBuyRepo.findByCityAndAreaAndStatus(city, area, status, pgb);
     }
 
     public Page<GroupBuy> findByCityAreaAndStreetAndStatus(String city, String area, String street, String status, Integer page) {
     	
-    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "orderDate");
+    	Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "orderDate");
     	
         return groupBuyRepo.findByCityAreaAndStreetAndStatus(city, area, street, status, pgb);
     }

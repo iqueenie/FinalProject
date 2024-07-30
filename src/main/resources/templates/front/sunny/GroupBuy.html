@@ -118,7 +118,7 @@
           <div class="filter-shop d-flex justify-content-between">
             <div class="showing-product">
               <p th:if="${gbs.totalPages>1}">Showing 1–5 of [[${gbs.totalElements}]] results</p>
-              <p th:if="${gbs.totalPages==1}">Showing 1–[[${gbs.number*5+5}]] of [[${gbs.totalElements}]] results</p>
+              <p th:if="${gbs.totalPages==1}">Showing 1–[[${gbs.totalElements}]] of [[${gbs.totalElements}]] results</p>
             </div>
           </div>
 

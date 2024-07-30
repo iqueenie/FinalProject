@@ -205,14 +205,14 @@ public class GroupMemberService{
 	
 	public Page<GroupMember> findByMemberId(Integer id, Integer page) {
 		
-		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "groupBuy.orderDate");
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "groupBuy.orderDate");
 		
 		return groupMemberRepo.findByMemberId(id, pgb);
 	}
 	
 	public Page<GroupMember> findByMemberIdAndPickupStatus(Integer id, String pickupStatus, Integer page) {
 		
-		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.DESC, "groupBuy.orderDate");
+		Pageable pgb = PageRequest.of(page-1, 5, Sort.Direction.ASC, "groupBuy.orderDate");
 		
 		return groupMemberRepo.findByMemberIdAndPickupStatus(id, pickupStatus, pgb);
 	}
