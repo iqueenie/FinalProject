@@ -84,7 +84,7 @@ public class CartService {
         	discountPercentage = md.getDiscountPercentage();
         	
         } if (discountPercentage!= 0 ) {
-            total=total- ((int)Math.floor(total * discountPercentage / 100.0));           
+            total=total- ((int)Math.round(total * discountPercentage / 100.0));           
         }else {
         	return total;
         }
@@ -149,7 +149,7 @@ public class CartService {
             Integer subTotal;
             if (productDiscountId != null && productDiscountId != 0) {
                 double discountAmount = productPrice * productDiscount / 100.0 * quantity;
-                subTotal = productPrice * quantity - (int) Math.floor(discountAmount);
+                subTotal = productPrice * quantity - (int) Math.round(discountAmount);
             } else {
                 subTotal = productPrice * quantity;
             }
@@ -195,7 +195,7 @@ public class CartService {
             Integer subTotal;
             if (productDiscountId != null && productDiscountId != 0) {
                 double result = productPrice * productDiscount / 100.0 * quantity;
-                subTotal = productPrice * quantity - (int) Math.floor(result);
+                subTotal = productPrice * quantity - (int) Math.round(result);
             } else {
                 subTotal = productPrice * quantity;
             }

@@ -113,7 +113,7 @@ public class OrderService {
 	        	discountPercentage = md.getDiscountPercentage();
 	        	
 	        } if (discountPercentage!= 0 ) {
-	            total=total- ((int)Math.floor(total * discountPercentage / 100.0));           
+	            total=total- ((int)Math.round(total * discountPercentage / 100.0));           
 	        }else {
 	        	return total;
 	        }
@@ -171,7 +171,7 @@ public class OrderService {
 	            Integer subTotal;
 	            if (productDiscountId != null && productDiscountId != 0) {
 	                double result = productPrice * productDiscount / 100.0 * quant;
-	                subTotal = productPrice * quant - (int) Math.floor(result);
+	                subTotal = productPrice * quant - (int) Math.round(result);
 	            } else {
 	                subTotal = productPrice * quant;
 	            }
