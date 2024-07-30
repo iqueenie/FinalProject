@@ -174,10 +174,10 @@ public class MembersController {
 	 @GetMapping("/front/logout")
 	 public String logout(HttpSession session) {
 	     // 只刪除 session 中的管理員信息,但會保留登入信息
-		 //	session.removeAttribute("logInManagement");
+		 	session.removeAttribute("loggedInMember");
 	     
 	     //下面的方法 可以讓當前使用者的session失效,完全清除session中的所有數據
-	     session.invalidate();
+//	     session.invalidate();
 	     
 	     
 	     return "redirect:/public/front";

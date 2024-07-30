@@ -140,6 +140,31 @@ public class inventoryAOP {
 	    	 }
 	        
 	    }
+	    
+	    @After("execution(* six.yiting.controller.BuyController.buyCheck(..))")
+	    public void buyInsertInInv(JoinPoint joinPoint) {
+	    	
+	    	SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	        String startTimeStr = dateFormat.format(new Date());
+
+	        Object[] args = joinPoint.getArgs();
+	        Integer buyId = (Integer)args[0];
+	        
+	        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+	        if (attributes != null) {
+	            HttpSession session = attributes.getRequest().getSession(false);
+	            ManagementDTO user = (session != null) ? (ManagementDTO) session.getAttribute("logInManagement") : null;
+	            logToFile(String.format("User: %s",user.getManagementAccount()), false);
+	        }
+	        
+	        logToFile(String.format(", insert Purchase to Inventory end time: %s purchaseId: ", startTimeStr), false);
+	    	
+	        
+    	    logToFile(String.format("%d",buyId), true);
+    	            
+	    	 
+	        
+	    }
 
 	    private void logToFile(String message, boolean addNewLine) {
 	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH, true))) {
