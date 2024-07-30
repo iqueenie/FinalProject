@@ -97,4 +97,23 @@ public class LotteryRecordService {
         LocalDate startDate = LocalDate.now().minusDays(days);
         return lotteryRecordRepository.findByMemberBeanAndDrawDateAfter(member, startDate);
     }
+    
+    public List<LotteryRecord> getAllRecords() {
+        return lotteryRecordRepository.findAll();
+    }
+
+    public List<LotteryRecord> filterRecords(LocalDate startDate, LocalDate endDate, Integer memberId, Long awardId) {
+        if (startDate != null && endDate != null) {
+            return lotteryRecordRepository.findByDrawDateBetween(startDate, endDate);
+        } else if (memberId != null) {
+            return lotteryRecordRepository.findByMemberId(memberId);
+        } else if (awardId != null) {
+            return lotteryRecordRepository.findByAwardId(awardId);
+        } else {
+            return lotteryRecordRepository.findAll();
+        }
+    }
+    public List<LotteryRecord> filterRecords(LocalDate startDate, LocalDate endDate) {
+        return lotteryRecordRepository.findAllByDrawDateBetween(startDate, endDate);
+    }
 }
