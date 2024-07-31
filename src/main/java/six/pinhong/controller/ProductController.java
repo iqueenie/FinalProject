@@ -499,7 +499,10 @@ public class ProductController {
 	    if (recentProductIds != null) {
 	        for (Integer productId : recentProductIds) {
 	            Product product = productService.findProductById(productId);
-	            recentProducts.add(product);
+	            if (product != null) {
+	                recentProducts.add(product);
+	                // 如果有近期瀏覽商品被刪除，product會 == null，所以只顯示沒被刪除的商品，不然會跳錯	                
+	            } 
 	        }
 	    }
 
@@ -536,9 +539,7 @@ public class ProductController {
 	    // 如果没有最近查看的商品，傳到前端
 	    if (productsWithRatings.isEmpty()) {
 	        model.addAttribute("message", "您目前沒有查看過任何商品，點擊按鈕可跳至商品頁");
-	    } else {
-	        model.addAttribute("recentProducts", productsWithRatings);
-	    }
+	    } 
 	    
 	    model.addAttribute("recentProducts", productsWithRatings);
 	    return "front/pinhong/recentProducts";
