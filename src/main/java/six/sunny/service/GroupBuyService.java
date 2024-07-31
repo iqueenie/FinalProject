@@ -120,6 +120,8 @@ public class GroupBuyService{
 		if (arrivalDate != null) {
 			LocalDate localDate = arrivalDate.toLocalDate().plusDays(3);
 			groupBuy2.setEndDate(Date.valueOf(localDate));
+		}else {
+			groupBuy2.setEndDate(null);
 		}
 		
 //		設定GroupBuy價格
