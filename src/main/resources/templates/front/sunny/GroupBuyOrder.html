@@ -149,7 +149,7 @@
                       <i class="fa-solid fa-trash fa-2xl" style="color: #F95F09;"></i>
                     </a>
                   </td>
-                  <td th:if="${(gm.groupBuy.groupBuyStatus=='已結單' || gm.groupBuy.groupBuyStatus=='已到貨') && gm.paymentStatus=='未付款'}" class="py-4 d-flex" width="10%">
+                  <td th:if="${(gm.groupBuy.groupBuyStatus=='已結單' || gm.groupBuy.groupBuyStatus=='已到貨') && gm.paymentStatus=='未付款' && gm.pickupStatus!='已刪除'}" class="py-4 d-flex" width="10%">
                     <a class="check-payment me-3" th:href="@{/group-buy-checkout(id=${gm.groupMemberId})}">
                       <i class="fa-regular fa-credit-card fa-2xl" style="color: #6bb252;"></i>
                     </a>
@@ -399,7 +399,7 @@
           </td>
         `;
       }
-      if ((gm.groupBuy.groupBuyStatus == '已結單' || gm.groupBuy.groupBuyStatus == '已到貨') && gm.paymentStatus == '未付款') {
+      if ((gm.groupBuy.groupBuyStatus == '已結單' || gm.groupBuy.groupBuyStatus == '已到貨') && gm.paymentStatus == '未付款' && gm.pickupStatus!='已刪除') {
         template += `
                   <td class="py-4 d-flex" width="10%">
                     <a class="check-payment me-3" href="http://localhost:8080/FinalProject/group-buy-checkout?id=${gm.groupMemberId}">
