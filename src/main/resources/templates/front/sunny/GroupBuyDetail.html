@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <title>團購</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div th:replace="~{front/layout/navbar}"></div>
+
+  <section id="selling-product" class="single-product mt-0 mt-md-5">
+    <div class="container-lg">
+      <nav class="breadcrumb">
+        <a class="breadcrumb-item" th:href="@{/public/front}">首頁</a>
+        <a class="breadcrumb-item" th:href="@{/public/front/group-buys}">團購</a>
+        <span class="breadcrumb-item active" aria-current="page">團購商品</span>
+      </nav>
+      <div class="row g-5">
+        <div class="col-lg-7">
+          <div class="row flex-column-reverse flex-lg-row">
+            <div class="col-md-12 col-lg-2">
+              <img th:src="@{/ProductPhoto(productId=${gb.product.productId})}" class="tab-image" height="581.766px" th:alt="${gb.productName}">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="product-info">
+            <div class="element-header">
+              <h2 itemprop="name">[[${gb.productName}]]</h2>
+            </div>
+            <div class="product-price pt-3 pb-3">
+              <strong class="text-primary display-6 fw-bold">$[[${gb.price}]]</strong><del class="ms-2">$[[${gb.product.productPrice}]]</del>
+            </div>
+            <p>[[${gb.product.productDescription}]]</p>
+            <div class="cart-wrap py-4">
+              <div class="row">
+                <div class="swatch col-6">
+                  <h6 class="item-title text-uppercase text-dark">取貨店鋪</h6>
+                  <p>[[${gb.storeName}]]</p>
+                </div>
+                <div class="swatch col-6">
+                  <h6 class="item-title text-uppercase text-dark">目標數量</h6>
+                  <p>[[${gb.targetQuantity}]]</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="swatch col-6">
+                  <h6 class="item-title text-uppercase text-dark">預計訂貨日期</h6>
+                  <p>[[${gb.orderDate}]]</p>
+                </div>
+                <div class="swatch col-6">
+                  <h6 class="item-title text-uppercase text-dark">目前數量</h6>
+                  <p>[[${gb.nowQuantity}]]</p>
+                </div>
+              </div>
+              <div class="product-quantity pt-3">
+                <div class="input-group product-qty" style="max-width: 150px;">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" data-field="">
+                      <svg width="16" height="16">
+                        <use xlink:href="#minus"></use>
+                      </svg>
+                    </button>
+                  </span>
+                  <input type="hidden" name="memberId" id="memberId" th:value="${session.loggedInMember.memberId}">
+                  <input type="hidden" name="groupBuyId" id="groupBuyId" th:value="${gb.groupBuyId}">
+                  <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" value="1" min="1" max="100">
+                  <span class="input-group-btn">
+                    <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                      <svg width="16" height="16">
+                        <use xlink:href="#plus"></use>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="團購守則與條款">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta, laboriosam nesciunt odit asperiores dicta fugit similique aspernatur nisi architecto, est incidunt dolore quod inventore consectetur dolorem doloremque minus deserunt! Similique.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="qty-button pt-3">
+                  <input type="checkbox" id="isAgree" value=""><label for="isAgree" class="ms-1">我同意<a data-bs-toggle="modal" data-bs-target="#exampleModal" class="text-primary">團購守則與條款</a></label><br>
+                  <button type="button" id="ordered" class="btn btn-primary py-3 px-4 text-uppercase me-3 mt-3">確定購買</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{front/layout/footer}"></div>
+  <script>
+    document.querySelector('#ordered').addEventListener('click', function (e) {
+      let isAgree = document.querySelector("#isAgree");
+      let quantity = document.querySelector("#quantity").value;
+      let groupBuyId = document.querySelector("#groupBuyId").value;
+      let memberId = document.querySelector("#memberId").value;
+
+      if (!isAgree.checked) {
+        showAgreementError();
+        return false;
+      } else {
+        showConfirmationDialog(quantity, groupBuyId, memberId);
+      }
+    });
+
+    function showAgreementError() {
+      Swal.fire({
+        title: '請同意團購守則與條款',
+        confirmButtonColor: "#6BB252",
+        icon: 'error'
+      });
+    }
+
+    function showConfirmationDialog(quantity, groupBuyId, memberId) {
+      Swal.fire({
+        title: "確定要訂購嗎",
+        showCancelButton: true,
+        confirmButtonText: "是",
+        confirmButtonColor: "#6BB252",
+        denyButtonText: "否",
+        icon: "question",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          submitOrder(quantity, groupBuyId, memberId);
+        }
+      });
+    }
+
+    function submitOrder(quantity, groupBuyId, memberId) {
+      axios.post("http://localhost:8080/FinalProject/public/front/group-members", {
+        quantity: quantity,
+        groupBuyId: groupBuyId,
+        memberId: memberId
+      })
+        .then(res => {
+          console.log(res);
+          let location = res.headers['location'];
+          showOrderSuccessDialog(location);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+
+    function showOrderSuccessDialog(location) {
+      Swal.fire({
+        title: "訂購成功",
+        icon: 'success',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonColor: "#6BB252",
+        denyButtonColor: "#f7a422",
+        confirmButtonText: "繼續選購",
+        denyButtonText: "查看訂單"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "http://localhost:8080/FinalProject/public/front/group-buys";
+        } else if (result.isDenied) {
+          window.location.href = location;
+        }
+      });
+    }
+
+  </script>
+</body>
+
+</html>

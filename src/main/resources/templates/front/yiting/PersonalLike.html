@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+    <title>友善商品</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/yiting/friendly.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+
+
+    <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front/friendlyProduct}">友善商品</a>
+                    <span class="breadcrumb-item active" aria-current="page">個人店鋪收藏</span>
+                </nav>
+                <h1>友善商品</h1>
+            </div>
+        </div>
+    </section>
+
+    <section>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="container mt-3">
+                    <div class="wrapper">
+                        <table border="0">
+                            <tr>
+                                <td valign="top">
+                                    <!----------------------左menu------------------------>
+                                    <div id="fri_left" class="fri_left">
+                                        <div id="chgSearchList" style="display: block">
+                                            <div class="fri_graybox" style="cursor: pointer">
+                                                <a th:href="@{/public/front/friendlyProduct}">
+                                                    <h2 class="search_home">回友善商品查詢首頁<span>
+                                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                                        </span> </h2>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td valign="top">
+                                    <div id="fri_right" class="fri_right">
+                                        <!--店鋪列表-->
+                                        <div id="showShopList" style="overflow: hidden;display:block;">
+
+
+
+                                            <table width="683" border="0" cellspacing="0" cellpadding="0"
+                                                class="graybigbox">
+                                                <th:block th:if="${personalLike.size()==0}">
+                                                    <div>
+                                                        <h2>尚未加入喜愛店鋪</h2>
+                                                        <a style="color:#6BB252;font-weight:bold;font-size:25px"
+                                                            th:href="@{/public/front/friendlyProduct}">
+                                                            快去收藏喜愛的店鋪<i class="fa-solid fa-magnifying-glass"></i>
+                                                        </a>
+                                                    </div>
+
+                                                </th:block>
+                                                <th:block th:if="${personalLike.size()>=1}">
+                                                    <thead>
+                                                        <tr>
+                                                            <td class="greenbox">店舖名</td>
+                                                            <td class="greenbox">店舖情報</td>
+                                                            <td class="greenbox">點選商品類別 <i
+                                                                    class="fa-solid fa-circle-info"></i></td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="searchResult">
+                                                        <th:block th:each="like : ${personalLike}">
+                                                            <tr>
+                                                                <td class="graybox">
+                                                                    <span
+                                                                        th:text="'EZBUY' + ${like.store.storeName}"></span>
+                                                                    <br>
+                                                                    <a style="color: #FAD56A; font-weight: bold"
+                                                                        th:href="@{/public/front/personalDelete(likeId=${like.likeId})}">
+                                                                        <i class="fa-solid fa-heart"></i>取消收藏
+                                                                    </a>
+                                                                </td>
+                                                                <td class="graybox">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td
+                                                                                    th:text="'店鋪號: ' + ${like.store.storeId}">
+                                                                                </td>
+                                                                                <td align="right" id="friendlyText">
+                                                                                    <th:block
+                                                                                        th:each="check : ${checkInv}">
+                                                                                        <a th:if="${check.storeId == like.store.storeId}"
+                                                                                            th:href="@{/public/front/friendlyResult(storeId=${like.store.storeId})}"
+                                                                                            style="text-decoration: none; color: inherit;">
+                                                                                            <i
+                                                                                                class="fa-solid fa-utensils"></i>
+                                                                                            <span
+                                                                                                class="add_map_word">查看友善商品</span>
+                                                                                        </a>
+                                                                                    </th:block>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <span
+                                                                        th:text="'地址: ' + ${like.store.city} + ${like.store.area} + ${like.store.street} + ${like.store.detail}"></span><br>
+                                                                    <span th:text="'電話: ' + ${like.store.tel}"></span>
+                                                                </td>
+                                                                <td class="graybox prodType"
+                                                                    style="width:165px;line-height: 1.5;">
+                                                                    <th:block th:each="type : ${countType}">
+                                                                        <th:block
+                                                                            th:if="${type.storeId == like.store.storeId}">
+                                                                            <a th:switch="${type.type}">
+                                                                                <th:case th:if="${type.type == '飲品'}">
+                                                                                    <a
+                                                                                        th:href="@{/public/front/friendlyResult(storeId=${type.storeId},productType=${type.type})}">
+                                                                                        <i
+                                                                                            class="fa-solid fa-mug-saucer"></i>
+                                                                                        <span
+                                                                                            th:text="'(' + ${type.type} + '): ' + ${type.number}"></span>
+                                                                                    </a>
+                                                                                    <br>
+                                                                                </th:case>
+                                                                                <th:case th:if="${type.type == '零食'}">
+                                                                                    <a
+                                                                                        th:href="@{/public/front/friendlyResult(storeId=${type.storeId},productType=${type.type})}">
+                                                                                        <i
+                                                                                            class="fa-solid fa-cookie-bite"></i>
+                                                                                        <span
+                                                                                            th:text="'(' + ${type.type} + '): ' + ${type.number}"></span>
+                                                                                    </a>
+                                                                                    <br>
+                                                                                </th:case>
+                                                                                <th:case th:if="${type.type == '泡麵'}">
+                                                                                    <a
+                                                                                        th:href="@{/public/front/friendlyResult(storeId=${type.storeId},productType=${type.type})}">
+                                                                                        <i
+                                                                                            class="fa-solid fa-bacon"></i>
+                                                                                        <span
+                                                                                            th:text="'(' + ${type.type} + '): ' + ${type.number}"></span>
+                                                                                    </a>
+                                                                                    <br>
+                                                                                </th:case>
+                                                                                <th:case th:if="${type.type == '熟食'}">
+                                                                                    <a
+                                                                                        th:href="@{/public/front/friendlyResult(storeId=${type.storeId},productType=${type.type})}">
+                                                                                        <i
+                                                                                            class="fa-solid fa-bowl-food"></i>
+                                                                                        <span
+                                                                                            th:text="'(' + ${type.type} + '): ' + ${type.number}"></span>
+                                                                                    </a>
+                                                                                    <br>
+                                                                                </th:case>
+                                                                            </a>
+                                                                        </th:block>
+                                                                    </th:block>
+                                                                </td>
+                                                            </tr>
+                                                        </th:block>
+                                                </th:block>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center py-4" aria-label="Page navigation" id="pageArea"
+                                            style="display:none;">
+                                            <ul class="pagination d-flex justify-content-center pageul"></ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </section>
+
+    <div th:replace="~{front/layout/footer}"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
+
+
+</body>
+
+</html>

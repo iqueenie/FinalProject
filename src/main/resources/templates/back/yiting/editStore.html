@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>店鋪更新</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div th:replace="~{back/layout/navbar}"></div>
+    <div class="container d-flex justify-content-center">
+
+
+        <form th:action="@{/private/store/editPost}" th:object="${store}" th:method="PUT"
+            class="mt-5 bg-secondary-subtle mw576px rounded-4">
+            <div class="row g-2 m-2">
+                <h2 class="col-12 text-center">店鋪更新</h2>
+
+				<input th:field="*{storeId}" type="hidden"/>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" id="storeName" th:field="*{storeName}" placeholder="storeName"
+                            required ></textarea>
+                        <label for="storeName">店鋪名稱</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <!-- 左侧的 twzipcode_ADV -->
+                                <div id="twzipcode_ADV" class="twzipcode"
+                                    th:attr="city=*{city}, area=*{area}, cityNum=*{cityNum}">
+
+
+                                </div>
+                                <div id="cityEmpty" style="color:red"></div>
+                            </div>
+                            <div class="col-md-5">
+                                <!-- 右侧的 form-floating -->
+                                <div class="form-floating mt-2">
+                                    <textarea class="form-control rounded" id="street" th:field="*{street}"
+                                        placeholder="street" style="width: 100%;" required></textarea>
+                                    <label for="street">街道(街/路/段)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- 右侧的 form-floating -->
+                                <div class="form-floating mt-2">
+                                    <textarea class="form-control rounded" id="detail" th:field="*{detail}"
+                                        placeholder="detail" style="width: 100%;" required></textarea>
+                                    <label for="detail">詳細地址(巷弄/門號/樓層)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" th:field="*{tel}" id="tel" placeholder="tel" minlength="10" maxlength="10" required></textarea>
+                        <label for="tel">電話(02-1234567/0912345678)</label>
+
+                    </div>
+                </div>
+                <div class="mt-3 col-12 d-flex justify-content-center mb-3">
+                    <a class="btn btn-secondary me-2" th:href="@{/private/stores/findAll}">返回</a>
+                    <button type="submit" class="btn btn-success">更新</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
+    <script>
+        $('form').submit(function (event) {
+            event.preventDefault();
+            var form = event.currentTarget;
+
+            var tel = $("#tel").val().trim();
+
+
+
+            // 获取用户选择的县市、鄉鎮和邮政编码
+            var selectedCounty = $("#twzipcode_ADV .city").val().trim(); // 或者根据实际情况调整选择器
+            if (!selectedCounty) {
+                // 如果未選擇縣市，顯示提示信息
+                const cityIsEmpty = document.getElementById('cityEmpty')
+                cityIsEmpty.innerHTML = "請選擇縣市!!";
+                return; // 停止表單提交
+            }
+
+
+            // 如果县市不为空，继续执行提交逻辑
+            Swal.fire({
+                title: "確定要更新嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                cancelButtonColor: "gray",
+                confirmButtonText: "更新",
+                cancelButtonText: "取消",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // 提交表单
+                }
+            });
+        });
+        const cityIsEmpty = document.getElementById('cityEmpty');
+        cityIsEmpty.innerHTML = '';
+
+        $(document).ready(function () {
+
+            var storeCity = $("#twzipcode_ADV").attr("city");
+            var storeArea = $("#twzipcode_ADV").attr("area");
+            var storeCityNum = $("#twzipcode_ADV").attr("cityNum");
+
+            console.log(storeCity + storeArea + storeCityNum);
+            $("#twzipcode_ADV").twzipcode({
+                zipcodeIntoDistrict: true,
+                css: ["city form-control", "town form-control"],
+                countyName: "city", // 对应到 JavaBean 的 city
+                districtName: "area", // 对应到 JavaBean 的 area
+                zipcodeName: "cityNum", // 对应到 JavaBean 的 areaNum
+
+            });
+
+            $("#twzipcode_ADV").twzipcode('set', {
+                'county': storeCity,
+                'district': storeArea,
+                'zipcode': storeCityNum
+            });
+
+
+        });
+    </script>
+</body>
+
+</html>

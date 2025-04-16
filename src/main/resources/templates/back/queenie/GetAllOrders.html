@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的訂單</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+   
+</head>
+
+<body>
+    <div th:replace="~{back/layout/navbar}"></div>
+    <div class="container mt-3">
+        <div class="d-flex justify-content-center align-items-center">
+            <a th:href="@{/private/getStoreProduct}">
+                <button class="btn btn-outline-success">新增訂單</button>
+            </a>
+            <h1 class="m-auto">會員訂單</h1>
+        </div>
+        <table id="myTable" class="table display nowrap w-100">
+            <thead>
+                <tr>
+                    <th>訂單編號</th>             
+                    <th>會員編號</th>               
+                    <th>訂單日期</th>
+                    <th>點數使用</th>
+                    <th>折扣金額</th>
+                    <th>總金額</th>
+                    <th>付款方式</th>
+                    <th>最終金額</th>
+                    <th>取貨店鋪</th>
+                    <th>獲得點數</th>
+                    <th>未付款次數</th>
+                    <th>取貨日期</th>
+                    <th>訂單狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>                  
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:text="${order.members.memberAccount}"></td>
+                    <td th:text="${order.orderDate}"></td>
+                    <td th:text="${order.pointUse}"></td>
+                    <td th:text="${order.discountMoney}"></td>
+                    <td th:text="'NT$ ' + ${order.total} + ' 元'"></td>
+                    <td th:text="${order.paymentMethod}"></td>
+                    <td th:text="'NT$ ' + ${order.finalAmount} + ' 元'"></td>
+                    <td th:text="${order.storesBean.storeName}"></td>
+                    <td th:text="${order.pointGet}"></td>
+                    <td th:text="${order.unpaidCount}"></td>
+                    <td th:text="${order.pickupDate}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td>
+                        <a th:href="@{'ShowDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
+                        <a th:href="@{'showOrder?orderId=' + ${order.orderId}}" class="btn btn-outline-warning btn-sm update-btn">修改訂單</a>
+                        <button class="btn btn-outline-danger btn-sm delete-btn" th:onclick="'deleteOrder(' + ${order.orderId} + ', this)'">刪除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+   <script>
+			  var table;
+			
+			$(document).ready(function() {
+			    table = $('#myTable').DataTable({
+			        responsive: true,
+			    });
+			
+			    checkOrderStatus();
+			
+			    table.on('draw', function () {
+			        checkOrderStatus();
+			    });
+			
+			    function checkOrderStatus() {
+			        $('#myTable tbody tr').each(function() {
+			            var status = $(this).find('td:eq(12)').text().trim();
+			
+			            if (status === 'Canceled') {
+			                $(this).find('.delete-btn').prop('disabled', true);
+			                $(this).find('.update-btn').addClass('disabled');
+			            } else {
+			                $(this).find('.delete-btn').prop('disabled', false);
+			                $(this).find('.update-btn').removeClass('disabled');
+			            }
+			        });
+			    }
+			});
+			
+			function deleteOrder(orderId, button) {
+			    Swal.fire({
+			        title: "確定要刪除嗎？",
+			        icon: "warning",
+			        showCancelButton: true,
+			        confirmButtonColor: "red",
+			        cancelButtonColor: "gray",
+			        confirmButtonText: "刪除",
+			        cancelButtonText: "取消",
+			        reverseButtons: true
+			    }).then((result) => {
+			        if (result.isConfirmed) {
+			            $.ajax({
+			                type: 'POST',
+			                url: '/FinalProject/deleteOrder',
+			                data: { orderId: orderId },
+			                success: function(response) {
+			                    var row = $(button).closest('tr');
+			                    row.find('td:eq(12)').text('Canceled');
+			                    row.find('.delete-btn').prop('disabled', true);
+			                    row.find('.update-btn').addClass('disabled');
+			
+			                    Swal.fire({
+			                        title: "刪除成功！",
+			                        icon: "success"
+			                    });
+			                },
+			                error: function(xhr, status, error) {
+			                    Swal.fire({
+			                        title: "刪除失敗！",
+			                        text: "請稍後再試",
+			                        icon: "error"
+			                    });
+			                }
+			            });
+			        }
+			    });
+			}
+
+
+
+    </script>
+
+</body>
+</html>

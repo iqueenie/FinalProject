@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>店鋪收藏彙總</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+</head>
+
+<body>
+    <div th:replace="~{back/layout/navbar}"></div>
+    <div class="container mt-3">
+        <div class="card">
+            <h5 class="card-header fw-bold" style="background-color: rgba(107, 178, 82, 0.2); text-align: center;">店鋪收藏彙總</h5>
+            
+            <canvas id="myChart" class="card-img-bottom m-3" width="533" height="266" style="display: block; box-sizing: border-box; height: 177px; width: 355px;"></canvas>
+        </div>
+        </br>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- 引入 Chart.js -->
+    <script>
+        // 使用 Axios 请求数据
+        axios.get('http://localhost:8080/FinalProject/private/like/count')
+            .then(response => {
+                const data = response.data;
+                const labels = data.storeNames;
+                const counts = data.likeCounts;
+
+                // 绘制 Chart.js 图表
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '收藏數',
+                            data: counts,
+                            backgroundColor: 'rgba(250,213,106,0.3)',
+                            borderColor: 'rgba(107,178,82,1)',
+                            borderWidth: 1,
+                            barThickness: 'flex',
+                            categoryPercentage: 0.3,
+                            barPercentage: 0.8
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '店鋪名稱'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '收藏數'
+                                },
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('请求数据失败:', error);
+            });
+    </script>
+</body>
+
+</html>

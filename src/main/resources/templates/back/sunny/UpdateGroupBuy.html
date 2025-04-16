@@ -1,0 +1,145 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>更新團購</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .mw576px {
+            max-width: 576px;
+        }
+
+        .pt2rem {
+            padding-top: 2.1rem !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{back/layout/navbar}"></div>
+
+    <div class="container d-flex justify-content-center">
+        <form th:action="@{/private/back/UpdateGroupBuy}" th:method="PUT" th:object="${groupBuy}" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+            <div class="row g-2 m-2">
+                <h2 class="col-12 text-center">更新團購</h2>
+
+                <input type="hidden" th:field="*{groupBuyId}"></input>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select th:field="*{productId}" class="form-select" id="productId" required>
+                            <option th:each="pdn : ${pdns}" th:value="${pdn.productId}" th:text="${pdn.productName}">
+                        </select>
+                        <label for="productId">商品名稱</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select th:field="*{storeId}" class="form-select" id="storeId" required>
+                            <option th:each="stn : ${stns}" th:value="${stn.storeId}" th:text="${stn.storeName}">
+                        </select>
+                        <label for="storeId">店鋪名稱</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input th:field="*{targetQuantity}" type="number" class="form-control" id="targetQuantity" placeholder="0" min="10" autocomplete="off" required>
+                        <label for="targetQuantity">目標數量</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input th:field="*{orderDate}" type="date" class="form-control" id="orderDate" placeholder="date" required>
+                        <label for="orderDate">預計訂購日期</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input th:field="*{arrivalDate}" type="date" class="form-control" id="arrivalDate" placeholder="date" required>
+                        <label for="arrivalDate">到貨日期</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select th:field="*{groupBuyStatus}" class="form-select" id="groupBuyStatus" required>
+                            <option value="未開團">未開團</option>
+                            <option value="開團中">開團中</option>
+                            <option value="已結單" th:if="${role!='店長'}">已結單</option>
+                            <option value="不成立" th:if="${role!='店長'}">不成立</option>
+                            <option value="已到貨" th:if="${role!='店長'}">已到貨</option>
+                            <option value="已結束" th:if="${role!='店長'}">已結束</option>
+                        </select>
+                        <label for="groupBuyStatus">狀態</label>
+                    </div>
+                </div>
+
+                <div class="mt-3 col-12 d-flex justify-content-center mb-3">
+                    <a th:href="@{/private/back/GetAllGroupBuy}" class="btn btn-secondary me-2">返回</a>
+                    <button type="submit" class="btn btn-success">更新</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('form').submit(function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "確定要更新嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                cancelButtonColor: "gray",
+                confirmButtonText: "更新",
+                cancelButtonText: "取消",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+
+        let today = new Date().toISOString().split('T')[0];
+        $('#arrivalDate').attr('max', today);
+        toggleArrivalDate();
+        let orderDate = $("#orderDate").val();
+        $("#arrivalDate").attr("min", orderDate);
+        $("#groupBuyStatus").change(function () {
+            toggleArrivalDate();
+        });
+
+        function toggleArrivalDate() {
+            let status = $("#groupBuyStatus").val();
+            if (status === "已到貨" || status === "已結束") {
+                $("#arrivalDate").prop("disabled", false);
+            } else {
+                $("#arrivalDate").prop("disabled", true);
+                $("#arrivalDate").val("");
+            }
+            if (status === "未開團" || status === "開團中") {
+                $("#orderDate").prop("min", today);
+                $("#orderDate").prop("max", "");
+            } else {
+                $("#orderDate").prop("min", "");
+                $("#orderDate").prop("max", today);
+            }
+        }
+        $("#orderDate").change(function () {
+            let orderDate = $(this).val();
+            $("#arrivalDate").attr("min", orderDate);
+        });
+    </script>
+</body>
+
+</html>

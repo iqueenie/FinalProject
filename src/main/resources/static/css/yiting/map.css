@@ -1,0 +1,510 @@
+@charset "UTF-8";
+
+a {
+    text-decoration: none;
+}
+
+/* 地圖 */
+.map_container {
+    border: 1px solid #5cc209;
+    margin-bottom: 10px;
+    background-color: #f6f6f6;
+    padding: 8px 0 12px 0px;
+    font-size: 15px;
+    color: #444444;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+
+/* 商店列表 */
+.graybigbox {
+    border: 1px solid #d5d5d5;
+    margin-bottom: 10px;
+}
+
+.greenbox {
+    background-color: #5ac20f;
+    font-size: 13px;
+    color: #FFFFFF;
+    border-right: 1px solid #FFFFFF;
+    padding-left: 15px;
+}
+
+.graybox {
+    font-size: 13px;
+    color: #666666;
+    border-right: 1px solid #d5d5d5;
+    line-height: 18px;
+    border-bottom: 1px solid #d5d5d5;
+    padding: 10px 0 10px 15px;
+    vertical-align: top;
+}
+
+.shop_add_map {
+    float: right;
+    margin-right: 10px;
+}
+
+
+
+.shop_add_map a {
+    /* background: url(../images/map/shop_map_btn_01.png) no-repeat; */
+
+    /* border: 1px solid #d5d5d5;
+    padding-top: 2px; */
+    width: 77px;
+    height: 24px;
+    display: block;
+    color: #5ac20f;
+}
+
+
+/* 查詢方式變更&上方查詢列 */
+.search_icon a {
+    display: block;
+    width: 25px;
+    height: 22px;
+    float: right;
+    padding-top: 3px;
+
+}
+
+.search_icon a i {
+    font-size: 20px;
+}
+
+/* 地標icon */
+.icon01 {
+    display: block;
+    width: 25px;
+    height: 25px;
+    float: left;
+    padding-top: 3px;
+}
+
+.icon01 i {
+    font-size: 20px;
+}
+
+
+
+/*---map01__左方查詢條件----*/
+
+.search_word .search_icon {
+    float: right;
+    margin-right: 70px;
+}
+
+.map_left {
+    width: 210px;
+    padding: 10px 10px 0 0;
+    float: left;
+}
+
+.map_graybox {
+    border: 1px solid #d5d5d5;
+    background-color: #F0F0F0;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+
+.search_word {
+    font-size: 15px;
+    color: #434343;
+    padding: 6px 0 0 10px;
+    font-weight: normal;
+}
+
+.search_home {
+    font-size: 15px;
+    color: #434343;
+    padding: 18px 0 0 32px;
+    font-weight: normal;
+}
+
+.search_box {
+    border: 1px solid #b9b9b9;
+    font-size: 12px;
+    color: #5c5c5c;
+    height: 28px;
+    line-height: 28px;
+    width: 124px;
+    margin-left: 8px;
+    /* margin-top: 5px; */
+    text-indent: 5px;
+    float: left;
+}
+
+.search_button {
+    width: 60px;
+    height: 30px;
+    line-height: 30px;
+    /* margin-top: 5px; */
+    background-color: #00b347;
+    font-size: 13px;
+    margin-left: 135px;
+    text-align: center;
+}
+
+.search_button a {
+    display: block;
+    color: #FFFFFF;
+
+}
+
+
+.ui-accordion .ui-accordion-header {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 0 0 0;
+    padding: .5em .5em .5em .7em;
+    font-size: 100%;
+}
+
+
+
+.note {
+    color: #ababab;
+    font-size: 13px;
+    width: 200px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 10px;
+    -webkit-text-size-adjust: none;
+    font-weight: normal;
+}
+
+.map_graybox02 {
+    border: 1px solid #d5d5d5;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+}
+
+.store {
+    border-top: 1px solid #d5d5d5;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+
+
+
+.storeIcon {
+    display: block;
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-right: 5px;
+    text-indent: -9999px;
+}
+
+.store input {
+    box-sizing: border-box;
+    padding: 0;
+    float: left;
+    margin-top: 8px;
+    margin-right: 5px;
+    /* 调整复选框与文字之间的间距 */
+}
+
+
+.accordion-item {
+    margin-bottom: 1rem;
+}
+
+.accordion-button {
+    display: flex;
+    align-items: center;
+}
+
+.accordion-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-body ul {
+    margin-left: 15px;
+    margin-top: 5px;
+    padding: 0px;
+}
+
+.accordion-body li {
+    font-size: 14px;
+    color: #424242;
+    line-height: 30px;
+    list-style-type: none;
+}
+
+
+
+/*---map01__搜尋結果__綠字----*/
+.map_graybox05 ul.result {
+    padding-left: 12px;
+    margin-bottom: 50px;
+}
+
+.line {
+    border-bottom: 1px solid #d5d5d5;
+    height: 5px;
+    width: 100%;
+    display: block;
+    margin: 8px 0;
+}
+
+.result li {
+    float: left;
+    padding: 10px 20px 5px 0;
+}
+
+/* 上方搜尋列&麵包屑 */
+.map_graybox03 {
+    border: 1px solid #d5d5d5;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #676767;
+    font-weight: bold;
+    padding-left: 10px;
+    padding: 7px 0 0 10px;
+    overflow: hidden;
+    height: 39.33px;
+
+}
+
+.map_graybox05 {
+    border: 1px solid #5cc209;
+    margin-bottom: 10px;
+    background-color: #f6f6f6;
+    padding: 8px 0 12px 0px;
+    font-size: 15px;
+    color: #444444;
+    letter-spacing: 1px;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+
+.breadcrumb {
+    margin: 0;
+    /* 去除默认外边距 */
+    padding: 0;
+    /* 去除默认内边距 */
+    list-style: none;
+    /* 去除默认列表样式 */
+    transform: translateY(-10px);
+}
+
+
+.map_graybox05 li,
+.map_graybox05 i {
+    list-style-type: none;
+    color: #FAD56A;
+}
+
+
+
+
+.map_graybox03 input {
+    border: 0;
+    font-size: 13px;
+    color: #676767;
+    margin-bottom: 3px;
+}
+
+.map_right {
+    width: 683px;
+    padding: 10px 0 0 0px;
+}
+
+.search_green a {
+    font-size: 13px;
+    color: #2a9d14;
+    text-decoration: underline;
+}
+
+.map_graybox05 a {
+    color: #2a9d14;
+    text-decoration: underline;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.line02 {
+    display: block;
+    border-top: 1px dotted #a7a7a7;
+    width: 640px;
+    margin: 5px 12px;
+}
+
+.map_graybox05 span {
+    padding-left: 12px;
+}
+
+/* 台灣地圖 */
+.map_graybox04 {
+    border: 1px solid #d5d5d5;
+    height: 508px;
+    position: relative;
+}
+
+#taiwanMap {
+    background: url(http://localhost:8080/FinalProject/img/yiting/map.png) no-repeat;
+}
+
+/* 縣市 */
+.city a {
+    display: block;
+    width: 67px;
+    height: 26px;
+    /*background:url(../images/map/citybg.png) no-repeat;*/
+    background-color: #00b347;
+    border-radius: 4px;
+    line-height: 26px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.city a:hover {
+    color: #00b347;
+    background-position: 0 bottom;
+    background-color: #FFF;
+    border: 1px solid #00b347;
+}
+
+
+.yilan {
+    position: absolute;
+    left: 458px;
+    top: 128px;
+}
+
+.hualien {
+    position: absolute;
+    left: 458px;
+    top: 212px;
+}
+
+.taitung {
+    position: absolute;
+    left: 388px;
+    top: 381px;
+}
+
+.keelung {
+    position: absolute;
+    left: 318px;
+    top: 39px;
+}
+
+.taipei {
+    position: absolute;
+    left: 318px;
+    top: 68px;
+}
+
+.newtaipei {
+    position: absolute;
+    left: 318px;
+    top: 98px;
+}
+
+
+.taoyuan {
+    position: absolute;
+    left: 235px;
+    top: 98px;
+}
+
+
+.hsinchu {
+    position: absolute;
+    left: 235px;
+    top: 127px;
+}
+
+
+.hsinchu02 {
+    position: absolute;
+    left: 235px;
+    top: 157px;
+}
+
+
+.Miaoli {
+    position: absolute;
+    left: 235px;
+    top: 187px;
+}
+
+.Yunlin {
+    position: absolute;
+    left: 235px;
+    top: 247px;
+}
+
+.Chiayi {
+    position: absolute;
+    left: 235px;
+    top: 276px;
+}
+
+.Chiayi02 {
+    position: absolute;
+    left: 235px;
+    top: 306px;
+}
+
+.Tainan {
+    position: absolute;
+    left: 235px;
+    top: 336px;
+}
+
+.Kaohsiung {
+    position: absolute;
+    left: 235px;
+    top: 394px;
+}
+
+.Pingtung {
+    position: absolute;
+    left: 235px;
+    top: 423px;
+}
+
+.Penghu {
+    position: absolute;
+    left: 156px;
+    top: 40px;
+}
+
+.Kinmen {
+    position: absolute;
+    left: 156px;
+    top: 69px;
+}
+
+.Lienchiang {
+    position: absolute;
+    left: 156px;
+    top: 98px;
+}
+
+.Taichung {
+    position: absolute;
+    left: 156px;
+    top: 188px;
+}
+
+.Changhua {
+    position: absolute;
+    left: 156px;
+    top: 217px;
+}
+
+.Nantou {
+    position: absolute;
+    left: 156px;
+    top: 247px;
+}

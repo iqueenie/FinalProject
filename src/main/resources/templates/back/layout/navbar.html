@@ -1,0 +1,114 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .container {
+            width: 90% !important;
+            max-width: none !important;
+        }
+
+        .btn-green:hover {
+            background-color: #3A742E !important;
+        }
+
+        .btn-green {
+            background-color: #6BB252 !important;
+        }
+
+        .bg-green {
+            background-color: #6BB252 !important;
+        }
+
+        .bg-lightgreen {
+            background-color: #8EDB7E !important;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar bg-green sticky-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler focus-ring" style="--bs-focus-ring-color: rgba(0, 64, 128, .25)" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
+            </button>
+            <a class="navbar-brand m-auto d-flex align-items-center" th:href="@{/private/back}">
+                <img th:src=@{/img/all/logo.png} alt="Logo" height="50" class="d-inline-block align-text-top">
+                <span class="fw-bold text-light ms-2 fs-2">EZBUY後臺網站</span>
+                <a href="/FinalProject/public/logout" class="btn btn-danger">登出</a>
+            </a>
+            <div class="offcanvas offcanvas-start bg-green text-light" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title fw-bold fs-2" id="offcanvasWithBothOptionsLabel">
+                        <img th:src=@{/img/all/logo.png} alt="Logo" height="40" class="d-inline-block align-text-top">
+                        <span class="ms-2">選單</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-grid">
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/back}">
+                            <i class="fa-solid fa-house col-1" style="color: #ffffff;"></i>
+                            <span class="col">首頁</span>
+                        </a>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/GetAllMembers}">
+                            <i class="fa-solid fa-user col-1" style="color: #ffffff;"></i>
+                            <span class="col">會員</span>
+                        </a>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/AdminMessagesMain}">
+                            <i class="fa-solid fa-envelope col-1" style="color: #ffffff;"></i>
+                            <span class="col">站內信</span>
+                        </a>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" data-bs-toggle="collapse" href="#product" role="button" aria-expanded="false" aria-controls="product">
+                            <i class="fa-solid fa-cookie-bite col-1" style="color: #ffffff;"></i>
+                            <span class="col-10">商品</span>
+                            <i class="fa-solid fa-angle-down col-1 ms-auto" style="color: #ffffff;"></i>
+                        </a>
+                        <div class="collapse ms-3 border-start border-3 mb-2" id="product">
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/Product/GetAll}">商品管理</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/Product/ForbiddenWords}">敏感字管理</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/Product/Logs}">會員操作日誌</a>
+                        </div>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" data-bs-toggle="collapse" href="#store" role="button" aria-expanded="false" aria-controls="store">
+                            <i class="fa-solid fa-store col-1" style="color: #ffffff;"></i>
+                            <span class="col-10">店鋪</span>
+                            <i class="fa-solid fa-angle-down col-1 ms-auto" style="color: #ffffff;"></i>
+                        </a>
+                        <div class="collapse ms-3 border-start border-3 mb-2" id="store">
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/stores/findAll}">店鋪資訊</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/buy/findAll}">採購資訊</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/inventory/findAll}">存貨資訊</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/private/like/findAll}">店鋪收藏</a>
+                        </div>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/GetAllOrders}">
+                            <i class="fa-solid fa-cart-shopping col-1" style="color: #ffffff;"></i>
+                            <span class="col">訂單</span>
+                        </a>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" data-bs-toggle="collapse" href="#discount" role="button" aria-expanded="false" aria-controls="discount">
+                            <i class="fa-solid fa-tags col-1" style="color: #ffffff;"></i>
+                            <span class="col-10">活動</span>
+                            <i class="fa-solid fa-angle-down col-1 ms-" style="color: #ffffff;"></i>
+                        </a>
+                        <div class="collapse ms-3 border-start border-3 mb-2" id="discount">
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green mb-1" th:href="@{/private/GetAllAmountDiscount}">節日優惠</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/private/GetAllProductDiscount}">特定商品優惠</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/private/GetAllHolidayDiscounts}">特定商品優惠資訊</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/private/awards}">獎項</a>
+                            <a class="btn w-100 text-start fs-5 fw-bold text-white btn-green" th:href="@{/private/lotteryRecords}">抽獎紀錄</a>
+                        </div>
+                        <a class="btn text-start fs-4 fw-bold text-white btn-green mb-2 row" th:href="@{/private/back/GetAllGroupBuy}">
+                            <i class="fa-solid fa-people-carry-box col-1" style="color: #ffffff;"></i>
+                            <span class="col">團購</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+
+</html>

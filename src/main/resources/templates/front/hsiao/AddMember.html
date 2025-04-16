@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+    <title>註冊頁面</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .full-height {
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">註冊</span>
+                </nav>
+                <h1>歡迎註冊</h1>
+            </div>
+        </div>
+    </section>
+	
+	<section>
+		<section class="py-5 my-5">
+				<div class="container-sm">
+					<div class="row justify-content-center justify-content-start">
+						
+                    		<div class="col-lg-6 p-5 bg-white border shadow-sm">
+                    <h5 class="text-uppercase mb-5 mt-4">EZBUY會員註冊</h5>
+                
+							<form th:action="@{/front/insertMembers}" method="post" id="form"
+								class="form-group flex-wrap" enctype="multipart/form-data" style="color: black;" >
+								
+								
+								<div class="col-12 pb-3">
+									<label class="d-none" >會員名稱</label>姓名:<input type="text"
+										id="memberName" name="memberName" placeholder=""
+										class="form-control">
+								</div>
+								
+								<div class="col-12 pb-3">
+									<label class="d-none">會員照片</label>照片:<input type="file"
+										id="memberPhotoFile" name="memberPhotoFile" placeholder=""
+										class="form-control">
+								</div>
+								
+								
+								<div class="col-12 pb-3">
+									<label class="d-none" >帳號</label>帳號:<input
+										type="text" name="memberAccount" id="memberAccount"
+										placeholder="" class="form-control">
+								</div>
+								<div class="col-12 pb-3">
+									<label class="d-none">密碼</label>密碼:<input type="password"
+										id="memberPassword" name="memberPassword" placeholder=""
+										class="form-control">
+								</div>
+								
+								
+								<div class="col-12 pb-3">
+									<label class="d-none"></label>生日:<input type="date"
+										id="memberBirthDate" name="memberBirthDate" placeholder="您的生日"
+										class="form-control">
+								</div>
+								<div class="col-12 pb-3">
+									<label class="d-none">信箱</label>信箱:<input type="email"
+										id="memberEmail" name="memberEmail" placeholder=""
+										class="form-control">
+								</div>
+								
+								<div class="col-12 pb-3">
+									<label class="d-none">地址</label>地址:<input type="text"
+										id="memberAddress" name="memberAddress" placeholder=""
+										class="form-control" >
+								</div>
+								
+								<div class="col-12 pb-3">
+									<!--   <label>
+                                <input type="checkbox" required="">
+                                <span class="label-body">記住我</span>
+                            </label> -->
+								</div>
+								
+								<div class="col-12">
+									<button type="submit" name="submit"
+										class="btn btn-primary text-uppercase w-100">送出</button>
+									
+								
+								</div>
+								
+							</form>
+							<br>
+							<button class="btn btn-primary text-uppercase w-10"   onclick= "addmember()">一鍵註冊</button>
+							
+						</div>
+						<div class="col-lg-6 d-flex align-items-end">
+							<img th:src="@{/img/hsiao/Login.png}" alt="Login" class="img-fluid">
+						</div>
+                </div>
+            </div>
+      </section>
+    
+    </section>
+    
+
+    <div th:replace="~{front/layout/footer}"></div>
+
+    <script>
+    
+    function addmember(){
+    let memberName= document.getElementById('memberName');
+	let memberAccount= document.getElementById('memberAccount');
+	let memberPassword= document.getElementById('memberPassword');
+	let memberBirthDate= document.getElementById('memberBirthDate');    
+    let memberEmail= document.getElementById('memberEmail');
+    let memberAddress= document.getElementById('memberAddress');
+    
+    let Name ='蕭景鴻';
+    let Account ='jinghnong3514195'
+    let Password = 'jinghong0704';
+    let BirthDate='1998-07-26';
+    let Email = 'jinghong3514195@gmail.com';
+    let Address ='桃園市八德區興豐路283巷20號4樓';
+    
+    memberName.value = Name;
+    memberAccount.value = Account;
+    memberPassword.value= Password;
+    memberBirthDate.value=BirthDate;
+    memberEmail.value=Email;
+    memberAddress.value=Address;
+     }
+     
+    </script>
+    
+</body>
+
+</html>

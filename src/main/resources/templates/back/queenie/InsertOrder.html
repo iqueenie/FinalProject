@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增訂單</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .mw576px {
+            max-width: 576px;
+        }
+        .pt2rem {
+            padding-top: 2.1rem !important;
+        }
+    </style>  
+</head>
+<body>
+    <div th:replace="~{back/layout/navbar}"></div>
+    <div class="container d-flex justify-content-center">
+        <form th:action="@{/private/insertOrder}" method="post" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+            <div class="row g-2 m-2">
+                <h2 class="col-12 text-center">新增訂單</h2>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" id="memberId" name="memberId" class="form-control" placeholder="會員編號" required />
+                        <label for="memberId">會員編號:</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="date" id="orderDate" name="orderDate" class="form-control" required />
+                        <label for="orderDate">訂單日期:</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select class="form-select" id="storeId" name="storeId" required>
+                            <option value="" selected disabled>選擇取貨店鋪</option>
+                            <option th:each="store : ${storeList}" th:value="${store.storeId}" th:text="${store.storeName}"></option>
+                        </select>
+                        <label for="storeId">取貨店鋪</label>
+                    </div>
+                </div>            
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select class="form-select" id="pointUse" name="pointUse" required>                      
+                            <option value="0">不使用</option>
+                            <option value="1">使用</option>
+                        </select>
+                        <label for="pointUse">點數使用</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                            <option value="" selected disabled>選擇付款方式</option>
+                            <option value="信用卡">信用卡</option>
+                            <option value="現金">現金</option>
+                        </select>
+                        <label for="paymentMethod">付款方法</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="number" id="unpaidCount" name="unpaidCount" class="form-control" min="0" max="2" required />
+                        <label for="unpaidCount">未付款次數</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="待發貨">待發貨</option>
+                            <option value="已出貨">已出貨</option>
+                            <option value="配送中">配送中</option>
+                            <option value="已送達">已送達</option>
+                            <option value="完成訂單">完成訂單</option>
+                        </select>
+                        <label for="status">狀態</label>
+                    </div>
+                </div>
+                <div id="productDetails" class="col-12">                  
+                    <div class="productEntry mb-3">
+                        <label for="productId">產品編號</label>
+                        <select name="productId[]" class="form-select product-select" required>
+                            <option value="" selected disabled>選擇產品</option>
+                            <option th:each="product : ${productList}" th:value="${product.productId}" th:text="${product.productName}"></option>
+                        </select>
+                        <label for="quantity">產品數量</label>
+                        <input type="number" class="quantity form-control" min="1" max="999" name="quantity[]" required />
+                        <button type="button" class="btn btn-danger removeProduct">刪除產品</button>
+                    </div>                   
+                </div>
+                 <button type="button" id="addProduct" class="btn btn-primary">新增產品</button>
+                <div class="mt-3 col-12 d-flex justify-content-center mb-3">
+                    <button class="btn btn-secondary me-2" type="button" onclick="window.history.back()">返回</button>
+                    <button type="submit" class="btn btn-success">新增</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+    <script th:inline="javascript">
+        var productList = /*[[${productList}]]*/ [];
+        
+        $(document).ready(function () {
+            function updateProductOptions() {
+                const selectedProducts = $('.product-select').map(function () {
+                    return $(this).val();
+                }).get();
+
+                $('.product-select').each(function () {
+                    const currentSelect = $(this);
+                    const currentValue = currentSelect.val();
+                    currentSelect.find('option').each(function () {
+                        if (selectedProducts.includes($(this).val()) && $(this).val() !== currentValue) {
+                            $(this).attr('disabled', true);
+                        } else {
+                            $(this).attr('disabled', false);
+                        }
+                    });
+                });
+            }
+
+            $('#addProduct').click(function () {
+                var productOptions = '';
+                productList.forEach(function (product) {
+                    productOptions += `<option value="${product.productId}">${product.productName}</option>`;
+                });
+
+                var productEntry = `
+                    <div class="productEntry mb-3">
+                        <label for="productId">產品編號</label>
+                        <select name="productId[]" class="form-select product-select" required>
+                            <option value="" selected disabled>選擇產品</option>
+                            ${productOptions}
+                        </select>
+                        <label for="quantity">產品數量</label>
+                        <input type="number" class="quantity form-control" min="1" max="999" name="quantity[]" required />
+                        <button type="button" class="btn btn-danger removeProduct">刪除產品</button>
+                    </div>`;
+                $('#productDetails').append(productEntry);
+                updateProductOptions();
+            });
+
+            $('#productDetails').on('change', '.product-select', function () {
+                updateProductOptions();
+            });
+
+            $('#productDetails').on('click', '.removeProduct', function () {
+                $(this).closest('.productEntry').remove();
+                updateProductOptions();
+            });
+
+            $('form').submit(function (event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "確定要新增嗎？",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "green",
+                    cancelButtonColor: "gray",
+                    confirmButtonText: "新增",
+                    cancelButtonText: "取消",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
+
+            updateProductOptions();
+        });
+    </script>
+
+</body>
+</html>

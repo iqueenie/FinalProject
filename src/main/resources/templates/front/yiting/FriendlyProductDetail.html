@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <title>友善商品查詢結果</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    a {
+      text-decoration: none;
+    }
+
+    .product-item figure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      /* Adjust the height as needed */
+      background-color: #f8f9fa;
+    }
+
+    .product-item img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .map_container {
+      border: 1px solid #5cc209;
+      margin-bottom: 10px;
+      background-color: #f6f6f6;
+      padding: 8px 0 12px 0px;
+      font-size: 15px;
+      color: #444444;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    .graybigbox {
+      border: 1px solid #d5d5d5;
+      margin-bottom: 10px;
+    }
+
+    .greenbox {
+      background-color: #5ac20f;
+      font-size: 13px;
+      color: #FFFFFF;
+      border-right: 1px solid #FFFFFF;
+      padding-left: 15px;
+    }
+
+    .graybox {
+      font-size: 13px;
+      color: #666666;
+      border-right: 1px solid #d5d5d5;
+      border-left: 1px solid #d5d5d5;
+      line-height: 18px;
+      border-bottom: 1px solid #d5d5d5;
+      padding: 10px 0 10px 15px;
+      vertical-align: top;
+    }
+
+    .modal-body {
+      display: flex;
+      justify-content: center;
+      /* 水平居中 */
+      align-items: center;
+      /* 垂直居中 */
+      height: 100%;
+      /* 使 modal-body 填满模态框 */
+    }
+  </style>
+</head>
+
+<body>
+  <div th:replace="~{front/layout/navbar}"></div>
+  <section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+      <div class="container-lg d-flex flex-column d-md-block align-items-center">
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+          <a class="breadcrumb-item nav-link" th:href="@{/public/front/friendlyProduct}">友善商品</a>
+          <span class="breadcrumb-item active" aria-current="page" th:text="${store.storeName}"></span>
+        </nav>
+        <h1>友善商品</h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="py-4">
+    <div class="container-lg">
+      <div class="row g-5">
+        <aside class="col-md-2">
+          <div class="sidebar">
+
+            <div class="widget-product-categories pt-5">
+              <h5 class="widget-title">友善商品類別</h5>
+              <ul class="product-categories sidebar-list list-unstyled">
+                <li class="cat-item" th:if="${productType == '全部'}">
+                  <a class="nav-link" style="color:#6BB252;font-weight:bold;font-size:20px;"
+                    th:href="@{/public/front/friendlyResult(storeId=${storeId})}">全部</a>
+                </li>
+                <li class="cat-item" th:if="${productType != '全部'}">
+                  <a class="nav-link" th:href="@{/public/front/friendlyResult(storeId=${storeId})}">全部</a>
+                </li>
+                <th:block th:each=" type : ${productTypes}">
+                  <li class="cat-item" th:if="${productType == type}">
+                    <a th:href="@{/public/front/friendlyResult(storeId=${storeId}, productType=${type})}"
+                      class="nav-link" th:text="${type}" style="color:#6BB252;font-weight:bold; font-size:20px;"></a>
+                  </li>
+                  <li class="cat-item" th:if="${productType != type}">
+                    <a th:href="@{/public/front/friendlyResult(storeId=${storeId}, productType=${type})}"
+                      class="nav-link" th:text="${type}"></a>
+                  </li>
+                </th:block>
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <main class="col-md-10">
+
+          <div
+            class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+            <th:block th:each="inv : ${invPage.content}">
+              <div class="col">
+                <div class="product-item">
+                  <figure>
+                    <a href="#" title="Product Title" data-bs-toggle="modal" data-bs-target="#imageModal"
+                      th:attr="modalImg=@{/ProductPhoto(productId=${inv.productId})},pName=${inv.product.productName}">
+                      <img th:src="@{/ProductPhoto(productId=${inv.productId})}" alt="Product Thumbnail"
+                        class="tab-image">
+                    </a>
+                  </figure>
+                  <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal" th:text="${inv.product.productName}"></h3>
+                    <span class="text-dark fw-semibold" th:text="'數量: ' + ${inv.invNum}"></span>
+                  </div>
+                </div>
+              </div>
+            </th:block>
+
+
+
+          </div>
+          <!-- / product-grid -->
+
+          <nav class="py-4" aria-label="Page navigation">
+            <div class="row">
+              <div class="col-md-9 offset-md-1">
+                <ul class="pagination d-flex justify-content-center">
+
+                  <!-- 上一頁 -->
+                  <th:block th:switch="${invPage.number != 0}">
+                    <li th:case="true" class="page-item">
+                      <a class="page-link"
+                        th:href="@{/public/front/friendlyResult(p=${invPage.number - 1}, storeId=${storeId})}"><span
+                          aria-hidden="true">&laquo;</span></a>
+                    </li>
+                    <li th:case="false" class="page-item disabled">
+                      <a class="page-link"><span aria-hidden="true">&laquo;</span></a>
+                    </li>
+                  </th:block>
+
+                  <!-- 頁碼 -->
+                  <th:block th:each="pageNumber : ${#numbers.sequence(1, invPage.totalPages)}">
+                    <th:block th:switch="${invPage.number + 1 == pageNumber}">
+                      <li th:case="false" class="page-item">
+                        <a class="page-link border-0"
+                          th:href="@{/public/front/friendlyResult(p=${pageNumber}, storeId=${storeId})}"
+                          th:text="${pageNumber}"></a>
+                      </li>
+                      <li th:case="true" class="page-item active" aria-current="page">
+                        <span class="page-link" th:text="${pageNumber}"></span>
+                      </li>
+                    </th:block>
+                  </th:block>
+
+                  <!-- 下一頁 -->
+                  <th:block th:switch="${invPage.number + 1 == invPage.totalPages}">
+                    <li th:case="false" class="page-item">
+                      <a class="page-link border-0"
+                        th:href="@{/public/front/friendlyResult(p=${invPage.number + 1}, storeId=${storeId})}"><span
+                          aria-hidden="true">&raquo;</span></a>
+                    </li>
+                    <li th:case="true" class="page-item disabled">
+                      <a class="page-link"><span aria-hidden="true">&raquo;</span></a>
+                    </li>
+                  </th:block>
+
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+        </main>
+
+        <!--店鋪列表-->
+        <div class="row justify-content-end">
+          <div class="col-md-9 offset-md-2">
+            <div id="showShopList">
+              <table width="683" border="0" cellspacing="0" cellpadding="0" class="graybigbox">
+                <thead>
+                  <tr>
+                    <td class="greenbox">店舖名</td>
+                    <td class="greenbox">店舖情報</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="grabox"><span class="ms-2" th:text="'EZBUY ' + ${store.storeName}"></span></td>
+                    <td class="graybox">
+                      店鋪號: <span th:text="${store.storeId}"></span>
+                      <br>
+                      地址: <span th:text="${store.city}"></span><span th:text="${store.area}"></span><span
+                        th:text="${store.street}"></span><span th:text="${store.detail}"></span>
+                      <br>
+                      電話: <span th:text="${store.tel}"></span>
+                    </td>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 地圖 -->
+        <div class="row justify-content-end">
+          <div class="col-md-9 offset-md-2">
+            <div class="map_container" id="map" style="width: 680px; height: 300px;"></div>
+            <input type="hidden" id="latitude" th:value="${latitude}">
+            <input type="hidden" id="longitude" th:value="${longitude}">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 40%; height: 80%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImage" style="width:350px;" src="" alt="Large Product Image" class="img-fluid">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{front/layout/footer}"></div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var imageModal = document.getElementById('imageModal');
+      var modalImage = document.getElementById('modalImage');
+      var modalLabel = document.getElementById('imageModalLabel');
+
+      imageModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // 触发模态框的按钮
+        var imageSrc = button.getAttribute('modalImg'); // 获取图片源
+        var pName = button.getAttribute('pName');
+        modalImage.src = imageSrc; // 更新模态框中的图片
+        modalLabel.innerHTML = pName;
+      });
+    });
+    function initMap() {
+      var lat = parseFloat(document.getElementById('latitude').value);
+      var lng = parseFloat(document.getElementById('longitude').value);
+      var center = { lat: lat, lng: lng };
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: center,
+        zoom: 15
+      });
+
+      var marker = new google.maps.Marker({
+        position: center,
+        map: map,
+        icon: {
+          url: '/FinalProject/img/all/logo.png',
+          scaledSize: new google.maps.Size(40, 40)
+        }
+      });
+
+      map.addListener('center_changed', function () {
+        window.setTimeout(function () {
+          map.panTo(marker.getPosition());
+        }, 3000);
+      });
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+
+</html>

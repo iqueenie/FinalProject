@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+<title>公告與通知</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="author" content="">
+<meta name="keywords" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet"
+	href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+<link
+	href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+	crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+	rel="stylesheet">
+</head>
+   <style>
+     .notification-container {
+    border: none; 
+    background-color: #FFFFFF;
+    max-height: 300px; 
+    width: 100%; 
+    overflow-y: auto; 
+    padding: 16px;
+    box-sizing: border-box; 
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+.notification-title {
+    color: #000000;
+    font-size: 20px; 
+    font-family: Arial, sans-serif;
+}
+
+.notification-content {
+    color: #000000; 
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.notification-list {
+    border: 1px solid #000000; 
+    border-radius: 5px; 
+    margin-top: 10px; 
+    list-style-type: none; 
+    padding: 0;
+}
+
+.notification-list-item {
+    padding: 10px; 
+    border-bottom: 1px solid #000000; 
+}
+
+.notification-list-item:last-child {
+    border-bottom: none; 
+}
+    </style>
+<body>
+     
+  <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img" alt="Banner">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">會員通知與公告</span>
+                </nav>
+                <h1>會員通知與公告</h1>
+            </div>
+        </div>
+    </section>
+
+    <div class="py-4">
+        <div class="container-lg">
+            <div class="row g-5">
+                <main class="col-md-12">
+                    <div class="notification-container">
+                        <h2 class="notification-title">通知</h2>
+                        <ul class="notification-list">
+                            <li th:each="message : ${messages}" class="notification-list-item">
+                                <span th:text="${message.messageContent}" class="notification-content"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{front/layout/footer}"></div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-65ocJdRHt8wWgJ2+//jT4gLvWX4uXWOBe4QJg1E3FzL7bLJHj/jV/Nh5D8CqQeW" crossorigin="anonymous"></script>
+   
+</body>
+</html>

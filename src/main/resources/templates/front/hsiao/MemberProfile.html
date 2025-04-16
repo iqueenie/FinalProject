@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+<title>會員個人資料</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="author" content="">
+<meta name="keywords" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet"
+	href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+<link
+	href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+	rel="stylesheet">
+
+<style>
+.alert-right {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 9999;
+	width: 300px;
+}
+
+.extra-info {
+	background: #f8f9fa;
+	padding: 20px;
+	border: 1px solid #dee2e6;
+	border-radius: .375rem;
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.form-container {
+	position: relative;
+	display: flex;
+}
+
+.form-container .extra-info {
+	margin-left: 20px;
+	width: 300px;
+}
+
+.form-container .form-content {
+	flex: 1;
+}
+</style>
+</head>
+
+<body>
+	<div th:replace="~{front/layout/navbar}"></div>
+
+	<section class="jarallax py-5">
+		<img th:src="@{/img/all/banner.png}" class="jarallax-img">
+		<div class="hero-content py-0 py-md-5">
+			<div
+				class="container-lg d-flex flex-column d-md-block align-items-center">
+				<nav class="breadcrumb">
+					<a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+					<span class="breadcrumb-item active" aria-current="page">會員個人資料</span>
+				</nav>
+				<h1>會員資料</h1>
+			</div>
+		</div>
+	</section>
+
+	<section class="py-4">
+		<div class="container-lg">
+			<div class="row">
+				<aside class="col-md-2">
+					<div class="sidebar">
+						<div class="widget-menu"></div>
+						<div class="widget-product-categories pt-5">
+							<h2 class="widget-title">您的個人資料</h2>
+						</div>
+					</div>
+				</aside>
+
+				<div class="col-md-10 form-container">
+
+
+					<div class="form-content">
+						<div class="col-md-12"
+							style="border: 3px solid #6bb252; padding: 20px;">
+							<h5>您的頭像</h5>
+							<form id="updateForm" method="post"
+								th:action="@{/front/UpdeMember}" enctype="multipart/form-data">
+								<div class="form-group">
+									<label for="memberPhotoFile"></label> <img
+										th:src="@{/MemberPhoto(memberId=${session.loggedInMember.memberId})}"
+										alt="memberPhotoFile" class="rounded-circle me-2"
+										style="width: 180px; height: 160px; object-fit: cover; border-radius: 0;">
+									<input type="file" id="fileInput" name="memberPhotoFile"
+										accept="image/*" style="display: none;"
+										onchange="previewFile()">
+									<button type="button" class="btn btn-primary mt-2"
+										onclick="openFileInput()">更改照片</button>
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberName"><h5>會員名稱</h5></label> <input type="text"
+										class="form-control" id="memberName" name="memberName"
+										th:value="${session.loggedInMember.memberName}"
+										style="border-color: black; width: 100%;" required>
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberAccount"><h5>會員帳號</h5></label> <input type="text"
+										class="form-control" id="memberAccount" name="memberAccount"
+										th:value="${session.loggedInMember.memberAccount}"
+										style="border-color: black; width: 100%;" required>
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberPassword"><h5>會員密碼</h5></label> <input type="password"
+										class="form-control" id="memberPassword" name="memberPassword"
+										th:value="${session.loggedInMember.memberPassword}"
+										style="border-color: black; width: 100%;" required>
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberAddress"><h5>會員地址</h5></label> <input type="text"
+										class="form-control" id="memberAddress" name="memberAddress"
+										th:value="${session.loggedInMember.memberAddress}"
+										style="border-color: black; width: 100%;">
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberBirthDate"><h5>會員生日</h5></label> <input type="date"
+										class="form-control" id="memberBirthDate"
+										name="memberBirthDate"
+										th:value="${session.loggedInMember.memberBirthDate}"
+										style="border-color: black; width: 100%;">
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="memberEmail"><h5>會員信箱</h5></label> <input type="email"
+										class="form-control" id="memberEmail" name="memberEmail"
+										th:value="${session.loggedInMember.memberEmail}"
+										style="border-color: black; width: 100%;" readonly>
+								</div>
+								<br>
+								<div class="form-group">
+									<label for="points"><h5>會員點數</h5></label> <input type="number"
+										class="form-control" id="points" name="points"
+										th:value="${session.loggedInMember.points}"
+										style="border-color: black; width: 100%;" readonly>
+								</div>
+								<br>
+								<button type="submit" class="btn btn-primary"
+									style="margin-bottom: 10px;">保存資料</button>
+							</form>
+						</div>
+					</div>
+
+					<div class="extra-info">
+						<h5>會員專區提示</h5>
+
+
+						<strong>注意安全！</strong>  請勿輕信陌生來電或信息，保護好您的帳戶和個人信息。 警惕詐騙！
+						官方不會通過電話或郵件索取您的密碼和驗證碼，請保持警覺。 保護隱私！ 切勿隨意泄露您的帳號信息，確保帳戶安全。
+						<br>
+						<br>
+						<strong>最新動態！</strong> 查看我們的官方網站，獲取最新的活動和優惠信息。
+						活動預告！ 關注我們的平台，了解即將推出的精彩活動和優惠。
+						重要更新！ 不要錯過我們的最新公告和活動信息，訪問網站獲取更多詳情。
+						<br>
+						<br>
+						<strong>會員專享！</strong> 及時查看您的會員通知，確保您不會錯過任何優惠和重要消息。
+						特別通知！ 關注會員專區，獲取獨家優惠和重要公告。
+						保持更新！ 定期查看會員通知，了解更多福利和最新活動。
+						<br>
+						<br>
+						<strong>重要提醒！</strong>關注我們的通知，了解最新的服務更新和活動安排。
+						服務提示！ 請定期查看我們的更新信息，以便及時獲取最新的服務內容。
+						信息更新！ 保持與我們溝通，確保您不漏掉任何重要信息或優惠。
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div th:replace="~{front/layout/footer}"></div>
+
+	<script>
+        function openFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function previewFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('currentMemberPhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>

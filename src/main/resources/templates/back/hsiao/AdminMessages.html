@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>站內信</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .mw576px {
+            max-width: 576px;
+        }
+
+        .pt2rem {
+            padding-top: 2.1rem !important;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="~{back/layout/navbar}"></div>
+   	
+     <div class="container d-flex flex-column align-items-center my-4">
+        <h1 class="mb-4">站內通知訊息</h1>
+
+        <!-- Form for sending message to a single member -->
+        <div class="mb-5 w-100 mw576px">
+            <h2 class="text-center mb-4">發送訊息給單個會員</h2>
+            <form th:action="@{/sendToMember}" method="post" class="bg-light p-4 rounded-3 shadow-sm">
+                <div class="mb-3">
+                    <label for="receiverMemberId" class="form-label">會員編號</label>
+                    <input type="number" id="receiverMemberId" name="receiverMemberId" class="form-control" placeholder="輸入會員編號" required>
+                </div>
+                <div class="mb-3">
+                    <label for="messageContent" class="form-label">訊息內容</label>
+                    <textarea id="messageContent" name="messageContent" class="form-control" rows="4" placeholder="輸入訊息內容" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">送出</button>
+            </form>
+        </div>
+
+        <!-- Form for sending message to all members -->
+        <div class="w-100 mw576px">
+            <h2 class="text-center mb-4">發送訊息給所有會員</h2>
+            <form th:action="@{/sendToAllMembers}" method="post" class="bg-light p-4 rounded-3 shadow-sm">
+                <div class="mb-3">
+                    <label for="messageContentAll" class="form-label">訊息內容</label>
+                    <textarea id="messageContentAll" name="messageContent" class="form-control" rows="4" placeholder="輸入訊息內容" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">發送所有通知</button>
+            </form>
+        </div>
+
+        <!-- Display flash messages -->
+        <div th:if="${message}" class="alert alert-success mt-4" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+</body>
+
+</html>

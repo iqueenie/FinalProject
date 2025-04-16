@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <title>活動資訊</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-item figure {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px; /* Adjust the height as needed */
+            background-color: #f8f9fa;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+ 
+    </style>
+</head>
+<body>
+    <div th:replace="~{front/layout/navbar}"></div>
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">活動</span>
+                </nav>
+                <h1>活動</h1>
+            </div>
+        </div>
+    </section>
+    
+    <div class="py-4">
+        <div class="container-lg">
+            <div class="row g-5">
+                <aside class="col-md-2">
+                    <div class="sidebar">
+                        <div class="widget-menu">
+                            <div class="widget-search-bar">
+                                <form role="search" method="get" class="d-flex position-relative" th:action="@{/public/front/Discount}">
+                                    <input class="form-control form-control-lg rounded-2 bg-light" name="searchTerm" type="text" placeholder="查詢活動" aria-label="查詢活動">
+                                    <button class="btn bg-transparent position-absolute end-0" type="submit">
+                                        <svg width="24" height="24" viewBox="0 0 24 24">
+                                            <use xlink:href="#search"></use>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="widget-product-categories pt-5">
+                            <h5 class="widget-title">活動類別</h5>
+                            <ul class="product-categories sidebar-list list-unstyled">
+                                <li class="cat-item"><a th:href="@{/public/front/Discount}" class="nav-link" th:classappend="${category == null} ? 'active' : ''">全部</a></li>
+                                <li class="cat-item"><a th:href="@{/public/front/Discount(category='節日優惠')}" class="nav-link" th:classappend="${category == '節日優惠'} ? 'active' : ''">節日優惠</a></li>
+                                <li class="cat-item"><a th:href="@{/public/front/Discount(category='特定商品優惠')}" class="nav-link" th:classappend="${category == '特定商品優惠'} ? 'active' : ''">特定商品優惠</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+                <main class="col-md-10">
+                    <div class="filter-shop d-flex justify-content-between">
+                        <div class="showing-product">
+                            <p th:text="'Showing ' + (${holidayDiscounts.size()} + ${amountDiscounts.size()}) + ' results'">Showing 1–10 of 25 results</p>
+                        </div>
+                    </div>
+                    <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+                        <div th:each="discount, iterStat : ${holidayDiscounts}" class="col">
+                            <div class="product-item">
+                                <figure>
+                                    <a th:href="@{'/public/front/Discount/' + ${discount.discountName}}" title="Discount Title">
+                                        <img th:src="'data:image/jpeg;base64,' + ${holidayDiscountImagesBase64[iterStat.index]}" alt="Discount Thumbnail" class="tab-image">
+                                    </a>
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <h3 class="fs-6 fw-normal" th:text="${discount.discountName}">Discount Name</h3>
+                                    <div>
+                                        <span class="text-dark fw-semibold" th:text="${discount.discountInfo}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:each="discount, iterStat : ${amountDiscounts}" class="col">
+                            <div class="product-item">
+                                <figure>
+                                    <a th:href="@{'/public/front/Discount/' + ${discount.discountName}}" title="Discount Title">
+                                        <img th:src="'data:image/jpeg;base64,' + ${amountDiscountImagesBase64[iterStat.index]}" alt="Discount Thumbnail" class="tab-image">
+                                    </a>
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <div>
+                                        <p class="mb-1">
+                                            <i class="fas fa-calendar-alt"></i> 
+                                            <span th:text="' ' + ${#dates.format(discount.startDate, 'yyyy-MM-dd')+'至 ' }"></span><br>
+                                            <span th:text=" ${#dates.format(discount.endDate, 'yyyy-MM-dd')}"></span>
+                                        </p>
+                                    </div>
+                                    <h3 class="fs-6 fw-normal" th:text="${discount.discountName}">Discount Name</h3>
+                                    <div>
+                                        <span class="text-dark fw-semibold" th:text="${discount.discountPercentage} + '%off'"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{front/layout/footer}"></div>
+</body>
+</html>

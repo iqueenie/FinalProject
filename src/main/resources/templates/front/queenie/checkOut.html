@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <title>EzBuy結帳</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+
+<div th:replace="~{front/layout/navbar}"></div>
+
+<section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                <span class="breadcrumb-item active" aria-current="page">結帳</span>
+            </nav>
+            <h1>結帳</h1>
+        </div>
+    </div>
+</section>
+
+<section class="shopify-cart checkout-wrap py-5">
+    <div class="container-lg">
+    <div id="error-message" th:if="${errorMessage != null}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div class="row g-5">
+        <div class="col-md-7 col-lg-8">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">您的商品內容</span>
+                <span class="badge bg-primary rounded-pill"></span>
+            </h4>
+            <form class="needs-validation" th:action="@{/public/insert}" method="post" novalidate>
+                <div class="list-group mb-3" th:each="product : ${session.sessionCart}" data-productId="${product.productId}">
+				    <div class="list-group-item d-flex justify-content-between lh-sm">
+				        <div style="flex: 1; margin-right: 10px;">
+				            <h6 class="my-0" th:href="@{/product/{productId}(productId=${product.productId})}"
+				                th:text="${product.productName}"></h6>
+				            <small class="text-body-secondary" style="display: block; width: 800px;" th:text="${product.productDescription}"></small>
+				        </div>
+				        <span class="text-body-secondary"
+				              th:text="'TWD ' + ${product.productPrice * session.productQuantities[product.productId]}"></span>
+				    </div>
+				</div>
+
+                <div class="list-group mb-3">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>總金額</span>
+                        <strong class="text-body-secondary" th:text="'TWD ' + ${sumTotal}"></strong>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+        <div class="col-md-5 col-lg-4 order-md-last" >
+            <h4 class="mb-3">結帳資訊</h4>
+            <form class="needs-validation" id="orderForm" th:action="@{/public/insert}" method="post" novalidate>
+                <div class="list-group mb-3">
+                    <div class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                        <div class="text-success">
+                            <h6 class="my-0">折扣</h6>
+                            
+                           <small th:if="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}" th:text="${order.amountDiscount.discountName}"></small>
+            				<small th:unless="${order != null and order.amountDiscount != null and order.amountDiscount.discountName != null}"></small>
+                        </div>
+                        <span  class="text-success" th:text="'TWD ' + (${discountMoney} ?: '0')"></span>
+                    </div>
+                </div>           
+                <div class="list-group mb-3">
+                    <div class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                        <div class="text-success">
+                            <h6 class="my-0">是否使用點數</h6>
+                            <small>剩餘點數: <span id="remainingPoints" th:text="${orders[0].members.Points}"></span></small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pointSwitch" name="pointSwitch"
+                                   onchange="togglePoints()" th:checked="${orders[0].pointUse == 1}">
+                            <label class="form-check-label" for="pointSwitch"></label>
+                            <input type="hidden" id="pointUseHidden" name="pointUse"
+                                   th:value="${orders[0].pointUse}">
+                        </div>
+                    </div>
+                </div>
+                <h6 class="mb-3">取貨店鋪</h6>
+                <div class="my-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="storeId" name="storeId" required>
+                            <option value="" disabled selected>取貨店鋪</option>
+                            <option th:each="store : ${storeList}" th:value="${store.storeId}"
+                                    th:text="${store.storeName}" th:selected="${store.storeId == orders[0].storesBean.storeId}">
+                            </option>
+                        </select>
+                        
+                    </div>
+                </div>
+                <h4 class="mb-3">付款方式</h4>
+                <div class="my-3">
+                    <div class="form-check">
+                        <input id="credit" name="paymentMethod" type="radio" class="form-check-input" value="信用卡" checked
+                               required>
+                        <label class="form-check-label" for="credit">信用卡</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="cash" name="paymentMethod" type="radio" class="form-check-input" value="現金支付" required>
+                        <label class="form-check-label" for="debit">現金支付</label>
+                    </div>
+                    <div class="list-group mb-3">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>最終付款金額</span>
+                        <strong id="finalAmount" class="text-body-secondary" th:text="'TWD ' + ${total}"></strong>
+                    </div>
+                </div>
+                </div>
+                <hr class="my-4">
+                <button  class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+
+<div th:replace="~{front/layout/footer}"></div>
+
+
+<script type="text/javascript">
+
+		var initialTotalAmount = parseInt(document.getElementById('finalAmount').textContent.replace('TWD ', ''), 10);
+    var remainingPoints = parseInt(document.getElementById('remainingPoints').textContent, 10);
+
+    function togglePoints() {
+        var checkBox = document.getElementById("pointSwitch");
+        var pointUseHidden = document.getElementById("pointUseHidden");
+        var totalAmountElement = document.getElementById("finalAmount");
+
+        var currentTotalAmount = parseInt(totalAmountElement.textContent.replace('TWD ', ''), 10);
+
+        if (checkBox.checked) {
+            pointUseHidden.value = "1";
+            var newTotal = initialTotalAmount - remainingPoints;
+            totalAmountElement.textContent = 'TWD ' + (newTotal > 0 ? newTotal : 0);
+        } else {
+            pointUseHidden.value = "0";
+            totalAmountElement.textContent = 'TWD ' + initialTotalAmount;
+        }
+    }
+		
+		 document.getElementById('orderForm').addEventListener('submit', function(event) {
+		    var storeSelect = document.getElementById('storeId');
+		    if (storeSelect.value === "") {
+		        event.preventDefault(); 
+		        document.getElementById('error-message').innerText = '請選擇取貨店鋪！'; 
+		        document.getElementById('error-message').style.display = 'block'; 
+		    }
+		});
+		
+ 
+   
+
+
+</script>
+
+</body>
+</html>

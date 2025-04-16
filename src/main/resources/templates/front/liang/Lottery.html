@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <title>每日抽獎</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div th:replace="~{front/layout/navbar}"></div>
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">抽獎</span>
+                </nav>
+                <h1>每日抽獎</h1>
+            </div>
+        </div>
+    </section>
+    
+    <div class="py-4">
+        <div class="container-lg">
+            <div class="row g-6">
+                <aside class="col-md-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>抽獎紀錄</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul id="lotteryRecordsList" class="list-group">
+                                <li class="list-group-item" th:each="record : ${lotteryRecords}">
+                                    <span th:text="${record.drawDate}"></span>: <span th:text="${record.award.name}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+                <main class="col-md-8 d-flex flex-column align-items-center">
+                    <div class="text-center w-100">
+                        <h2>立即參與每日抽獎</h2>
+                        <p>會員每天可以抽取一次會員點數，快來試試你的運氣吧！</p>
+                        <p>剩餘抽獎次數: <span id="remainingDraws" th:text="${remainingDraws}">1</span> 次</p>
+                        <button id="lotteryButton" class="btn btn-primary">抽獎</button>
+                        <div class="mt-3">
+                            <h3 id="result" class="text-success"></h3>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{front/layout/footer}"></div>
+    
+    <script>
+$(document).ready(function() {
+    $('#lotteryButton').click(function(e) {
+        e.preventDefault();
+        let remainingDraws = parseInt($('#remainingDraws').text());
+        if (remainingDraws <= 0) {
+            Swal.fire({
+                title: '已無剩餘抽獎次數',
+                icon: 'warning',
+                confirmButtonText: '確認'
+            });
+            return;
+        }
+
+        $.ajax({
+            url: '/FinalProject/front/checkLogging',
+            method: 'GET',
+            success: function(isLoggedIn) {
+                if (!isLoggedIn) {
+                    Swal.fire({
+                        title: "請先登入或註冊",
+                        icon: "warning",
+                        text: "您即將前往登入或註冊頁",
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonColor: "#6BB252",
+                        confirmButtonText: "登入",
+                        denyButtonColor: "#f7a422",
+                        denyButtonText: "註冊",
+                        cancelButtonText: "取消"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "/FinalProject/public/frontLoginMain";
+                        } else if (result.isDenied) {
+                            window.location.href = "/FinalProject/public/addMemberMain";
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '/FinalProject/public/front/lottery/draw',
+                        method: 'POST',
+                        success: function(response) {
+                            console.log("抽獎成功，響應:", response);
+                            $('#result').text('恭喜您獲得 ' + response.awardName + ' 獎項，會員點數增加 ' + response.points + ' 點');
+                            $('#remainingDraws').text('0'); // 更新剩余抽獎次數
+
+                            // 更新抽獎紀錄列表
+                            let currentDate = new Date().toISOString().split('T')[0];
+                            let newRecord = $('<li class="list-group-item">' + currentDate + ': ' + response.awardName + '</li>');
+                            $('#lotteryRecordsList').prepend(newRecord);
+
+                            Swal.fire({
+                                title: '恭喜您！',
+                                text: '您獲得了 ' + response.awardName + ' 獎項，會員點數增加 ' + response.points + ' 點',
+                                icon: 'success',
+                                confirmButtonText: '確認'
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("抽獎失敗:", error);
+                            Swal.fire({
+                                title: '抽獎失敗',
+                                icon: 'error',
+                                confirmButtonText: '確認'
+                            });
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("檢查登錄狀態失敗:", error);
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

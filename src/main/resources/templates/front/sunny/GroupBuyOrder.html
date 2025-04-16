@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <title>團購訂單</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+
+  <div th:replace="~{front/layout/navbar}"></div>
+
+  <section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+      <div class="container-lg d-flex flex-column d-md-block align-items-center">
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+          <span class="breadcrumb-item active" aria-current="page">團購訂單</span>
+        </nav>
+        <h1>團購訂單</h1>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="py-5">
+    <div class="container-lg">
+      <div class="row g-5">
+        <div class="col-md-12">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active by-status" id="pills-home-tab" data-status="all" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab">全部</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link by-status" id="pills-profile-tab" data-status="已訂購" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab">尚未到貨</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link by-status" id="pills-contact-tab" data-status="已刪除" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab">已刪除/揪團失敗</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link by-status" id="pills-disabled-tab" data-status="待取貨" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab">待取貨</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link by-status" id="pills-disabled-tab" data-status="已取貨" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab">已完成</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link by-status" id="pills-disabled-tab" data-status="未取貨" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab">未取貨</button>
+            </li>
+          </ul>
+          <div class="table-responsive cart">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="25%">商品</th>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="10%">數量</th>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="10%">總金額</th>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="25%">取貨店鋪</th>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="30%">狀態</th>
+                  <th scope="col" class="card-title text-uppercase text-muted" width="10%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="gm : ${gms.content}">
+                  <td class="py-4" width="25%">
+                    <div class="cart-info d-flex flex-wrap align-items-center mb-4">
+                      <div class="col-lg-3">
+                        <div class="card-image">
+                          <img th:src="@{/ProductPhoto(productId=${gm.groupBuy.product.productId})}" class="img-fluid" th:alt="${gm.groupBuy.productName}">
+                        </div>
+                      </div>
+                      <div class="col-lg-9">
+                        <div class="card-detail ps-3">
+                          <h5 class="card-title">
+                            <a th:href="@{/public/front/group-buys/{id}(id=${gm.groupBuy.groupBuyId})}" class="text-decoration-none name">[[${gm.groupBuy.productName}]]</a>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4" width="10%">
+                    <div class="product-qty w-50">
+                      <div class="product-quantity">
+                        <span class="text-dark quantity">[[${gm.quantity}]]</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4" width="10%">
+                    <div class="total-price">
+                      <span class="money text-dark price">$[[${gm.total}]]</span>
+                    </div>
+                  </td>
+                  <td class="py-4" width="25%">
+                    <div class="store">
+                      <span class="store-name text-dark">[[${gm.groupBuy.store.storeName}]]</span><br>
+                      <span class="store-detail text-dark">[[${gm.groupBuy.store.city}]][[${gm.groupBuy.store.area}]][[${gm.groupBuy.store.street}]][[${gm.groupBuy.store.detail}]]</span>
+                    </div>
+                  </td>
+                  <td class="py-4" width="30%">
+                    <div>
+                      <th:block th:switch="${gm.pickupStatus}">
+                        <span th:case="已訂購" class="text-dark status">
+                          <th:block th:if="${gm.groupBuy.groupBuyStatus=='開團中'}">
+                            已訂購，預計 [[${gm.groupBuy.orderDate}]] 由店長叫貨
+                          </th:block>
+                          <th:block th:if="${gm.groupBuy.groupBuyStatus=='已結單'}">
+                            店長已下單，等待發貨中
+                          </th:block>
+                        </span>
+                        <span th:case="已刪除" class="text-dark status">
+                          <th:block th:if="${gm.quantity==0}">
+                            已刪除
+                          </th:block>
+                          <th:block th:if="${gm.quantity!=0}">
+                            揪團失敗
+                          </th:block>
+                        </span>
+                        <span th:case="待取貨" class="text-danger status">已到貨，請於 [[${gm.groupBuy.endDate}]] 前取貨</span>
+                        <span th:case="已取貨" class="text-dark status">已取貨</span>
+                        <span th:case="未取貨" class="text-dark status">未取貨</span>
+                      </th:block>
+                      <br><span class="text-dark payment">[[${gm.paymentStatus}]]</span>
+                    </div>
+                  </td>
+                  <td th:if="${gm.groupBuy.groupBuyStatus=='開團中' && gm.pickupStatus=='已訂購'}" class="py-4 d-flex" width="10%">
+                    <a class="cart-update me-3" href="#" th:data-id="${gm.groupMemberId}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #6BB252;"></i>
+                    </a>
+                    <a href="#" class="cart-remove" th:data-id="${gm.groupMemberId}">
+                      <i class="fa-solid fa-trash fa-2xl" style="color: #F95F09;"></i>
+                    </a>
+                  </td>
+                  <td th:if="${(gm.groupBuy.groupBuyStatus=='已結單' || gm.groupBuy.groupBuyStatus=='已到貨') && gm.paymentStatus=='未付款' && gm.pickupStatus!='已刪除'}" class="py-4 d-flex" width="10%">
+                    <a class="check-payment me-3" th:href="@{/group-buy-checkout(id=${gm.groupMemberId})}">
+                      <i class="fa-regular fa-credit-card fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                    <a class="check-payment me-3" th:href="@{/group-buy-line-pay(id=${gm.groupMemberId})}">
+                      <i class="fa-brands fa-line fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body row">
+            <h5 class="modal-product-name col-10"></h5>
+            <span class="modal-store-name col-2"></span>
+            <div class="row">
+              <div class="input-group product-qty w-50">
+                <span class="fw-bold me-3">數量：</span>
+                <span class="input-group-btn">
+                  <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus">
+                    <svg width="16" height="16">
+                      <use xlink:href="#minus"></use>
+                    </svg>
+                  </button>
+                </span>
+                <input type="text" id="quantity" name="quantity" class="form-control input-number text-center">
+                <span class="input-group-btn">
+                  <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" data-field="">
+                    <svg width="16" height="16">
+                      <use xlink:href="#plus"></use>
+                    </svg>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="text-end me-4">總金額：<span class="total fw-bold fs-4 text-black"></span></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary order-update">更新</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{front/layout/footer}"></div>
+  <script>
+    $(document).on("click", ".cart-remove", function (e) {
+      e.preventDefault()
+      let gmId = $(this).data("id");
+      let row = $(this).closest("tr");
+      axios.put("http://localhost:8080/FinalProject/public/front/group-members/" + gmId)
+        .then(res => {
+          console.log(res);
+          row.find(".status").text(res.data.pickupStatus);
+          row.find(".quantity").text(res.data.quantity);
+          row.find(".price").text('$' + res.data.total);
+          row.find(".cart-remove").remove();
+          row.find(".cart-update").remove();
+          Swal.fire({
+            title: "刪除成功",
+            icon: "success"
+          });
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+
+    $(document).on("click", ".cart-update", function (e) {
+      e.preventDefault();
+      let gmId = $(this).data("id");
+      let row = $(this).closest("tr");
+      let productName = row.find(".name").text();
+      let storeName = row.find(".store-name").text();
+      let total = row.find(".total-price").text()
+      total = parseFloat(total.trim().slice(1));
+      let quantity = parseFloat(row.find(".quantity").text());
+      let price = total / quantity;
+
+      $("#exampleModalLabel").text("更新訂單");
+      $(".modal-product-name").text(productName);
+      $(".modal-store-name").text(storeName);
+      $("#quantity").val(quantity);
+      $(".total").text("$" + total);
+      $(".order-update").attr("data-id", gmId);
+      $(".btn-number").click(function (e) {
+        let quantity = $("#quantity").val();
+        $(".total").text("$" + (price * quantity));
+      });
+      $("#exampleModal").modal("show");
+      $(".order-update").off("click").on("click", function () {
+        let updatedQuantity = $("#quantity").val();
+        let updatedTotal = price * updatedQuantity;
+        let gmId = $(this).data("id");
+        axios.get("http://localhost:8080/FinalProject/public/front/group-member-quantity", {
+          params: {
+            id: gmId,
+            quantity: updatedQuantity,
+          }
+        })
+          .then(res => {
+            console.log(res);
+            row.find(".quantity").text(updatedQuantity);
+            row.find(".total-price .money").text('$' + updatedTotal);
+            $("#exampleModal").modal("hide");
+            Swal.fire({
+              title: "更新成功",
+              icon: "success"
+            });
+          })
+      });
+    });
+
+    let loading = false;
+    let page = 1;
+    let status = "all";
+    $(window).scroll(function () {
+      if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+        if (!loading) {
+          page++;
+          loading = true;
+          console.log(page);
+          getGroupMemberListByStatus();
+        }
+      }
+    });
+
+    $(".by-status").click(function (e) {
+      page = 1
+      $('tbody').html("");
+      status = $(this).data("status");
+      getGroupMemberListByStatus(status);
+    });
+
+    function getGroupMemberListByStatus() {
+      axios.get("http://localhost:8080/FinalProject/public/front/group-member-orders-by-status", {
+        params: {
+          p: page,
+          status: status
+        }
+      })
+        .then(res => {
+          console.log(res);
+          res = res.data.content
+          res.forEach(gm => {
+            $('tbody').append(generateOrder(gm));
+          });
+          if (res.length == 5) {
+            loading = false;
+          }
+        })
+    }
+
+    function generateOrder(gm) {
+      let template = `
+                <tr>
+                  <td class="py-4" width="25%">
+                    <div class="cart-info d-flex flex-wrap align-items-center mb-4">
+                      <div class="col-lg-3">
+                        <div class="card-image">
+                          <img src="http://localhost:8080/FinalProject/ProductPhoto?productId=${gm.groupBuy.product.productId}" class="img-fluid" alt="${gm.groupBuy.productName}">
+                        </div>
+                      </div>
+                      <div class="col-lg-9">
+                        <div class="card-detail ps-3">
+                          <h5 class="card-title">
+                            <a href="http://localhost:8080/FinalProject/public/front/group-buys/${gm.groupBuy.groupBuyId}" class="text-decoration-none name">${gm.groupBuy.productName}</a>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4" width="10%">
+                    <div class="product-qty w-50">
+                      <div class="product-quantity">
+                        <span class="text-dark quantity">${gm.quantity}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4" width="10%">
+                    <div class="total-price">
+                      <span class="money text-dark price">$${gm.total}</span>
+                    </div>
+                  </td>
+                  <td class="py-4" width="25%">
+                    <div class="store">
+                      <span class="store-name text-dark">${gm.groupBuy.store.storeName}</span><br>
+                      <span class="store-detail text-dark">${gm.groupBuy.store.city}${gm.groupBuy.store.area}${gm.groupBuy.store.street}${gm.groupBuy.store.detail}</span>
+                    </div>
+                  </td>
+                  <td class="py-4" width="30%">
+                    <div class="status">
+        `;
+
+      if (gm.pickupStatus == "已訂購") {
+        template += `<span class="text-dark status">`
+        if (gm.groupBuy.groupBuyStatus == '開團中') {
+          template += `已訂購，預計 ${gm.groupBuy.orderDate} 由店長叫貨`;
+        } else if (gm.groupBuy.groupBuyStatus == '已結單') {
+          template += `店長已下單，等待發貨中`;
+        }
+        template += `</span>`
+      } else if (gm.pickupStatus == "已刪除") {
+        template += `<span class="text-dark status">`;
+        if (gm.quantity == 0) {
+          template += `已刪除`;
+        } else {
+          template += `揪團失敗`;
+        }
+        template += `</span>`
+      } else if (gm.pickupStatus == "待取貨") {
+        template += `<span class="text-danger status">已到貨，請於 ${gm.groupBuy.endDate} 前取貨</span>`;
+      } else if (gm.pickupStatus == "已取貨") {
+        template += `<span class="text-dark status">已取貨</span>`;
+      } else if (gm.pickupStatus == "未取貨") {
+        template += `<span class="text-dark status">未取貨</span>`;
+      }
+
+      template += `
+      <br><span class="text-dark payment">${gm.paymentStatus}</span>
+          </div>
+        </td>
+      `;
+
+      if (gm.groupBuy.groupBuyStatus == '開團中' && gm.pickupStatus == '已訂購') {
+        template += `
+          <td class="py-4 d-flex" width="10%">
+            <a class="cart-update me-3" href="#" data-id="${gm.groupMemberId}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #6BB252;"></i>
+            </a>
+            <a href="#" class="cart-remove" data-id="${gm.groupMemberId}">
+              <i class="fa-solid fa-trash fa-2xl" style="color: #F95F09;"></i>
+            </a>
+          </td>
+        `;
+      }
+      if ((gm.groupBuy.groupBuyStatus == '已結單' || gm.groupBuy.groupBuyStatus == '已到貨') && gm.paymentStatus == '未付款' && gm.pickupStatus!='已刪除') {
+        template += `
+                  <td class="py-4 d-flex" width="10%">
+                    <a class="check-payment me-3" href="http://localhost:8080/FinalProject/group-buy-checkout?id=${gm.groupMemberId}">
+                      <i class="fa-regular fa-credit-card fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                    <a class="check-payment me-3" href="http://localhost:8080/FinalProject/group-buy-line-pay?id=${gm.groupMemberId}">
+                      <i class="fa-brands fa-line fa-2xl" style="color: #6bb252;"></i>
+                    </a>
+                  </td>
+                  `;
+      }
+
+      template += `
+        </tr>
+      `;
+
+      return template;
+    }
+  </script>
+</body>
+
+</html>

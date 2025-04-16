@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <title>所有評論</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    .custom-link {
+        text-decoration: none;
+        font-size: inherit;
+        color: inherit;
+    }
+
+    .custom-link:hover {
+        text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div th:replace="~{front/layout/navbar}"></div>
+  
+  <section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+      <div class="container-lg d-flex flex-column d-md-block align-items-center">
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+          <a class="breadcrumb-item nav-link" aria-current="page" th:href="@{/public/Products}">商品</a>
+        </nav>
+        <h1>所有評論</h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="product-info-tabs py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="product-review-summary mb-4 text-center">
+            <h3 class="fs-4 fw-bold mb-3" th:text="${product.productName}"></h3>
+            <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" title="${product.productName}">
+              <img th:src="@{/ProductPhoto(productId=${product.productId})}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
+            </a>
+            <div class="d-flex justify-content-center align-items-center mb-2">
+              <div class="me-3">
+                <span class="fs-2 fw-bold" th:text="${#numbers.formatDecimal(averageRatings, 1, 1)}"></span>
+                <span class="text-muted">/ 5</span>
+              </div>
+              <div>
+                <div class="rating mb-1">
+                  <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+  <svg width="20" height="20" class="text-warning">
+    <use th:xlink:href="${star <= averageRatings ? '#star-full' : 
+                        (star <= averageRatings + 0.9 ? '#star-half' : '#star-empty')}"></use>
+  </svg>
+</th:block>
+                </div>
+                <span class="text-muted" th:text="'共 '+${reviewCounts} + ' 則評論'"></span>
+              </div>
+            </div>
+          </div>
+          <div id="reviews-container" class="review-box d-flex flex-wrap mb-3">
+            <!-- 評論透過JS放到這 -->
+          </div>
+          <div class="text-center mt-4">
+            <button id="load-more-btn" class="btn btn-primary">顯示更多評論</button>
+            <button id="show-all-btn" class="btn btn-secondary ms-2">顯示所有評論</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{front/layout/footer}"></div>
+
+  <!-- 隱藏評論模板 -->
+  <template id="review-template">
+    <div class="col-lg-6 d-flex flex-wrap gap-3 mb-2">
+      <div class="col-md-2">
+        <div class="image-holder">
+          <img src="" alt="review" class="img-fluid rounded-circle">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="review-content">
+          <div class="rating-container d-flex align-items-center">
+            <span class="rating me-2">
+              <!-- 星星透過 JavaScript 生成 -->
+            </span>
+            <span class="rating-count"></span>
+          </div>
+          <div class="review-header">
+            <span class="author-name"></span>
+            <span class="review-date"></span>
+          </div>
+          <p class="review-text"></p>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script th:inline="javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const reviews = /*[[${reviews}]]*/ [];
+    const reviewsContainer = document.getElementById('reviews-container');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const showAllBtn = document.getElementById('show-all-btn');
+    const reviewTemplate = document.getElementById('review-template');
+    let currentIndex = 0;
+    let batchSize = 2; // 每次加載的評論數量
+
+    function loadMoreReviews() {
+      const fragment = document.createDocumentFragment();
+      const endIndex = Math.min(currentIndex + batchSize, reviews.length);
+
+      for (let i = currentIndex; i < endIndex; i++) {
+        const review = reviews[i];
+        const reviewElement = reviewTemplate.content.cloneNode(true);
+
+        reviewElement.querySelector('img').src = `/FinalProject/MemberPhoto?memberId=${review.member.memberId}`;
+        reviewElement.querySelector('.rating').innerHTML = generateStars(review.stars);
+        reviewElement.querySelector('.rating-count').textContent = `(${review.stars})`;
+        reviewElement.querySelector('.author-name').textContent = review.member.memberName;
+        reviewElement.querySelector('.review-date').textContent = `– ${formatDate(review.reviewTime)}`;
+        reviewElement.querySelector('.review-text').textContent = review.reviewContent;
+
+        fragment.appendChild(reviewElement);
+      }
+
+      reviewsContainer.appendChild(fragment);
+      currentIndex = endIndex;
+
+      // 如果所有評論都顯示了，隱藏"顯示更多"按鈕
+      if (currentIndex >= reviews.length) {
+        loadMoreBtn.style.display = 'none';
+        showAllBtn.style.display = 'none';
+      }
+    }
+
+    function showAllReviews() {
+      reviewsContainer.innerHTML = ''; // 清空現有評論
+      batchSize = reviews.length; // 設置 batchSize 為評論總數以加載所有評論
+      currentIndex = 0; // 重置 currentIndex
+      loadMoreReviews(); // 加載所有評論
+      loadMoreBtn.style.display = 'none'; // 隱藏“顯示更多”按鈕
+      showAllBtn.style.display = 'none'; // 隱藏“顯示所有”按鈕
+    }
+
+    function generateStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>';
+        } else {
+          stars += '<svg width="24" height="24" class="text-warning"><use xlink:href="#star-empty"></use></svg>';
+        }
+      }
+      return stars;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const formattedDate = date.toLocaleString('zh-TW', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      const [datePart, timePart] = formattedDate.split(' ');
+      const [year, month, day] = datePart.split('/');
+      return `${year}年${month}月${day}日 ${timePart.replace(',', '時')}`;
+    }
+
+    loadMoreBtn.addEventListener('click', loadMoreReviews);
+    showAllBtn.addEventListener('click', showAllReviews);
+
+    // 初始加載兩條評論
+    loadMoreReviews();
+  });
+  </script>
+
+</body>
+</html>

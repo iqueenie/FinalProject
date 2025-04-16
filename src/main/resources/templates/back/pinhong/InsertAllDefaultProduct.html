@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>新增商品</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<style>
+    .mw576px {
+        max-width: 576px;
+    }
+    .pt2rem {
+        padding-top: 2.1rem !important;
+    }
+</style>  
+</head>
+<body>
+<div th:replace="~{back/layout/navbar}"></div>
+<div class="container d-flex justify-content-center">
+    <form th:action="@{/private/Product/InsertProductForFinalProject}" method="post" enctype="multipart/form-data" class="mt-5 bg-secondary-subtle mw576px rounded-4">
+        <div class="row g-2 m-2">
+       		 <div>
+                <label>Upload Images</label>
+            <input type="file" id="imageFiles" name="imageFiles" multiple onchange="handleFileInput(event)">
+            <div id="fileInputContainer"></div>
+        </div>
+        <button type="submit">Submit</button>
+        </div>
+            <div>
+		        <label>Product 1</label>
+		        <input type="text" name="productName" placeholder="Product Name" value="統一麥香奶茶TP375ml">
+		        <input type="text" name="productType" placeholder="Product Type" value="飲品">
+		        <input type="number" name="productCost" placeholder="Product Cost" value="8">
+		        <input type="number" name="productPrice" placeholder="Product Price" value ="15">
+		        <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+		        <input type="text" name="productDescription" placeholder="Product Description" value="醇厚紅茶結合大麥香氣與乳粉調配，呈現具獨特大麥及焦糖風味的奶茶">
+		        <input type="number" name="productPublished" placeholder="Product Published" value="1">
+		        <input type="number" name="productQuantity" placeholder="Product Quantity" value="100">
+		    </div>
+            <div>
+	            <label>Product 2</label>
+		        <input type="text" name="productName" placeholder="Product Name" value="統一麥香綠茶TP375ml">
+		        <input type="text" name="productType" placeholder="Product Type" value="飲品">
+		        <input type="number" name="productCost" placeholder="Product Cost" value="8">
+		        <input type="number" name="productPrice" placeholder="Product Price" value ="15">
+		        <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="選用甜香特色的焙香綠茶葉，萃取醇厚甜香茶汁，搭配大麥焙炒甜香，呈現獨特大麥風味的綠茶">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="200">
+	        </div>
+	        <div>
+	            <label>Product 3</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="蔓越莓綜合果汁500ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="25">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="來自北美珍貴『蔓越莓』">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="150">
+	        </div>
+	        <div>
+	            <label>Product 4</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="金車伯朗咖啡240ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="25">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="210">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="伯朗咖啡是將適量的咖啡、牛奶、砂糖調合而成的調合咖啡，且伯朗咖啡是由金車公司自行炒豆、萃取，到裝罐全程一貫作業生產的高品質調合咖啡，將最好的品質呈現給消費者，冷熱飲用皆適宜。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="250">
+	        </div>
+	       	<div>
+	            <label>Product 5</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="[孔雀]原味餅乾75g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="14">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="30">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="60">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="從小陪伴著我們長大的孔雀餅乾，含有大大的營養，一片片都能帶來小小的滿足幸福感">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="260">
+	        </div>
+	       	<div>
+	            <label>Product 6</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="蝦味先-原味115g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="16">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="35">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="60">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="香脆可口、老少咸宜，最新烘培技術製成，非油炸品，確保人體健康，新鮮全蝦製成，有鮮蝦的風味、含豐富的鈣質">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="990">
+	        </div>
+	       	<div>
+	            <label>Product 7</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="台酒花雕雞麵(碗)200g">
+	            <input type="text" name="productType" placeholder="Product Type" value="泡麵">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="25">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="49">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="60">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="使用台灣菸酒公司遵循古法釀製的料理花雕酒，搭配濃郁藥膳風味湯頭，香Q的">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="200">
+	        </div>
+	       	<div>
+	            <label>Product 8</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="維力炸醬麵(碗)90g">
+	            <input type="text" name="productType" placeholder="Product Type" value="泡麵">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="25">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="60">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="維力炸醬麵是家喻戶曉的老品牌老口味，維力炸醬調之所以好吃好調理，祕訣在於原料完全採用熟成的豆瓣製成豆瓣醬，在穩定的溫溼度控制下，其發酵的時間、溫度是成為美味的最大秘訣。民國六十七年維力炸醬麵問世，一包兩吃，附湯的吃法立刻擄獲消費者的心，為國內「速食乾麵之第一品牌」">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="110">
+	        </div>
+	       	<div>
+	            <label>Product 9</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="滿漢大餐酸菜牛肉拌麵">
+	            <input type="text" name="productType" placeholder="Product Type" value="熟食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="50">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="109">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="3">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="堅持選用珍稀牛前腱肉，搭配百年古法秘製酸菜，軟嫩牛肉與香脆酸菜的完美融合，再拌上香氣十足的牛油和辣豆瓣醬，才真正完整了一碗牛肉麵的靈魂！">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="70">
+	        </div>
+	       	<div>
+	            <label>Product 10</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="熱那亞羅勒義大利麵">
+	            <input type="text" name="productType" placeholder="Product Type" value="熟食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="45">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="89">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="3">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="這道大人小孩都愛的熱那亞羅勒義大利麵，不但能吃到青醬的濃郁口感、蛤蜊的鮮味，蒜味和白酒更有提香的作用。雖然是利用方便取得的九層塔來取代正統的甜羅勒">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="40">
+	        </div>
+	        <div>
+	            <label>Product 11</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="純喫茶-綠茶650ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="10">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="22">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="特有炒菁綠茶以冰析鮮萃工法，呈現鮮綠茶感，搭配茉莉窨花綠茶以花香提升綠茶香氣，使消費者飲用後有獨特記憶點。茶葉現萃及適度甜感搭配，使茶味足但是不苦澀。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="950">
+	        </div>
+	        <div>
+	            <label>Product 12</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="純喫茶-無糖綠茶650ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="10">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="21">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="特有炒菁綠茶以冰析鮮萃工法，呈現鮮綠茶感，搭配茉莉窨花綠茶以花香提升綠茶香氣，使消費者飲用後有獨特記憶點。茶葉現萃及適度甜感搭配，使茶味足但是不苦澀。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="50">
+	        </div>
+	        <div>
+	            <label>Product 13</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="純喫茶-烏龍青茶650ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="11">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="20">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="特有炒菁綠茶以冰析鮮萃工法，呈現鮮綠茶感，搭配茉莉窨花綠茶以花香提升綠茶香氣，使消費者飲用後有獨特記憶點。茶葉現萃及適度甜感搭配，使茶味足但是不苦澀。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="50">
+	        </div>
+	        <div>
+	            <label>Product 14</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="真魷味-濃醬燒口味112g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="18">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="37">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="國內最專業零食製造大廠以一流嚴謹態度製造生產。 ☆使用高級原料與獨家口味調味，童年時濃濃的古早味回憶。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 15</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="古道百香綠茶550ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="13">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="26">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="熱帶風情的百香果調和綠茶的甘醇，延續『古道果茶 台灣第一品牌』的傳承，成為競爭激烈飲品市場中的熱門產品。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="50">
+	        </div>
+	        <div>
+	            <label>Product 16</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="古道梅子綠茶550ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="7">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="25">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="人生太苦，來一點甜吧，清爽甘甜好滋味，延續『古道果茶 台灣第一品牌』的傳承，，成為競爭激烈飲品市場中的熱門產品。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="50">
+	        </div>
+	        <div>
+	            <label>Product 17</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="寶礦力水得580ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="15">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="28">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="由日本大塚製藥．品質值得信賴，時時刻刻．充電補給，接近人體體液比．補水效果好又快。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="950">
+	        </div>
+	        <div>
+	            <label>Product 18</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="乖乖-奶油椰子160g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="30">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="67">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="香醇濃郁的椰奶配上香酥可口的玉米脆果，甜而不膩！">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 19</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="黑松FIN補給飲料580ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="24">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="等滲透壓及低熱量的補給飲料，可提供人體所需的水分、礦物質，能輕鬆為人體吸收，讓你輕鬆喝，無負擔。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="100">
+	        </div>
+	        <div>
+	            <label>Product 20</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="午後紅茶-奶茶500ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="19">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="45">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="使用具有豐厚而圓潤口感特徵的「坎迪茶葉」※。濃郁茶香調和牛乳，交織出濃厚迷人的奶茶滋味。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="10000">
+	        </div>
+	        <div>
+	            <label>Product 21</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="可樂果辣味量販包192g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="24">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="55">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="可樂果「酷辣」夠味，選用天然碗豆做為原料，搭配正港原創的獨特螺旋造型，酥脆札實的爽快口感，讓你越吃越上癮。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 22</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="午後紅茶-紅茶500ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="15">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="39">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="使用錫蘭紅茶中的女王「汀布拉Dimbula茶葉」，帶有玫瑰花般的香氣，引出紅茶的華麗香氣與爽口後味。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 23</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="濃厚蚵仔煎-213g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="50">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="97">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="風靡全球的人氣洋芋片。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 24</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="麥香阿薩姆奶茶600ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="31">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="選用麥芽甜香與渾厚飽滿特性的阿薩姆紅茶葉，結合焙炒大麥、乳粉與煉乳調配，呈現濃郁甜香的阿薩姆奶茶。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="520">
+	        </div>
+	        <div>
+	            <label>Product 25</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="義美牛奶小泡芙57g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="15">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="32">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="料好實在，酥脆外殼搭配濃濃的牛奶內餡，幸福甜蜜的滋味。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="14520">
+	        </div>
+	        <div>
+	            <label>Product 26</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="樂天小熊餅-巧克力195g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="50">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="119">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="添加鈣成分，美味又營養。 還有驚喜樂趣，每塊餅乾都印有超可愛的樂天小熊圖案喔。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="720">
+	        </div>
+			<div>
+	            <label>Product 27</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="雀巢檸檬茶530ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="12">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="27">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="正宗西方茶品：1950年代，美國茶飲開始盛行，新鮮果香與清爽紅茶的酸甜口感，重溫經典美式檸檬茶風味。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="750">
+	        </div>
+	        <div>
+	            <label>Product 28</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="科學麵20合1家庭號">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="25">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="54">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="2004年，推出小科學麵mini包之延伸性商品，來符合消費者對不同食用量之需求，小小一包，隨時隨地來上一口。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="770">
+	        </div>
+	        <div>
+	            <label>Product 29</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="午後紅茶-檸檬紅茶500ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="17">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="44">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="使用具有清新水果般香氣特徵的「努瓦拉艾利亞茶葉」。完美融合清新的果香與與檸檬爽口的酸味">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 30</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="孔雀香酥脆-香魚160g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="32">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="69">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="一開袋，濃郁的奶油海鮮香氣撲鼻而來，萃取天然扇貝的鮮甜滋味在口中炸開，濃醇奶香帶出干貝的鮮味，溫潤不膩口。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 31</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="黑松沙士2L">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="14">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="38">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="經獨特之調配及生產技術，製成獨家口味，清涼有勁，是最適合家庭或朋友聚會飲用的碳酸飲料。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 32</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="樂事-香烤肋排229g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="52">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="106">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="風靡全球No.1洋芋片品牌樂事只選用當令新鮮馬鈴薯鮮切成金黃香脆洋芋片">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+	        <div>
+	            <label>Product 33</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="品客-烤肋排洋芋片95g">
+	            <input type="text" name="productType" placeholder="Product Type" value="零食">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="20">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="57">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="品客美式煙燻火烤BBQ風味洋芋片. 碳火翻騰，伴隨著濃厚柴燻的香氣。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="20">
+	        </div>
+			<div>
+	            <label>Product 34</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="飲冰室茶集-綠奶茶400ml">
+	            <input type="text" name="productType" placeholder="Product Type" value="飲品">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="8">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="23">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="初開的茉莉，喚醒茶葉香氣，感受清新茶奶甜，香以詩歌和春光佐茶。">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="1">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="50">
+	        </div>
+	        <div>
+	            <label>Product 35</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="霜淇淋">
+	            <input type="text" name="productType" placeholder="Product Type" value="實體店">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="20">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="49">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="實體店專用">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="0">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="1">
+	        </div>
+	        <div>
+	            <label>Product 36</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="烤番薯">
+	            <input type="text" name="productType" placeholder="Product Type" value="實體店">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="10">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="20">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="30">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="實體店專用">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="0">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="1">
+	        </div>
+	        <div>
+	            <label>Product 37</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="甜甜圈">
+	            <input type="text" name="productType" placeholder="Product Type" value="實體店">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="45">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="89">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="3">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="實體店專用">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="0">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="1">
+	        </div>
+	        <div>
+	            <label>Product 38</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="珍珠奶茶">
+	            <input type="text" name="productType" placeholder="Product Type" value="實體店">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="20">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="55">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="365">
+				<input type="text" name="productDescription" placeholder="Product Description" value="實體店專用">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="0">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="1">
+	        </div>
+	        <div>
+	            <label>Product 39</label>
+	            <input type="text" name="productName" placeholder="Product Name" value="茶葉蛋">
+	            <input type="text" name="productType" placeholder="Product Type" value="實體店">
+	            <input type="number" name="productCost" placeholder="Product Cost" value="3">
+	            <input type="number" name="productPrice" placeholder="Product Price" value="10">
+	            <input type="number" name="productExpirydate" placeholder="Product Expiry Date" value="30">
+	            <input type="text" name="productDescription" placeholder="Product Description" value="實體店專用">
+	            <input type="number" name="productPublished" placeholder="Product Published" value="0">
+	            <input type="number" name="productQuantity" placeholder="Product Quantity" value="1">
+	        </div>
+    </form>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

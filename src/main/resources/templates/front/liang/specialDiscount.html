@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <title>優惠詳情</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-item {
+            position: relative;
+            margin-bottom: 20px; /* Add margin between product items */
+        }
+
+        .product-item img {
+            display: block;
+            margin: 0 auto; /* Center the image */
+            max-width: 100%; /* Ensure the image doesn't exceed its container's width */
+            max-height: 75vh; /* Match the carousel height */
+            object-fit: contain; /* Ensure the image is fully visible */
+        }
+
+        .d-flex.flex-column.text-center {
+            margin-top: 20px; /* Adjust margin as needed */
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{front/layout/navbar}"></div>
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">優惠詳情</span>
+                </nav>
+                <h1>優惠詳情</h1>
+            </div>
+        </div>
+    </section>
+
+    <div class="py-4">
+        <div class="container-lg">
+            <div class="row g-5">
+                <main class="col-md-12">
+                    <div th:each="discount, iterStat : ${amountDiscounts}" class="product-item">
+                        <img th:src="'data:image/jpeg;base64,' + ${amountDiscountImagesBase64[iterStat.index]}" alt="Discount Thumbnail" class="tab-image">
+                        <div class="d-flex flex-column text-center">
+                            <div>
+                                <span class="text-dark fw-semibold" th:text="${discount.discountDescription}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{front/layout/footer}"></div>
+</body>
+</html>

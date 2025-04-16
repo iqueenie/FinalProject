@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+    <title>店鋪查詢</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/yiting/map.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+
+
+    <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">店鋪查詢</span>
+                </nav>
+                <h1>店鋪查詢</h1>
+            </div>
+        </div>
+    </section>
+
+    <section>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="container mt-3">
+                    <div class="wrapper">
+                        <table border="0">
+                            <tr>
+                                <td valign="top">
+                                    <!----------------------左menu------------------------>
+                                    <div id="map_left" class="map_left">
+                                        <div id="chgSearchList" style="display: none">
+                                            <div class="map_graybox" style="cursor: pointer"
+                                                onclick=" showDefaultContent()">
+                                                <h2 class="search_home">回店鋪查詢首頁<span>
+                                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                                    </span> </h2>
+                                            </div>
+                                        </div>
+                                        <div id="searchList">
+                                            <div class="map_graybox">
+                                                <h2 class="search_word">依郵遞區號查詢</h2>
+                                                <input id="zip" type="text" class="search_box" />
+                                                <div class="search_button"><a href="#" id="zipSearch"
+                                                        onclick="zipSearch()">搜尋</a>
+                                                </div>
+                                            </div>
+                                            <div class="map_graybox">
+                                                <h2 class="search_word">依店名查詢</h2>
+                                                <input id="shopName" type="text" class="search_box" />
+                                                <div class="search_button">
+                                                    <a href="#" id="shopNameSearch" onclick="findByStoreName()">
+                                                        搜尋
+                                                    </a>
+                                                </div>
+                                                <div class="note ms-2"> *請輸入店名(例：爪哇店)</div>
+                                            </div>
+                                        </div>
+                                        <div id="specialList" class="map_graybox02" style="display: none;">
+                                            <h2 class="search_word" id="specialListShow">依特定服務項目查詢</h2>
+                                            <div class="store">
+                                                <div class="note">
+                                                    *請勾選項目<br>
+                                                </div>
+                                                <!--收合式選單 begin-->
+                                                <div id="accordion"
+                                                    class="accordion accordion-flush ui-accordion ui-widget"
+                                                    role="tablist">
+                                                    <div class="accordion-item">
+                                                        <h3 class="accordion-header" id="flush-headingOne">
+                                                            <button class="accordion-button collapsed storeProduct"
+                                                                type="button" data-bs-toggle="collapse"
+                                                                data-bs-target="#flush-collapseOne"
+                                                                aria-expanded="false" aria-controls="flush-collapseOne">
+                                                                商品
+                                                            </button>
+                                                        </h3>
+                                                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                                            aria-labelledby="flush-headingOne"
+                                                            data-bs-parent="#accordionFlushExample">
+                                                            <div class="accordion-body">
+                                                                <ul id="selectList">
+
+
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- <span class="line"></span> -->
+                                                <!-- <div class="search_button" id="specialSearch" style=" display: block;">
+                                                    <a href="#" id="specialItemSearch">搜尋</a></div> -->
+                                            </div>
+                                        </div>
+
+                                </td>
+                                <td valign="top">
+                                    <div id="map_right" class="map_right">
+                                        <!--Loading icon-->
+                                        <!-- <div id="loadingDiv" class="loadingDiv" style="display: none;">
+                                            <img id="loading" th:src=@{/img/yiting/loading.gif} alt="loading"
+                                                style="position: relative">
+                                        </div> -->
+                                        <!--上方搜尋列-->
+                                        <div id="roadSearchBar" class="map_graybox03" style="display: block;">
+                                            <span class="icon01"> <i class="fa-solid fa-location-dot"></i></span>
+                                            <input type="text" id="croadWord" placeholder="請輸入縣市及街道路名查詢" size="30"><span
+                                                class="note">(EX.臺北市中華路二段)</span>
+                                            <span class="search_icon">
+                                                <a href="#" id="croadSearch" onclick="showCityStreet()">
+                                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        <!--麵包屑顯示-->
+                                        <div class="map_graybox03 result"
+                                            style="--bs-breadcrumb-divider: '>';display:none;">
+                                            <ul class="breadcrumb">
+                                                <li class="breadcrumb-item">
+                                                    <span class="icon01"> <i
+                                                            class="fa-solid fa-location-dot"></i></span>店鋪查詢
+                                                </li>
+                                                <li class="breadcrumb-item" id="cityLocation">
+                                                    <span>所在縣市 (<span class="search_green"><a></a></span>)</span>
+                                                </li>
+                                                <li class="breadcrumb-item" id="breadStreet">
+                                                    <span>所在鄉鎮區 (<span class="search_green"><a></a></span>)</span>
+                                                </li>
+                                                <li class="breadcrumb-item" id="searchStreet">
+                                                    <span>查詢路名 (<span class="search_green"><a></a></span>)</span>
+                                                </li>
+                                                <li class="breadcrumb-item" id="storeName">
+                                                    <span>店名 (<span class="search_green"><a></a></span>)</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <!----------------------地圖------------------------>
+                                        <!--臺灣全地圖-->
+                                        <div class="map_graybox04" id="taiwanMap" style="display: block;">
+                                            <div class="yilan city"><a href="#" onclick="showAdminArea('宜蘭縣')">宜蘭縣</a>
+                                            </div>
+                                            <div class="hualien city"><a href="#" onclick="showAdminArea('花蓮縣')">花蓮縣</a>
+                                            </div>
+                                            <div class="taitung city"><a href="#" onclick="showAdminArea('臺東縣')">臺東縣</a>
+                                            </div>
+                                            <div class="keelung city"><a href="#" onclick="showAdminArea('基隆市')">基隆市</a>
+                                            </div>
+                                            <div class="taipei city"><a href="#" onclick="showAdminArea('臺北市')">臺北市</a>
+                                            </div>
+                                            <div class="newtaipei city"><a href="#"
+                                                    onclick="showAdminArea('新北市')">新北市</a></div>
+                                            <div class="taoyuan city"><a href="#" onclick="showAdminArea('桃園市')">桃園市</a>
+                                            </div>
+                                            <div class="hsinchu city"><a href="#" onclick="showAdminArea('新竹市')">新竹市</a>
+                                            </div>
+                                            <div class="hsinchu02 city"><a href="#"
+                                                    onclick="showAdminArea('新竹縣')">新竹縣</a></div>
+                                            <div class="Miaoli city"><a href="#" onclick="showAdminArea('苗栗縣')">苗栗縣</a>
+                                            </div>
+                                            <div class="Yunlin city"><a href="#" onclick="showAdminArea('雲林縣')">雲林縣</a>
+                                            </div>
+                                            <div class="Chiayi city"><a href="#" onclick="showAdminArea('嘉義市')">嘉義市</a>
+                                            </div>
+                                            <div class="Chiayi02 city"><a href="#"
+                                                    onclick="showAdminArea('嘉義縣')">嘉義縣</a></div>
+                                            <div class="Tainan city"><a href="#" onclick="showAdminArea('臺南市')">臺南市</a>
+                                            </div>
+                                            <div class="Kaohsiung city"><a href="#"
+                                                    onclick="showAdminArea('高雄市')">高雄市</a></div>
+                                            <div class="Pingtung city"><a href="#"
+                                                    onclick="showAdminArea('屏東縣')">屏東縣</a></div>
+                                            <div class="Penghu city"><a href="#" onclick="showAdminArea('澎湖縣')">澎湖縣</a>
+                                            </div>
+                                            <div class="Kinmen city"><a href="#" onclick="showAdminArea('金門縣')">金門縣</a>
+                                            </div>
+                                            <div class="Lienchiang city"><a href="#"
+                                                    onclick="showAdminArea('連江縣')">連江縣</a>
+                                            </div>
+                                            <div class="Taichung city"><a href="#"
+                                                    onclick="showAdminArea('臺中市')">臺中市</a></div>
+                                            <div class="Changhua city"><a href="#"
+                                                    onclick="showAdminArea('彰化縣')">彰化縣</a></div>
+                                            <div class="Nantou city"><a href="#" onclick="showAdminArea('南投縣')">南投縣</a>
+                                            </div>
+                                        </div>
+                                        <!--點選city後-->
+                                        <div class="map_graybox05" id="areaResult" style="display: none;">
+
+                                        </div>
+                                        <!-- 地圖 -->
+
+                                        <div class="map_container" id="map"
+                                            style="width: 680px; height: 300px;display: none;"></div>
+                                        <!-- <br> -->
+                                        <!--店鋪列表-->
+                                        <div id="showShopList" style="overflow: hidden;display: none;">
+                                            <table width="683" border="0" cellspacing="0" cellpadding="0"
+                                                class="graybigbox">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="greenbox">店舖名</td>
+                                                        <td class="greenbox">店舖情報</td>
+                                                        <td class="greenbox">店內特殊商品
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody class="searchResult">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </section>
+
+    <div th:replace="~{front/layout/footer}"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7kiRXNj6bM91c98_0ghQlQ6YWOHE4Hek"></script>
+    <script th:src="@{/js/yiting/findCity.js}"></script>
+    <script>
+
+
+        function showDefaultContent() {
+            var scrollPosition = window.scrollY;
+
+            console.log("*****" + scrollPosition);
+            // 上方搜尋列
+            $("#roadSearchBar").show();
+            // 上方搜尋列的值
+            $('#croadWord').val("");
+            // 台灣圖
+            $("#taiwanMap").show();
+            // 麵包屑
+            $(".map_graybox03.result").hide();
+            $("#breadStreet").hide();
+            $("#areaResult").html(""); // 清除先前的結果
+
+            // 結果表
+            $(".map_graybox05").css("display", "none");
+            $("#showShopList").css("display", "none");
+
+            // 地圖
+            $(".map_container").css("display", "none");
+
+            // 左方查詢列
+            $('#searchList').show();
+            // 左方店鋪名搜尋
+            $('#shopName').val("");
+            // 左方郵遞區號搜尋
+            $('#zip').val("");
+            // 左方整塊特殊商品
+            $('#specialList').css("display", "none");
+            // 收起商品選項
+            $('#flush-collapseOne').collapse('hide');
+            // 清除已勾选项
+            $('#selectList input[type="checkbox"]').prop('checked', false);
+
+            // 左方換畫面後回首頁選項
+            $('#chgSearchList').css("display", "none");
+
+            // 使用 requestAnimationFrame 進行滾動操作
+            requestAnimationFrame(function () {
+                window.scrollTo(0, scrollPosition);
+            });
+        }
+
+    </script>
+    //地圖呈現
+    <script th:inline="javascript">
+        function showMap(storeId) {
+            $(".map_graybox05").css("display", "none");
+            $('.searchResult').html("");
+            $("#map").css("display", "block");
+            $('#specialList').css("display", "none");
+
+            axios.get('http://localhost:8080/FinalProject/public/front/map', {
+                params: {
+                    id: storeId
+                }
+            })
+                .then(res => {
+                    var lat = parseFloat(res.data.lat);
+                    var lng = parseFloat(res.data.lng);
+                    var center = { lat: lat, lng: lng };
+                    var map = new google.maps.Map($('#map')[0], {
+                        center: center,
+                        zoom: 15
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: center,
+                        map: map,
+                        icon: {
+                            url: '/FinalProject/img/all/logo.png',
+                            scaledSize: new google.maps.Size(40, 40)
+                        }
+                    });
+
+                    map.addListener('center_changed', function () {
+                        window.setTimeout(function () {
+                            map.panTo(marker.getPosition());
+                        }, 3000);
+                    });
+
+                    axios.get('http://localhost:8080/FinalProject/public/front/findById', {
+                        params: {
+                            storeId: storeId
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data)
+                            storeOneResult(res.data)
+                        })
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+
+        }
+
+    </script>
+</body>
+
+</html>

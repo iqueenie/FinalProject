@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+    <title>近期瀏覽</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: red;
+            color: white;
+            padding: 5px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .product-item {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{front/layout/navbar}"></div>
+
+    <section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+                    <a class="breadcrumb-item nav-link" aria-current="page" th:href="@{/public/Products}">商品</a>
+                </nav>
+                <h1>最近看過的商品</h1>
+            </div>
+        </div>
+    </section>
+
+    <div class="py-4 mt-5">
+        <div class="container-lg">
+            <div class="row g-5">
+                <div th:if="${message}" class="text-center mt-5">
+                    <p th:text="${message}" class="mb-2 fs-2"></p>
+                    <a th:href="@{/public/Products}" class="btn btn-dark">返回商品頁面</a>
+                </div>
+
+                <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+                    <th:block th:each="product : ${recentProducts}">
+                        <div class="col">
+                            <div class="product-item">
+                                <figure>
+                                    <a th:href="@{/public/Products/{productId}(productId=${product.product.productId})}" title="${product.productName}">
+                                        <img th:src="@{/ProductPhoto(productId=${product.product.productId})}" alt="${product.productName}" class="tab-image" style="width:200px; height:200px">
+                                        <span class="discount-badge" th:if="${product.productDiscount != null}" th:text="${product.productDiscount.discountPercentage + '% OFF'}"></span>
+                                    </a>
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <h3 class="fs-6 fw-normal" th:text="${product.product.productName}"></h3>
+                                        <div>
+                                            <th:block th:with="averageRating=${product.averageRating}">
+                                                <th:block th:if="${averageRating < 1}">
+                                                    <th:block th:each="star : ${#numbers.sequence(1, 5)}">
+                                                        <svg width="24" height="24" class="text-warning">
+                                                            <use xlink:href="#star-empty"></use>
+                                                        </svg>
+                                                    </th:block>
+                                                </th:block>
+                                                <th:block th:if="${averageRating > 0}">
+                                                    <th:block th:each="i : ${#numbers.sequence(1, averageRating)}">
+                                                        <svg width="24" height="24" class="text-warning">
+                                                            <use xlink:href="#star-full"></use>
+                                                        </svg>
+                                                    </th:block>
+                                                    <th:block th:if="${averageRating % 1 != 0} and ${averageRating < 4}">
+                                                        <svg width="24" height="24" class="text-warning">
+                                                            <use xlink:href="#star-half"></use>
+                                                        </svg>
+                                                        <th:block th:each="star : ${#numbers.sequence(averageRating + 2, 5)}">
+                                                            <svg width="24" height="24" class="text-warning">
+                                                                <use xlink:href="#star-empty"></use>
+                                                            </svg>
+                                                        </th:block>
+                                                    </th:block>
+                                                    <th:block th:if="${averageRating % 1 != 0} and ${averageRating > 4}">
+                                                        <svg width="24" height="24" class="text-warning">
+                                                            <use xlink:href="#star-half"></use>
+                                                        </svg>
+                                                    </th:block>
+                                                    <th:block th:if="${averageRating % 1 == 0} and ${averageRating != 5}">
+                                                        <th:block th:each="star : ${#numbers.sequence(averageRating + 1, 5)}">
+                                                            <svg width="24" height="24" class="text-warning">
+                                                                <use xlink:href="#star-empty"></use>
+                                                            </svg>
+                                                        </th:block>
+                                                    </th:block>
+                                                </th:block>
+                                            </th:block>
+                                            <span th:text="${product.averageRating} + '★'"></span>
+                                            <span th:text="'(' + ${product.reviewCount} + ')'"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <th:block th:if="${product.productDiscount != null}">
+                                            <del th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 0)}"></del>
+                                            <span class="text-dark fw-semibold" th:text="'$' + ${product.discountedPrice}"></span>
+                                        </th:block>
+                                        <span class="text-dark fw-semibold" th:if="${product.productDiscount == null}" th:text="'$' + ${#numbers.formatDecimal(product.product.productPrice, 1, 0)}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+
+    <div th:replace="~{front/layout/footer}"></div>
+</body>
+</html>

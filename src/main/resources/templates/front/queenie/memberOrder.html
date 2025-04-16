@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <title>會員訂單</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+			<style>
+			    table#myTable tr,
+			    table#myTable td {
+			        font-size: 12px;
+			        padding: 4px;
+			    }
+			    table#myTable1 tr,
+			    table#myTable1 td {
+			        font-size: 12px;
+			        padding: 4px;
+			    }
+			    table#myTable2 tr,
+			    table#myTable2 td {
+			        font-size: 12px;
+			        padding: 4px;
+			    }
+			    table#myTable3 tr,
+			    table#myTable3 td {
+			        font-size: 12px;
+			        padding: 4px;
+			    }
+			    
+			    table#myTable td {
+			        white-space: nowrap;
+			    }
+			    table#myTable1 td {
+			        white-space: nowrap;
+			    }
+			    table#myTable2 td {
+			        white-space: nowrap;
+			    }
+			    table#myTable3 td {
+			        white-space: nowrap;
+			    }
+			</style>
+</head>
+<body>
+
+<div th:replace="~{front/layout/navbar}"></div>
+
+<section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                <span class="breadcrumb-item active" aria-current="page">會員訂單</span>
+            </nav>
+            <h1>會員訂單</h1>
+        </div>
+    </div>
+</section>
+
+<section class="my-3">
+    <div class="container-lg text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="bootstrap-tabs">
+                    <nav>
+                        <div class="nav nav-tabs btn btn-primary" id="nav-tab" role="tablist">
+                            <button class="nav-link me-4 active" id="nav-profile-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-pending-ship" type="button" role="tab"
+                                    aria-controls="tab-pending-ship" aria-selected="true">待出貨
+                            </button>
+                            <button class="nav-link me-4" id="nav-contact-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-pending-receive" type="button" role="tab"
+                                    aria-controls="tab-pending-receive" aria-selected="false">待收貨
+                            </button>
+                            <button class="nav-link me-4" id="nav-completed-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-completed" type="button" role="tab"
+                                    aria-controls="tab-completed" aria-selected="false">訂單已完成
+                            </button>
+                            <button class="nav-link me-4" id="nav-cancelled-tab" data-bs-toggle="tab"
+                                    data-bs-target="#tab-cancelled" type="button" role="tab"
+                                    aria-controls="tab-cancelled" aria-selected="false">不成立
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- 待出貨 -->
+                        <div class="tab-pane fade show active" id="tab-pending-ship" role="tabpanel"
+                             aria-labelledby="nav-profile-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover display nowrap w-100" id="myTable">
+                                    <thead>
+                                    <tr>
+                                        <th>訂單編號</th>
+                                        <th>訂單日期</th>
+                                        <th>使用點數</th>
+                                        <th>折扣金額</th>
+                                        <th>訂單總額</th>
+                                        <th>付款方式</th>
+                                        <th>最終金額</th>
+                                        <th>商店名稱</th>
+                                        <th>獲得點數</th>
+                                        <th>未付款次數</th>
+                                        <th>狀態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${ordersByStatus['待出貨']}">
+                                        <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.pointUse}"></td>
+                                        <td th:text="${order.discountMoney}"></td>
+                                        <td th:text="'NT$ ' + ${order.total} + ' 元'"></td>
+                                        <td th:text="${order.paymentMethod}"></td>
+                                        <td th:text="'NT$ ' + ${order.finalAmount} + ' 元'"></td>
+                                        <td th:text="${order.storesBean.storeName}"></td>
+                                        <td th:text="${order.pointGet}"></td>
+                                        <td th:text="${order.unpaidCount}"></td>
+                                        <td class="status-cell" th:text="${order.status}"></td>
+                                        <td>
+                                            <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
+                                            <button class="btn btn-outline-danger btn-sm delete-btn" th:attr="data-orderid=${order.orderId}" onclick="cancelOrder(this)">取消訂單</button>
+                                            <a th:href="@{'logistics-status?orderId=' + ${order.orderId}}" class="btn btn-outline-info btn-sm log-btn">查看物流</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 待收貨 -->
+                        <div class="tab-pane fade" id="tab-pending-receive" role="tabpanel"
+                             aria-labelledby="nav-contact-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover display nowrap w-100" id="myTable1">
+                                    <thead>
+                                    <tr>
+                                        <th>訂單編號</th>
+                                        <th>訂單日期</th>
+                                        <th>使用點數</th>
+                                        <th>折扣金額</th>
+                                        <th>訂單總額</th>
+                                        <th>付款方式</th>
+                                        <th>最終金額</th>
+                                        <th>商店名稱</th>
+                                        <th>獲得點數</th>
+                                        <th>未付款次數</th>
+                                        <th>取貨日期期限</th>
+                                        <th>狀態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${ordersByStatus['待收貨']}">
+                                        <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.pointUse}"></td>
+                                        <td th:text="${order.discountMoney}"></td>
+                                        <td th:text="'NT$ ' + ${order.total} + ' 元'"></td>
+                                        <td th:text="${order.paymentMethod}"></td>
+                                        <td th:text="'NT$ ' + ${order.finalAmount} + ' 元'"></td>
+                                        <td th:text="${order.storesBean.storeName}"></td>
+                                        <td th:text="${order.pointGet}"></td>
+                                        <td th:text="${order.unpaidCount}"></td>
+                                        <td th:text="${order.pickupDate}"></td>
+                                        <td th:text="${order.status}"></td>
+                                        <td>
+                                            <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
+                                            <button type="button" class="btn btn-outline-danger btn-sm status-row" th:attr="data-orderid=${order.orderId}" onclick="completeOrder(this)">完成訂單</button>
+                                            <a th:href="@{'logistics-status?orderId=' + ${order.orderId}}" class="btn btn-outline-info btn-sm">查看物流</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 訂單已完成 -->
+                        <div class="tab-pane fade" id="tab-completed" role="tabpanel"
+                             aria-labelledby="nav-completed-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover display nowrap w-100" id="myTable2">
+                                    <thead>
+                                    <tr>
+                                        <th>訂單編號</th>
+                                        <th>訂單日期</th>
+                                        <th>使用點數</th>
+                                        <th>折扣金額</th>
+                                        <th>訂單總額</th>
+                                        <th>付款方式</th>
+                                        <th>最終金額</th>
+                                        <th>商店名稱</th>
+                                        <th>獲得點數</th>
+                                        <th>未付款次數</th>
+                                        <th>取貨日期</th>
+                                        <th>狀態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${ordersByStatus['訂單已完成']}">
+                                        <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.pointUse}"></td>
+                                        <td th:text="${order.discountMoney}"></td>
+                                        <td th:text="'NT$ ' + ${order.total} + ' 元'"></td>
+                                        <td th:text="${order.paymentMethod}"></td>
+                                        <td th:text="'NT$ ' + ${order.finalAmount} + ' 元'"></td>
+                                        <td th:text="${order.storesBean.storeName}"></td>
+                                        <td th:text="${order.pointGet}"></td>
+                                        <td th:text="${order.unpaidCount}"></td>
+                                        <td th:text="${order.pickupDate}"></td>
+                                        <td th:text="${order.status}"></td>
+                                        <td>
+                                            <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- 不成立 -->
+                        <div class="tab-pane fade" id="tab-cancelled" role="tabpanel"
+                             aria-labelledby="nav-cancelled-tab">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover display nowrap w-100" id="myTable3">
+                                    <thead>
+                                    <tr>
+                                        <th>訂單編號</th>
+                                        <th>訂單日期</th>
+                                        <th>使用點數</th>
+                                        <th>折扣金額</th>
+                                        <th>訂單總額</th>
+                                        <th>付款方式</th>
+                                        <th>最終金額</th>
+                                        <th>商店名稱</th>
+                                        <th>獲得點數</th>
+                                        <th>未付款次數</th>
+                                        <th>狀態</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${ordersByStatus['不成立']}">
+                                        <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.pointUse}"></td>
+                                        <td th:text="${order.discountMoney}"></td>
+                                        <td th:text="'NT$ ' + ${order.total} + ' 元'"></td>
+                                        <td th:text="${order.paymentMethod}"></td>
+                                        <td th:text="'NT$ ' + ${order.finalAmount} + ' 元'"></td>
+                                        <td th:text="${order.storesBean.storeName}"></td>
+                                        <td th:text="${order.pointGet}"></td>
+                                        <td th:text="${order.unpaidCount}"></td>
+                                        <td th:text="${order.status}"></td>
+                                        <td>
+                                            <a th:href="@{'MemberOrderDetail?orderId=' + ${order.orderId}}" class="btn btn-outline-primary btn-sm">查看明細</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="py-3">
+                    <a th:href="@{/public/front}" class="btn btn-outline-primary">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="~{front/layout/footer}"></div>
+<script>
+ function cancelOrder(button) {
+    var orderId = button.getAttribute('data-orderid');
+
+    Swal.fire({
+        title: '確定要取消這個訂單嗎？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的，取消訂單',
+        cancelButtonText: '不，保留訂單'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/FinalProject/public/CanceleOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ orderId: orderId }),
+                success: function(response) {
+                    Swal.fire(
+                        '已取消',
+                        '您的訂單已成功取消',
+                        'success'
+                    ).then(() => {
+                        // 成功后重新加载页面
+                        location.reload(); 
+                    });
+
+                    // 更新狀態欄位
+                    var statusCell = button.closest('tr').querySelector('.status-cell');
+                    statusCell.textContent = 'Canceled';
+                    // 禁用取消按鈕
+                    button.disabled = true;
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        '取消失敗',
+                        '取消訂單失敗，請稍後再試。',
+                        'error'
+                    );
+                    console.error('錯誤:', error);
+                }
+            });
+        }
+    });
+}
+function completeOrder(button) {
+    var orderId = button.getAttribute('data-orderid');
+
+    Swal.fire({
+        title: '確定要按下完成訂單嗎？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '是的，完成訂單',
+        cancelButtonText: '不，再想想'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/FinalProject/public/CompleteOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ orderId: orderId }),
+                success: function(response) {
+                    Swal.fire(
+                        '成功',
+                        '您的訂單已完成，謝謝您的訂購',
+                        'success'
+                    ).then(() => {
+                        location.reload(); 
+                    });
+
+                    var statusRow = button.closest('tr').querySelector('.status-row');
+                    statusRow.textContent = '完成訂單';                   
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        '未成功',
+                        '完成訂單失敗，請稍後再試。',
+                        'error'
+                    );
+                    console.error('錯誤:', error);
+                }
+            });
+        }
+    });
+}
+
+
+</script>
+
+</body>
+</html>

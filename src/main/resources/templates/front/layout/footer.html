@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+
+
+  <section class="py-5">
+    <div class="container-lg">
+      <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <svg width="32" height="32">
+                <use xlink:href="#package"></use>
+              </svg>
+            </div>
+            <div class="card-body p-0">
+              <h5>24小時營業</h5>
+              <p class="card-text">無論白天黑夜，我們都在這裡為您服務。您的需求，我們隨時準備滿足。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <svg width="32" height="32">
+                <use xlink:href="#secure"></use>
+              </svg>
+            </div>
+            <div class="card-body p-0">
+              <h5>新鮮食品</h5>
+              <p class="card-text">每天嚴選新鮮食材，定時補貨。我們用心保證品質，讓您吃得安心又放心。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <svg width="32" height="32">
+                <use xlink:href="#quality"></use>
+              </svg>
+            </div>
+            <div class="card-body p-0">
+              <h5>會員優惠</h5>
+              <p class="card-text">加入我們的會員計劃，購物即可累積點數，每日還有驚喜優惠。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <svg width="32" height="32">
+                <use xlink:href="#savings"></use>
+              </svg>
+            </div>
+            <div class="card-body p-0">
+              <h5>線上訂購</h5>
+              <p class="card-text">告別排隊等候，我們的線上平台讓您隨時隨地選購商品，快速便捷地完成訂單。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <svg width="32" height="32">
+                <use xlink:href="#offers"></use>
+              </svg>
+            </div>
+            <div class="card-body p-0">
+              <h5>團購優惠</h5>
+              <p class="card-text">邀請親朋好友一起購物，享受更多優惠。我們的團購方案讓您省錢又省心。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-5">
+    <div class="container-lg">
+      <div class="row">
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="footer-menu">
+            <img th:src="@{/img/all/logoHorizontal.png}" width="240" height="70" alt="logo">
+          </div>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">線上精選</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a th:href="@{/public/Products}" class="nav-link">精品薈萃</a>
+              </li>
+              <li class="menu-item">
+                <a th:href="@{/public/front/Discount}" class="nav-link">限時盛會</a>
+              </li>
+              <li class="menu-item">
+                <a th:href=@{/public/GetAllCart} class="nav-link">購物車</a>
+              </li>
+              <li class="menu-item">
+                <a th:href="@{/public/front/group-buys}" class="nav-link">眾享優惠</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">線下世界</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a th:href="@{/public/front/storeSearch}" class="nav-link">探索店鋪</a>
+              </li>
+              <li class="menu-item">
+                <a th:href="@{/public/front/friendlyProduct}" class="nav-link">友善商品</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">會員專區</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember == null}" th:href="@{/public/frontLoginMain}" class="nav-link">專屬入口</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember == null}" th:href="@{/public/addMemberMain}" class="nav-link">加入我們</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember != null}" th:href="@{/public/MemberProfileMain}" class="nav-link">個人資料</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember != null}" th:href="@{/public/MemberOrder}" class="nav-link">會員訂單</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember != null}" th:href="@{/public/front/group-member-orders}" class="nav-link">團購訂單</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember != null}" th:href="@{/public/recentProducts}" class="nav-link">近期瀏覽</a>
+              </li>
+              <li class="menu-item">
+                <a th:if="${session.loggedInMember != null}" th:href="@{/public/front/lottery}" class="nav-link">每日抽獎</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6 copyright">
+          <p>© 2024 EZBUY. 網頁內容僅供資展國際專題報告使用</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/js/jquery-1.11.0.min.js}"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script th:src="@{/js/plugins.js}"></script>
+  <script th:src="@{/js/script.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+
+</html>

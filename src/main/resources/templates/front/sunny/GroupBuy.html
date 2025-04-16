@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+  <title>團購列表</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="preloader-wrapper">
+    <div class="preloader">
+    </div>
+  </div>
+
+  <div th:replace="~{front/layout/navbar}"></div>
+
+  <section class="jarallax py-5">
+    <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+    <div class="hero-content py-0 py-md-5">
+      <div class="container-lg d-flex flex-column d-md-block align-items-center">
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item nav-link" th:href="@{/public/front}">首頁</a>
+          <span class="breadcrumb-item active" aria-current="page">團購</span>
+        </nav>
+        <h1>團購</h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="py-4">
+    <div class="container-lg">
+      <div class="row g-5">
+        <aside class="col-md-2">
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="btn btn-warning w-100" id="clear">
+                清除搜尋條件
+              </h2>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" id="city-field" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  請選擇縣市名稱
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="navbar-nav">
+                    <a th:each="city : ${cities}" class="nav-link btn btn-warning city" href="#" th:id="${city}">[[${city}]]</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" id="area-field" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  請選擇鄉鎮市區
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="navbar-nav" id="area-list">
+                    請先選擇縣市名稱
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" id="street-field" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  請選擇街道名稱
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="navbar-nav" id="street-list">
+                    請先選擇鄉鎮市區
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" id="store-field" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  請選擇店鋪名稱
+                </button>
+              </h2>
+              <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="navbar-nav" id="store-list">
+                    請先選擇街道名稱
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="col-md-10">
+          <div class="filter-shop d-flex justify-content-between">
+            <div class="showing-product">
+              <p th:if="${gbs.totalPages>1}">Showing 1–5 of [[${gbs.totalElements}]] results</p>
+              <p th:if="${gbs.totalPages==1}">Showing 1–[[${gbs.totalElements}]] of [[${gbs.totalElements}]] results</p>
+            </div>
+          </div>
+
+          <div class="product-grid">
+
+            <th:block th:each="gb : ${gbs.content}">
+              <div class="product-item row">
+                <figure class="col-3 d-flex align-content-center">
+                  <img th:src="@{/ProductPhoto(productId=${gb.product.productId})}" class="tab-image" th:alt="${gb.productName}">
+                </figure>
+                <div class="col-7 my-auto">
+                  <div class="d-flex flex-column">
+                    <h3 class="fs-2 fw-bold">[[${gb.productName}]]</h3>
+                    <div>
+                      取貨店鋪：[[${gb.storeName}]]<br>
+                      預計下定日期：[[${gb.orderDate}]]<br>
+                      目標數量：[[${gb.targetQuantity}]]<br>
+                      目前數量：[[${gb.nowQuantity}]]
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <del>$[[${gb.productPrice}]]</del>
+                      <span class="text-dark fw-semibold">$[[${gb.price}]]</span>
+                      <span th:if="${gb.targetQuantity >= 10 and gb.targetQuantity < 20}" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10% OFF</span>
+                      <span th:if="${gb.targetQuantity >= 20 and gb.targetQuantity < 30}" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20% OFF</span>
+                      <span th:if="${gb.targetQuantity >= 30}" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">30% OFF</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-3 pt-0 col-2 d-flex">
+                  <a th:href="@{/public/front/group-buys/{id}(id=${gb.groupBuyId})}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto joinBtn">
+                    <svg width="18" height="18">
+                      <use xlink:href="#cart"></use>
+                    </svg> 我要跟團
+                  </a>
+                </div>
+              </div>
+            </th:block>
+
+          </div>
+          <!-- / product-grid -->
+
+          <nav class="text-center py-4" th:if="${gbs.totalPages != 0}" aria-label="Page navigation" id="page">
+            <ul class="pagination d-flex justify-content-center">
+              <li class="page-item">
+                <span class="page-link bg-none border-0" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </span>
+              </li>
+              <th:block th:each="pageNumber:${#numbers.sequence(1,gbs.totalPages)}">
+                <th:block th:switch="${gbs.number+1==pageNumber}">
+                  <li th:case="${false}" class="page-item">
+                    <a class="page-link border-0 page-btn" href="#" th:data-page="${pageNumber}" th:text="${pageNumber}"></a>
+                  </li>
+                  <li th:case="${true}" class="page-item active">
+                    <span class="page-link border-0 active" th:text="${pageNumber}"></span>
+                  </li>
+                </th:block>
+              </th:block>
+              <th:block th:switch="${gbs.number==gbs.totalPages-1}">
+                <li class="page-item" th:case="${false}">
+                  <a class="page-link bg-none border-0 page-btn" href="#" th:data-page="${gbs.number+2}">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                <li class="page-item" th:case="${true}">
+                  <span class="page-link bg-none border-0" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </span>
+                </li>
+              </th:block>
+            </ul>
+
+          </nav>
+
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{front/layout/footer}"></div>
+  <script>
+    $('.page-btn').on('click', function (e) {
+      e.preventDefault();
+      findGroupBuyAll($(this).data('page'))
+    });
+
+    $("#clear").on("click", function (e) {
+      $("#city-field").text("請選擇縣市名稱");
+      $("#area-field").text("請選擇鄉鎮市區");
+      $("#area-list").text("請先選擇縣市名稱");
+      $("#street-field").text("請選擇街道名稱");
+      $("#street-list").text("請先選擇鄉鎮市區");
+      $("#store-field").text("請選擇店鋪名稱");
+      $("#store-list").text("請先選擇街道名稱");
+      $('#collapseOne').collapse('show');
+      $('#collapseTwo').collapse('hide');
+      $('#collapseThree').collapse('hide');
+      $('#collapseFour').collapse('hide');
+      $('#city-field').removeClass('collapsed');
+      $('#area-field').addClass('collapsed');
+      $('#street-field').addClass('collapsed');
+      $('#store-field').addClass('collapsed');
+      findGroupBuyAll(1)
+    });
+
+    function findGroupBuyAll(page) {
+      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/all", {
+        params: {
+          p: page
+        }
+      })
+        .then(res => {
+          console.log(res);
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyAll($(this).data('page'))
+          });
+          $(".product-grid").html("");
+          res.forEach(groupBuy => {
+            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
+          });
+          $(window).scrollTop(0);
+        })
+    }
+
+
+    $(document).on('click', '.city', function (e) {
+      e.preventDefault();
+      findGroupBuyByCity(e.target.id, 1);
+      axios.get("http://localhost:8080/FinalProject/public/front/findAreaBycity", {
+        params: {
+          city: e.target.id
+        }
+      })
+        .then(res => {
+          res = res.data;
+          $("#city-field").text(e.target.id);
+          $("#area-list").text("");
+          res.forEach(area => {
+            $("#area-list").append(`<a class="nav-link btn btn-warning area" href="#" id="${area}">${area}</a>`);
+          });
+          $('#collapseOne').collapse('hide');
+          $('#collapseTwo').collapse('show');
+          $('#city-field').addClass('collapsed');
+          $('#area-field').removeClass('collapsed');
+          $("#area-field").text("請選擇鄉鎮市區");
+          $("#street-field").text("請選擇街道名稱");
+          $("#street-list").text("請先選擇鄉鎮市區");
+          $("#store-field").text("請選擇店鋪名稱");
+          $("#store-list").text("請先選擇街道名稱");
+        })
+    });
+
+    function findGroupBuyByCity(city, page) {
+      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city", {
+        params: {
+          city: city,
+          p: page
+        }
+      })
+        .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $(".product-grid").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCity(city, $(this).data('page'))
+          });
+          res.forEach(groupBuy => {
+            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
+          });
+          $(window).scrollTop(0);
+        })
+    }
+
+
+
+    $(document).on('click', '.area', function (e) {
+      e.preventDefault();
+      let city = $("#city-field").text();
+      findGroupBuyByCityAndArea(city, e.target.id, 1);
+      axios.get("http://localhost:8080/FinalProject/public/front/findStreetByArea", {
+        params: {
+          city: city,
+          area: e.target.id
+        }
+      })
+        .then(res => {
+          res = res.data;
+          $("#area-field").text(e.target.id);
+          $("#street-list").text("");
+          res.forEach(street => {
+            $("#street-list").append(`<a class="nav-link btn btn-warning street" href="#" id="${street}">${street}</a>`);
+          });
+          $('#collapseTwo').collapse('hide');
+          $('#collapseThree').collapse('show');
+          $('#area-field').addClass('collapsed');
+          $('#street-field').removeClass('collapsed');
+          $("#street-field").text("請選擇街道名稱");
+          $("#store-field").text("請選擇店鋪名稱");
+          $("#store-list").text("請先選擇街道名稱");
+        })
+    });
+
+    function findGroupBuyByCityAndArea(city, area, page) {
+      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city-area", {
+        params: {
+          city: city,
+          area: area,
+          p: page
+        }
+      })
+        .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $(".product-grid").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCityAndArea(city, area, $(this).data('page'))
+          });
+          res.forEach(groupBuy => {
+            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
+          });
+          $(window).scrollTop(0);
+        })
+    }
+
+    $(document).on('click', '.street', function (e) {
+      e.preventDefault();
+      let city = $("#city-field").text();
+      let area = $("#area-field").text();
+      findGroupBuyByCityAndAreaAndStreet(city, area, e.target.id, 1)
+      axios.get("http://localhost:8080/FinalProject/public/front/findByStreet", {
+        params: {
+          city: city,
+          area: area,
+          street: e.target.id
+        }
+      })
+        .then(res => {
+          res = res.data;
+          $("#street-field").text(e.target.id);
+          $("#store-list").text("");
+          res.forEach(store => {
+            $("#store-list").append(`<a class="nav-link btn btn-warning store" href="#" id="${store.storeId}"> ${store.storeName}</a>`);
+          });
+          $('#collapseThree').collapse('hide');
+          $('#collapseFour').collapse('show');
+          $('#street-field').addClass('collapsed');
+          $('#store-field').removeClass('collapsed');
+          $("#store-field").text("請選擇店鋪名稱");
+        })
+    });
+
+    function findGroupBuyByCityAndAreaAndStreet(city, area, street, page) {
+      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-city-area-street", {
+        params: {
+          city: city,
+          area: area,
+          street: street,
+          p: page
+        }
+      })
+        .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $(".product-grid").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByCityAndAreaAndStreet(city, area, street, $(this).data('page'))
+          });
+          res.forEach(groupBuy => {
+            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
+          });
+          $(window).scrollTop(0);
+        })
+    }
+
+    $(document).on('click', '.store', function (e) {
+      e.preventDefault();
+      $("#store-field").text(e.target.innerText);
+      findGroupBuyByStoreId(e.target.id, 1);
+    });
+
+    function findGroupBuyByStoreId(id, page) {
+      axios.get("http://localhost:8080/FinalProject/public/front/groupbuys/by-storeId", {
+        params: {
+          id: id,
+          p: page
+        }
+      })
+        .then(res => {
+          let currentPage = res.data.number;
+          let totalPages = res.data.totalPages;
+          let totalElements = res.data.totalElements;
+          res = res.data.content;
+          $(".showing-product").html(generateShowing(currentPage, totalPages, totalElements));
+          $("#page").html(generatePage(currentPage, totalPages));
+          $(".product-grid").html("");
+          $('.page-btn').on('click', function (e) {
+            e.preventDefault();
+            findGroupBuyByStoreId(id, $(this).data('page'))
+          });
+          res.forEach(groupBuy => {
+            $(".product-grid").append(generateGroupBuyTemplate(groupBuy));
+          });
+          $(window).scrollTop(0);
+        })
+    }
+
+    $(document).on("click", ".joinBtn", function (e) {
+      e.preventDefault();
+      axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+        .then(res => {
+          let isLoggedIn = res.data;
+          if (!isLoggedIn) {
+            Swal.fire({
+              title: "請先登入或註冊",
+              icon: "warning",
+              text: "您即將前往登入或註冊頁",
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#6BB252",
+              confirmButtonText: "登入",
+              denyButtonColor: "#f7a422",
+              denyButtonText: "註冊",
+              cancelButtonText: "取消"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+              } else if (result.isDenied) {
+                window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+              }
+            });
+          } else {
+            window.location.href = e.target.href;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+
+    function generateGroupBuyTemplate(gb) {
+      let groupBuyTemplate = `
+              <div class="product-item row">
+                <figure class="col-3 d-flex align-content-center">
+                  <img src="http://localhost:8080/FinalProject/ProductPhoto?productId=${gb.product.productId}" class="tab-image" alt="${gb.productName}">
+                </figure>
+                <div class="col-7 my-auto">
+                  <div class="d-flex flex-column">
+                    <h3 class="fs-2 fw-bold">${gb.product.productName}</h3>
+                    <div>
+                      取貨店鋪：${gb.store.storeName}<br>
+                      預計下定日期：${gb.orderDate}<br>
+                      目標數量：${gb.targetQuantity}<br>
+                      目前數量：${gb.nowQuantity}
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <del>$${gb.productPrice}</del>
+                      <span class="text-dark fw-semibold">$${gb.price}</span>`;
+      if (gb.targetQuantity >= 10 && gb.targetQuantity < 20) {
+        groupBuyTemplate += `<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">10% OFF</span>`;
+      } else if (gb.targetQuantity >= 20 && gb.targetQuantity < 30) {
+        groupBuyTemplate += `<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">20 % OFF</span>`;
+      } else if (gb.targetQuantity >= 30) {
+        groupBuyTemplate += `<span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">30% OFF</span>`;
+      }
+
+      groupBuyTemplate += `
+                   </div >
+                  </div >
+                </div >
+              <div class="p-3 pt-0 col-2 d-flex">
+                <a href="http://localhost:8080/FinalProject/public/front/group-buys/${gb.groupBuyId}" class="btn btn-primary rounded-1 p-2 fs-5 btn-cart m-auto joinBtn">
+                  <svg width="18" height="18">
+                    <use xlink:href="#cart"></use>
+                  </svg> 我要跟團
+                </a>
+              </div>
+              </div > `;
+
+      return groupBuyTemplate;
+    };
+
+    function generatePage(currentPage, totalPage) {
+      if (totalPage == 0) {
+        return "查無資料"
+      }
+      let pageTemplate = '<ul class="pagination d-flex justify-content-center">';
+      if (currentPage == 0) {
+        pageTemplate += `
+              <li class="page-item">
+                <span class="page-link bg-none border-0" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </span>
+              </li>`;
+      } else {
+        pageTemplate += `
+              <li class="page-item">
+                <a class="page-link bg-none border-0 page-btn" href="#" data-page="${currentPage}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>`;
+      }
+      for (let i = 0; i < totalPage; i++) {
+        if (i == currentPage) {
+          pageTemplate += `
+              <li class="page-item">
+                <span class="page-link border-0 active" data-page="${i + 1}">${i + 1}</span>
+              </li>`;
+        } else {
+          pageTemplate += `
+              <li class="page-item">
+                <a class="page-link border-0 page-btn" href="#" data-page="${i + 1}">${i + 1}</a>
+              </li>`;
+        }
+      }
+      if (currentPage == totalPage - 1) {
+        pageTemplate += `
+              <li class="page-item">
+                <span class="page-link bg-none border-0" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </span>
+              </li>`;
+      } else {
+        pageTemplate += `
+              <li class="page-item">
+                <a class="page-link bg-none border-0 page-btn" href="#" data-page="${currentPage + 2}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>`;
+      }
+      pageTemplate += '</ul>';
+      return pageTemplate;
+    }
+
+    function generateShowing(currentPage, totalPage, totalElement) {
+      if (totalElement == 0) {
+        return null;
+      } else if (totalElement < 5) {
+        return `<p>Showing 1–${totalElement} of ${totalElement} results</p>`
+      } else if (currentPage + 1 == totalPage) {
+        return `<p>Showing ${currentPage * 5 + 1}–${totalElement} of ${totalElement} results</p>`
+      } else {
+        return `<p>Showing ${currentPage * 5 + 1}–${currentPage * 5 + 5} of ${totalElement} results</p>`
+      }
+    }
+
+  </script>
+</body>
+
+</html>

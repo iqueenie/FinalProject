@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+  <head>
+    <title>EzBuy購物車</title>
+    <meta charset="utf-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+ <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.css">
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/vendor.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  </head>
+<body>
+
+ 
+
+  <!-- <div class="preloader-wrapper">
+    <div class="preloader">
+    </div>
+  </div> -->
+  <div th:replace="~{front/layout/navbar}"></div>
+<section class="jarallax py-5">
+        <img th:src="@{/img/all/banner.png}" class="jarallax-img">
+        <div class="hero-content py-0 py-md-5">
+            <div class="container-lg d-flex flex-column d-md-block align-items-center">
+                <nav class="breadcrumb">
+                    <a class="breadcrumb-item nav-link" href="#">首頁</a>
+                    <span class="breadcrumb-item active" aria-current="page">購物車</span>
+                </nav>
+                <h1>購物車</h1>
+            </div>
+        </div>
+    </section>
+<section class="py-5">
+  <div class="container-lg">
+    <div class="row g-5">
+      <div class="col-md-8">
+       <div class="table-responsive cart">
+  <form id="updateCartForm" th:action="@{/public/update-cart}" method="post">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" class="card-title text-uppercase text-muted">商品</th>
+          <th scope="col" class="card-title text-uppercase text-muted">單價</th>
+          <th scope="col" class="card-title text-uppercase text-muted">數量</th>
+          <th scope="col" class="card-title text-uppercase text-muted">小計</th>
+          <th scope="col" class="card-title text-uppercase text-muted"></th>
+        </tr>
+      </thead>
+     <tbody>
+    <tr th:each="product : ${session.sessionCart}" th:attr="data-productId=${product.productId}">
+    <td scope="row" class="py-4">
+        <div class="cart-info d-flex flex-wrap align-items-center mb-4">
+            <div class="col-lg-3">
+                <div class="card-image">
+                    <img th:src="@{/ProductPhoto(productId=${product.productId})}" th:alt="${product.productName}" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card-detail">
+                    <h5 class="card-title">
+                        <a th:href="@{/public/Products/{productId}(productId=${product.productId})}" class="text-decoration-none" th:text="${product.productName}"></a>
+                    </h5>
+                    <small class="text-body-secondary" th:text="${product.productDescription}"></small>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="py-6">
+        <span th:text="'TWD ' + ${product.productPrice}" th:attr="data-productId=${product.productId}"></span>
+    </td>
+    <td class="py-4">
+        <div class="input-group product-qty" style="max-width: 150px;">
+            <span class="input-group-btn">
+                <button type="button" class="quantity-left-minus btn btn-light btn-number" data-type="minus" th:attr="data-productId=${product.productId}">
+                    <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                </button>
+            </span>
+            <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" 
+                   th:value="${session.productQuantities[product.productId]}" min="1" maxlength="2" 
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');" 
+                   th:attr="data-productId=${product.productId}">
+            <span class="input-group-btn">
+                <button type="button" class="quantity-right-plus btn btn-light btn-number" data-type="plus" 
+                        th:attr="data-productId=${product.productId}">
+                    <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                </button>
+            </span>
+        </div>
+    </td>
+    <td class="py-4">
+        <div class="total-price">
+            <span class="money text-dark "></span>
+            <span class="subTotal" th:text="${(product.productPrice != null ? product.productPrice : 0) * (session.productQuantities[product.productId] != null ? session.productQuantities[product.productId] : 1)}" 
+                      th:attr="data-productId=${product.productId}"></span>
+        </div>
+    </td>
+    <td class="py-4">
+        <div class="cart-remove">
+            <a th:href="@{'delete-product?productId=' + ${product.productId}}" class="btn-remove-product" th:attr="data-productId=${product.productId}" th:onclick="'deleteProduct(' + ${product.productId} + '); return false;'">
+                <svg width="24" height="24"><use xlink:href="#trash"></use></svg>
+            </a>
+        </div>
+    </td>
+</tr>
+			</tbody>
+          </table>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="total bg-grey py-5">
+          <h4 class="text-dark pb-4">結帳金額</h4>
+          <div class="total-price pb-5">
+            <table cellspacing="0" class="table text-uppercase">
+              <tbody>
+                <tr class="total pt-2 pb-2 border-bottom">
+                  <th>總金額</th>
+                  <td data-title="Total">
+                    <span class="price-amount amount text-dark ps-5" >
+                      <bdi>
+                        <span class="price-currency-symbol">TWD</span><span id="sumTotal" th:text="${sumTotal}"></span>
+                      </bdi>
+                    </span>
+                  </td>
+                </tr>
+                <tr class="pt-2 pb-2 border-top border-bottom">
+                  <th>預計可折扣金額</th>
+                  <td data-title="discount">
+                    <span class="price-amount amount text-dark ps-5">
+                      <bdi>
+                        <span class="price-currency-symbol">TWD</span><span id="discountMoney" th:text="${discountMoney}"></span>
+
+                      </bdi>
+                    </span>
+                  </td>
+                </tr>
+                <tr class="finalAmount pt-2 pb-2 border-bottom">
+                  <th>最終付款金額</th>
+                  <td data-title="Final" >
+                    <span class="price-amount amount text-dark ps-5">
+                      <bdi>
+                         <span class="price-currency-symbol">TWD</span><span id="total" th:text="${total}"></span>
+                      </bdi>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="button-wrap row g-2">         
+            <div class="col-md-6"><button class="btn btn-dark py-3 px-4 text-uppercase btn-rounded-none w-100" onclick="window.location.href='/FinalProject/public/Products'">繼續購物</button></div>
+            <div class="col-md-6"><button class="w-100 btn btn-primary btn-cart py-3 px-4" type="submit">去買單</button></div>           
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  
+  <div th:replace="~{front/layout/footer}"></div>
+ 
+<script> 
+
+
+$(document).ready(function() {
+    $(document).off('click', '.quantity-right-plus').on('click', '.quantity-right-plus', function (e) {
+        e.preventDefault();
+        var productId = $(this).attr('data-productId');
+        var quantityInput = $('input[name="quantity"][data-productId="' + productId + '"]');
+        var currentVal = parseInt(quantityInput.val(), 10);
+        if (!isNaN(currentVal)) {
+            quantityInput.val(currentVal);
+        }
+        updateSubtotal(productId);
+    });
+
+    $(document).off('click', '.quantity-left-minus').on('click', '.quantity-left-minus', function (e) {
+        e.preventDefault();
+        var productId = $(this).attr('data-productId');
+        var quantityInput = $('input[name="quantity"][data-productId="' + productId + '"]');
+        var currentVal = parseInt(quantityInput.val(), 10);
+        if (!isNaN(currentVal) && currentVal > 1) {
+            quantityInput.val(currentVal);
+        }
+        updateSubtotal(productId);
+    });
+
+    function updateSubtotal(productId) {
+        var quantity = parseInt($('input[name="quantity"][data-productId="'+productId+'"]').val(), 10);
+        var priceText = $('span[data-productId="'+productId+'"]').text();
+        var price = parseInt(priceText.replace('TWD ', '').trim(), 10);
+        if (isNaN(price)) {
+            console.error("無效小計:", priceText);
+            price = 0;
+        }
+        var subTotal = quantity * price;
+        $('span.subTotal[data-productId="'+productId+'"]').text('TWD ' + subTotal);
+        updateTotal();
+    }
+
+    function updateTotal() {
+        var cartItems = [];
+        var sumTotal = 0;
+        var discountMoney = 0;
+
+        $('span.subTotal').each(function() {
+            var subTotalText = $(this).text();
+            var subTotal = parseInt(subTotalText.replace('TWD ', '').trim(), 10);
+            if (!isNaN(subTotal)) {
+                var productId = $(this).attr('data-productId');
+                var quantity = parseInt($('input[name="quantity"][data-productId="'+productId+'"]').val(), 10);
+                cartItems.push({
+                    productId: productId,
+                    quantity: quantity,
+                    subTotal: subTotal
+                });
+                sumTotal += subTotal;
+            } else {
+                console.error("無效的小計值:", subTotalText);
+            }
+        });
+
+        $('#sumTotal').text('TWD ' + sumTotal);
+        $('#discountMoney').text('TWD ' + discountMoney);
+        $('#total').text('TWD ' + (sumTotal - discountMoney));
+
+
+        $.ajax({
+            url: '/FinalProject/public/update-cart',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                cartItems: cartItems,
+                totalAmount: sumTotal,
+                discountAmount: discountMoney,
+                finalAmount: sumTotal - discountMoney
+            }),
+            success: function(response) {
+                console.log("購物車更新成功:", response);
+                 window.location.reload(); 
+            },
+            error: function() {
+                console.error('更新購物車失敗');
+            }
+        });
+            
+    }
+   
+
+    $(document).off('click', '.btn-remove-product').on('click', '.btn-remove-product', function (e) {
+        e.preventDefault();
+        var productId = $(this).attr('data-productId');
+        deleteProduct(productId);
+    });
+
+    function deleteProduct(productId) {
+        $.ajax({
+            url: `/FinalProject/public/delete-product/${productId}`,
+            type: 'DELETE',
+            contentType: 'application/json',
+            success: function() {
+                console.log('Product deleted successfully');
+                removeProductFromPage(productId);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error deleting product:', error);
+            }
+        });
+    }
+
+    function removeProductFromPage(productId) {
+        const productElement = document.querySelector(`.btn-remove-product[data-productId="${productId}"]`);
+        console.log('Product element:', productElement);
+        if (productElement) {
+            const row = productElement.closest('tr');
+            if (row) {
+                row.remove();
+            } else {
+                console.error(`Row element not found for productId: ${productId}`);
+            }
+        } else {
+            console.error(`Product element not found for productId: ${productId}`);
+        }
+    }
+
+    $(document).off('click', '.btn-cart').on('click', '.btn-cart', function (e) {
+        e.preventDefault(); 
+
+        axios.get("http://localhost:8080/FinalProject/front/checkLogging")
+            .then(res => {
+                let isLoggedIn = res.data;
+                if (!isLoggedIn) {
+                    sessionStorage.setItem("checkoutIntention", "true");
+                    Swal.fire({
+                        title: "請先登入或註冊",
+                        icon: "warning",
+                        text: "您即將前往登入或註冊頁",
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonColor: "#6BB252",
+                        confirmButtonText: "登入",
+                        denyButtonColor: "#f7a422",
+                        denyButtonText: "註冊",
+                        cancelButtonText: "取消"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "http://localhost:8080/FinalProject/public/frontLoginMain";
+                        } else if (result.isDenied) {
+                            window.location.href = "http://localhost:8080/FinalProject/public/addMemberMain";
+                        }
+                    });
+                } else {                 
+                    window.location.href = "http://localhost:8080/FinalProject/public/CheckOut";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+});
+</script>
+
+
+
+</body>
+</html>
